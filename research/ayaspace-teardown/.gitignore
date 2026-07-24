@@ -1,0 +1,5 @@
+# Raw APK and full decompiled tree are working files, not repo content -- keep
+# only curated excerpts (specific relevant .java files) and the FINDINGS.md
+# synthesis in git, same discipline as the other research/ subfolders.
+*.apk
+*_decompiled/

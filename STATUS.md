@@ -90,17 +90,44 @@ pipeline edge case found (idle-screen stale-buffer FPS decay, not a stall)
 considered complete and validated** — both probe apps' capability
 questions are answered; next work is Phase 2 (actual A/B comparison data).
 
+## New: `research/ayaspace-teardown/`
+
+Static analysis (decompile + read), not another on-device probe. Goal:
+pull AYA Settings' own APK (root-confirmed access makes this trivial now)
+and decompile with `jadx` (already installed) to answer two open questions
+with direct architectural impact: (1) does its profile switch touch any
+sysfs lever beyond what `HARDWARE_PROFILE.md` already documents (e.g. fan
+curve, thermal trip points)? (2) does `xsud` expose a Binder/AIDL interface
+rather than only the `xsu -c` exec model we use — which could inform (or
+replace) `XsuShell.kt`'s architecture and explain why the "stdin" method
+failed silently. See that folder's own README for the full process and
+starting search terms. Not yet started — scaffolded so a fresh session can
+pick it up without re-deriving the "why" from this (long) conversation.
+Scoping note: also motivated by a new feature idea for `apl/app/` — a
+per-foreground-app AYASpace-profile mimic (assign Eco/Balanced/Streaming/
+Gaming/Max to specific apps, auto-applied via the same sysfs writes already
+proven in Tests 2/3/7) — considered a smaller, more natural first real
+feature than full AutoTDP, sharing the same ForegroundService/BootReceiver/
+XsuShell scaffolding AutoTDP will need later. Not yet scoped in detail.
+
 ## Next steps (rough priority order)
 
-1. Run actual Baseline vs AutoTDP sessions per game (see
+1. `research/ayaspace-teardown` — pull + decompile AYA Settings, see if it
+   changes the plan for `XsuShell.kt` or adds new sysfs levers before
+   building the per-app profile-mimic feature.
+2. Scope and build the per-app profile-mimic feature (see above) — likely
+   `apl/app/`'s first real (non-throwaway) functionality.
+3. Run actual Baseline vs AutoTDP sessions per game (see
    `research/autotdp-ab-harness`'s README test procedure — paired,
    order-swapped per game, NOT all
    baseline sessions then all autotdp sessions, which would confound mode
    with elapsed time/thermal carry-over). This is the "realistic input"
    needed before designing the FPS-delta-augmented v1 controller.
-2. Decide `AutoTdpController`'s actual control signal and loop cadence,
+4. Decide `AutoTdpController`'s actual control signal and loop cadence,
    informed by the ~100ms-per-`xsu`-call floor documented in FINDINGS.md
-   and by the A/B comparison data from step 2.
+   and by the A/B comparison data from step 3. Planned: selectable FPS
+   target thresholds (60/120/144) once the core loop is stable — noted for
+   later, not blocking current work.
 4. Write the real `XsuShell.kt` (production quality, not probe quality) —
    the `args` method only, informed by the timeout/reliability findings.
 5. First real increment per the KISS plan in README.md: a service that
