@@ -1,0 +1,131 @@
+===== XSU BENCHMARK SUITE =====
+time=Thu Jul 23 00:43:25 GMT+02:00 2026 applicationId=pl.xsubench.app
+
+--- TEST 1: xsu availability (regression check) ---
+cmd="id" exit=0 elapsed=101ms error=-
+stdout: uid=0(root) gid=0(root) groups=0(root) context=u:r:xsud:s0
+stderr: 
+TEST 1 PASS: uid=0 confirmed.
+
+--- TEST 2: CPU sysfs write+verify (/sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq) ---
+original_value=2265600
+write+verify (single round trip): exit=0 elapsed=101ms stdout=1344000 stderr=
+write result: expected=1344000 got=1344000 -> OK
+restore: expected=2265600 got=2265600 -> OK
+TEST 2 RESULT: PASS
+
+--- TEST 3: GPU sysfs write+verify (/sys/class/kgsl/kgsl-3d0/max_pwrlevel) ---
+original_value=0
+write+verify: exit=0 elapsed=101ms stdout=6 stderr=
+write result: expected=6 got=6 -> OK
+restore: expected=0 got=0 -> OK
+TEST 3 RESULT: PASS -- new finding: xsu app-channel CAN write kgsl nodes.
+
+--- TEST 4: GPU busy node (/sys/class/kgsl/kgsl-3d0/gpubusy) ---
+sanity ls: gpu_busy_percentage
+gpubusy
+read1: elapsed=102ms raw="128851 1008389" pct=12
+read2 (+500ms): elapsed=102ms raw="128851 1008389" pct=12
+TEST 4 RESULT: counters IDENTICAL between reads -- either device fully idle right now, or a stale-read concern worth a longer soak.
+
+--- TEST 5: FPS pipeline, 30 samples x 3000ms interval ---
+Sampling whatever is on screen NOW. Switch to RetroArch/Eden for a run comparable to v8's validation.
+[sample 0] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#291 refresh_ns=8333333 frames=127 fps=20.2 pipeline_ms=339
+  focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=  43255 1049209
+[sample 1] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#291 refresh_ns=8333333 frames=127 fps=18.6 pipeline_ms=323
+  focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+[sample 2] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#291 refresh_ns=8333333 frames=126 fps=100.0 pipeline_ms=320
+  focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 160668 1009261
+[sample 3] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#291 refresh_ns=8333333 frames=127 fps=104.3 pipeline_ms=318
+  focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+[sample 4] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#291 refresh_ns=8333333 frames=127 fps=30.7 pipeline_ms=317
+  focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+[sample 5] pkg=com.retrohrai.launcher layer=com.retrohrai.launcher/com.retrohrai.launcher.MainActivity#312 refresh_ns=8333333 frames=93 fps=69.4 pipeline_ms=339
+  focus_raw:       topResumedActivity=ActivityRecord{4fb8b8b u0 com.retrohrai.launcher/.MainActivity t8}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 242818 1005936
+[sample 6] pkg=com.retrohrai.launcher layer=com.retrohrai.launcher/com.retrohrai.launcher.MainActivity#312 refresh_ns=8333333 frames=126 fps=120.0 pipeline_ms=317
+  focus_raw:       topResumedActivity=ActivityRecord{4fb8b8b u0 com.retrohrai.launcher/.MainActivity t8}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 311103 1005946
+[sample 7] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#329 refresh_ns=8333333 frames=126 fps=60.2 pipeline_ms=313
+  focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 116100 1013629
+[sample 8] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#329 refresh_ns=8333333 frames=127 fps=60.5 pipeline_ms=312
+  focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=  98174 1001801
+[sample 9] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#329 refresh_ns=8333333 frames=126 fps=60.5 pipeline_ms=311
+  focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=  91338 1014338
+[sample 10] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#329 refresh_ns=8333333 frames=127 fps=60.5 pipeline_ms=312
+  focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 100571 1012827
+[sample 11] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#329 refresh_ns=8333333 frames=126 fps=81.5 pipeline_ms=317
+  focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 144403 1000064
+[sample 12] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#329 refresh_ns=8333333 frames=126 fps=120.0 pipeline_ms=315
+  focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 253920 1007504
+[sample 13] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#329 refresh_ns=8333333 frames=127 fps=120.0 pipeline_ms=315
+  focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 240277 1001033
+[sample 14] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#329 refresh_ns=8333333 frames=126 fps=72.5 pipeline_ms=314
+  focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 131248 1014445
+[sample 15] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#329 refresh_ns=8333333 frames=126 fps=60.2 pipeline_ms=315
+  focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=  98974 1015498
+[sample 16] pkg=com.android.launcher3 layer=com.android.launcher3/com.android.quickstep.RecentsActivity#343 refresh_ns=8333333 frames=87 fps=117.3 pipeline_ms=325
+  focus_raw:     topResumedActivity=ActivityRecord{85d69f3 u0 com.android.launcher3/com.android.quickstep.RecentsActivity t18}
+  p0:gov=performance,freq=1574400 p2:gov=performance,freq=3014400 p5:gov=performance,freq=2956800 p7:gov=performance,freq=2995200 | gpu_freq_hz=310000000 gpu_busy_raw= 123852 1001080
+[sample 17] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#359 refresh_ns=8333333 frames=113 fps=48.9 pipeline_ms=313
+  focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 129963 1059506
+[sample 18] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#359 refresh_ns=8333333 frames=127 fps=45.7 pipeline_ms=316
+  focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+[sample 19] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#377 refresh_ns=8333333 frames=110 fps=62.0 pipeline_ms=314
+  focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 124068 1018080
+[sample 20] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#377 refresh_ns=8333333 frames=127 fps=60.2 pipeline_ms=312
+  focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=  91126 1015530
+[sample 21] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#377 refresh_ns=8333333 frames=127 fps=60.2 pipeline_ms=312
+  focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=  89824 1005172
+[sample 22] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#400 refresh_ns=8333333 frames=20 fps=120.0 pipeline_ms=314
+  focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=680000000 gpu_busy_raw= 123932 1009238
+[sample 23] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#400 refresh_ns=8333333 frames=115 fps=67.4 pipeline_ms=317
+  focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+[sample 24] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#400 refresh_ns=8333333 frames=116 fps=29.4 pipeline_ms=332
+  focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+[sample 25] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#400 refresh_ns=8333333 frames=126 fps=12.9 pipeline_ms=316
+  focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+[sample 26] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#400 refresh_ns=8333333 frames=127 fps=72.7 pipeline_ms=329
+  focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 139921 1053336
+[sample 27] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#400 refresh_ns=8333333 frames=127 fps=58.8 pipeline_ms=314
+  focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+[sample 28] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#400 refresh_ns=8333333 frames=127 fps=22.3 pipeline_ms=322
+  focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+[sample 29] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#400 refresh_ns=8333333 frames=127 fps=13.8 pipeline_ms=316
+  focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+
+--- LATENCY BENCHMARK (25 iterations per category) ---
+simple_read_cat: n=25 avg=101.5ms min=101ms max=102ms p95=102ms
+write_verify_combined: n=25 avg=101.6ms min=101ms max=102ms p95=102ms
+single_dumpsys_call: n=25 avg=101.4ms min=101ms max=102ms p95=102ms
+full_fps_pipeline_per_sample: n=30 avg=318.3ms min=311ms max=339ms p95=332ms
+(category D reuses per-sample timings from TEST 5 -- see comment in source, avoids a redundant second 90s run)
+
+===== BENCHMARK COMPLETE =====

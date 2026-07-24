@@ -1,0 +1,29 @@
+===== XSU CAPABILITY TEST =====
+build: DEBUG | applicationId=pl.xsutest.app.debug | time=Thu Jul 23 00:10:44 GMT+02:00 2026
+
+--- TEST 1: czy xsu odpowiada i daje uid=0 ---
+[args] cmd="id" exit=0 error=-
+  stdout: uid=0(root) gid=0(root) groups=0(root) context=u:r:xsud:s0
+  stderr: (puste)
+[stdin] cmd="id" exit=0 error=-
+  stdout: (puste)
+  stderr: (puste)
+
+TEST 1 WYNIK: metoda 'args' root=true | metoda 'stdin' root=false
+=> XSU DZIALA Z APKI (co najmniej jedna metoda dala uid=0).
+
+--- TEST 2: DAC-root -> MAC-write na /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq (metoda: args) ---
+[args] cmd="cat /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq" exit=0 error=-
+  stdout: 2265600
+  stderr: (puste)
+original_value=2265600
+[args] cmd="echo 1344000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; cat /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq" exit=0 error=-
+  stdout: 1344000
+  stderr: (puste)
+write_test: oczekiwano=1344000 odczytano=1344000 -> OK (MAC-write DZIALA)
+[args] cmd="echo 2265600 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; cat /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq" exit=0 error=-
+  stdout: 2265600
+  stderr: (puste)
+restore: oczekiwano=2265600 odczytano=2265600 -> OK, przywrocono
+
+=> TEST 2 WYNIK: MAC-write DZIALA (root z apki przeklada sie na realny zapis do sysfs).

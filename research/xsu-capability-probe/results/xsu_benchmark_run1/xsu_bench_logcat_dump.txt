@@ -1,0 +1,66 @@
+07-23 00:44:06.065 10698 10756 D XSU_BENCH: [sample 11] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#329 refresh_ns=8333333 frames=126 fps=81.5 pipeline_ms=317
+07-23 00:44:06.066 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+07-23 00:44:06.066 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 144403 1000064
+07-23 00:44:09.484 10698 10756 D XSU_BENCH: [sample 12] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#329 refresh_ns=8333333 frames=126 fps=120.0 pipeline_ms=315
+07-23 00:44:09.484 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+07-23 00:44:09.484 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 253920 1007504
+07-23 00:44:13.003 10698 10756 D XSU_BENCH: [sample 13] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#329 refresh_ns=8333333 frames=127 fps=120.0 pipeline_ms=315
+07-23 00:44:13.004 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+07-23 00:44:13.004 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 240277 1001033
+07-23 00:44:16.422 10698 10756 D XSU_BENCH: [sample 14] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#329 refresh_ns=8333333 frames=126 fps=72.5 pipeline_ms=314
+07-23 00:44:16.422 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+07-23 00:44:16.423 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 131248 1014445
+07-23 00:44:19.841 10698 10756 D XSU_BENCH: [sample 15] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#329 refresh_ns=8333333 frames=126 fps=60.2 pipeline_ms=315
+07-23 00:44:19.841 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+07-23 00:44:19.841 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=  98974 1015498
+07-23 00:44:23.473 10698 10756 D XSU_BENCH: [sample 16] pkg=com.android.launcher3 layer=com.android.launcher3/com.android.quickstep.RecentsActivity#343 refresh_ns=8333333 frames=87 fps=117.3 pipeline_ms=325
+07-23 00:44:23.475 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{85d69f3 u0 com.android.launcher3/com.android.quickstep.RecentsActivity t18}
+07-23 00:44:23.476 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=1574400 p2:gov=performance,freq=3014400 p5:gov=performance,freq=2956800 p7:gov=performance,freq=2995200 | gpu_freq_hz=310000000 gpu_busy_raw= 123852 1001080
+07-23 00:44:26.994 10698 10756 D XSU_BENCH: [sample 17] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#359 refresh_ns=8333333 frames=113 fps=48.9 pipeline_ms=313
+07-23 00:44:26.994 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+07-23 00:44:26.994 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 129963 1059506
+07-23 00:44:30.515 10698 10756 D XSU_BENCH: [sample 18] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#359 refresh_ns=8333333 frames=127 fps=45.7 pipeline_ms=316
+07-23 00:44:30.516 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+07-23 00:44:30.516 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+07-23 00:44:33.933 10698 10756 D XSU_BENCH: [sample 19] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#377 refresh_ns=8333333 frames=110 fps=62.0 pipeline_ms=314
+07-23 00:44:33.934 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+07-23 00:44:33.934 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 124068 1018080
+07-23 00:44:37.348 10698 10756 D XSU_BENCH: [sample 20] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#377 refresh_ns=8333333 frames=127 fps=60.2 pipeline_ms=312
+07-23 00:44:37.348 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+07-23 00:44:37.348 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=  91126 1015530
+07-23 00:44:40.864 10698 10756 D XSU_BENCH: [sample 21] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#377 refresh_ns=8333333 frames=127 fps=60.2 pipeline_ms=312
+07-23 00:44:40.864 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{41afda9 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t17}
+07-23 00:44:40.864 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=  89824 1005172
+07-23 00:44:49.262 10698 10756 D XSU_BENCH: [sample 22] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#400 refresh_ns=8333333 frames=20 fps=120.0 pipeline_ms=314
+07-23 00:44:49.262 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+07-23 00:44:49.262 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=680000000 gpu_busy_raw= 123932 1009238
+07-23 00:44:52.785 10698 10756 D XSU_BENCH: [sample 23] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#400 refresh_ns=8333333 frames=115 fps=67.4 pipeline_ms=317
+07-23 00:44:52.785 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+07-23 00:44:52.785 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+07-23 00:44:56.323 10698 10756 D XSU_BENCH: [sample 24] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#400 refresh_ns=8333333 frames=116 fps=29.4 pipeline_ms=332
+07-23 00:44:56.323 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+07-23 00:44:56.323 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+07-23 00:44:59.846 10698 10756 D XSU_BENCH: [sample 25] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#400 refresh_ns=8333333 frames=126 fps=12.9 pipeline_ms=316
+07-23 00:44:59.846 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+07-23 00:44:59.846 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+07-23 00:45:03.482 10698 10756 D XSU_BENCH: [sample 26] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#400 refresh_ns=8333333 frames=127 fps=72.7 pipeline_ms=329
+07-23 00:45:03.482 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+07-23 00:45:03.483 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 139921 1053336
+07-23 00:45:07.000 10698 10756 D XSU_BENCH: [sample 27] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#400 refresh_ns=8333333 frames=127 fps=58.8 pipeline_ms=314
+07-23 00:45:07.001 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+07-23 00:45:07.001 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+07-23 00:45:10.528 10698 10756 D XSU_BENCH: [sample 28] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#400 refresh_ns=8333333 frames=127 fps=22.3 pipeline_ms=322
+07-23 00:45:10.528 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+07-23 00:45:10.528 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+07-23 00:45:14.048 10698 10756 D XSU_BENCH: [sample 29] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#400 refresh_ns=8333333 frames=127 fps=13.8 pipeline_ms=316
+07-23 00:45:14.048 10698 10756 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{6dbbd5 u0 pl.xsubench.app/.MainActivity t15}
+07-23 00:45:14.048 10698 10756 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+07-23 00:45:17.151 10698 10756 D XSU_BENCH: 
+07-23 00:45:17.152 10698 10756 D XSU_BENCH: --- LATENCY BENCHMARK (25 iterations per category) ---
+07-23 00:45:19.706 10698 10756 D XSU_BENCH: simple_read_cat: n=25 avg=101.5ms min=101ms max=102ms p95=102ms
+07-23 00:45:22.364 10698 10756 D XSU_BENCH: write_verify_combined: n=25 avg=101.6ms min=101ms max=102ms p95=102ms
+07-23 00:45:24.916 10698 10756 D XSU_BENCH: single_dumpsys_call: n=25 avg=101.4ms min=101ms max=102ms p95=102ms
+07-23 00:45:24.916 10698 10756 D XSU_BENCH: full_fps_pipeline_per_sample: n=30 avg=318.3ms min=311ms max=339ms p95=332ms
+07-23 00:45:24.916 10698 10756 D XSU_BENCH: (category D reuses per-sample timings from TEST 5 -- see comment in source, avoids a redundant second 90s run)
+07-23 00:45:24.916 10698 10756 D XSU_BENCH: 
+07-23 00:45:24.916 10698 10756 D XSU_BENCH: ===== BENCHMARK COMPLETE =====

@@ -1,0 +1,90 @@
+07-23 01:10:44.251 18193 18225 D XSU_BENCH: [sample 3] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=0 fps=n/a (low_sample_count=0) pipeline_ms=320
+07-23 01:10:44.251 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:10:44.251 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+07-23 01:10:47.672 18193 18225 D XSU_BENCH: [sample 4] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=101 fps=50.6 pipeline_ms=317
+07-23 01:10:47.675 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:10:47.675 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 496363 1007351
+07-23 01:10:51.091 18193 18225 D XSU_BENCH: [sample 5] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=126 fps=59.8 pipeline_ms=312
+07-23 01:10:51.091 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:10:51.092 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 555228 1002012
+07-23 01:10:54.628 18193 18225 D XSU_BENCH: [sample 6] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=126 fps=60.0 pipeline_ms=331
+07-23 01:10:54.628 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:10:54.628 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw= 434843 1002549
+07-23 01:10:58.167 18193 18225 D XSU_BENCH: [sample 7] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=127 fps=60.0 pipeline_ms=336
+07-23 01:10:58.167 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:10:58.167 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=422000000 gpu_busy_raw= 430256 1002717
+07-23 01:11:01.699 18193 18225 D XSU_BENCH: [sample 8] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=126 fps=55.6 pipeline_ms=327
+07-23 01:11:01.700 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:11:01.700 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=578000000 gpu_busy_raw= 967113 1011239
+07-23 01:11:05.119 18193 18225 D XSU_BENCH: [sample 9] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=126 fps=60.0 pipeline_ms=315
+07-23 01:11:05.120 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:11:05.120 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=629000000 gpu_busy_raw= 945000 1005309
+07-23 01:11:08.649 18193 18225 D XSU_BENCH: [sample 10] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=127 fps=60.0 pipeline_ms=326
+07-23 01:11:08.649 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:11:08.650 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=629000000 gpu_busy_raw= 940383 1002337
+07-23 01:11:12.176 18193 18225 D XSU_BENCH: [sample 11] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=127 fps=60.0 pipeline_ms=321
+07-23 01:11:12.179 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:11:12.179 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=629000000 gpu_busy_raw= 972493 1002035
+07-23 01:11:15.607 18193 18225 D XSU_BENCH: [sample 12] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=127 fps=60.0 pipeline_ms=325
+07-23 01:11:15.608 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:11:15.608 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=680000000 gpu_busy_raw= 923982 1004914
+07-23 01:11:19.129 18193 18225 D XSU_BENCH: [sample 13] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=127 fps=60.0 pipeline_ms=316
+07-23 01:11:19.130 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:11:19.130 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=680000000 gpu_busy_raw= 856270 1001741
+07-23 01:11:22.548 18193 18225 D XSU_BENCH: [sample 14] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=126 fps=60.0 pipeline_ms=315
+07-23 01:11:22.548 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:11:22.548 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=680000000 gpu_busy_raw= 866923 1002194
+07-23 01:11:25.980 18193 18225 D XSU_BENCH: [sample 15] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=126 fps=60.0 pipeline_ms=329
+07-23 01:11:25.981 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:11:25.981 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=680000000 gpu_busy_raw= 857026 1004261
+07-23 01:11:29.603 18193 18225 D XSU_BENCH: [sample 16] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=127 fps=60.0 pipeline_ms=317
+07-23 01:11:29.603 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:11:29.603 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=680000000 gpu_busy_raw= 888647 1005757
+07-23 01:11:33.023 18193 18225 D XSU_BENCH: [sample 17] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=127 fps=60.0 pipeline_ms=317
+07-23 01:11:33.024 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:11:33.024 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=680000000 gpu_busy_raw= 890362 1012483
+07-23 01:11:36.439 18193 18225 D XSU_BENCH: [sample 18] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=127 fps=60.0 pipeline_ms=312
+07-23 01:11:36.439 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:11:36.439 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=680000000 gpu_busy_raw= 857752 1001737
+07-23 01:11:39.855 18193 18225 D XSU_BENCH: [sample 19] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=127 fps=60.0 pipeline_ms=313
+07-23 01:11:39.856 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:11:39.856 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=680000000 gpu_busy_raw= 836867 1001665
+07-23 01:11:43.376 18193 18225 D XSU_BENCH: [sample 20] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=127 fps=60.0 pipeline_ms=316
+07-23 01:11:43.377 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:11:43.377 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=680000000 gpu_busy_raw= 961568 1005587
+07-23 01:11:46.899 18193 18225 D XSU_BENCH: [sample 21] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=126 fps=59.3 pipeline_ms=317
+07-23 01:11:46.900 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:11:46.900 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=834000000 gpu_busy_raw= 890746 1006083
+07-23 01:11:50.414 18193 18225 D XSU_BENCH: [sample 22] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=127 fps=60.0 pipeline_ms=311
+07-23 01:11:50.415 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:11:50.415 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=834000000 gpu_busy_raw= 909779 1002992
+07-23 01:11:53.831 18193 18225 D XSU_BENCH: [sample 23] pkg=com.miHoYo.Yuanshen layer=SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#768 refresh_ns=8333333 frames=127 fps=60.0 pipeline_ms=313
+07-23 01:11:53.831 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{52e6da3 u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t29}
+07-23 01:11:53.831 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=834000000 gpu_busy_raw= 929512 1004930
+07-23 01:13:05.922 18193 18225 D XSU_BENCH: [sample 24] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#807 refresh_ns=8333333 frames=14 fps=120.0 pipeline_ms=316
+07-23 01:13:05.922 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{3570c8e u0 pl.xsubench.app/.MainActivity t27}
+07-23 01:13:05.922 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=680000000 gpu_busy_raw= 265847 1010126
+07-23 01:13:09.442 18193 18225 D XSU_BENCH: [sample 25] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#807 refresh_ns=8333333 frames=127 fps=112.0 pipeline_ms=316
+07-23 01:13:09.443 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{3570c8e u0 pl.xsubench.app/.MainActivity t27}
+07-23 01:13:09.443 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+07-23 01:13:13.084 18193 18225 D XSU_BENCH: [sample 26] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#807 refresh_ns=8333333 frames=127 fps=31.7 pipeline_ms=333
+07-23 01:13:13.085 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{3570c8e u0 pl.xsubench.app/.MainActivity t27}
+07-23 01:13:13.085 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+07-23 01:13:16.606 18193 18225 D XSU_BENCH: [sample 27] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#807 refresh_ns=8333333 frames=127 fps=22.0 pipeline_ms=315
+07-23 01:13:16.606 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{3570c8e u0 pl.xsubench.app/.MainActivity t27}
+07-23 01:13:16.606 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+07-23 01:13:20.126 18193 18225 D XSU_BENCH: [sample 28] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#807 refresh_ns=8333333 frames=127 fps=13.6 pipeline_ms=315
+07-23 01:13:20.126 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{3570c8e u0 pl.xsubench.app/.MainActivity t27}
+07-23 01:13:20.126 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+07-23 01:13:23.647 18193 18225 D XSU_BENCH: [sample 29] pkg=pl.xsubench.app layer=pl.xsubench.app/pl.xsubench.app.MainActivity#807 refresh_ns=8333333 frames=127 fps=9.9 pipeline_ms=315
+07-23 01:13:23.647 18193 18225 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{3570c8e u0 pl.xsubench.app/.MainActivity t27}
+07-23 01:13:23.647 18193 18225 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=      0       0
+07-23 01:13:26.751 18193 18225 D XSU_BENCH: 
+07-23 01:13:26.752 18193 18225 D XSU_BENCH: --- LATENCY BENCHMARK (25 iterations per category) ---
+07-23 01:13:29.318 18193 18225 D XSU_BENCH: simple_read_cat: n=25 avg=102.0ms min=101ms max=103ms p95=102ms
+07-23 01:13:31.987 18193 18225 D XSU_BENCH: write_verify_combined: n=25 avg=102.0ms min=101ms max=103ms p95=102ms
+07-23 01:13:34.544 18193 18225 D XSU_BENCH: single_dumpsys_call: n=25 avg=101.5ms min=100ms max=102ms p95=102ms
+07-23 01:13:34.544 18193 18225 D XSU_BENCH: full_fps_pipeline_per_sample: n=30 avg=323.7ms min=311ms max=407ms p95=342ms
+07-23 01:13:34.544 18193 18225 D XSU_BENCH: (category D reuses per-sample timings from TEST 5 -- see comment in source, avoids a redundant second 90s run)
+07-23 01:13:34.545 18193 18225 D XSU_BENCH: 
+07-23 01:13:34.545 18193 18225 D XSU_BENCH: ===== BENCHMARK COMPLETE =====

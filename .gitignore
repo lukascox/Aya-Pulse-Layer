@@ -1,0 +1,26 @@
+# Gradle
+.gradle/
+build/
+*/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Per-developer machine config -- never shared
+local.properties
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Signing -- real keys/passwords never committed, not even throwaway ones
+*.jks
+*.keystore
+keystore.properties
+
+# Build output / misc
+*.apk
+*.aab
+*.log
+.DS_Store
