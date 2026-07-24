@@ -90,33 +90,58 @@ pipeline edge case found (idle-screen stale-buffer FPS decay, not a stall)
 considered complete and validated** — both probe apps' capability
 questions are answered; next work is Phase 2 (actual A/B comparison data).
 
-## New: `research/ayaspace-teardown/`
+## RESOLVED + major finding: `research/ayaspace-teardown/` + `research/aya-gamewindows-teardown/`
 
-Static analysis (decompile + read), not another on-device probe. Goal:
-pull AYA Settings' own APK (root-confirmed access makes this trivial now)
-and decompile with `jadx` (already installed) to answer two open questions
-with direct architectural impact: (1) does its profile switch touch any
-sysfs lever beyond what `HARDWARE_PROFILE.md` already documents (e.g. fan
-curve, thermal trip points)? (2) does `xsud` expose a Binder/AIDL interface
-rather than only the `xsu -c` exec model we use — which could inform (or
-replace) `XsuShell.kt`'s architecture and explain why the "stdin" method
-failed silently. See that folder's own README for the full process and
-starting search terms. Not yet started — scaffolded so a fresh session can
-pick it up without re-deriving the "why" from this (long) conversation.
-Scoping note: also motivated by a new feature idea for `apl/app/` — a
-per-foreground-app AYASpace-profile mimic (assign Eco/Balanced/Streaming/
-Gaming/Max to specific apps, auto-applied via the same sysfs writes already
-proven in Tests 2/3/7) — considered a smaller, more natural first real
-feature than full AutoTDP, sharing the same ForegroundService/BootReceiver/
-XsuShell scaffolding AutoTDP will need later. Not yet scoped in detail.
+Both static-analysis passes complete (see each folder's own `FINDINGS.md`
+for full evidence). Headline result, likely the most architecturally
+consequential finding in the project so far:
+
+**`com.ayaneo.gamewindow`'s `AyaAidlService` is `exported="true"` with no
+`android:permission` and does zero caller-identity verification.** Any
+installed app — no root, no `system` UID, no `xsu` — can bind to it
+directly and drive `com_set_performance_mode` (Eco/Balanced/Streaming/
+Gaming/Max), fan mode, GPU-fixed-frequency, RGB, and controller/key-mapping
+commands, all through a plain Binder connection. `com.ayaneo.settings`
+itself doesn't touch sysfs for the profile switch at all — it only relays
+this same AIDL message; it doesn't need `xsu` because it runs
+`sharedUserId=system`, a different app can't reuse that specific shortcut
+but doesn't need to, since the AIDL service itself has no gate.
+
+If confirmed on-device (see `research/aidl-bind-spike/`, built this
+session, not yet run), this would let `apl` skip `xsu` entirely for
+profile/fan/GPU-cap changes: no ~100ms-per-call floor, no risk of fighting
+AYASpace over the same sysfs node (we'd be asking gamewindow's own code to
+apply the change, not writing in parallel), and fan control (previously an
+unconfirmable lever, likely serial/EC-based) comes along for free. Bonus:
+the same command surface covers controller/key remapping (`com_set_abxy_mode`,
+`com_set_l1l2r1r2_mode`, `com_set_single_key_mapping`) — Module 2, deferred
+since the project's very first README, might turn out to be nearly free
+once this is confirmed.
+
+CPU/GPU sysfs mechanics (governor, per-core freq, `kgsl` max/idle-timer)
+were independently reconfirmed at the command level in
+`aya-gamewindows-teardown` and match what `apl` already knew — no changes
+needed there regardless of which path (AIDL vs. own `xsu` writes) wins.
+
+**`research/aidl-bind-spike/`** hand-rolls the undocumented Binder wire
+protocol (no `.aidl` file exists, reconstructed from decompiled `Stub`/
+`Proxy` classes) — two buttons, Gaming/Eco, each verified via the
+already-proven `xsu` read-back. Built and compiling; **not yet run
+on-device** — this is the single next action that resolves whether the
+above becomes `apl`'s primary architecture or stays a documented-but-unused
+curiosity.
 
 ## Next steps (rough priority order)
 
-1. `research/ayaspace-teardown` — pull + decompile AYA Settings, see if it
-   changes the plan for `XsuShell.kt` or adds new sysfs levers before
-   building the per-app profile-mimic feature.
-2. Scope and build the per-app profile-mimic feature (see above) — likely
-   `apl/app/`'s first real (non-throwaway) functionality.
+1. Run `research/aidl-bind-spike` on-device — see that project's own README
+   for exact expected output for success and each distinct failure mode.
+   This decides whether `apl`'s profile-mimic feature (and later
+   `AutoTdpController`'s actuation side) uses AIDL-bind or `xsu` sysfs
+   writes.
+2. Scope and build the per-app profile-mimic feature (assign Eco/Balanced/
+   Streaming/Gaming/Max to specific apps, auto-applied on foreground-app
+   detection) — likely `apl/app/`'s first real (non-throwaway)
+   functionality, architecture now depends on step 1's outcome.
 3. Run actual Baseline vs AutoTDP sessions per game (see
    `research/autotdp-ab-harness`'s README test procedure — paired,
    order-swapped per game, NOT all
