@@ -67,9 +67,10 @@ power node discovery — nothing hardcoded, logs what's found) and Test 9
 (backgrounded-process persistence via `xsu` — a hard gate for the harness
 below). Its actual point: an A/B comparison harness with two modes
 (Baseline / AutoTDP) sharing one sampling loop (FPS + CPU/GPU/thermal/fan/
-battery, one CSV row every 2s), where AutoTDP launches the sibling
-`apl-diag` repo's already-validated `pulse_lite_v3.7.sh` as a background
-daemon and just observes — no controller logic is ported into Kotlin here.
+battery, one CSV row every 2s), where AutoTDP launches this repo's own
+already-validated `docs/archive/pulse_lite/v3.7/pulse_lite_v3.7.sh` as a
+background daemon and just observes — no controller logic is ported into
+Kotlin here.
 Built and compiling; **not yet run on-device** (Test 9's pass/fail
 determines whether the daemon-launch approach in AutoTDP mode is even
 viable — check its own README before trusting the A/B numbers). Resulting

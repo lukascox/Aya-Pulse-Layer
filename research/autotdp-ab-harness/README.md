@@ -3,8 +3,13 @@
 Extends `research/xsu-capability-probe/` with Tests 8-9 (fan/power discovery,
 backgrounded-process persistence) and adds the actual point of this app: an
 A/B comparison harness that runs the existing, already-validated
-`pulse_lite_v3.7.sh` (lives in the sibling `apl-diag` repo) as a background
-daemon and logs CSV data comparing it against an untouched baseline.
+`pulse_lite_v3.7.sh` (lives in **this same repo**, at
+`docs/archive/pulse_lite/v3.7/pulse_lite_v3.7.sh` -- the `pulse_lite`
+controller archive and this harness both live under `apl`; it's the
+*diagnostic script* line, `pulse_lite_diag`, that lives in the sibling
+`apl-diag` repo -- easy to mix up, corrected here after it was first
+written down wrong) as a background daemon and logs CSV data comparing it
+against an untouched baseline.
 
 Already built and verified compiling in this session:
 `app/build/outputs/apk/debug/app-debug.apk`
@@ -12,7 +17,7 @@ Already built and verified compiling in this session:
 ## Precondition: push the script once (not automated by this app)
 
 ```bash
-adb push <path-to-apl-diag-checkout>/docs/archive/pulse_lite/v3.7/pulse_lite_v3.7.sh /sdcard/pulse_lite.sh
+adb push <path-to-apl-checkout>/docs/archive/pulse_lite/v3.7/pulse_lite_v3.7.sh /sdcard/pulse_lite.sh
 ```
 
 This is a manual, one-time step per device/session — the app only ever
