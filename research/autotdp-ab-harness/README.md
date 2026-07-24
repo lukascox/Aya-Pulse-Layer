@@ -63,6 +63,31 @@ adb logcat | grep -i avc
   synced to `/sdcard/` periodically during the session (every 10 samples),
   not just at the end.
 
+## Findings from run1 (2026-07-24)
+
+- **Test 9 PASS**, but with a quirk worth expecting: the launch call itself
+  hit the full 8s timeout (`error=TIMEOUT after 8s`) instead of returning
+  fast, even though the backgrounded loop demonstrably survived and kept
+  ticking (`pgrep` found live pids). Likely explanation: the outer
+  `xsu -c "sh -c '... &'"` process doesn't return control to the caller
+  just because its own child was backgrounded -- not confirmed, not
+  investigated further (same "not this app's job" boundary as other
+  unconfirmed stalls). **Expect the same TIMEOUT-looking log line when
+  "Start AutoTDP" launches the real script** -- it does not mean the daemon
+  failed to start.
+- **Test 6 came back with every field as `?`** (no CPU frequency data at
+  all). Root cause not confirmed -- the original code didn't log the raw
+  exec result (exitCode/error/elapsed) for that call, only the
+  already-empty formatted output, so there was nothing to diagnose from.
+  Fixed: Test 6 now runs one command per policy instead of one 24-line
+  batched call (a stall in one policy no longer zeroes out all four), and
+  logs each policy query's own exitCode/error/elapsed explicitly. Re-run
+  Tests 1-9 to get real hardware-profile data before relying on it.
+- **Pull the logcat dump immediately after a run finishes, not later** --
+  run1's `xsu_bench_logcat_dump.txt` came back completely empty, almost
+  certainly because the logcat ring buffer had rotated past the test's
+  lines by the time `adb logcat -d` was run.
+
 ## Pull results
 
 ```bash

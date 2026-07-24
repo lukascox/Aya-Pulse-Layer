@@ -71,20 +71,31 @@ battery, one CSV row every 2s), where AutoTDP launches this repo's own
 already-validated `docs/archive/pulse_lite/v3.7/pulse_lite_v3.7.sh` as a
 background daemon and just observes — no controller logic is ported into
 Kotlin here.
-Built and compiling; **not yet run on-device** (Test 9's pass/fail
-determines whether the daemon-launch approach in AutoTDP mode is even
-viable — check its own README before trusting the A/B numbers). Resulting
-CSVs, once collected, should be copied into `apl-diag/logs/` — the code
-lives here for the Gradle/Kotlin scaffolding, the data belongs there.
+Resulting CSVs, once collected, should be copied into `apl-diag/logs/
+ab-comparison/` — the code lives here for the Gradle/Kotlin scaffolding,
+the data belongs there.
+
+**run1 (2026-07-24) results in `research/autotdp-ab-harness/results/
+run1_20260824/`:** Test 9 PASSED (backgrounded process persists), with a
+quirk to expect again (launch call itself hits its timeout rather than
+returning fast — daemon still starts regardless, see that project's own
+README). Test 6 (CPU frequency table) came back completely empty — fixed
+in place (split into one call per policy instead of one batched 24-line
+call, plus explicit raw-exec logging) since the original code gave nothing
+to diagnose the failure from. Not yet re-run with the fix. Pull the logcat
+dump immediately after a run — run1's came back empty, likely a rotated
+ring buffer.
 
 ## Next steps (rough priority order)
 
-1. Push `pulse_lite_v3.7.sh` to the device and run
-   `research/autotdp-ab-harness`'s Tests 1-9, especially Test 9 — it's a
-   hard gate before any A/B session data can be trusted.
+1. Re-run `research/autotdp-ab-harness`'s Tests 1-9 with the Test 6 fix to
+   get real CPU OPP table data — then fold that into `apl-diag`'s
+   `HARDWARE_PROFILE.md` "still missing" section.
 2. Run actual Baseline vs AutoTDP sessions per game (see that app's
-   README's test procedure) — this is the "realistic input" needed before
-   designing the FPS-delta-augmented v1 controller.
+   README's test procedure — paired, order-swapped per game, NOT all
+   baseline sessions then all autotdp sessions, which would confound mode
+   with elapsed time/thermal carry-over). This is the "realistic input"
+   needed before designing the FPS-delta-augmented v1 controller.
 3. Decide `AutoTdpController`'s actual control signal and loop cadence,
    informed by the ~100ms-per-`xsu`-call floor documented in FINDINGS.md
    and by the A/B comparison data from step 2.

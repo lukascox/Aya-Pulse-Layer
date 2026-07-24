@@ -225,8 +225,20 @@ class MainActivity : AppCompatActivity() {
         appendLog("")
 
         appendLog("--- TEST 6: full CPU frequency table dump -> $SDCARD_HW_PROFILE_PATH ---")
-        val cpuProfileRes = XsuShell.exec(HwProfile.buildCpuProfileCommand(), timeoutSec = 8)
-        val cpuTagged = FpsPipeline.parseTaggedLines(cpuProfileRes.stdout)
+        // v2 fix: one call per policy (not one 24-line batched call) -- see HwProfile.kt
+        // comment. Run 1 got EVERY field back as "?" with no raw exec diagnostics logged
+        // to explain why; this version logs exit/error/elapsed for each policy's call
+        // individually so a repeat failure is directly attributable, not just visible
+        // as more question marks.
+        val cpuTagged = mutableMapOf<String, String>()
+        for (p in HwProfile.POLICIES) {
+            val res = XsuShell.exec(HwProfile.buildCpuProfileCommandForPolicy(p), timeoutSec = 8)
+            appendLog("policy$p query: exit=${res.exitCode} elapsed=${res.elapsedMs}ms error=${res.error ?: "-"} stdout_len=${res.stdout.length}")
+            if (res.stdout.isBlank() && res.error != null) {
+                appendLog("  ** policy$p query produced NO output (${res.error}) -- fields for this policy will show as '?' below **")
+            }
+            cpuTagged.putAll(FpsPipeline.parseTaggedLines(res.stdout))
+        }
         val cpuProfileText = HwProfile.formatCpuProfile(cpuTagged)
         appendLog(cpuProfileText)
         val hwProfileContent = buildString {
