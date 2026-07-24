@@ -1,0 +1,24 @@
+<!--
+  Curated excerpt from resources/AndroidManifest.xml (com.ayaneo.gamewindow
+  v1.5.84, versionCode 204, gamewindow_QCOMRelease build variant).
+
+  The key line is the AyaAidlService <service> declaration: exported="true"
+  with NO android:permission attribute. Combined with AyaAidlService.onBind()
+  and AyaAidlService$mAidlBinder$1.i0() (see evidence/aidl/) doing zero
+  caller-identity checks (no Binder.getCallingUid()/getCallingPackage()
+  verification anywhere in the receive path), this means any app on the
+  device -- system or not -- can bind to this service and send it
+  "com_set_performance_*" commands with no elevated privileges of its own.
+-->
+<manifest
+    android:sharedUserId="android.uid.system"
+    android:versionCode="204"
+    android:versionName="1.5.84"
+    package="com.ayaneo.gamewindow">
+
+    <service
+        android:name="com.ayaneo.gamewindow.utils.aidl.AyaAidlService"
+        android:exported="true"/>
+        <!-- no android:permission -- confirmed no signature/system gate -->
+
+</manifest>
