@@ -4,6 +4,10 @@ Living document — update this in place at the end of a working session,
 commit with a descriptive message. Do not create a new dated/versioned copy
 of this file; `git log` is the history.
 
+Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted). Sibling
+repo: `apl-diag` (`git.internal.example/cox/AyaPulseDiag`) — the diagnostics/
+research half of this project, see its own STATUS.md.
+
 ## Where things stand (this repo's first commit)
 
 This repo was assembled by migrating scattered pre-git research into a
