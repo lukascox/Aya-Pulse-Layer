@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Needed to bind to another app's Service component under Android 11+ package
+        visibility rules. Explicit-component intents are usually exempt, but declaring
+        this removes any doubt: if the bind fails, it should fail because of the
+        AIDL protocol itself, not because of an incidental visibility filter.
+    -->
+    <queries>
+        <package android:name="com.ayaneo.gamewindow" />
+    </queries>
+
+    <!-- No storage permissions: log copy to /sdcard goes through xsu (root),
+         same pattern as every other probe in this repo. -->
+
+    <application
+        android:allowBackup="false"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.AidlSpike">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
