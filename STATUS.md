@@ -10,41 +10,90 @@ research half of this project, see its own STATUS.md.
 
 ## PLAN FOR NEXT SESSION (2026-07-24 end of day)
 
-**Headline result this session: `research/aidl-bind-spike` CONFIRMED on
-real hardware.** A plain, non-system `apl`-style app can flip AYASpace's
-performance profile (Gaming ↔ Eco, verified via governor + `scaling_cur_freq`
-read-back, repeated 3x reliably) over a bare Binder connection to
-`com.ayaneo.gamewindow` — no `xsu`, no root, no per-call ~100ms floor. Full
-per-mode config (CPU per-core caps, fan mode, GPU frequency range) also
-came back live in the callback JSON — resolved the long-standing
-"Gaming vs Max identical?" mystery (answer: GPU cap only, 834MHz vs
-1050MHz/uncapped) — see `research/aidl-bind-spike/FINDINGS.md` and the
-updated table in `apl-diag/docs/HARDWARE_PROFILE.md`.
+**Two major findings this session, in order of how much they change the plan:**
 
-This changes the architecture question from "should `apl` try the AIDL
-route" to "how much of `apl` should be built on it." Next session, in
-priority order:
+### 1. `research/pulse-glue-assessment` — maybe don't write `apl/app/` from scratch at all
 
-1. **Decide `apl/app/`'s actuation architecture**: AIDL-bind (now proven)
+Upstream `pulse` (`github.com/keiretrogaming/pulse`, GPL-2.0, cloned to
+`research/pulse-upstream/` — gitignored, re-clone with `git clone
+https://github.com/keiretrogaming/pulse.git research/pulse-upstream` if
+needed) already implements AutoTDP, fan curve, HUD overlay, RGB, per-app
+profiles, Quick Settings tile — mature, tested on real AYN/Retroid hardware.
+Its only blocker for our device is its root mechanism (`PServerBinder`, not
+available here). Reconnaissance (8 files read, see
+`research/pulse-glue-assessment/FINDINGS.md` + curated `evidence/`)
+strongly suggests **this is a narrow, clean substitution, not a rewrite**:
+
+- The ENTIRE `PServerBinder` dependency is one ~25-line file
+  (`root/RootExec.kt`) behind a single choke point
+  (`RootSupport.runRootCommand`/`runGeneratedScript`) — everything else
+  (CPU/GPU tuning, FPS reading, fan curve) only knows `RootExec`'s
+  `executeAsRoot(cmd): Result<String?>` signature, not `PServerBinder`
+  itself. Swapping this file for an `xsu -c` call (we already have this
+  exact code, proven, in every probe's `XsuShell.kt`) is the glue.
+- CPU/GPU detection (`CpuPolicyDetector.kt`, `GpuFreqDetector.kt`) is
+  already fully dynamic/generic (reads `scaling_available_frequencies`,
+  `kgsl-3d0/gpu_available_frequencies`, etc. at runtime) — zero per-SoC
+  hardcoding, will work on our device unchanged.
+- The one per-device gate (`model/DeviceProfiles.kt`, keyed by
+  `ro.soc.model`) already falls back gracefully to a working `UNKNOWN`
+  profile for our SG8350P (not in its table yet) — adding a proper entry
+  is a small quality refinement, not a blocker.
+- **Bonus, independent of the glue decision**: `data/FpsReader.kt` uses
+  `dumpsys SurfaceFlinger --timestats` (global present-cadence histogram),
+  NOT `--latency` + layer-matching — sidesteps the whole "which layer is
+  real" problem that took `pulse_lite_diag_v8.sh` four iterations (v4-v7)
+  to solve. Worth adopting regardless of the glue decision.
+
+**Before writing any glue code**, `FINDINGS.md`'s "What's NOT yet checked"
+list is the next session's first task: confirm `RootExec`'s public surface
+is really only used the one way assumed, read the actual control-loop
+files (`AutoTuneController.kt`, `PowerModel.kt`, `FanCurveController.kt`),
+check the manifest/permissions and `minSdk` (may conflict with `apl/app/`'s
+current placeholder `minSdk 26`).
+
+### 2. `research/aidl-bind-spike` — CONFIRMED on real hardware
+
+A plain, non-system app can flip AYASpace's performance profile (Gaming ↔
+Eco, verified via governor + `scaling_cur_freq` read-back, repeated 3x
+reliably) over a bare Binder connection to `com.ayaneo.gamewindow` — no
+`xsu`, no root, no per-call ~100ms floor. Full per-mode config (CPU
+per-core caps, fan mode, GPU frequency range) also came back live in the
+callback JSON — resolved the long-standing "Gaming vs Max identical?"
+mystery (answer: GPU cap only, 834MHz vs 1050MHz/uncapped) — see
+`research/aidl-bind-spike/FINDINGS.md` and the updated table in
+`apl-diag/docs/HARDWARE_PROFILE.md`. This remains relevant regardless of
+the glue decision above — it's a faster/safer path than `xsu` specifically
+for whole-profile switches, whether that code lives in a `pulse` fork or a
+from-scratch `apl/app/`.
+
+## Next session, in priority order
+
+1. **Finish the `pulse-glue-assessment` reconnaissance** (the 4 unchecked
+   items in that `FINDINGS.md`) — this decides whether everything below
+   changes from "build from scratch" to "patch `RootExec.kt` + add a
+   `DeviceProfile` entry."
+2. **Decide `apl/app/`'s actuation architecture**: AIDL-bind (now proven)
    vs `xsu` sysfs writes (also proven, but slower/riskier) — likely AIDL
-   for whole-profile switches (proven), `xsu` still needed for anything
-   NOT covered by the AIDL command catalog (live FPS/temp/busy% reads for
-   `AutoTdpController` — AIDL only exposes "set" commands, no monitoring).
-2. **Scope and build the per-app profile-mimic feature** (assign Eco/
+   for whole-profile switches, `xsu` still needed for anything NOT covered
+   by the AIDL command catalog (live FPS/temp/busy% reads — AIDL only
+   exposes "set" commands, no monitoring). Applies whether this ends up
+   inside a `pulse` fork or a from-scratch app.
+3. **Scope and build the per-app profile-mimic feature** (assign Eco/
    Balanced/Streaming/Gaming/Max to specific apps, auto-applied via AIDL on
-   foreground-app detection) — this is now `apl/app/`'s first real feature,
-   and the hard part (does the actuation mechanism work) is already answered.
-   Needs: a `ForegroundService` + `BootReceiver` (still just placeholders in
-   `app/`), reuse of `FpsPipeline.parseForegroundPkg`-style detection (via
-   `xsu`, since polling foreground app isn't in the AIDL surface either),
-   and `AidlProtocol.kt`'s bind/register/send logic ported from the spike
+   foreground-app detection) — either as `apl/app/`'s first real feature
+   from scratch, or as the first patch on top of a glued `pulse` fork,
+   depending on step 1. Needs: a `ForegroundService` + `BootReceiver`
+   (still just placeholders in `app/`), reuse of
+   `FpsPipeline.parseForegroundPkg`-style detection (via `xsu`), and
+   `AidlProtocol.kt`'s bind/register/send logic ported from the spike
    into production-quality code.
-3. **Optional follow-up spike** (not blocking, only if step 2 needs it):
+4. **Optional follow-up spike** (not blocking, only if step 3 needs it):
    test `com_set_performance_fan`/`com_set_performance_cpu` (fine-grained,
    not whole-mode) and the controller/key-mapping commands
    (`com_set_abxy_mode` etc.) — the aidl-bind-spike only exercised whole-mode
    switching so far.
-4. Everything from before this session remains queued behind the above:
+5. Everything from before this session remains queued behind the above:
    A/B comparison sessions (`research/autotdp-ab-harness`), then
    `AutoTdpController` design informed by both that data and the ~100ms
    `xsu` floor (now less critical for actuation, still relevant for reads).

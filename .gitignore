@@ -24,3 +24,7 @@ keystore.properties
 *.aab
 *.log
 .DS_Store
+
+# Upstream reference clones (separate git history, GPL-2.0 source we read but don't
+# fork into this repo directly) -- keep local only, never as a submodule/gitlink.
+research/pulse-upstream/
