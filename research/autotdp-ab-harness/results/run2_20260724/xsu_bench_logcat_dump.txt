@@ -1,0 +1,103 @@
+07-24 17:14:27.922 11137 12208 D XSU_BENCH: [sample 19] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#994 refresh_ns=8333333 frames=127 fps=20.9 pipeline_ms=313 snapshot_ms=202 snapshot_error=-
+07-24 17:14:27.923 11137 12208 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{da9f8a8 u0 pl.autotdpharness.app/.MainActivity t32}
+07-24 17:14:27.923 11137 12208 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+07-24 17:14:31.340 11137 12208 D XSU_BENCH: [sample 20] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#994 refresh_ns=8333333 frames=127 fps=13.2 pipeline_ms=314 snapshot_ms=100 snapshot_error=-
+07-24 17:14:31.340 11137 12208 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{da9f8a8 u0 pl.autotdpharness.app/.MainActivity t32}
+07-24 17:14:31.340 11137 12208 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+07-24 17:14:34.860 11137 12208 D XSU_BENCH: [sample 21] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#994 refresh_ns=8333333 frames=127 fps=9.7 pipeline_ms=315 snapshot_ms=101 snapshot_error=-
+07-24 17:14:34.860 11137 12208 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{da9f8a8 u0 pl.autotdpharness.app/.MainActivity t32}
+07-24 17:14:34.861 11137 12208 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+07-24 17:14:38.380 11137 12208 D XSU_BENCH: [sample 22] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#994 refresh_ns=8333333 frames=127 fps=7.7 pipeline_ms=315 snapshot_ms=202 snapshot_error=-
+07-24 17:14:38.381 11137 12208 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{da9f8a8 u0 pl.autotdpharness.app/.MainActivity t32}
+07-24 17:14:38.381 11137 12208 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+07-24 17:14:41.902 11137 12208 D XSU_BENCH: [sample 23] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#994 refresh_ns=8333333 frames=127 fps=6.3 pipeline_ms=316 snapshot_ms=203 snapshot_error=-
+07-24 17:14:41.902 11137 12208 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{da9f8a8 u0 pl.autotdpharness.app/.MainActivity t32}
+07-24 17:14:41.902 11137 12208 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+07-24 17:14:45.421 11137 12208 D XSU_BENCH: [sample 24] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#994 refresh_ns=8333333 frames=127 fps=5.4 pipeline_ms=315 snapshot_ms=202 snapshot_error=-
+07-24 17:14:45.422 11137 12208 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{da9f8a8 u0 pl.autotdpharness.app/.MainActivity t32}
+07-24 17:14:45.422 11137 12208 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=12414 1039454
+07-24 17:14:48.942 11137 12208 D XSU_BENCH: [sample 25] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#994 refresh_ns=8333333 frames=127 fps=4.7 pipeline_ms=316 snapshot_ms=202 snapshot_error=-
+07-24 17:14:48.942 11137 12208 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{da9f8a8 u0 pl.autotdpharness.app/.MainActivity t32}
+07-24 17:14:48.942 11137 12208 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+07-24 17:14:52.567 11137 12208 D XSU_BENCH: [sample 26] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#994 refresh_ns=8333333 frames=127 fps=4.1 pipeline_ms=317 snapshot_ms=202 snapshot_error=-
+07-24 17:14:52.568 11137 12208 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{da9f8a8 u0 pl.autotdpharness.app/.MainActivity t32}
+07-24 17:14:52.568 11137 12208 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+07-24 17:14:56.089 11137 12208 D XSU_BENCH: [sample 27] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#994 refresh_ns=8333333 frames=127 fps=3.7 pipeline_ms=316 snapshot_ms=203 snapshot_error=-
+07-24 17:14:56.090 11137 12208 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{da9f8a8 u0 pl.autotdpharness.app/.MainActivity t32}
+07-24 17:14:56.090 11137 12208 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+07-24 17:14:59.611 11137 12208 D XSU_BENCH: [sample 28] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#994 refresh_ns=8333333 frames=127 fps=3.3 pipeline_ms=316 snapshot_ms=202 snapshot_error=-
+07-24 17:14:59.611 11137 12208 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{da9f8a8 u0 pl.autotdpharness.app/.MainActivity t32}
+07-24 17:14:59.612 11137 12208 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=13397 1073336
+07-24 17:15:03.133 11137 12208 D XSU_BENCH: [sample 29] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#994 refresh_ns=8333333 frames=127 fps=3.1 pipeline_ms=316 snapshot_ms=203 snapshot_error=-
+07-24 17:15:03.133 11137 12208 D XSU_BENCH:   focus_raw:     topResumedActivity=ActivityRecord{da9f8a8 u0 pl.autotdpharness.app/.MainActivity t32}
+07-24 17:15:03.133 11137 12208 D XSU_BENCH:   p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+07-24 17:15:06.238 11137 12208 D XSU_BENCH: 
+07-24 17:15:06.238 11137 12208 D XSU_BENCH: --- TEST 6: full CPU frequency table dump -> /sdcard/pulsefit_hw_profile.txt ---
+07-24 17:15:06.340 11137 12208 D XSU_BENCH: policy0 query: exit=0 elapsed=101ms error=- stdout_len=305
+07-24 17:15:06.443 11137 12208 D XSU_BENCH: policy2 query: exit=0 elapsed=101ms error=- stdout_len=420
+07-24 17:15:06.546 11137 12208 D XSU_BENCH: policy5 query: exit=0 elapsed=102ms error=- stdout_len=394
+07-24 17:15:06.648 11137 12208 D XSU_BENCH: policy7 query: exit=0 elapsed=101ms error=- stdout_len=408
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: --- policy0 ---
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: affected_cpus: 0 1
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: scaling_governor: performance
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: scaling_available_governors: walt conservative powersave performance schedutil
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: cpuinfo_min_freq: 364800
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: cpuinfo_max_freq: 2265600
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: scaling_available_frequencies: 364800 460800 556800 672000 787200 902400 1017600 1132800 1248000 1344000 1459200 1574400 1689600 1804800 1920000 2035200 2150400 2265600
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: --- policy2 ---
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: affected_cpus: 2 3 4
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: scaling_governor: performance
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: scaling_available_governors: walt conservative powersave performance schedutil
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: cpuinfo_min_freq: 499200
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: cpuinfo_max_freq: 3148800
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: scaling_available_frequencies: 499200 614400 729600 844800 960000 1075200 1190400 1286400 1401600 1497600 1612800 1708800 1824000 1920000 2035200 2131200 2188800 2246400 2323200 2380800 2438400 2515200 2572800 2630400 2707200 2764800 2841600 2899200 2956800 3014400 3072000 3148800
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: --- policy5 ---
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: affected_cpus: 5 6
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: scaling_governor: performance
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: scaling_available_governors: walt conservative powersave performance schedutil
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: cpuinfo_min_freq: 499200
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: cpuinfo_max_freq: 2956800
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: scaling_available_frequencies: 499200 614400 729600 844800 960000 1075200 1190400 1286400 1401600 1497600 1612800 1708800 1824000 1920000 2035200 2131200 2188800 2246400 2323200 2380800 2438400 2515200 2572800 2630400 2707200 2764800 2841600 2899200 2956800
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: --- policy7 ---
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: affected_cpus: 7
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: scaling_governor: performance
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: scaling_available_governors: walt conservative powersave performance schedutil
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: cpuinfo_min_freq: 480000
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: cpuinfo_max_freq: 3302400
+07-24 17:15:06.649 11137 12208 D XSU_BENCH: scaling_available_frequencies: 480000 576000 672000 787200 902400 1017600 1132800 1248000 1363200 1478400 1593600 1708800 1824000 1939200 2035200 2112000 2169600 2246400 2304000 2380800 2438400 2496000 2553600 2630400 2688000 2745600 2803200 2880000 2937600 2995200 3052800
+07-24 17:15:06.752 11137 12208 D XSU_BENCH: TEST 6 RESULT: PASS -- written to /sdcard/pulsefit_hw_profile.txt
+07-24 17:15:06.855 11137 12208 D XSU_BENCH: 
+07-24 17:15:06.855 11137 12208 D XSU_BENCH: --- TEST 7: governor write+verify+restore (policy0 only) ---
+07-24 17:15:06.855 11137 12208 D XSU_BENCH: policy0 available governors (from TEST 6): [walt, conservative, powersave, performance, schedutil]
+07-24 17:15:06.957 11137 12208 D XSU_BENCH: original_governor=performance
+07-24 17:15:07.061 11137 12208 D XSU_BENCH: write+verify: test_governor=schedutil got=schedutil -> OK
+07-24 17:15:07.164 11137 12208 D XSU_BENCH: restore: got=performance
+07-24 17:15:07.165 11137 12208 D XSU_BENCH: TEST 7 RESULT: PASS -- scaling_governor is writable via xsu app-channel.
+07-24 17:15:07.268 11137 12208 D XSU_BENCH: 
+07-24 17:15:07.268 11137 12208 D XSU_BENCH: --- TEST 8: fan RPM / power-draw node discovery ---
+07-24 17:15:09.188 11137 12208 D XSU_BENCH: hwmon entries: [/sys/class/hwmon, /sys/class/hwmon/hwmon0]
+07-24 17:15:09.189 11137 12208 D XSU_BENCH: cooling devices: [(cooling_device0, cpu-hotplug1), (cooling_device1, cpu-hotplug0), (cooling_device10, thermal-pause-1), (cooling_device11, thermal-pause-2), (cooling_device12, pause-cpu2), (cooling_device13, thermal-pause-1C), (cooling_device14, thermal-pause-4), (cooling_device15, pause-cpu3), (cooling_device16, thermal-pause-1C), (cooling_device17, thermal-pause-8), (cooling_device18, pause-cpu4), (cooling_device19, thermal-pause-10), (cooling_device2, cpu-hotplug2), (cooling_device20, pause-cpu5), (cooling_device21, thermal-pause-E0), (cooling_device22, thermal-pause-20), (cooling_device23, pause-cpu6), (cooling_device24, thermal-pause-40), (cooling_device25, pause-cpu7), (cooling_device26, thermal-pause-80), (cooling_device27, cpufreq-cpu0), (cooling_device28, cpufreq-cpu2), (cooling_device29, cpufreq-cpu5), (cooling_device3, cpu-hotplug3), (cooling_device30, cpufreq-cpu7), (cooling_device31, ufs1), (cooling_device32, thermal-cluster-2-3), (cooling_device33, cpu-cluster0), (cooling_device34, cpu-cluster1), (cooling_device35, cpu-cluster2), (cooling_device36, cpu-cluster3), (cooling_device37, ddr-cdev), (cooling_device38, gpu-dump-skip-cdev), (cooling_device39, display-fps), (cooling_device4, cpu-hotplug4), (cooling_device40, pwm-fan), (cooling_device41, devfreq-3d00000.qcom,kgsl-3d0), (cooling_device42, panel0-backlight), (cooling_device43, gpu), (cooling_device44, wsa2), (cooling_device45, battery), (cooling_device5, cpu-hotplug7), (cooling_device6, cpu-hotplug6), (cooling_device7, cpu-hotplug5), (cooling_device8, pause-cpu0), (cooling_device9, pause-cpu1)]
+07-24 17:15:09.189 11137 12208 D XSU_BENCH: fan-name search hits: [/sys/kernel/btf/pwm_fan_tc, /sys/kernel/btf/max31760_fan, /sys/class/devlink/platform:c42d000.qcom,spmi:qcom,pm8550@1:pwms@eb00--platform:soc:pwm-fan, /sys/class/devlink/platform:c42d000.qcom,spmi:qcom,pm8550@1:pinctrl@8800--platform:soc:pwm-fan, /sys/class/devlink/platform:f000000.pinctrl--platform:soc:pwm-fan, /sys/devices/platform/soc/c42d000.qcom,spmi/spmi-0/0-01/c42d000.qcom,spmi:qcom,pm8550@1:pinctrl@8800/consumer:platform:soc:pwm-fan, /sys/devices/platform/soc/c42d000.qcom,spmi/spmi-0/0-01/c42d000.qcom,spmi:qcom,pm8550@1:pwms@eb00/consumer:platform:soc:pwm-fan, /sys/devices/platform/soc/f000000.pinctrl/consumer:platform:soc:pwm-fan, /sys/devices/platform/soc/soc:pwm-fan, /sys/devices/platform/soc/soc:pwm-fan/fan_power_state, /sys/devices/platform/soc/soc:pwm-fan/fan_rpm_state, /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/fan1_input, /sys/devices/virtual/devlink/platform:c42d000.qcom,spmi:qcom,pm8550@1:pwms@eb00--platform:soc:pwm-fan, /sys/devices/virtual/devlink/platform:c42d000.qcom,spmi:qcom,pm8550@1:pinctrl@8800--platform:soc:pwm-fan, /sys/devices/virtual/devlink/platform:f000000.pinctrl--platform:soc:pwm-fan, /sys/bus/platform/devices/soc:pwm-fan, /sys/bus/platform/drivers/pwm-fan, /sys/bus/platform/drivers/pwm-fan/soc:pwm-fan, /sys/firmware/devicetree/base/soc/qcom,spmi@c42d000/qcom,pm8550@1/pinctrl@8800/pwm_fan_ctrl, /sys/firmware/devicetree/base/soc/qcom,spmi@c42d000/qcom,pm8550@1/pinctrl@8800/pwm_fan_ctrl/pwm_fan_ctrl_default, /sys/firmware/devicetree/base/soc/qcom,spmi@c42d000/qcom,pm8550@1/pinctrl@8800/pwm_fan_ctrl/pwm_fan_ctrl_sleep, /sys/firmware/devicetree/base/soc/pwm-fan, /sys/firmware/devicetree/base/soc/pinctrl@f000000/olive_fan_vdd_sleep, /sys/firmware/devicetree/base/soc/pinctrl@f000000/olive_fan_vdd_default, /sys/module/rcutree/parameters/rcu_fanout_leaf, /sys/module/rcutree/parameters/rcu_fanout_exact, /sys/module/pwm_fan_tc, /sys/module/pwm_fan_tc/drivers/platform:pwm-fan, /sys/module/max31760_fan, /sys/module/hwmon/holders/pwm_fan_tc]
+07-24 17:15:09.189 11137 12208 D XSU_BENCH: power_supply entries: [battery, ucsi-source-psy-soc:qcom,pmic_glink:qcom,ucsi1, usb, wireless]
+07-24 17:15:09.189 11137 12208 D XSU_BENCH: battery current_now=-935692 voltage_now=8200735 power_now=81269583 (whole-device proxy, NOT per-chip)
+07-24 17:15:09.189 11137 12208 D XSU_BENCH: debugfs mounted: false
+07-24 17:15:09.292 11137 12208 D XSU_BENCH: fan-like cooling device readings: {cooling_device40_CUR=0, cooling_device40_MAX=3}
+07-24 17:15:09.293 11137 12208 D XSU_BENCH: TEST 8 RESULT: fan signal FOUND (cooling_device step index, NOT RPM) -- [(cooling_device40, pwm-fan)]
+07-24 17:15:09.395 11137 12208 D XSU_BENCH: 
+07-24 17:15:09.396 11137 12208 D XSU_BENCH: --- TEST 9: backgrounded-process persistence (blocking prerequisite for A/B harness) ---
+07-24 17:15:17.400 11137 12208 D XSU_BENCH: launch: elapsed=8003ms exit=null error=TIMEOUT after 8s (expect FAST return if backgrounding works)
+07-24 17:15:30.713 11137 12208 D XSU_BENCH: check1 (+10s): 39 lines in log
+07-24 17:15:30.713 11137 12208 D XSU_BENCH: check2 (+13s): 42 lines in log
+07-24 17:15:30.713 11137 12208 D XSU_BENCH: pgrep -f xsu_bgtest: FOUND pid(s): 15410
+07-24 17:15:30.713 11137 12208 D XSU_BENCH: 15606
+07-24 17:15:30.714 11137 12208 D XSU_BENCH: TEST 9 RESULT: PASS -- backgrounded process persists independently of the launching xsu call. A/B harness can launch pulse_lite.sh the same way.
+07-24 17:15:30.918 11137 12208 D XSU_BENCH: 
+07-24 17:15:30.918 11137 12208 D XSU_BENCH: --- LATENCY BENCHMARK (25 iterations per category unless reused from TEST 5) ---
+07-24 17:15:33.467 11137 12208 D XSU_BENCH: simple_read_cat: n=25 avg=101.2ms min=101ms max=103ms p95=102ms
+07-24 17:15:36.122 11137 12208 D XSU_BENCH: write_verify_combined: n=25 avg=101.5ms min=100ms max=103ms p95=102ms
+07-24 17:15:38.681 11137 12208 D XSU_BENCH: single_dumpsys_call: n=25 avg=101.7ms min=101ms max=102ms p95=102ms
+07-24 17:15:38.682 11137 12208 D XSU_BENCH: full_fps_pipeline_per_sample: n=30 avg=316.9ms min=312ms max=345ms p95=324ms
+07-24 17:15:38.682 11137 12208 D XSU_BENCH: batched_snapshot_call: n=30 avg=158.3ms min=100ms max=203ms p95=203ms
+07-24 17:15:38.682 11137 12208 D XSU_BENCH: (both categories above reuse per-sample timings from TEST 5, see FINDINGS.md in xsu-capability-probe for why)
+07-24 17:15:38.683 11137 12208 D XSU_BENCH: 
+07-24 17:15:38.683 11137 12208 D XSU_BENCH: ===== CAPABILITY TESTS COMPLETE =====

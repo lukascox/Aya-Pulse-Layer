@@ -48,8 +48,46 @@ No further layer-naming validation is needed before writing the production
 `FpsReader.kt` — three independent naming conventions across three real
 emulators is a solid empirical base.
 
-**Azahar was reportedly also tested but does not appear under any
-recognizable package name in any preserved log — no data on it either way.**
+**Update (2026-07-24, via the sibling `research/autotdp-ab-harness` probe,
+not this one):** Azahar (`org.azahar_emu.azahar`, a Citra 3DS fork) is now
+also confirmed — tier 1 (BLAST), matched as
+`SurfaceView[org.azahar_emu.azahar/org.citra.citra_emu.activities.EmulationActivity](BLAST)`.
+Note the Activity class is still named `org.citra.citra_emu...` even though
+the package was rebranded — the fork kept Citra's original class names.
+Four distinct apps now confirmed, no further layer-naming validation needed.
+
+## New edge case: stale-buffer FPS decay on an idle/static foreground layer
+
+Found in `research/autotdp-ab-harness` run2 (2026-07-24), not this probe's
+own runs, but belongs here since it's a property of the shared FPS pipeline.
+When the foreground layer stops producing new frames (e.g. the user leaves
+the harness app itself in foreground, not touching anything), 14
+consecutive samples showed `frame_count` staying near its ceiling (127 —
+NOT triggering the existing `low_sample_count` guard, which only fires
+below 5) while the computed FPS smoothly decayed every sample: 114.3 → 71.7
+→ 35.8 → 20.9 → 13.2 → 9.7 → 7.7 → 6.3 → 5.4 → 4.7 → 4.1 → 3.7 → 3.3 → 3.1.
+
+Interpretation (not independently verified beyond this one observation):
+SurfaceFlinger's `--latency` buffer for a layer that has stopped rendering
+appears to keep returning the same stale, historical present-time entries
+rather than emptying out. `frame_count` (just a count of buffer entries)
+stays high, but `span_ns` (first-to-last timestamp delta in that same
+frozen buffer) is measured against a real "now" that keeps advancing every
+sample, so the computed FPS keeps shrinking even though nothing new is
+actually happening. Confirmed via `xsu_bench_logcat_dump.txt` timestamps
+that this was NOT an actual pipeline stall — each sample completed on
+schedule (~3.5s apart) with normal `pipeline_ms`/`snapshot_ms` values
+throughout; the anomaly is in the FPS *number's meaning*, not in the
+pipeline's execution.
+
+**Implication for `AutoTdpController`:** a persistently non-trivial
+`frame_count` is NOT sufficient evidence that the computed FPS is
+meaningful — an idle/static screen can produce this exact decaying-FPS
+signature without the existing `low_sample_count` or `zero span` guards
+catching it. Whoever designs the FPS-delta signal needs a way to detect
+"this layer's present-time buffer isn't advancing" (e.g. comparing the
+newest timestamp across consecutive samples), not just count entries.
+Not fixed here — same "not this app's job" boundary as `zero span`.
 
 ## Confirmed broken / must NOT be used
 

@@ -88,6 +88,35 @@ adb logcat | grep -i avc
   certainly because the logcat ring buffer had rotated past the test's
   lines by the time `adb logcat -d` was run.
 
+## Findings from run2 (2026-07-24)
+
+- **Test 6 fix confirmed working** -- all 4 policy queries returned real
+  data (`exit=0`, ~101ms each). Full CPU OPP table captured and folded into
+  the sibling `apl-diag` repo's `docs/HARDWARE_PROFILE.md` (18-32 discrete
+  frequency steps per policy, previously only 5 AYASpace-mode snapshots
+  were known). Also surfaced two previously-undocumented governors
+  (`walt`, `conservative`) alongside the three already known.
+  This closes the "still missing" item that had been open since v6.
+  Corresponding `pulsefit_hw_profile.txt` filed in `results/run2_20260724/`.
+- **Azahar (Citra 3DS fork) confirmed working** -- correctly layer-matched
+  (tier 1, BLAST), FPS 59.8-60.5, no anomalies. A fourth distinct app now
+  validated for the layer-matching heuristic (see
+  `xsu-capability-probe/FINDINGS.md`). What looked like a "hang" when
+  launching it was NOT a pipeline stall -- all 30 Test 5 samples completed
+  on schedule (~3.5s apart, confirmed via logcat timestamps), including
+  Azahar's own samples. Most likely explanation: Azahar itself taking time
+  to load, or just the harness screen not visibly updating between
+  samples -- not a bug in this app's `xsu` pipeline.
+- **New FPS pipeline edge case found** (not a stall, a measurement
+  artifact): when the harness app itself sat idle in foreground for many
+  consecutive samples, FPS decayed smoothly (114 -> 3.1 across 14 samples)
+  while `frame_count` stayed near its ceiling (127) -- the existing
+  `low_sample_count` guard doesn't catch this since it only fires below 5.
+  Full writeup in `xsu-capability-probe/FINDINGS.md`'s "New edge case"
+  section. Relevant for whoever designs `AutoTdpController`'s FPS-delta
+  signal: a high frame_count alone doesn't guarantee a meaningful FPS
+  number.
+
 ## Pull results
 
 ```bash

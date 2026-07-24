@@ -75,28 +75,30 @@ Resulting CSVs, once collected, should be copied into `apl-diag/logs/
 ab-comparison/` — the code lives here for the Gradle/Kotlin scaffolding,
 the data belongs there.
 
-**run1 (2026-07-24) results in `research/autotdp-ab-harness/results/
-run1_20260824/`:** Test 9 PASSED (backgrounded process persists), with a
-quirk to expect again (launch call itself hits its timeout rather than
-returning fast — daemon still starts regardless, see that project's own
-README). Test 6 (CPU frequency table) came back completely empty — fixed
-in place (split into one call per policy instead of one batched 24-line
-call, plus explicit raw-exec logging) since the original code gave nothing
-to diagnose the failure from. Not yet re-run with the fix. Pull the logcat
-dump immediately after a run — run1's came back empty, likely a rotated
-ring buffer.
+**run1 (2026-07-24):** Test 9 PASSED (backgrounded process persists), with
+a quirk to expect again (launch call itself hits its timeout rather than
+returning fast — daemon still starts regardless). Test 6 (CPU frequency
+table) came back completely empty — fixed (split into one call per policy,
+explicit raw-exec logging).
+
+**run2 (2026-07-24):** Test 6 fix confirmed working — full CPU OPP table
+captured and folded into `apl-diag`'s `HARDWARE_PROFILE.md` (this closes
+the "still missing" item open since v6). Azahar (Citra 3DS fork) confirmed
+as a fourth working app for the layer-matching heuristic. A new FPS
+pipeline edge case found (idle-screen stale-buffer FPS decay, not a stall)
+— see `xsu-capability-probe/FINDINGS.md`. **Phase 1 (Tests 1-9) is now
+considered complete and validated** — both probe apps' capability
+questions are answered; next work is Phase 2 (actual A/B comparison data).
 
 ## Next steps (rough priority order)
 
-1. Re-run `research/autotdp-ab-harness`'s Tests 1-9 with the Test 6 fix to
-   get real CPU OPP table data — then fold that into `apl-diag`'s
-   `HARDWARE_PROFILE.md` "still missing" section.
-2. Run actual Baseline vs AutoTDP sessions per game (see that app's
-   README's test procedure — paired, order-swapped per game, NOT all
+1. Run actual Baseline vs AutoTDP sessions per game (see
+   `research/autotdp-ab-harness`'s README test procedure — paired,
+   order-swapped per game, NOT all
    baseline sessions then all autotdp sessions, which would confound mode
    with elapsed time/thermal carry-over). This is the "realistic input"
    needed before designing the FPS-delta-augmented v1 controller.
-3. Decide `AutoTdpController`'s actual control signal and loop cadence,
+2. Decide `AutoTdpController`'s actual control signal and loop cadence,
    informed by the ~100ms-per-`xsu`-call floor documented in FINDINGS.md
    and by the A/B comparison data from step 2.
 4. Write the real `XsuShell.kt` (production quality, not probe quality) —

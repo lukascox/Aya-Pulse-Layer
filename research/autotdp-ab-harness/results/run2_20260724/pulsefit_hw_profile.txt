@@ -1,0 +1,35 @@
+CONFIRMED GPU pwrlevels (kgsl devfreq/available_frequencies, Hz), index 0 = highest:
+1050000000, 1000000000, 903000000, 834000000, 770000000, 720000000, 680000000,
+629000000, 578000000, 500000000, 422000000, 366000000, 310000000, 231000000
+(14 entries total; pulse_lite v3.7 only ever used 4 of these)
+Source: apl-diag repo, HARDWARE_PROFILE.md. Not re-queried by this app.
+
+CPU frequency table (queried live by this app, Fri Jul 24 17:15:06 GMT+02:00 2026):
+--- policy0 ---
+affected_cpus: 0 1
+scaling_governor: performance
+scaling_available_governors: walt conservative powersave performance schedutil
+cpuinfo_min_freq: 364800
+cpuinfo_max_freq: 2265600
+scaling_available_frequencies: 364800 460800 556800 672000 787200 902400 1017600 1132800 1248000 1344000 1459200 1574400 1689600 1804800 1920000 2035200 2150400 2265600
+--- policy2 ---
+affected_cpus: 2 3 4
+scaling_governor: performance
+scaling_available_governors: walt conservative powersave performance schedutil
+cpuinfo_min_freq: 499200
+cpuinfo_max_freq: 3148800
+scaling_available_frequencies: 499200 614400 729600 844800 960000 1075200 1190400 1286400 1401600 1497600 1612800 1708800 1824000 1920000 2035200 2131200 2188800 2246400 2323200 2380800 2438400 2515200 2572800 2630400 2707200 2764800 2841600 2899200 2956800 3014400 3072000 3148800
+--- policy5 ---
+affected_cpus: 5 6
+scaling_governor: performance
+scaling_available_governors: walt conservative powersave performance schedutil
+cpuinfo_min_freq: 499200
+cpuinfo_max_freq: 2956800
+scaling_available_frequencies: 499200 614400 729600 844800 960000 1075200 1190400 1286400 1401600 1497600 1612800 1708800 1824000 1920000 2035200 2131200 2188800 2246400 2323200 2380800 2438400 2515200 2572800 2630400 2707200 2764800 2841600 2899200 2956800
+--- policy7 ---
+affected_cpus: 7
+scaling_governor: performance
+scaling_available_governors: walt conservative powersave performance schedutil
+cpuinfo_min_freq: 480000
+cpuinfo_max_freq: 3302400
+scaling_available_frequencies: 480000 576000 672000 787200 902400 1017600 1132800 1248000 1363200 1478400 1593600 1708800 1824000 1939200 2035200 2112000 2169600 2246400 2304000 2380800 2438400 2496000 2553600 2630400 2688000 2745600 2803200 2880000 2937600 2995200 3052800
