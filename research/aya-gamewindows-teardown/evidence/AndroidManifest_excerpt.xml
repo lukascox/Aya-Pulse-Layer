@@ -21,4 +21,18 @@
         android:exported="true"/>
         <!-- no android:permission -- confirmed no signature/system gate -->
 
+    <!--
+      Second unprotected component, found in the follow-up "custom key /
+      arbitrary key mapping" pass -- see FINDINGS.md section 4.
+      Same story: exported="true", no android:permission, and
+      SharedPrefsProvider.java's query()/update() do zero caller-identity
+      checks. update() on this URI overwrites AND immediately applies the
+      full custom-key-mapping config (LC/RC/paddle buttons -> arbitrary
+      Android keycodes, via CustomKeyDispatch.c()).
+    -->
+    <provider
+        android:name="com.ayaneo.provider.SharedPrefsProvider"
+        android:exported="true"
+        android:authorities="com.ayaneo.gamewindow.provider.sharedprefs"/>
+
 </manifest>
