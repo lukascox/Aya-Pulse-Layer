@@ -1,0 +1,35 @@
+CONFIRMED GPU pwrlevels (kgsl devfreq/available_frequencies, Hz), index 0 = highest:
+1050000000, 1000000000, 903000000, 834000000, 770000000, 720000000, 680000000,
+629000000, 578000000, 500000000, 422000000, 366000000, 310000000, 231000000
+(14 entries total; pulse_lite v3.7 only ever used 4 of these)
+Source: apl-diag repo, HARDWARE_PROFILE.md. Not re-queried by this app.
+
+CPU frequency table (queried live by this app, Fri Jul 24 16:42:37 GMT+02:00 2026):
+--- policy0 ---
+affected_cpus: ?
+scaling_governor: ?
+scaling_available_governors: ?
+cpuinfo_min_freq: ?
+cpuinfo_max_freq: ?
+scaling_available_frequencies: ?
+--- policy2 ---
+affected_cpus: ?
+scaling_governor: ?
+scaling_available_governors: ?
+cpuinfo_min_freq: ?
+cpuinfo_max_freq: ?
+scaling_available_frequencies: ?
+--- policy5 ---
+affected_cpus: ?
+scaling_governor: ?
+scaling_available_governors: ?
+cpuinfo_min_freq: ?
+cpuinfo_max_freq: ?
+scaling_available_frequencies: ?
+--- policy7 ---
+affected_cpus: ?
+scaling_governor: ?
+scaling_available_governors: ?
+cpuinfo_min_freq: ?
+cpuinfo_max_freq: ?
+scaling_available_frequencies: ?

@@ -1,0 +1,244 @@
+===== XSU BENCHMARK SUITE (Tests 1-9) =====
+time=Fri Jul 24 16:40:49 GMT+02:00 2026 applicationId=pl.autotdpharness.app
+
+--- TEST 1: xsu availability (regression check) ---
+cmd="id" exit=0 elapsed=101ms error=-
+stdout: uid=0(root) gid=0(root) groups=0(root) context=u:r:xsud:s0
+TEST 1 PASS: uid=0 confirmed.
+
+--- TEST 2: CPU sysfs write+verify (/sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq) ---
+original_value=2265600
+write+verify: elapsed=101ms stdout=1344000
+restore: got=2265600
+TEST 2 RESULT: PASS
+
+--- TEST 3: GPU sysfs write+verify (/sys/class/kgsl/kgsl-3d0/max_pwrlevel) ---
+original_value=0
+write+verify: elapsed=102ms stdout=6
+restore: got=0
+TEST 3 RESULT: PASS -- xsu app-channel CAN write kgsl nodes.
+
+--- TEST 4: GPU busy node (/sys/class/kgsl/kgsl-3d0/gpubusy) ---
+sanity ls: gpu_busy_percentage
+gpubusy
+read1: elapsed=102ms raw="122225 1005053" pct=12
+read2 (+500ms): elapsed=103ms raw="122225 1005053" pct=12
+WARNING: raw gpubusy is confirmed to wrap/reset between reads on this kernel (values as extreme as -2718%% observed in prior diagnostic runs) -- AutoTdpController must NOT base tier decisions on a single raw read; needs smoothing or a secondary signal.
+
+--- TEST 5: FPS pipeline, 30 samples x 3000ms ---
+[sample 0] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=19.8 pipeline_ms=340 snapshot_ms=202 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=67215 1043192
+[sample 1] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=18.3 pipeline_ms=327 snapshot_ms=202 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 2] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=12.0 pipeline_ms=318 snapshot_ms=202 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 3] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=9.0 pipeline_ms=318 snapshot_ms=203 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 4] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=7.2 pipeline_ms=315 snapshot_ms=202 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 5] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=6.0 pipeline_ms=315 snapshot_ms=203 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 6] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=5.1 pipeline_ms=315 snapshot_ms=203 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 7] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=4.5 pipeline_ms=315 snapshot_ms=203 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 8] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=4.0 pipeline_ms=315 snapshot_ms=101 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 9] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=84.0 pipeline_ms=315 snapshot_ms=203 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 10] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=36.7 pipeline_ms=317 snapshot_ms=202 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 11] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=18.2 pipeline_ms=315 snapshot_ms=203 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=53432 1035671
+[sample 12] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=11.9 pipeline_ms=315 snapshot_ms=203 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 13] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=9.0 pipeline_ms=316 snapshot_ms=101 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 14] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=7.2 pipeline_ms=315 snapshot_ms=202 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 15] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=6.0 pipeline_ms=316 snapshot_ms=203 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 16] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=5.1 pipeline_ms=315 snapshot_ms=202 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 17] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=4.5 pipeline_ms=316 snapshot_ms=202 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 18] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=4.0 pipeline_ms=315 snapshot_ms=202 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 19] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=3.6 pipeline_ms=315 snapshot_ms=203 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 20] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=3.3 pipeline_ms=315 snapshot_ms=202 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 21] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=3.0 pipeline_ms=318 snapshot_ms=203 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 22] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=2.8 pipeline_ms=314 snapshot_ms=202 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 23] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=2.6 pipeline_ms=314 snapshot_ms=202 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 24] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=2.4 pipeline_ms=314 snapshot_ms=202 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 25] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=2.2 pipeline_ms=315 snapshot_ms=101 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 26] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=2.1 pipeline_ms=315 snapshot_ms=203 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 27] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=2.0 pipeline_ms=315 snapshot_ms=203 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 28] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=1.9 pipeline_ms=315 snapshot_ms=203 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 29] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#258 refresh_ns=8333333 frames=127 fps=1.8 pipeline_ms=315 snapshot_ms=202 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+
+--- TEST 6: full CPU frequency table dump -> /sdcard/pulsefit_hw_profile.txt ---
+--- policy0 ---
+affected_cpus: ?
+scaling_governor: ?
+scaling_available_governors: ?
+cpuinfo_min_freq: ?
+cpuinfo_max_freq: ?
+scaling_available_frequencies: ?
+--- policy2 ---
+affected_cpus: ?
+scaling_governor: ?
+scaling_available_governors: ?
+cpuinfo_min_freq: ?
+cpuinfo_max_freq: ?
+scaling_available_frequencies: ?
+--- policy5 ---
+affected_cpus: ?
+scaling_governor: ?
+scaling_available_governors: ?
+cpuinfo_min_freq: ?
+cpuinfo_max_freq: ?
+scaling_available_frequencies: ?
+--- policy7 ---
+affected_cpus: ?
+scaling_governor: ?
+scaling_available_governors: ?
+cpuinfo_min_freq: ?
+cpuinfo_max_freq: ?
+scaling_available_frequencies: ?
+
+TEST 6 RESULT: PASS -- written to /sdcard/pulsefit_hw_profile.txt
+
+--- TEST 7: governor write+verify+restore (policy0 only) ---
+policy0 available governors (from TEST 6): []
+original_governor=performance
+TEST 7 SKIPPED: no safe original/test governor determined.
+
+--- TEST 8: fan RPM / power-draw node discovery ---
+hwmon entries: [/sys/class/hwmon, /sys/class/hwmon/hwmon0]
+cooling devices: [(cooling_device0, cpu-hotplug0), (cooling_device1, cpu-hotplug7), (cooling_device10, pause-cpu1), (cooling_device11, thermal-pause-2), (cooling_device12, pause-cpu2), (cooling_device13, thermal-pause-1C), (cooling_device14, thermal-pause-4), (cooling_device15, pause-cpu3), (cooling_device16, thermal-pause-8), (cooling_device17, pause-cpu4), (cooling_device18, thermal-pause-10), (cooling_device19, pause-cpu5), (cooling_device2, cpu-hotplug1), (cooling_device20, pause-cpu6), (cooling_device21, pause-cpu7), (cooling_device22, thermal-pause-E0), (cooling_device23, thermal-pause-80), (cooling_device24, thermal-pause-20), (cooling_device25, thermal-pause-40), (cooling_device26, cpufreq-cpu0), (cooling_device27, cpufreq-cpu2), (cooling_device28, cpufreq-cpu5), (cooling_device29, cpufreq-cpu7), (cooling_device3, cpu-hotplug2), (cooling_device30, ufs1), (cooling_device31, ddr-cdev), (cooling_device32, thermal-cluster-2-3), (cooling_device33, display-fps), (cooling_device34, pwm-fan), (cooling_device35, cpu-cluster0), (cooling_device36, cpu-cluster1), (cooling_device37, cpu-cluster2), (cooling_device38, cpu-cluster3), (cooling_device39, gpu-dump-skip-cdev), (cooling_device4, cpu-hotplug3), (cooling_device40, devfreq-3d00000.qcom,kgsl-3d0), (cooling_device41, panel0-backlight), (cooling_device42, gpu), (cooling_device43, wsa2), (cooling_device44, battery), (cooling_device5, cpu-hotplug5), (cooling_device6, cpu-hotplug4), (cooling_device7, cpu-hotplug6), (cooling_device8, pause-cpu0), (cooling_device9, thermal-pause-1)]
+fan-name search hits: [/sys/kernel/btf/pwm_fan_tc, /sys/kernel/btf/max31760_fan, /sys/class/devlink/platform:c42d000.qcom,spmi:qcom,pm8550@1:pwms@eb00--platform:soc:pwm-fan, /sys/class/devlink/platform:c42d000.qcom,spmi:qcom,pm8550@1:pinctrl@8800--platform:soc:pwm-fan, /sys/class/devlink/platform:f000000.pinctrl--platform:soc:pwm-fan, /sys/devices/platform/soc/c42d000.qcom,spmi/spmi-0/0-01/c42d000.qcom,spmi:qcom,pm8550@1:pinctrl@8800/consumer:platform:soc:pwm-fan, /sys/devices/platform/soc/c42d000.qcom,spmi/spmi-0/0-01/c42d000.qcom,spmi:qcom,pm8550@1:pwms@eb00/consumer:platform:soc:pwm-fan, /sys/devices/platform/soc/f000000.pinctrl/consumer:platform:soc:pwm-fan, /sys/devices/platform/soc/soc:pwm-fan, /sys/devices/platform/soc/soc:pwm-fan/fan_power_state, /sys/devices/platform/soc/soc:pwm-fan/fan_rpm_state, /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/fan1_input, /sys/devices/virtual/devlink/platform:c42d000.qcom,spmi:qcom,pm8550@1:pwms@eb00--platform:soc:pwm-fan, /sys/devices/virtual/devlink/platform:c42d000.qcom,spmi:qcom,pm8550@1:pinctrl@8800--platform:soc:pwm-fan, /sys/devices/virtual/devlink/platform:f000000.pinctrl--platform:soc:pwm-fan, /sys/bus/platform/devices/soc:pwm-fan, /sys/bus/platform/drivers/pwm-fan, /sys/bus/platform/drivers/pwm-fan/soc:pwm-fan, /sys/firmware/devicetree/base/soc/qcom,spmi@c42d000/qcom,pm8550@1/pinctrl@8800/pwm_fan_ctrl, /sys/firmware/devicetree/base/soc/qcom,spmi@c42d000/qcom,pm8550@1/pinctrl@8800/pwm_fan_ctrl/pwm_fan_ctrl_default, /sys/firmware/devicetree/base/soc/qcom,spmi@c42d000/qcom,pm8550@1/pinctrl@8800/pwm_fan_ctrl/pwm_fan_ctrl_sleep, /sys/firmware/devicetree/base/soc/pwm-fan, /sys/firmware/devicetree/base/soc/pinctrl@f000000/olive_fan_vdd_sleep, /sys/firmware/devicetree/base/soc/pinctrl@f000000/olive_fan_vdd_default, /sys/module/rcutree/parameters/rcu_fanout_leaf, /sys/module/rcutree/parameters/rcu_fanout_exact, /sys/module/pwm_fan_tc, /sys/module/pwm_fan_tc/drivers/platform:pwm-fan, /sys/module/max31760_fan, /sys/module/hwmon/holders/pwm_fan_tc]
+power_supply entries: [battery, ucsi-source-psy-soc:qcom,pmic_glink:qcom,ucsi1, usb, wireless]
+battery current_now=-1007105 voltage_now=8165701 power_now=73785844 (whole-device proxy, NOT per-chip)
+debugfs mounted: false
+fan-like cooling device readings: {cooling_device34_CUR=0, cooling_device34_MAX=3}
+TEST 8 RESULT: fan signal FOUND (cooling_device step index, NOT RPM) -- [(cooling_device34, pwm-fan)]
+
+--- TEST 9: backgrounded-process persistence (blocking prerequisite for A/B harness) ---
+launch: elapsed=8003ms exit=null error=TIMEOUT after 8s (expect FAST return if backgrounding works)
+check1 (+10s): 18 lines in log
+check2 (+13s): 21 lines in log
+pgrep -f xsu_bgtest: FOUND pid(s): 27948
+28061
+TEST 9 RESULT: PASS -- backgrounded process persists independently of the launching xsu call. A/B harness can launch pulse_lite.sh the same way.
+
+--- LATENCY BENCHMARK (25 iterations per category unless reused from TEST 5) ---
+simple_read_cat: n=25 avg=101.9ms min=101ms max=102ms p95=102ms
+write_verify_combined: n=25 avg=101.9ms min=101ms max=102ms p95=102ms
+single_dumpsys_call: n=25 avg=101.9ms min=101ms max=102ms p95=102ms
+full_fps_pipeline_per_sample: n=30 avg=316.6ms min=314ms max=340ms p95=318ms
+batched_snapshot_call: n=30 avg=192.3ms min=101ms max=203ms p95=203ms
+(both categories above reuse per-sample timings from TEST 5, see FINDINGS.md in xsu-capability-probe for why)
+
+===== CAPABILITY TESTS COMPLETE =====
+===== XSU BENCHMARK SUITE (Tests 1-9) =====
+time=Fri Jul 24 16:48:49 GMT+02:00 2026 applicationId=pl.autotdpharness.app
+
+--- TEST 1: xsu availability (regression check) ---
+cmd="id" exit=0 elapsed=102ms error=-
+stdout: uid=0(root) gid=0(root) groups=0(root) context=u:r:xsud:s0
+TEST 1 PASS: uid=0 confirmed.
+
+--- TEST 2: CPU sysfs write+verify (/sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq) ---
+original_value=2265600
+write+verify: elapsed=101ms stdout=1344000
+restore: got=2265600
+TEST 2 RESULT: PASS
+
+--- TEST 3: GPU sysfs write+verify (/sys/class/kgsl/kgsl-3d0/max_pwrlevel) ---
+original_value=0
+write+verify: elapsed=101ms stdout=6
+restore: got=0
+TEST 3 RESULT: PASS -- xsu app-channel CAN write kgsl nodes.
+
+--- TEST 4: GPU busy node (/sys/class/kgsl/kgsl-3d0/gpubusy) ---
+sanity ls: gpu_busy_percentage
+gpubusy
+read1: elapsed=103ms raw="169103 1013341" pct=16
+read2 (+500ms): elapsed=103ms raw="0       0" pct=n/a (zero_total)
+WARNING: raw gpubusy is confirmed to wrap/reset between reads on this kernel (values as extreme as -2718%% observed in prior diagnostic runs) -- AutoTdpController must NOT base tier decisions on a single raw read; needs smoothing or a secondary signal.
+
+--- TEST 5: FPS pipeline, 30 samples x 3000ms ---
+[sample 0] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#425 refresh_ns=8333333 frames=127 fps=64.3 pipeline_ms=316 snapshot_ms=203 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 1] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#425 refresh_ns=8333333 frames=127 fps=108.0 pipeline_ms=316 snapshot_ms=203 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=119368 1008252
+[sample 2] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#447 refresh_ns=8333333 frames=8 fps=93.3 pipeline_ms=314 snapshot_ms=102 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{25406ca u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t12}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=578000000 gpu_busy_raw=132642 1017677
+[sample 3] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#447 refresh_ns=8333333 frames=126 fps=60.2 pipeline_ms=317 snapshot_ms=101 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{25406ca u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t12}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=92855 1002372
+[sample 4] pkg=com.retroarch.aarch64 layer=com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#447 refresh_ns=8333333 frames=127 fps=60.5 pipeline_ms=313 snapshot_ms=101 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{25406ca u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t12}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=90650 1002411
+[sample 5] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#582 refresh_ns=8333333 frames=20 fps=120.0 pipeline_ms=313 snapshot_ms=201 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3052800 | gpu_freq_hz=680000000 gpu_busy_raw=301896 1019746
+[sample 6] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#582 refresh_ns=8333333 frames=66 fps=35.3 pipeline_ms=318 snapshot_ms=101 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 7] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#582 refresh_ns=8333333 frames=67 fps=16.4 pipeline_ms=316 snapshot_ms=202 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 8] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#582 refresh_ns=8333333 frames=68 fps=8.9 pipeline_ms=314 snapshot_ms=101 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
+[sample 9] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#582 refresh_ns=8333333 frames=69 fps=6.2 pipeline_ms=315 snapshot_ms=202 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=12960 1071197
+[sample 10] pkg=pl.autotdpharness.app layer=pl.autotdpharness.app/pl.autotdpharness.app.MainActivity#582 refresh_ns=8333333 frames=127 fps=8.0 pipeline_ms=316 snapshot_ms=203 snapshot_error=-
+  focus_raw:     topResumedActivity=ActivityRecord{8c0113e u0 pl.autotdpharness.app/.MainActivity t10}
+  p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400 | gpu_freq_hz=231000000 gpu_busy_raw=0 0
