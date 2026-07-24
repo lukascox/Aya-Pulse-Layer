@@ -60,13 +60,34 @@ condition, not a theoretical edge case.
   governor write+verify) were coded but not yet run on-device before this
   migration — see FINDINGS.md.
 
+## New: `research/autotdp-ab-harness/`
+
+Second probe app, sibling to `xsu-capability-probe/`. Adds Test 8 (fan/
+power node discovery — nothing hardcoded, logs what's found) and Test 9
+(backgrounded-process persistence via `xsu` — a hard gate for the harness
+below). Its actual point: an A/B comparison harness with two modes
+(Baseline / AutoTDP) sharing one sampling loop (FPS + CPU/GPU/thermal/fan/
+battery, one CSV row every 2s), where AutoTDP launches the sibling
+`apl-diag` repo's already-validated `pulse_lite_v3.7.sh` as a background
+daemon and just observes — no controller logic is ported into Kotlin here.
+Built and compiling; **not yet run on-device** (Test 9's pass/fail
+determines whether the daemon-launch approach in AutoTDP mode is even
+viable — check its own README before trusting the A/B numbers). Resulting
+CSVs, once collected, should be copied into `apl-diag/logs/` — the code
+lives here for the Gradle/Kotlin scaffolding, the data belongs there.
+
 ## Next steps (rough priority order)
 
-1. Decide `AutoTdpController`'s actual control signal and loop cadence,
-   informed by the ~100ms-per-`xsu`-call floor documented in FINDINGS.md.
-2. Write the real `XsuShell.kt` (production quality, not probe quality) —
+1. Push `pulse_lite_v3.7.sh` to the device and run
+   `research/autotdp-ab-harness`'s Tests 1-9, especially Test 9 — it's a
+   hard gate before any A/B session data can be trusted.
+2. Run actual Baseline vs AutoTDP sessions per game (see that app's
+   README's test procedure) — this is the "realistic input" needed before
+   designing the FPS-delta-augmented v1 controller.
+3. Decide `AutoTdpController`'s actual control signal and loop cadence,
+   informed by the ~100ms-per-`xsu`-call floor documented in FINDINGS.md
+   and by the A/B comparison data from step 2.
+4. Write the real `XsuShell.kt` (production quality, not probe quality) —
    the `args` method only, informed by the timeout/reliability findings.
-3. Run the probe's Test 6/7 if the full CPU OPP table / governor
-   writability is needed before controller design starts.
-4. First real increment per the KISS plan in README.md: a service that
+5. First real increment per the KISS plan in README.md: a service that
    starts on boot and writes one confirmable log line.
