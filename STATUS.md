@@ -8,6 +8,47 @@ Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted). Sibling
 repo: `apl-diag` (`git.internal.example/cox/AyaPulseDiag`) — the diagnostics/
 research half of this project, see its own STATUS.md.
 
+## PLAN FOR NEXT SESSION (2026-07-24 end of day)
+
+**Headline result this session: `research/aidl-bind-spike` CONFIRMED on
+real hardware.** A plain, non-system `apl`-style app can flip AYASpace's
+performance profile (Gaming ↔ Eco, verified via governor + `scaling_cur_freq`
+read-back, repeated 3x reliably) over a bare Binder connection to
+`com.ayaneo.gamewindow` — no `xsu`, no root, no per-call ~100ms floor. Full
+per-mode config (CPU per-core caps, fan mode, GPU frequency range) also
+came back live in the callback JSON — resolved the long-standing
+"Gaming vs Max identical?" mystery (answer: GPU cap only, 834MHz vs
+1050MHz/uncapped) — see `research/aidl-bind-spike/FINDINGS.md` and the
+updated table in `apl-diag/docs/HARDWARE_PROFILE.md`.
+
+This changes the architecture question from "should `apl` try the AIDL
+route" to "how much of `apl` should be built on it." Next session, in
+priority order:
+
+1. **Decide `apl/app/`'s actuation architecture**: AIDL-bind (now proven)
+   vs `xsu` sysfs writes (also proven, but slower/riskier) — likely AIDL
+   for whole-profile switches (proven), `xsu` still needed for anything
+   NOT covered by the AIDL command catalog (live FPS/temp/busy% reads for
+   `AutoTdpController` — AIDL only exposes "set" commands, no monitoring).
+2. **Scope and build the per-app profile-mimic feature** (assign Eco/
+   Balanced/Streaming/Gaming/Max to specific apps, auto-applied via AIDL on
+   foreground-app detection) — this is now `apl/app/`'s first real feature,
+   and the hard part (does the actuation mechanism work) is already answered.
+   Needs: a `ForegroundService` + `BootReceiver` (still just placeholders in
+   `app/`), reuse of `FpsPipeline.parseForegroundPkg`-style detection (via
+   `xsu`, since polling foreground app isn't in the AIDL surface either),
+   and `AidlProtocol.kt`'s bind/register/send logic ported from the spike
+   into production-quality code.
+3. **Optional follow-up spike** (not blocking, only if step 2 needs it):
+   test `com_set_performance_fan`/`com_set_performance_cpu` (fine-grained,
+   not whole-mode) and the controller/key-mapping commands
+   (`com_set_abxy_mode` etc.) — the aidl-bind-spike only exercised whole-mode
+   switching so far.
+4. Everything from before this session remains queued behind the above:
+   A/B comparison sessions (`research/autotdp-ab-harness`), then
+   `AutoTdpController` design informed by both that data and the ~100ms
+   `xsu` floor (now less critical for actuation, still relevant for reads).
+
 ## Where things stand (this repo's first commit)
 
 This repo was assembled by migrating scattered pre-git research into a
@@ -107,16 +148,19 @@ this same AIDL message; it doesn't need `xsu` because it runs
 `sharedUserId=system`, a different app can't reuse that specific shortcut
 but doesn't need to, since the AIDL service itself has no gate.
 
-If confirmed on-device (see `research/aidl-bind-spike/`, built this
-session, not yet run), this would let `apl` skip `xsu` entirely for
-profile/fan/GPU-cap changes: no ~100ms-per-call floor, no risk of fighting
-AYASpace over the same sysfs node (we'd be asking gamewindow's own code to
-apply the change, not writing in parallel), and fan control (previously an
-unconfirmable lever, likely serial/EC-based) comes along for free. Bonus:
-the same command surface covers controller/key remapping (`com_set_abxy_mode`,
-`com_set_l1l2r1r2_mode`, `com_set_single_key_mapping`) — Module 2, deferred
-since the project's very first README, might turn out to be nearly free
-once this is confirmed.
+**CONFIRMED on-device, 2026-07-24** (see `research/aidl-bind-spike/FINDINGS.md`):
+`apl` can skip `xsu` entirely for profile/fan/GPU-cap changes: no
+~100ms-per-call floor, no risk of fighting AYASpace over the same sysfs
+node (we ask gamewindow's own code to apply the change, not writing in
+parallel), and fan control (previously an unconfirmable lever, likely
+serial/EC-based) comes along for free — the AIDL callback delivers the
+full per-mode config (fan mode, GPU frequency range, per-core CPU caps),
+which also resolved the old "Gaming vs Max identical?" question (answer:
+GPU max frequency cap only, 834MHz vs 1050MHz/uncapped — folded into
+`apl-diag/docs/HARDWARE_PROFILE.md`). Bonus: the same command surface
+covers controller/key remapping (`com_set_abxy_mode`, `com_set_l1l2r1r2_mode`,
+`com_set_single_key_mapping`) — Module 2, deferred since the project's very
+first README, might turn out to be nearly free, though not itself tested yet.
 
 CPU/GPU sysfs mechanics (governor, per-core freq, `kgsl` max/idle-timer)
 were independently reconfirmed at the command level in
@@ -126,10 +170,10 @@ needed there regardless of which path (AIDL vs. own `xsu` writes) wins.
 **`research/aidl-bind-spike/`** hand-rolls the undocumented Binder wire
 protocol (no `.aidl` file exists, reconstructed from decompiled `Stub`/
 `Proxy` classes) — two buttons, Gaming/Eco, each verified via the
-already-proven `xsu` read-back. Built and compiling; **not yet run
-on-device** — this is the single next action that resolves whether the
-above becomes `apl`'s primary architecture or stays a documented-but-unused
-curiosity.
+already-proven `xsu` read-back. **Confirmed working, repeatably (3
+mode-switches in one session, consistent each time).** Only whole-mode
+switching tested so far — fine-grained `com_set_performance_fan`/`_cpu` and
+the controller/key-mapping commands remain untested, not blocking.
 
 ## Next steps (rough priority order)
 
