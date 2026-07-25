@@ -76,6 +76,31 @@ See `TESTING.md` for how to run a session and pull/clean up the resulting
 logs, and `research/pulse-for-aya/TESTING.md` for the actual native-vs-
 `pulse-for-aya` A/B procedure this tool is used inside of.
 
+## Real fan RPM reading (2026-07-25 update)
+
+The original fan-signal column relied on `PowerFanProbe`'s generic
+`cooling_device` discovery, inherited from `autotdp-ab-harness` — on this
+device that search finds nothing, so `fan_signal`/`fan_signal_unit` always
+came back `n/a`/`not_found` (confirmed in this app's own first smoke
+test, see "Status" below). `research/aya-gamewindows-teardown/FINDINGS.md`
+(pass 3, section 6) found and confirmed-live the device's *actual* fan
+mechanism: a plain Linux `pwm-fan` platform driver at
+`/sys/devices/platform/soc/soc:pwm-fan/fan_rpm_state`, readable even
+without root, returning e.g. `Current RPM 2815`.
+
+**What changed**: `LoggerService.resolveFanNode()` now tries that
+confirmed path first (`LoggerService.kt`'s `FAN_RPM_PATH`), parses out the
+plain RPM number for the CSV (`LoggerSession.parseFanSignal()`), and only
+falls back to the old generic `cooling_device` search if that specific
+node isn't present (kept as a safety net for a different device/firmware,
+not deleted). **Read-only** — this app never writes to the fan node, and
+neither does `pulse-for-aya`'s still-deliberately-stubbed
+`FanController.kt`; write access to this path is a separate, unconfirmed,
+not-yet-exercised question (see `pulse-glue-assessment/FINDINGS.md`). This
+change only makes the A/B test's CSV data complete (real fan RPM
+alongside CPU/GPU/FPS/temp/battery) — it doesn't add any new actuation or
+risk to the device.
+
 ## Status (2026-07-25)
 
 Builds clean, installs, launches. Smoke-tested on-device: a session was

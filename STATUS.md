@@ -28,6 +28,22 @@ stopped) — not yet used for an actual native-vs-`pulse-for-aya` A/B
 comparison, that's the next concrete step and is the user's to run
 (see `pulse-for-aya/TESTING.md`).
 
+**Update (2026-07-25, same day): real fan RPM reading added.** The
+smoke test's `fan_signal` column came back `not_found` — the generic
+`cooling_device` discovery this app inherited doesn't find anything on
+this device. `aya-gamewindows-teardown`'s pass 3 (a second session's
+work, see its `FINDINGS.md` section 6) found and confirmed live the
+actual mechanism: a plain `pwm-fan` hwmon node,
+`/sys/devices/platform/soc/soc:pwm-fan/fan_rpm_state`, readable even
+without root. `LoggerService`/`LoggerSession` now try that confirmed
+path first (falling back to the old generic search if absent), so the
+CSV's fan column will carry a real RPM number instead of `n/a` on the
+next session. Read-only — doesn't touch `pulse-for-aya`'s still-
+deliberately-stubbed `FanController.kt` or add any new actuation; write
+access to this fan node remains a separate, unconfirmed question. Now
+builds clean; not yet re-verified on-device (left for the user's own
+test run rather than another smoke test).
+
 **Two things noticed during that smoke test, folded into
 `diagnostics/docs/HARDWARE_PROFILE.md`, not blocking**:
 - Repeated `xsud` (the on-device root daemon, a vendor binary) `Fatal

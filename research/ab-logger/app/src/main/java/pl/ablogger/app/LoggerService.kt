@@ -57,11 +57,7 @@ class LoggerService : Service() {
             val zoneRes = XsuShell.exec(ThermalZones.buildResolveCommand(), timeoutSec = 8)
             val zones = ThermalZones.parseResolveOutput(zoneRes.stdout)
 
-            val discRes = XsuShell.exec(PowerFanProbe.buildDiscoveryCommand(), timeoutSec = 8)
-            val disc = PowerFanProbe.parseDiscovery(PowerFanProbe.parseBlockTags(discRes.stdout))
-            val fanNode = disc.fanLikeCoolingDevices.firstOrNull()?.let {
-                FanNode(it.first, "/sys/class/thermal/${it.first}/cur_state", "cooling_device_step(${it.first})")
-            }
+            val fanNode = resolveFanNode()
 
             val s = LoggerSession(zones, fanNode, filesDir, System.currentTimeMillis())
             session = s
@@ -75,6 +71,32 @@ class LoggerService : Service() {
                 updateNotification("Logging... $idx samples")
                 delay(SESSION_INTERVAL_MS)
             }
+        }
+    }
+
+    /**
+     * apl glue improvement (2026-07-25): the generic cooling_device-based fan
+     * discovery this app inherited from autotdp-ab-harness never finds a real node
+     * on this device -- the AYANEO Pocket FIT's fan is a plain `pwm-fan` platform
+     * driver / hwmon interface, a different sysfs subtree entirely, confirmed live
+     * and readable (even unprivileged) by aya-gamewindows-teardown's pass 3 (see
+     * that folder's FINDINGS.md section 6, and AR03/AR13's own read logic). Try that
+     * confirmed path first; fall back to the old generic cooling_device search
+     * (kept, not deleted) in case a future firmware/device lacks it.
+     *
+     * Read-only: this app never writes to the fan node. Write access to this path
+     * is separately unconfirmed and deliberately not exercised here or in
+     * pulse-for-aya yet -- see pulse-glue-assessment/FINDINGS.md.
+     */
+    private fun resolveFanNode(): FanNode? {
+        val rpmRes = XsuShell.exec("cat $FAN_RPM_PATH 2>/dev/null", timeoutSec = 4)
+        if (rpmRes.stdout.isNotBlank()) {
+            return FanNode("pwm-fan", FAN_RPM_PATH, "fan_rpm_state")
+        }
+        val discRes = XsuShell.exec(PowerFanProbe.buildDiscoveryCommand(), timeoutSec = 8)
+        val disc = PowerFanProbe.parseDiscovery(PowerFanProbe.parseBlockTags(discRes.stdout))
+        return disc.fanLikeCoolingDevices.firstOrNull()?.let {
+            FanNode(it.first, "/sys/class/thermal/${it.first}/cur_state", "cooling_device_step(${it.first})")
         }
     }
 
@@ -106,6 +128,10 @@ class LoggerService : Service() {
         private const val CHANNEL_ID = "ab_logger"
         private const val NOTIF_ID = 1
         private const val SESSION_INTERVAL_MS = 2000L // matches autotdp-ab-harness's own loop cadence
+
+        // Confirmed live 2026-07-25 (aya-gamewindows-teardown pass 3, FINDINGS.md
+        // section 6): AR03/AR13's plain pwm-fan/hwmon interface, NOT a cooling_device.
+        private const val FAN_RPM_PATH = "/sys/devices/platform/soc/soc:pwm-fan/fan_rpm_state"
 
         /** Read by MainActivity on resume to set correct button state if the app UI
          * was reopened while a background session is already running. */

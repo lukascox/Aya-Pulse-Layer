@@ -80,7 +80,7 @@ class LoggerSession(
         fun g(k: String) = tagged[k] ?: "?"
         val cpuTemps = zones.cpuZones.indices.map { tagged["CPUZ_$it"] }
         val gpuTemps = zones.gpuZones.indices.map { tagged["GPUZ_$it"] }
-        val fanSignal = fanNode?.let { g("FAN") } ?: "n/a"
+        val fanSignal = fanNode?.let { parseFanSignal(g("FAN")) } ?: "n/a"
         val fanUnit = fanNode?.label ?: "not_found"
 
         val cols = listOf(
@@ -106,6 +106,13 @@ class LoggerSession(
         )
         return cols.joinToString(",") { csvEscape(it) }
     }
+
+    /** `fan_rpm_state` reads as free text ("Current RPM 2815"); the old
+     * cooling_device fallback reads as a bare step-index integer. Extract the
+     * trailing number either way so the CSV column is plain numeric, falling back
+     * to the raw string if the format is ever unexpected rather than dropping it. */
+    private fun parseFanSignal(raw: String): String =
+        Regex("(\\d+)\\s*$").find(raw.trim())?.groupValues?.get(1) ?: raw
 
     private fun csvEscape(v: String): String =
         if (v.contains(",") || v.contains("\"")) "\"${v.replace("\"", "\"\"")}\"" else v
