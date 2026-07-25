@@ -9,11 +9,15 @@ there as the clear next target, since `com.ayaneo.settings`
 (`research/ayaspace-teardown/FINDINGS.md`) turned out to only be a thin AIDL
 remote control for this app, not the component that actually touches sysfs.
 
-Two passes so far: pass 1 (sections 1–3) resolved the "Open question / next
+Three passes so far: pass 1 (sections 1–3) resolved the "Open question / next
 step" left in `research/ayaspace-teardown/FINDINGS.md` about performance-mode
 control. Pass 2 (section 4) was prompted by a side observation in another
 session about `apl`'s deferred key-binding feature and found a second,
-independent unprotected component with its own major implication.
+independent unprotected component with its own major implication. Pass 3
+(sections 5–6) was prompted by `research/pulse-for-aya`'s glue patch needing
+real RGB/fan mechanisms for AYANEO — found a live, on-device-confirmed sysfs
+PWM fan path that overturns pass 1's "probably serial" guess, plus a
+standard-`Settings.System`-based RGB mechanism.
 
 ## TL;DR — two headline findings
 
@@ -314,6 +318,129 @@ Not yet executed against a real device — this is the next concrete,
 low-risk experiment (read-first, single-item change, easily reverted by
 writing the original queried array back).
 
+## 5. RGB control — sticks confirmed real and controllable, no fan-RGB found
+
+Prompted by a question about whether this teardown surfaces anything useful
+for `pulse-for-aya`'s glue patch (`research/pulse-glue-assessment/FINDINGS.md`
+confirmed `pulse`'s own RGB — the `joystick_led_light_picker_color` Settings
+key — is AYN/Retroid-specific and dead on AYANEO, though it already
+self-gates off safely). This is the AYANEO-native replacement, if `apl` or a
+`pulse` fork ever wants real RGB control on this hardware.
+
+**`RgbManager`/`RgbUtil`** (`com.ayaneo.gamewindow.utils.rgb.*`,
+`evidence/rgb/RgbManager.java`) is a real, working 8-mode controller:
+Default, Breath Single, Breath RGB Cycle, Breath Google, Scan, Wave, Single
+Color, Reactive/Follow-controller — each with its own persisted color
+(`"R,G,B"` string) and brightness (0–100). Confirmed specifically tied to
+**joystick** RGB via the `isDeviceHasJoystick`/`isRgbEnable` capability
+flags in `IAyaDeviceHardware`/`IAyaDevices` — no equivalent flag or code
+path found for fan/vent lighting anywhere in the module (see section 6 for
+what *does* exist for fans — plain PWM speed, no lighting). The
+`followModeFrontColor`/`followModeBackColor` pair (two colors for Reactive
+mode) is most likely two slots in a gradient effect, not confirmed to be
+distinct physical zones (e.g. "sticks vs. something else") — not resolved
+either way from static analysis, and not important for the RGB-is-real
+conclusion either way.
+
+**The mechanism is not another exported component — it's plain
+`Settings.System`.** `RgbManager`'s state is entirely backed by
+`SystemProvider`/`AyaShareProvider` (`evidence/rgb/SystemProvider.java`,
+`evidence/rgb/AyaShareProvider.java`), which wraps
+`Settings.System.getString/putString/getInt/putInt(...)` under a fixed key
+prefix `"ayaneo/share/<name>"` — e.g. `ayaneo/share/aya_rgb_mode.conf`,
+`ayaneo/share/aya_rgb_single_mode_color.conf`. This is meaningfully
+different from every other mechanism found in this whole teardown series:
+no `bindService`, no `ContentResolver` authority to discover, just the
+standard `android.permission.WRITE_SETTINGS` permission — an ordinary,
+user-grantable permission (`Settings.ACTION_MANAGE_WRITE_SETTINGS`), not
+root, not an unprotected-but-still-nonstandard component.
+
+**Writes apply live, confirmed by code path**: `RgbManager.g()`
+(`setRgbObserver()`) registers a `ContentObserver`
+(`evidence/rgb/RgbManager$setRgbObserver$1.java`, via
+`Settings.System.getUriFor("ayaneo/share")`, `notifyForDescendants=true`)
+that re-applies the correct `RgbUtil` call the instant any
+`ayaneo/share/aya_rgb_*` key changes — no separate "apply" signal needed,
+same live-reload pattern as `SharedPrefsProvider` in section 4.
+
+Full worked example (not yet tried from a real non-system app — see caveat
+below):
+```bash
+adb shell settings put system ayaneo/share/aya_rgb_mode.conf 6
+adb shell settings put system ayaneo/share/aya_rgb_single_mode_color.conf "255,0,0"
+adb shell settings put system ayaneo/share/aya_rgb_single_mode_bright.conf 100
+adb shell settings put system ayaneo/share/aya_rgb_is_open.conf true
+```
+
+**Caveat, unresolved**: `adb shell settings put` runs as the `shell` UID,
+which historically gets broader `Settings.System` write access than a
+genuine third-party app process does — Android's `SettingsProvider`
+restricts *non-privileged* apps' `Settings.System` writes to a known-key
+allowlist on some versions/OEMs, silently no-op'ing unrecognized custom
+keys like `ayaneo/share/*`. Whether a real `apl` process (holding
+`WRITE_SETTINGS`, not shell/root) can actually write these specific custom
+keys is **not yet confirmed** — the `adb shell` route proves the plumbing
+exists and works, not that a normal app can reach it. Worth testing from an
+actual installed app before relying on this design.
+
+## 6. Fan speed control — confirmed live and real, plain Linux `pwm-fan` hwmon, not serial
+
+Section 3 (pass 1) speculated fan control was likely serial/EC-based,
+reasoning from the presence of `IAyaDeviceSerial`/`newserial` packages and
+the absence of any generic fan sysfs pattern in `gamewindow`'s top-level
+`AyaDevicesUtil`. That speculation was **wrong** — or at least incomplete.
+Reading two concrete per-device implementations,
+`com/ayaneo/devices/ar03/AR03.java` and `com/ayaneo/devices/ar13/AR13.java`
+(which extends it), turned up a plain, generic Linux **`pwm-fan` platform
+driver / hwmon interface** — the same class of mechanism already confirmed
+for CPU (`cpufreq`) and GPU (`kgsl`), not a proprietary protocol:
+
+- **Read RPM** (`AR13.c1()`, `evidence/fan/AR13_fan_excerpt.java`):
+  `cat /sys/devices/platform/soc/soc:pwm-fan/fan_rpm_state`
+- **Read/write enable state**: `/sys/devices/platform/soc/soc:pwm-fan/fan_power_state`
+  (`AR13.n1()` writes `echo 1` or `echo 0`)
+- **Write duty** (`AR03.t1(int)`, 0–255 range,
+  `evidence/fan/AR03_fan_excerpt.java`): resolves the actual PWM file via
+  `AR03.r1()`, which probes `/sys/devices/platform/soc/soc:pwm-fan/hwmon/
+  hwmon<N>/pwm1` for `N` in `0..8` and uses the first one that exists, then
+  writes the value as plain file I/O (falling back to `echo ... > path`
+  through the device's own root-shell helper only if the direct file write
+  throws). `AR13.n1(percent)` (setFanSpeed as a 0–100 percent) converts via
+  `(percent * 255) / 100` before calling `t1`.
+
+**Confirmed live on our actual AYANEO Pocket FIT (2026-07-25)**, read-only,
+exactly matching what the code above predicts:
+```
+$ adb shell su -c "cat .../soc:pwm-fan/fan_rpm_state"
+Current RPM 2815
+$ adb shell xsu -c "cat .../soc:pwm-fan/fan_power_state; cat .../hwmon/hwmon0/pwm1"
+pwm_en=1
+76
+```
+`hwmon1` through `hwmon8` confirmed **absent** (only `hwmon0` exists) —
+matches `AR03.r1()`'s probe loop exactly. Notably, `hwmon0/pwm1` read
+successfully even from a plain unprivileged shell (no `su`/`xsu` needed for
+the *read* — confirmed by accident when a malformed test command ran the
+`for` loop outside of `su` and it still returned `76`). Write access is
+**not yet tested** — the natural next step, but a real one (changes actual
+fan behavior on a live device, and may fight whatever AYANEO's own vendor
+process does if it re-asserts the value), deferred to when it's
+deliberately exercised under observation, not rushed.
+
+**Why this matters for `pulse-for-aya`**: `pulse-glue-assessment/FINDINGS.md`
+concluded fan control needed a *separate* project built on the AIDL bind
+(`com.ayaneo.gamewindow`'s `AyaAidlService`, `com_set_performance_fan`),
+since `pulse`'s own two mechanisms (`gpio5_pwm2`, `Settings.System
+fan_mode`) are AYN-specific and dead here. This finding changes that:
+**a plain, confirmed-live sysfs PWM path exists**, structurally identical
+to how `pulse`'s own `FanCurveController.kt`/`CpuPolicyDetector.kt` already
+talk to CPU/GPU sysfs — meaning fan control could plug into
+`pulse-for-aya`'s already-stubbed `FanController.kt` the *same way* as
+CPU/GPU, through the existing `xsu`-glued `RootExec`, with **no AIDL work
+needed at all**. Not a certainty until the write side is confirmed, but a
+meaningfully smaller, more familiar task than the AIDL-based plan it
+replaces.
+
 ## Implications for `apl`
 
 - **The AIDL-bind approach (part 1) is now the strongest lead for
@@ -328,10 +455,22 @@ writing the original queried array back).
 - CPU/GPU sysfs mechanics are now fully confirmed at the command level and
   match what `apl` already does — no changes needed there regardless of
   which path (AIDL vs. own `xsu` sysfs writes) `apl` ultimately uses.
-- Fan control remains the one lever `apl` cannot currently replicate via
-  its own sysfs writes with confidence (mechanism unconfirmed, possibly
-  serial/EC-based) — another point in favor of the AIDL approach, which
-  sidesteps needing to know the mechanism at all.
+- **Fan control is no longer an unconfirmed lever — section 6 found and
+  confirmed a plain sysfs PWM path** (`soc:pwm-fan`/hwmon,
+  read-confirmed live on our actual Pocket FIT). `apl` (and
+  `pulse-for-aya`) can very likely replicate real fan-speed control the
+  same way it already does CPU/GPU — via `xsu`/`RootExec`, no AIDL needed
+  for this specific lever — once the write side is confirmed. This
+  supersedes the "serial/EC, needs AIDL" conclusion from part 3/pass 1.
+- **RGB control (section 5) has a real AYANEO-native mechanism too** — not
+  needed to replace `pulse`'s own dead-but-safely-gated RGB code, but
+  available if `apl` or a future `pulse` fork ever wants real joystick RGB
+  on this hardware: plain `Settings.System` keys under `ayaneo/share/`,
+  standard `WRITE_SETTINGS` permission, no root, live-applies via a
+  `ContentObserver`. Whether a genuine non-system app can actually write
+  these specific custom keys (vs. `adb shell`'s more privileged path) is
+  the one open question, same shape as the AIDL/`SharedPrefsProvider`
+  caveats elsewhere in this document.
 - **`apl`'s deferred "Module 2" (key binding) may not need to be built from
   scratch at all.** If `SharedPrefsProvider` really is reachable from a
   normal app (same unverified-in-practice caveat as the AIDL service in
