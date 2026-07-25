@@ -6,6 +6,41 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## INCIDENT #2 (2026-07-25, later same day): full device reboot during PULSE + ab-logger + Eden
+
+After the mitigation below, ran PULSE + `ab-logger` + Eden (Mario, ~1-2 min
+play) — the device fully rebooted this time (not just `system_server`,
+kernel uptime reset). `persist.sys.boot.reason.history` shows two reasons
+in sequence: `reboot,rollback_staged_install` (12:20:40 — looks like a
+routine Android staged-update rollback, plausibly unrelated) then
+`reboot,userrequested` (12:24:47 — the one right before the test data).
+Root cause of the second one **not confirmed** — logcat rotates on
+reboot, and tombstones/pstore were not readable over adb (permission
+denied) to check what preceded it.
+
+**Separately, and more concerning**: the resulting CSVs from this session
+and the one before it are **100% empty** (no foreground pkg, no CPU/GPU
+values, everything blank) — three empty rows-worth across ~2+ minutes
+each. Investigated whether this is a bug in the call-combining mitigation
+below: **it isn't** — manually ran the exact same combined `xsu` command
+by hand and it returned real data (422 lines, correct activity/layer/CPU
+dump) on the first try. Ran it again moments later and got **"Permission
+denied" on every single CPU/GPU sysfs read**, despite `xsu -c "id"`
+reporting `uid=0` around the same time. Conclusion: root access itself is
+intermittently unreliable on this device right now, independent of
+anything in this repo's code — consistent with (and a more severe
+manifestation of) the already-documented `xsud` crash-and-refork
+behavior. Not yet root-caused.
+
+**Decision, picked up next session**: isolate variables before resuming
+full A/B testing — run `ab-logger` alone (no `pulse-for-aya`) during real
+gameplay first, to check whether the reboot/root-flakiness happens
+without PULSE's added concurrent `xsu` polling, or needs both. All test
+apps (`pulse-for-aya`, `ab-logger`, `aidl-bind-spike`) uninstalled from
+the device at the end of this session for a clean restart next time —
+reinstall from each folder's own build/install instructions
+(`README.md`/`TESTING.md`) when resuming.
+
 ## Bug (2026-07-25, same incident): `pulse-for-aya` falsely claimed "device not compatible"
 
 Downstream of the `system_server` crash below: after Android auto-killed

@@ -1,0 +1,11 @@
+timestamp,sample_idx,foreground_pkg,fps,frame_count,p0_freq,p0_governor,p2_freq,p2_governor,p5_freq,p5_governor,p7_freq,p7_governor,gpu_freq_hz,gpu_busy_pct,temp_cpu_max_c,temp_gpu_max_c,temp_skin_c,temp_battery_c,fan_signal,fan_signal_unit,battery_current_ma,battery_voltage_mv
+1784972696663,0,,n/a (no layer matched),0,?,?,?,?,?,?,?,?,?,n/a,n/a,n/a,n/a,n/a,n/a,not_found,?,?
+1784972699229,1,com.retrohrai.launcher,48.0,5,2265600,performance,3014400,performance,2956800,performance,3052800,performance,231000000,8,n/a,n/a,n/a,n/a,n/a,not_found,-389108,7813810
+1784972701762,2,com.retrohrai.launcher,48.0,5,2265600,performance,3014400,performance,2956800,performance,3052800,performance,231000000,9,n/a,n/a,n/a,n/a,n/a,not_found,-389108,7817703
+1784972704319,3,com.retrohrai.launcher,48.0,5,2265600,performance,3014400,performance,2956800,performance,3052800,performance,231000000,n/a,n/a,n/a,n/a,n/a,n/a,not_found,-330513,7822958
+1784972706865,4,com.retrohrai.launcher,48.0,5,2265600,performance,3014400,performance,2956800,performance,3052800,performance,231000000,n/a,n/a,n/a,n/a,n/a,n/a,not_found,-391855,7806609
+1784972709434,5,com.retrohrai.launcher,0.5,6,2265600,performance,3014400,performance,2956800,performance,3052800,performance,231000000,n/a,n/a,n/a,n/a,n/a,n/a,not_found,-439464,7807193
+1784972711984,6,com.retrohrai.launcher,0.5,6,2265600,performance,3014400,performance,2956800,performance,3052800,performance,231000000,n/a,n/a,n/a,n/a,n/a,n/a,not_found,-496228,7798629
+1784972714426,7,com.retrohrai.launcher,0.5,6,2265600,performance,3014400,performance,2956800,performance,3052800,performance,231000000,n/a,n/a,n/a,n/a,n/a,n/a,not_found,-644547,7776052
+1784972716971,8,com.retrohrai.launcher,0.5,6,2265600,performance,3014400,performance,2956800,performance,3052800,performance,680000000,n/a,n/a,n/a,n/a,n/a,n/a,not_found,-328682,7822179
+1784972719522,9,com.retrohrai.launcher,n/a (low_sample_count=0),0,2265600,performance,3014400,performance,2956800,performance,3052800,performance,231000000,n/a,n/a,n/a,n/a,n/a,n/a,not_found,-380868,7814978

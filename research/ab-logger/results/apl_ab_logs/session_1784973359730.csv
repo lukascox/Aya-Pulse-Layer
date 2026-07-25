@@ -1,0 +1,10 @@
+timestamp,sample_idx,foreground_pkg,fps,frame_count,p0_freq,p0_governor,p2_freq,p2_governor,p5_freq,p5_governor,p7_freq,p7_governor,gpu_freq_hz,gpu_busy_pct,temp_cpu_max_c,temp_gpu_max_c,temp_skin_c,temp_battery_c,fan_signal,fan_signal_unit,battery_current_ma,battery_voltage_mv
+1784973359836,0,,n/a (no layer matched),0,?,?,?,?,?,?,?,?,?,n/a,n/a,n/a,n/a,n/a,?,fan_rpm_state,?,?
+1784973364946,1,,n/a (no layer matched),0,?,?,?,?,?,?,?,?,?,n/a,n/a,n/a,n/a,n/a,?,fan_rpm_state,?,?
+1784973370050,2,,n/a (no layer matched),0,?,?,?,?,?,?,?,?,?,n/a,n/a,n/a,n/a,n/a,?,fan_rpm_state,?,?
+1784973375163,3,,n/a (no layer matched),0,?,?,?,?,?,?,?,?,?,n/a,n/a,n/a,n/a,n/a,?,fan_rpm_state,?,?
+1784973380273,4,,n/a (no layer matched),0,?,?,?,?,?,?,?,?,?,n/a,n/a,n/a,n/a,n/a,?,fan_rpm_state,?,?
+1784973385381,5,,n/a (no layer matched),0,?,?,?,?,?,?,?,?,?,n/a,n/a,n/a,n/a,n/a,?,fan_rpm_state,?,?
+1784973390491,6,,n/a (no layer matched),0,?,?,?,?,?,?,?,?,?,n/a,n/a,n/a,n/a,n/a,?,fan_rpm_state,?,?
+1784973395597,7,,n/a (no layer matched),0,?,?,?,?,?,?,?,?,?,n/a,n/a,n/a,n/a,n/a,?,fan_rpm_state,?,?
+1784973400703,8,,n/a (no layer matched),0,?,?,?,?,?,?,?,?,?,n/a,n/a,n/a,n/a,n/a,?,fan_rpm_state,?,?
