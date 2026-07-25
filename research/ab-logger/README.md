@@ -111,23 +111,56 @@ whether that's a one-off or needs a fix), and multiple xsu commands
 completed successfully throughout. Not yet exercised as an actual A/B
 comparison tool (that's the next step, per `TESTING.md`).
 
-One thing observed during this smoke test, worth being aware of rather
-than alarmed by: `logcat` showed several `Fatal signal 6 (SIGABRT)` crash
-traces from `xsud` (the on-device root daemon, a vendor system binary,
-not anything in this repo) during rapid app-switching moments — each
-crash was immediately followed by a fresh `xsud` worker handling the next
-command successfully, and a 12-second idle window with steady polling
-showed zero crashes. Not reproduced from a single isolated `xsu -c "id"`
-call either. Most consistent explanation so far: `xsud` forks a worker
-per connection and something about its cleanup path aborts under rapid
-concurrent access (this session had both `pulse-for-aya`'s background
-service and `ab-logger` hitting `xsu` around the same moments) — not
-confirmed to drop or corrupt any actual command result, but also not
-something this project had documented before. Also incidentally
-confirmed during the same session: the device's real native fan PWM node
-is `/sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1` (standard
-Linux hwmon, actively written by the system, not the Odin-style
+One thing observed during this smoke test, later found to be a leading
+indicator of something more serious (see "Incident" below): `logcat`
+showed several `Fatal signal 6 (SIGABRT)` crash traces from `xsud` (the
+on-device root daemon, a vendor system binary, not anything in this repo)
+during rapid app-switching moments — each crash was immediately followed
+by a fresh `xsud` worker handling the next command successfully, and a
+12-second idle window with steady polling showed zero crashes. Also
+incidentally confirmed during the same session: the device's real native
+fan PWM node is `/sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1`
+(standard Linux hwmon, actively written by the system, not the Odin-style
 `gpio5_pwm2` `pulse` assumes), and SELinux is running in permissive mode
-on this ROM. None of this blocks using the tool, but worth folding into
-`diagnostics/docs/HARDWARE_PROFILE.md` and keeping an eye on the SIGABRT
-pattern during real, longer test sessions.
+on this ROM — folded into `diagnostics/docs/HARDWARE_PROFILE.md`.
+
+## Incident (2026-07-25): full `system_server` crash during the first real test session
+
+The first real (not smoke-test) session — logging started, app
+backgrounded, user playing normally — ended with the device appearing to
+freeze for ~25-30 seconds. `logcat` showed the real cause was more severe
+than an app-level hang: **`system_server` itself crashed and fully
+restarted** (a `FATAL EXCEPTION IN SYSTEM PROCESS` inside
+`BatteryService$Led`'s charging-LED animation, calling into the `ILights`
+HAL and getting back error `-13`, uncaught). Full timeline in
+`STATUS.md`. That specific crash site is vendor/AOSP code with nothing to
+do with this app directly, but the timing is not treated as coincidence:
+`com.android.systemui` had already ANR'd and `BLASTSyncEngine` was
+reporting missed transaction commits for ~25 seconds *before* the crash,
+starting right around when this app's logging loop began and the app was
+backgrounded — with `pulse-for-aya`'s own background service also
+polling via `xsu` at the same time. The leading theory: sustained,
+frequent `xsu` process-spawning from two apps at once, compounded by the
+already-known `xsud` crash-on-cleanup-per-connection quirk above, created
+enough system load/binder contention to starve a timing-sensitive HAL
+call that would otherwise have succeeded.
+
+**Not proven beyond circumstantial evidence** (no kernel-level profiling
+was done), but treated as confirmed-serious rather than a cosmetic
+quirk — a full `system_server` restart is a real, visible device
+disruption, not a benign log line.
+
+**Mitigation applied**: `LoggerSession.sampleOnce()` used to make 3-4
+separate `xsu` calls per sample (foreground-app detect, layer list, FPS
+latency, full CPU/GPU/thermal/battery snapshot — each one a full process
+spawn, each triggering the `xsud` fork-per-connection behavior above).
+Combined the three that don't need a Kotlin-side decision in between
+(activity dump, layer list, and the snapshot) into a single `xsu` call
+split by `===TAG===` markers (same convention `PowerFanProbe` already
+uses) — only the FPS `--latency` query still needs its own call, since
+its argument depends on parsing the combined call's output first. Net:
+4 spawns/sample down to 1-2. Also raised the sampling interval
+(`LoggerService.SESSION_INTERVAL_MS`) from 2000ms to 5000ms. Builds
+clean; **not yet re-verified on-device** (the device was being restarted
+by the user at the time this fix landed) — the next real session is the
+actual test of whether this mitigation holds.

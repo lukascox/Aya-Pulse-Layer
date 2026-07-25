@@ -5,6 +5,15 @@ test procedure (what to do in-game, in what order, what to record), see
 `research/pulse-for-aya/TESTING.md` (written in Polish, for a
 non-technical tester to run directly on the device).
 
+> **Read `STATUS.md`'s "INCIDENT (2026-07-25)" entry before running a
+> session.** The first real session crashed `system_server` (device
+> appeared to freeze ~25-30s, then recovered on its own). A mitigation is
+> in place (fewer, less frequent `xsu` calls) but not yet re-verified on
+> real hardware — run the next session under close observation, ideally
+> with `ab-logger` alone first (before also running `pulse-for-aya`) to
+> help isolate whether concurrent dual-app `xsu` load was necessary to
+> trigger it.
+
 ## Install (once)
 
 ```bash

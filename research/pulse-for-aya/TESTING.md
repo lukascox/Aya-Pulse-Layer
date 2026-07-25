@@ -4,6 +4,13 @@ Napisane po polsku celowo (w odróżnieniu od reszty dokumentacji w tym
 repo) — to instrukcja operacyjna do fizycznego wykonania na urządzeniu,
 możliwa do oddania osobie bez wiedzy technicznej, nie zapis badawczy.
 
+> **Ważne, przeczytaj przed testem**: pierwsza prawdziwa sesja z ab-loggerem
+> spowodowała crash i restart `system_server` (urządzenie na ~25-30s
+> wyglądało jakby się zawiesiło, potem wróciło samo). Poprawka już
+> wprowadzona (rzadsze i mniej wywołań `xsu`), ale jeszcze nie potwierdzona
+> na żywym sprzęcie — pierwszą kolejną sesję rób pod obserwacją, szczegóły
+> w głównym `STATUS.md` (sekcja "INCIDENT") i `research/ab-logger/README.md`.
+
 ## Cel, w jednym zdaniu
 
 Sprawdzamy, czy nakładka PULSE (eksperymentalna, nasza) daje podobne albo

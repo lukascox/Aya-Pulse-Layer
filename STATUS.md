@@ -6,6 +6,54 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## INCIDENT (2026-07-25): first real ab-logger session crashed `system_server`, device rebooted
+
+Not a cosmetic bug — read this before running `ab-logger` again. First
+real test session (logging started, app backgrounded, playing normally)
+made the device appear to freeze for ~25-30s. `logcat` timeline:
+
+- `xsud` (root daemon) `Fatal signal 6 (SIGABRT)` crash traces right as
+  the app started/backgrounded (same pattern first noticed in this app's
+  original smoke test, then under-weighted as "not confirmed harmful").
+- ~10-13s later: `BLASTSyncEngine: ... Application ANR likely to follow`,
+  then a confirmed **ANR in `com.android.systemui`**.
+- ~18s after that: **`FATAL EXCEPTION IN SYSTEM PROCESS`** —
+  `BatteryService$Led`'s charging-LED animation called into the `ILights`
+  HAL, got back error `-13`, uncaught — **this crashes `system_server`
+  itself**.
+- Android auto-restarts `system_server` from scratch (full re-init of
+  every system service, visible in logcat as dozens of "PackageWatchdog:
+  ... INACTIVE -> PASSED" lines) — this restart, not an app hang, is what
+  looked like the device freezing. Confirmed no actual reboot (kernel
+  uptime continuous throughout); `com.kei.pulse`'s (`pulse-for-aya`)
+  foreground service auto-restarted afterward along with everything else,
+  confirming it was ALSO running/polling via `xsu` throughout the
+  incident.
+
+**Root cause not proven** (the crash site is vendor/AOSP `BatteryService`
+code, unrelated to anything in this repo directly) — but the timing
+isn't treated as coincidence: `ab-logger` was making 3-4 separate `xsu`
+process spawns every 2 seconds, `pulse-for-aya` was doing its own
+concurrent polling, and this device's `xsud` daemon is already known to
+crash-and-refork on every connection close. Leading theory: sustained
+dual-app `xsu` process-spawn churn created enough system load/binder
+contention to starve a fragile, timing-sensitive HAL call that would
+otherwise succeed. Elevates the earlier "xsud SIGABRT, not confirmed
+harmful" note (see `pulse-glue-assessment/FINDINGS.md` risk section) —
+that framing was too reassuring; treat repeated `xsud` crashes as a real
+warning sign going forward, not a benign log line.
+
+**Mitigation applied** (see `research/ab-logger/README.md`'s "Incident"
+section for the full writeup): combined 3 of `LoggerSession`'s 4 `xsu`
+calls per sample into one (down to 1-2 spawns/sample), raised the
+sampling interval from 2s to 5s. Builds clean, **not yet re-verified
+on-device** — the device was mid-restart by the user when this landed.
+**Do not resume the A/B test series until a cautious, closely-observed
+retest confirms this holds** — and consider testing `ab-logger` alone
+first (without `pulse-for-aya` running) to isolate whether dual-app
+concurrent `xsu` load was actually necessary to trigger this, or whether
+`ab-logger` alone is enough.
+
 ## `research/ab-logger/` built (2026-07-25) — minimal A/B telemetry recorder
 
 New, purpose-built app: two buttons ("Start log"/"Stop log"), reusing

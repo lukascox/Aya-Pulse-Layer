@@ -127,7 +127,13 @@ class LoggerService : Service() {
         const val ACTION_STOP = "pl.ablogger.app.STOP"
         private const val CHANNEL_ID = "ab_logger"
         private const val NOTIF_ID = 1
-        private const val SESSION_INTERVAL_MS = 2000L // matches autotdp-ab-harness's own loop cadence
+        // apl glue fix (2026-07-25): was 2000L (matching autotdp-ab-harness's own
+        // cadence), raised to 5000L as part of the same mitigation as
+        // LoggerSession.sampleOnce()'s call-combining -- see that function's doc
+        // comment and STATUS.md's incident writeup. Sustained high-frequency xsu
+        // process spawning is the leading suspect in a full system_server crash
+        // observed during this app's first real test session.
+        private const val SESSION_INTERVAL_MS = 5000L
 
         // Confirmed live 2026-07-25 (aya-gamewindows-teardown pass 3, FINDINGS.md
         // section 6): AR03/AR13's plain pwm-fan/hwmon interface, NOT a cooling_device.

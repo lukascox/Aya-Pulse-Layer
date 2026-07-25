@@ -29,28 +29,54 @@ class LoggerSession(
 
     data class SampleTiming(val pipelineMs: Long, val snapshotMs: Long)
 
+    /**
+     * apl glue fix (2026-07-25): a single sample used to be 3-4 separate `xsu`
+     * invocations (each one a full ProcessBuilder spawn, and -- per this device's
+     * known `xsud` crash-on-cleanup quirk, see pulse-glue-assessment/FINDINGS.md --
+     * an `xsud` worker fork+crash per call). That call volume, sustained every 2s
+     * indefinitely while backgrounded, is the leading suspect in a full
+     * `system_server` crash observed during this app's first real test session
+     * (see STATUS.md/README.md for the incident writeup). Combined here into ONE
+     * `xsu` call for everything that doesn't need Kotlin-side decisions in between
+     * (foreground-pkg detection, layer list, and the CPU/GPU/thermal/battery
+     * snapshot all run together, split by `===TAG===` markers -- same convention as
+     * PowerFanProbe elsewhere in this app). Only the `--latency` query still needs
+     * its own call, since its argument (the matched layer name) depends on parsing
+     * this combined call's own output first. Net effect: 4 xsu spawns/sample down
+     * to 1-2, on top of the slower [LoggerService.SESSION_INTERVAL_MS] cadence.
+     */
     fun sampleOnce(): SampleTiming {
         val t0 = System.nanoTime()
-        val actRes = XsuShell.exec("dumpsys activity activities")
-        val (_, pkgShort) = FpsPipeline.parseForegroundPkg(actRes.stdout)
-        val listRes = XsuShell.exec("dumpsys SurfaceFlinger --list")
-        val matchedLayer = FpsPipeline.matchLayer(pkgShort, listRes.stdout)
+        val combinedRes = XsuShell.exec(buildCombinedCommand(), timeoutSec = 8)
+        val blocks = PowerFanProbe.parseBlockTags(combinedRes.stdout)
+
+        val (_, pkgShort) = FpsPipeline.parseForegroundPkg(blocks["ACT"].orEmpty())
+        val matchedLayer = FpsPipeline.matchLayer(pkgShort, blocks["LIST"].orEmpty())
+        val pipelineMs = (System.nanoTime() - t0) / 1_000_000
+
         val (_, frameCount, fps) = if (matchedLayer != "NoMatch") {
             val latRes = XsuShell.exec("dumpsys SurfaceFlinger --latency \"$matchedLayer\"")
             FpsPipeline.parseFps(latRes.stdout)
         } else {
             Triple("n/a", 0, "n/a (no layer matched)")
         }
-        val pipelineMs = (System.nanoTime() - t0) / 1_000_000
 
-        val snapRes = XsuShell.exec(buildFullSnapshotCommand(), timeoutSec = 4)
-        val tagged = FpsPipeline.parseTaggedLines(snapRes.stdout)
+        val tagged = FpsPipeline.parseTaggedLines(blocks["SNAP"].orEmpty())
 
         val row = buildCsvRow(pkgShort, fps, frameCount, tagged)
         localCsvFile.appendText(row + "\n")
         sampleIdx++
 
-        return SampleTiming(pipelineMs, snapRes.elapsedMs)
+        return SampleTiming(pipelineMs, combinedRes.elapsedMs)
+    }
+
+    private fun buildCombinedCommand(): String = buildString {
+        append("echo ===ACT===; ")
+        append("dumpsys activity activities; ")
+        append("echo ===LIST===; ")
+        append("dumpsys SurfaceFlinger --list; ")
+        append("echo ===SNAP===; ")
+        append(buildFullSnapshotCommand())
     }
 
     /** Copies the local CSV to /sdcard via the root shell (uid=0 can read our
