@@ -6,6 +6,53 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## `research/ab-logger/` built (2026-07-25) — minimal A/B telemetry recorder
+
+New, purpose-built app: two buttons ("Start log"/"Stop log"), reusing
+`autotdp-ab-harness`'s proven sampling pipeline
+(`XsuShell`/`FpsPipeline`/`ThermalZones`/`PowerFanProbe`, unchanged) inside
+a foreground service (survives backgrounding for a whole game session,
+unlike the harness's Activity-scoped coroutine). Built instead of reusing
+`autotdp-ab-harness` directly because that app's "Start AutoTDP" button
+launches the old `pulse_lite_v3.7.sh` bash daemon — using it as-is to test
+`pulse-for-aya` would run both controllers at once, fighting over the same
+sysfs nodes. See `research/ab-logger/README.md` for the full reasoning and
+`TESTING.md` for how to run/pull/clean up logs.
+
+**Builds clean, installs, launches, smoke-tested on-device**: a session
+ran for several minutes and produced a well-formed CSV (real CPU
+governor/freq per policy, battery current/voltage — thermal zones came
+back `n/a` this run, worth checking whether that's a one-off next real
+session). Device cleaned up afterward (test files/CSV removed, service
+stopped) — not yet used for an actual native-vs-`pulse-for-aya` A/B
+comparison, that's the next concrete step and is the user's to run
+(see `pulse-for-aya/TESTING.md`).
+
+**Two things noticed during that smoke test, folded into
+`diagnostics/docs/HARDWARE_PROFILE.md`, not blocking**:
+- Repeated `xsud` (the on-device root daemon, a vendor binary) `Fatal
+  signal 6 (SIGABRT)` crash traces during rapid app-switching moments
+  (opening `ab-logger`, its permission dialog opening) — not reproduced
+  during a steady 12s polling window or a single isolated `xsu -c "id"`
+  call, and every individual command's result still came through
+  correctly (a fresh `xsud` worker handled the next call each time). Most
+  likely a per-connection worker crashing on cleanup under rapid/
+  concurrent access (both `pulse-for-aya`'s background service and
+  `ab-logger` were hitting `xsu` around the same moments this run) — not
+  confirmed harmful, but new and undocumented before this session. Worth
+  watching for during real, longer A/B sessions.
+- Also briefly hit a transient `/sdcard` "Transport endpoint is not
+  connected" error (a few seconds, self-resolved, not reproduced since) —
+  noted in case it recurs, not treated as a real problem on one occurrence.
+- Confirmed, incidentally: the device's real fan PWM node is
+  `/sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1` (standard
+  Linux hwmon, not Odin's `gpio5_pwm2`), and this ROM runs SELinux in
+  permissive mode (`setenforce 0` observed, `avc: denied ...
+  permissive=1` throughout logs). Both purely observational — nothing in
+  this repo writes to that fan node or touches SELinux state.
+
+## Repo merge
+
 **Merged in (2026-07-25)**: the formerly-separate `apl-diag`
 (`AyaPulseDiag`) repo is now `diagnostics/` in this repo, not a sibling —
 see "Repo merge" section below and `diagnostics/README.md` for why. That

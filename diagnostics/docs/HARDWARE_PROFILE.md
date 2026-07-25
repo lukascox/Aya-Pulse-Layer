@@ -219,6 +219,33 @@ Thermal zone type detection should remain dynamic (match by "cpu"/"gpu" prefix i
 /sys/class/thermal/thermal_zone*/type at controller startup), not hardcoded zone
 numbers, since these may shift across firmware revisions.
 
+## Fan control — real sysfs node identified (2026-07-25)
+
+Observed live via `xsud` logcat traces during an unrelated `apl` repo
+smoke test (`research/ab-logger`): the device's actual native fan PWM
+node is a standard Linux hwmon interface,
+`/sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1` — seen being
+written with distinct values (25, then 76) by the system itself, not by
+anything in this repo. This is NOT the Odin-style `gpio5_pwm2` path
+`pulse` assumes (see `research/pulse-glue-assessment/FINDINGS.md` — that
+path is confirmed absent here). Passively observed only; nothing in this
+repo writes to it — native AyaSettings owns fan control on this device
+by design (see `pulse-for-aya`'s `README.md`), this is just confirmation
+of the real mechanism underneath it, useful reference if the deferred
+AIDL-based fan-control work ever needs to cross-check AyaSettings'
+behavior against the actual sysfs state.
+
+## SELinux is permissive on this ROM (observed 2026-07-25)
+
+The same logcat trace above included a `setenforce 0` call (source not
+identified — likely part of AYASpace's own boot/session setup, not
+anything in this repo) and numerous `avc: denied ... permissive=1` audit
+lines — the `permissive=1` confirms SELinux policy violations are being
+logged, not enforced, on this device/ROM. Relevant context for reasoning
+about what `xsu`-executed commands can do here: policy denials that would
+block an action on an enforcing system are not a real constraint on this
+one.
+
 ## Root channel (confirmed, two historical variants)
 
 **Historical (v2.2-v3.7, AYASpace Root Script):** no direct root from `adb shell`

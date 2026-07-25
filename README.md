@@ -56,10 +56,14 @@ former, to build and validate that substitution.
   above is exported with no caller-identity verification at all — the
   finding that made the spike above worth trying.
 - **`research/xsu-capability-probe/`** and **`research/autotdp-ab-harness/`**
-  — the probes that first confirmed `xsu` works from an installed app,
+  — the probes that first confirmed `xsu` works from an installed app and
   validated the sysfs read/write mechanics and the FPS-measurement
-  pipeline, and built the A/B comparison harness now being reused to test
-  `pulse-for-aya` against native AyaSettings.
+  pipeline.
+- **`research/ab-logger/`** — a minimal, purpose-built telemetry recorder
+  (two buttons: start/stop log) reusing that proven sampling pipeline,
+  built to compare `pulse-for-aya` against native AyaSettings without the
+  older harness's now-irrelevant daemon-launch/mode-picker baggage. See
+  that folder's `README.md` and `TESTING.md`.
 - **`diagnostics/`** — raw hardware facts (full CPU OPP tables, per-mode
   fan/GPU config sourced from AYASpace's own AIDL callback, thermal
   thresholds) and the validated FPS-measurement shell script. Folded in
@@ -98,7 +102,8 @@ apl/
 │   ├── ayaspace-teardown/
 │   ├── aya-gamewindows-teardown/  -- vendor app static analysis (found the AIDL gap)
 │   ├── xsu-capability-probe/
-│   └── autotdp-ab-harness/        -- root-channel probes + A/B comparison harness
+│   ├── autotdp-ab-harness/        -- root-channel probes + superseded A/B harness
+│   └── ab-logger/                 -- current A/B telemetry recorder (start/stop log)
 ├── diagnostics/                   -- raw hardware facts + FPS script (formerly apl-diag)
 ├── app/                           -- original from-scratch skeleton, superseded, not active
 ├── docs/archive/                  -- frozen pre-git history (do not extend further)
