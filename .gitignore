@@ -22,8 +22,12 @@ keystore.properties
 # Build output / misc
 *.apk
 *.aab
-*.log
 .DS_Store
+# NOTE: *.log was blanket-ignored here before 2026-07-25 -- silently excluded real,
+# valuable historical diagnostic logs under docs/archive/pulse_lite/ and
+# diagnostics/ (confirmed: every *.log in this repo today is one of those, none
+# are throwaway build/session byproducts). Removed rather than scoped-excepted --
+# re-add it scoped to a specific throwaway path if one ever needs it.
 
 # Upstream reference clones (separate git history, GPL-2.0 source we read but don't
 # fork into this repo directly) -- keep local only, never as a submodule/gitlink.

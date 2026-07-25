@@ -1,0 +1,155 @@
+22:36:26 START: pid=13008 ppid=1
+22:36:26 tier=idle gpu=13% cpu0_cur=1344000 cpu7_cur=1824000
+22:37:58 tier=medium gpu=31% cpu0_cur=1344000 cpu7_cur=1824000
+22:38:01 tier=idle gpu=7% cpu0_cur=1344000 cpu7_cur=1824000
+22:38:18 tier=medium gpu=43% cpu0_cur=1459200 cpu7_cur=1824000
+22:38:24 tier=heavy gpu=84% cpu0_cur=2265600 cpu7_cur=3052800
+22:38:26 tier=medium gpu=43% cpu0_cur=1344000 cpu7_cur=1824000
+22:38:30 tier=medium gpu=67% cpu0_cur=1344000 cpu7_cur=1824000
+22:39:10 tier=heavy gpu=78% cpu0_cur=1344000 cpu7_cur=2995200
+22:39:15 tier=medium gpu=37% cpu0_cur=1344000 cpu7_cur=1824000
+22:39:17 tier=idle gpu=12% cpu0_cur=1344000 cpu7_cur=1824000
+22:39:19 tier=medium gpu=32% cpu0_cur=1344000 cpu7_cur=1824000
+22:39:21 tier=idle gpu=13% cpu0_cur=1344000 cpu7_cur=1824000
+22:39:23 tier=medium gpu=38% cpu0_cur=1344000 cpu7_cur=1824000
+22:39:27 tier=idle gpu=16% cpu0_cur=1344000 cpu7_cur=1824000
+22:40:09 tier=medium gpu=27% cpu0_cur=1344000 cpu7_cur=1824000
+22:40:17 tier=idle gpu=19% cpu0_cur=1344000 cpu7_cur=1824000
+22:40:23 tier=medium gpu=23% cpu0_cur=1344000 cpu7_cur=1824000
+22:40:36 tier=medium gpu=45% cpu0_cur=1344000 cpu7_cur=1824000
+22:40:42 tier=heavy gpu=82% cpu0_cur=1574400 cpu7_cur=2995200
+22:41:07 tier=idle gpu=17% cpu0_cur=1344000 cpu7_cur=1824000
+22:42:44 tier=idle gpu=0% cpu0_cur=1344000 cpu7_cur=1824000
+22:44:52 tier=idle gpu=0% cpu0_cur=1344000 cpu7_cur=1824000
+22:47:01 tier=idle gpu=0% cpu0_cur=1344000 cpu7_cur=1824000
+22:47:56 tier=medium gpu=25% cpu0_cur=1344000 cpu7_cur=1824000
+22:47:58 STOP: stock restored, exiting
+22:47:58 tier=idle gpu=7% cpu0_cur=1344000 cpu7_cur=1824000
+22:49:08 tier=idle gpu=0% cpu0_cur=1344000 cpu7_cur=1824000
+22:50:35 tier=medium gpu=33% cpu0_cur=1344000 cpu7_cur=1824000
+22:50:37 tier=idle gpu=18% cpu0_cur=1344000 cpu7_cur=1824000
+22:50:50 tier=medium gpu=21% cpu0_cur=1344000 cpu7_cur=1824000
+22:50:52 tier=idle gpu=15% cpu0_cur=1344000 cpu7_cur=1824000
+22:50:54 tier=medium gpu=21% cpu0_cur=1344000 cpu7_cur=1824000
+22:50:56 tier=idle gpu=15% cpu0_cur=1344000 cpu7_cur=1824000
+22:51:15 tier=idle gpu=13% cpu0_cur=1344000 cpu7_cur=1824000
+Terminated 
+/sdcard/pulse_lite.sh: can't create /sdcard/pulse_lite.log: Transport endpoint is not connected
+22:53:28 START: pid=7256 ppid=1
+22:53:28 tier=idle gpu=7% cpu0=1344000 cpu7=1824000
+22:54:04 tier=medium gpu=26% cpu0=1344000 cpu7=1824000
+22:54:31 tier=heavy gpu=71% cpu0=1344000 cpu7=2803200
+22:55:19 tier=medium gpu=28% cpu0=1344000 cpu7=1824000
+22:55:30 tier=idle gpu=0% cpu0=1344000 cpu7=1824000
+22:55:32 tier=idle gpu=0% cpu0=1344000 cpu7=1824000
+22:55:56 tier=medium gpu=24% cpu0=1344000 cpu7=1824000
+22:56:09 tier=idle gpu=0% cpu0=1344000 cpu7=1824000
+22:57:40 tier=idle gpu=0% cpu0=1344000 cpu7=1824000
+22:59:49 tier=idle gpu=0% cpu0=1344000 cpu7=1824000
+23:01:58 tier=idle gpu=0% cpu0=1344000 cpu7=1824000
+23:03:56 STOP: sentinel found, exiting cleanly
+23:03:56 STOP: stock restored pid=7256
+23:05:05 START: pid=11457 ppid=1
+23:05:06 tier=idle gpu=7% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:06:53 STOP: sentinel, exiting cleanly
+23:06:53 STOP: stock restored pid=11457
+23:07:20 START: pid=12400 ppid=1
+23:07:20 tier=idle gpu=19% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:08:22 tier=medium gpu=34% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:08:48 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:08:50 tier=medium gpu=73% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:08:52 tier=heavy gpu=80% caps: p0=2265600 p2=3148800 p5=2956800 p7=3052800
+23:09:28 tier=heavy gpu=87% caps: p0=2265600 p2=2764800 p5=2764800 p7=2803200
+23:09:48 tier=medium gpu=17% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:11:39 tier=medium gpu=12% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:11:59 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:13:53 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:16:07 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:18:21 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:20:35 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:22:49 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:25:03 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:27:17 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:29:31 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:31:45 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:33:59 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:36:13 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:38:27 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:40:41 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:42:56 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:45:10 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:47:24 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:49:33 tier=medium gpu=41% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:49:37 tier=medium gpu=15% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:49:50 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:49:55 tier=medium gpu=27% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:50:04 tier=idle gpu=9% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:51:48 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:54:06 tier=medium gpu=24% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:54:08 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:54:10 tier=medium gpu=35% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:54:37 tier=medium gpu=23% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:55:07 tier=heavy gpu=81% caps: p0=2265600 p2=3148800 p5=2956800 p7=3052800
+23:56:45 tier=heavy gpu=87% caps: p0=2265600 p2=3148800 p5=2956800 p7=3052800
+23:58:07 tier=medium gpu=28% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:58:39 tier=idle gpu=9% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:58:54 tier=idle gpu=8% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:59:29 tier=medium gpu=27% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+23:59:38 tier=idle gpu=8% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+00:00:59 tier=medium gpu=21% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+00:01:05 tier=medium gpu=12% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+00:01:07 tier=idle gpu=9% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+00:01:14 tier=medium gpu=33% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+00:01:19 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+00:01:23 tier=medium gpu=29% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+00:01:28 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+00:01:30 tier=medium gpu=29% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+00:01:35 tier=heavy gpu=73% caps: p0=2265600 p2=3148800 p5=2956800 p7=3052800
+00:03:14 tier=heavy gpu=82% caps: p0=2265600 p2=3148800 p5=2956800 p7=3052800
+00:03:44 tier=medium gpu=44% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+00:04:09 tier=idle gpu=6% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+Terminated 
+/sdcard/pulse_lite.sh: can't create /sdcard/pulse_lite.log: Transport endpoint is not connected
+09:55:32 START: pid=9864 ppid=1
+09:55:32 tier=idle gpu=4% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+09:56:38 tier=medium gpu=23% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+09:56:41 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+09:56:43 tier=medium gpu=43% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+09:57:01 tier=heavy gpu=80% caps: p0=2265600 p2=3148800 p5=2956800 p7=3052800
+09:57:41 tier=heavy gpu=93% caps: p0=2265600 p2=3148800 p5=2956800 p7=3052800
+09:59:48 tier=heavy gpu=89% caps: p0=2265600 p2=3148800 p5=2956800 p7=3052800
+10:00:41 tier=medium gpu=30% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+10:00:43 tier=idle gpu=9% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+10:00:54 STOP: sentinel, exiting cleanly
+10:00:54 STOP: stock restored pid=9864
+10:15:09 START: pid=16367 ppid=1
+10:15:09 tier=idle gpu=16% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+10:15:29 tier=medium gpu=21% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+10:15:35 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+10:16:04 tier=medium gpu=34% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+10:16:09 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+10:16:11 tier=medium gpu=53% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+10:16:30 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+10:16:33 tier=medium gpu=75% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+10:16:35 tier=heavy gpu=75% caps: p0=2265600 p2=3148800 p5=2956800 p7=3052800
+10:16:50 tier=medium gpu=25% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+10:17:18 tier=medium gpu=11% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+10:17:23 tier=idle gpu=9% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+10:18:00 STOP: sentinel, exiting cleanly
+10:18:00 STOP: stock restored pid=16367
+17:28:20 START: pid=21736 ppid=1
+17:28:20 id=uid=0(root) gid=0(root) groups=0(root) context=u:r:xsud:s0
+17:28:20 cpu_zones=/sys/class/thermal/thermal_zone10/temp /sys/class/thermal/thermal_zone11/temp /sys/class/thermal/thermal_zone12/temp /sys/class/thermal/thermal_zone13/temp 
+17:28:20 gpu_zones=/sys/class/thermal/thermal_zone41/temp /sys/class/thermal/thermal_zone42/temp /sys/class/thermal/thermal_zone43/temp /sys/class/thermal/thermal_zone44/temp /sys/class/thermal/thermal_zone45/temp /sys/class/thermal/thermal_zone46/temp /sys/class/thermal/thermal_zone47/temp /sys/class/thermal/thermal_zone48/temp 
+17:28:20 tier=idle gpu=4% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+17:28:29 tier=medium gpu=22% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+17:28:38 tier=idle gpu=0% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+17:29:00 tier=medium gpu=39% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+17:30:30 tier=medium gpu=58% caps: p0=1344000 p2=1708800 p5=1708800 p7=1824000
+17:30:39 tier=heavy/heavy_high gpu=73% cpuT=53500 gpuT=50800 caps: p0=1459200 p2=1824000 p5=1824000 p7=1939200
+17:32:25 tier=heavy/heavy_mid gpu=65% cpuT=78300 gpuT=66100 caps: p0=1804800 p2=2438400 p5=2438400 p7=2438400
+17:32:27 tier=heavy/heavy_high gpu=65% cpuT=65900 gpuT=62200 caps: p0=2265600 p2=3148800 p5=2956800 p7=3052800
+17:32:45 tier=heavy/heavy_high gpu=70% cpuT=74800 gpuT=64900 caps: p0=2265600 p2=3148800 p5=2956800 p7=3052800
+17:35:00 tier=heavy/heavy_high gpu=62% cpuT=73600 gpuT=64900 caps: p0=2265600 p2=3148800 p5=2956800 p7=3052800
+17:35:47 tier=heavy/heavy_mid gpu=12% cpuT=78700 gpuT=66900 caps: p0=1804800 p2=2438400 p5=2438400 p7=2438400
+17:35:49 tier=heavy/heavy_high gpu=24% cpuT=62800 gpuT=58300 caps: p0=2265600 p2=3148800 p5=2956800 p7=3052800

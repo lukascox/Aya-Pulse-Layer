@@ -1,0 +1,686 @@
+===== 0. IDENTITY / RUN INFO =====
+suffix: ra_v7
+id: uid=0(root) gid=0(root) groups=0(root) context=u:r:xsud:s0
+date: Wed Jul 22 00:19:27 CEST 2026
+>>> REMINDER: note which AYASpace mode was active for this run when reporting back <<<
+
+===== 1. DEVICE / SOC FINGERPRINT =====
+Pocket FIT
+AYANEO_Pocket_FIT
+PocketFIT
+AYANEO_PocketS2-user
+SG8350P
+pineapple
+android.version=14
+android.sdk=34
+--- full getprop grep soc/hw/board/gpu ---
+[graphics.gpu.profiler.support]: [true]
+[init.svc.gpu]: [running]
+[init.svc_debug_pid.gpu]: [1819]
+[persist.sys.fake.gpu]: [Adreno (TM) 750]
+[persist.sys.soc.model]: []
+[persist.vendor.qcom.bluetooth.soc]: [hamilton]
+[ro.board.api_level]: [34]
+[ro.board.first_api_level]: [34]
+[ro.board.platform]: [pineapple]
+[ro.boot.board_id]: [0x00]
+[ro.boot.boot_devices]: [soc/1d84000.ufshc]
+[ro.boot.vendor.qspa.gpu]: [enabled]
+[ro.boottime.gpu]: [14394601973]
+[ro.gfx.driver.1]: [com.qualcomm.qti.gpudrivers.pineapple.api34]
+[ro.product.board]: [pineapple]
+[ro.soc.manufacturer]: [QTI]
+[ro.vendor.qti.soc_id]: [682]
+[ro.vendor.qti.soc_model]: [SG8350P]
+[ro.vendor.qti.soc_name]: [pineapple]
+[vendor.display.enable_hdr10_gpu_target]: [1]
+[vendor.display.gpu_rendering]: [true]
+
+===== 2. CPU TOPOLOGY - all policies, full frequency tables + governor (baseline snapshot) =====
+--- policy0 ---
+affected_cpus: 0 1
+scaling_governor: performance
+scaling_available_governors: walt conservative powersave performance schedutil 
+cpuinfo_min_freq: 364800
+cpuinfo_max_freq: 2265600
+scaling_min_freq: 672000
+scaling_max_freq: 2265600
+scaling_cur_freq: 2265600
+scaling_available_frequencies: 364800 460800 556800 672000 787200 902400 1017600 1132800 1248000 1344000 1459200 1574400 1689600 1804800 1920000 2035200 2150400 2265600 
+--- policy2 ---
+affected_cpus: 2 3 4
+scaling_governor: performance
+scaling_available_governors: walt conservative powersave performance schedutil 
+cpuinfo_min_freq: 499200
+cpuinfo_max_freq: 3148800
+scaling_min_freq: 499200
+scaling_max_freq: 3148800
+scaling_cur_freq: 3148800
+scaling_available_frequencies: 499200 614400 729600 844800 960000 1075200 1190400 1286400 1401600 1497600 1612800 1708800 1824000 1920000 2035200 2131200 2188800 2246400 2323200 2380800 2438400 2515200 2572800 2630400 2707200 2764800 2841600 2899200 2956800 3014400 3072000 3148800 
+--- policy5 ---
+affected_cpus: 5 6
+scaling_governor: performance
+scaling_available_governors: walt conservative powersave performance schedutil 
+cpuinfo_min_freq: 499200
+cpuinfo_max_freq: 2956800
+scaling_min_freq: 499200
+scaling_max_freq: 2956800
+scaling_cur_freq: 2956800
+scaling_available_frequencies: 499200 614400 729600 844800 960000 1075200 1190400 1286400 1401600 1497600 1612800 1708800 1824000 1920000 2035200 2131200 2188800 2246400 2323200 2380800 2438400 2515200 2572800 2630400 2707200 2764800 2841600 2899200 2956800 
+--- policy7 ---
+affected_cpus: 7
+scaling_governor: performance
+scaling_available_governors: walt conservative powersave performance schedutil 
+cpuinfo_min_freq: 480000
+cpuinfo_max_freq: 3302400
+scaling_min_freq: 480000
+scaling_max_freq: 3302400
+scaling_cur_freq: 3302400
+scaling_available_frequencies: 480000 576000 672000 787200 902400 1017600 1132800 1248000 1363200 1478400 1593600 1708800 1824000 1939200 2035200 2112000 2169600 2246400 2304000 2380800 2438400 2496000 2553600 2630400 2688000 2745600 2803200 2880000 2937600 2995200 3052800 
+
+===== 3. GPU (kgsl) - full state (baseline snapshot) =====
+max_pwrlevel: 0
+min_pwrlevel: 13
+num_pwrlevels: 14
+gpuclk: 231000000
+gpubusy (raw busy_cycles total_cycles):  100907 1010820
+devfreq/governor: msm-adreno-tz
+devfreq/available_frequencies: 1050000000 1000000000 903000000 834000000 770000000 720000000 680000000 629000000 578000000 500000000 422000000 366000000 310000000 231000000
+
+===== 4. THERMAL ZONES - full list + current temps =====
+thermal_zone0: type=pm8550-bcl-lvl0 temp=0
+thermal_zone1: type=pm8550-bcl-lvl1 temp=0
+thermal_zone10: type=cpuss-0 temp=50400
+thermal_zone11: type=cpuss-1 temp=50400
+thermal_zone12: type=cpuss-2 temp=51500
+thermal_zone13: type=cpuss-3 temp=52700
+thermal_zone14: type=cpu-2-0-0 temp=49200
+thermal_zone15: type=cpu-2-0-1 temp=48800
+thermal_zone16: type=cpu-2-1-0 temp=49600
+thermal_zone17: type=cpu-2-1-1 temp=49200
+thermal_zone18: type=cpu-2-2-0 temp=50400
+thermal_zone19: type=cpu-2-2-1 temp=50800
+thermal_zone2: type=pm8550-bcl-lvl2 temp=0
+thermal_zone20: type=cpu-1-0-0 temp=53900
+thermal_zone21: type=cpu-1-0-1 temp=54300
+thermal_zone22: type=cpu-1-1-0 temp=54300
+thermal_zone23: type=cpu-1-1-1 temp=58100
+thermal_zone24: type=aoss-1 temp=48000
+thermal_zone25: type=cpu-1-2-0 temp=51100
+thermal_zone26: type=cpu-1-2-1 temp=49900
+thermal_zone27: type=cpu-1-2-2 temp=49900
+thermal_zone28: type=cpu-0-0-0 temp=53000
+thermal_zone29: type=cpu-0-1-0 temp=51900
+thermal_zone3: type=vbat temp=3836
+thermal_zone30: type=nsphvx-0 temp=47300
+thermal_zone31: type=nsphvx-1 temp=47600
+thermal_zone32: type=nsphmx-0 temp=46100
+thermal_zone33: type=nsphmx-1 temp=46100
+thermal_zone34: type=nsphmx-2 temp=46100
+thermal_zone35: type=nsphmx-3 temp=46500
+thermal_zone36: type=video temp=48400
+thermal_zone37: type=ddr temp=48400
+thermal_zone38: type=camera-0 temp=47300
+thermal_zone39: type=camera-1 temp=46500
+thermal_zone4: type=pm8550b-ibat-lvl0 temp=187
+thermal_zone40: type=aoss-2 temp=48100
+thermal_zone41: type=gpuss-0 temp=46500
+thermal_zone42: type=gpuss-1 temp=46100
+thermal_zone43: type=gpuss-2 temp=46500
+thermal_zone44: type=gpuss-3 temp=45700
+thermal_zone45: type=gpuss-4 temp=48100
+thermal_zone46: type=gpuss-5 temp=47700
+thermal_zone47: type=gpuss-6 temp=47700
+thermal_zone48: type=gpuss-7 temp=47300
+thermal_zone49: type=mdmss-0 temp=46500
+thermal_zone5: type=pm8550b-ibat-lvl1 temp=281
+thermal_zone50: type=mdmss-1 temp=44600
+thermal_zone51: type=mdmss-2 temp=45300
+thermal_zone52: type=mdmss-3 temp=46100
+thermal_zone53: type=socd temp=43
+thermal_zone54: type=xo-therm temp=43951
+thermal_zone55: type=skin-msm-therm temp=44186
+thermal_zone56: type=cam-flash-therm temp=44437
+thermal_zone57: type=wlan-therm temp=44290
+thermal_zone58: type=pa-therm-1 temp=42870
+thermal_zone59: type=rear-tof-therm temp=40247
+thermal_zone6: type=pm8550b-bcl-lvl0 temp=0
+thermal_zone60: type=usb-therm temp=25982
+thermal_zone61: type=wls-therm temp=64364
+thermal_zone62: type=pm8550_tz temp=45392
+thermal_zone63: type=pm8550b_tz temp=39077
+thermal_zone64: type=pm8550b_lite_tz temp=43139
+thermal_zone65: type=pm8550ve_tz temp=43073
+thermal_zone66: type=pm8550vs_c_tz temp=43442
+thermal_zone67: type=pm8550vs_d_tz temp=45224
+thermal_zone68: type=pm8550vs_e_tz temp=47006
+thermal_zone69: type=pm8550vs_g_tz temp=43644
+thermal_zone7: type=pm8550b-bcl-lvl1 temp=0
+thermal_zone70: type=usb temp=25000
+thermal_zone71: type=wireless temp=62000
+thermal_zone72: type=battery temp=30000
+thermal_zone8: type=pm8550b-bcl-lvl2 temp=0
+thermal_zone9: type=aoss-0 temp=47700
+
+===== 5. INSTALLED EMULATOR/GAMING PACKAGES =====
+package:com.android.systemui.accessibility.accessibilitymenu
+package:com.android.credentialmanager
+package:org.azahar_emu.azahar
+package:org.dolphinemu.dolphinemu
+package:com.ayaneo.gamewindow
+package:com.retrohrai.launcher
+package:com.android.internal.display.cutout.emulation.double
+package:com.android.systemui
+package:com.android.internal.systemui.navbar.gestural
+package:com.ayaneo.gamelauncher
+package:com.android.internal.systemui.navbar.threebutton
+package:com.android.internal.display.cutout.emulation.hole
+package:com.android.internal.systemui.navbar.gestural_narrow_back
+package:com.android.internal.display.cutout.emulation.tall
+package:com.android.internal.systemui.navbar.gestural_wide_back
+package:com.ayaneo.home
+package:com.android.internal.systemui.navbar.transparent
+package:com.android.systemui.overlay.common
+package:com.android.internal.display.cutout.emulation.waterfall
+package:com.android.internal.systemui.navbar.gestural_extra_wide_back
+package:com.ayaneo.settings
+package:com.retroarch.aarch64
+package:com.android.internal.display.cutout.emulation.corner
+package:com.ayaneo.ayakeytester
+
+===== 6. SURFACEFLINGER WINDOW LIST (reference dump) =====
+Display 0 name="Built-in Screen"#3
+WindowedMagnification:0:31#4
+HideDisplayCutout:0:14#5
+OneHanded:0:14#6
+FullscreenMagnification:0:12#7
+Leaf:0:1#8
+WallpaperWindowToken{711c46d token=android.os.Binder@e8f3484}#89
+8ba8d38 com.android.systemui.wallpapers.ImageWallpaper#90
+com.android.systemui.wallpapers.ImageWallpaper#91
+Wallpaper BBQ wrapper#92
+DefaultTaskDisplayArea#9
+Task=1#46
+Task=6#106
+6e9d92 ActivityRecordInputSink com.retrohrai.launcher/.MainActivity#114
+ActivityRecord{3e06678 u0 com.retrohrai.launcher/.MainActivity#107
+4bace89 com.retrohrai.launcher/com.retrohrai.launcher.MainActivity#109
+Task=2#47
+Task=3#48
+Dim layer#52
+Task=4#49
+Dim layer#53
+Task=11#281
+bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#282
+b9815d4 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#289
+com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#290
+ImeContainer#12
+WindowToken{f9719cf type=2011 android.os.Binder@5cda2e}#101
+Surface(name=6500f7a InputMethod)/@0x78eb121 - animation-leash of insets_animation#294
+6500f7a InputMethod#103
+Leaf:3:12#10
+WindowToken{28e8edf type=2038 android.os.BinderProxy@3a3e059}#50
+6599d83 ShellDropTarget#51
+ImePlaceholder:13:14#11
+OneHanded:15:15#13
+FullscreenMagnification:15:15#14
+Leaf:15:15#15
+WindowToken{26cc9b6 type=2000 android.os.BinderProxy@7134d51}#77
+Surface(name=68b86b7 StatusBar)/@0x5f3cb42 - animation-leash of insets_animation#292
+68b86b7 StatusBar#78
+StatusBar#88
+HideDisplayCutout:16:16#16
+OneHanded:16:16#17
+FullscreenMagnification:16:16#18
+Leaf:16:16#19
+OneHanded:17:17#20
+FullscreenMagnification:17:17#21
+Leaf:17:17#22
+WindowToken{1e3fcde type=2040 android.os.BinderProxy@4f83419}#75
+6d27ebf NotificationShade#76
+HideDisplayCutout:18:23#23
+OneHanded:18:23#24
+FullscreenMagnification:18:23#25
+Leaf:18:23#26
+Leaf:24:25#27
+WindowToken{349af15 type=2019 android.os.BinderProxy@86f00cc}#68
+Surface(name=8f6222a NavigationBar0)/@0x2ac36f6 - animation-leash of insets_animation#291
+8f6222a NavigationBar0#69
+NavigationBar0#84
+WindowToken{62124df type=2024 android.os.BinderProxy@b8ae77e}#72
+8d2d52c EdgeBackGestureHandler0#73
+WindowToken{5d301f6 type=2024 android.os.BinderProxy@b63d2a}#82
+fb4f9f7 SecondaryHomeHandle0#83
+HideDisplayCutout:26:31#28
+OneHanded:26:31#29
+FullscreenMagnification:26:27#30
+Leaf:26:27#31
+Leaf:28:28#32
+FullscreenMagnification:29:31#33
+Leaf:29:31#34
+WindowToken{24e7097 type=2016 android.os.BinderProxy@5e3af16}#156
+d7e2284 com.ayaneo.gamewindow#157
+#158
+WindowToken{e28849 type=2032 android.os.Binder@3b36e50}#116
+HideDisplayCutout:32:37#35
+OneHanded:32:32#36
+Leaf:32:32#37
+FullscreenMagnification:33:33#38
+Leaf:33:33#39
+OneHanded:34:37#40
+FullscreenMagnification:34:37#41
+Leaf:34:37#42
+Leaf:38:38#43
+Accessibility Overlays#45
+Display Overlays#44
+[Gesture Monitor] edge-swipe#71
+[Gesture Monitor] swipe-up#81
+IME Handwriting Surface#275
+WindowToken{945402b type=2024 android.os.BinderProxy@c6204a5}#56
+84b9c88 ScreenDecorHwcOverlay#57
+ScreenDecorHwcOverlay#62
+WindowToken{488f991 type=2024 android.os.BinderProxy@b6337b8}#58
+182a0f6 ScreenDecorOverlay#59
+WindowToken{361c300 type=2024 android.os.BinderProxy@b0a9583}#60
+c43117e ScreenDecorOverlayBottom#61
+
+===== 7. DYNAMIC FPS + CPU/GPU SAMPLING - 90s window, autodetect foreground app =====
+Sampling starts NOW on whatever is currently on screen.
+Focus/layer/FPS are re-detected every sample - no app name hardcoded.
+
+--- sample 0 pkg=com.retroarch.aarch64 ts=00:19:29 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   90436 1013002
+gpu_busy_pct: 8.9
+thermal_skin: 44186 thermal_battery: 30000
+
+--- sample 1 pkg=com.retroarch.aarch64 ts=00:19:32 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   92256 1008724
+gpu_busy_pct: 9.1
+thermal_skin: 44101 thermal_battery: 30000
+
+--- sample 2 pkg=com.retroarch.aarch64 ts=00:19:36 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   89789 1003217
+gpu_busy_pct: 9.0
+thermal_skin: 43998 thermal_battery: 30000
+
+--- sample 3 pkg=com.retroarch.aarch64 ts=00:19:39 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   92329 1006981
+gpu_busy_pct: 9.2
+thermal_skin: 43951 thermal_battery: 30000
+
+--- sample 4 pkg=com.retroarch.aarch64 ts=00:19:42 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   93044 1015186
+gpu_busy_pct: 9.2
+thermal_skin: 43897 thermal_battery: 30000
+
+--- sample 5 pkg=com.retroarch.aarch64 ts=00:19:45 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   91250 1000840
+gpu_busy_pct: 9.1
+thermal_skin: 43884 thermal_battery: 30000
+
+--- sample 6 pkg=com.retroarch.aarch64 ts=00:19:49 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   91032 1005064
+gpu_busy_pct: 9.1
+thermal_skin: 43857 thermal_battery: 30000
+
+--- sample 7 pkg=com.retroarch.aarch64 ts=00:19:52 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   92258 1009905
+gpu_busy_pct: 9.1
+thermal_skin: 43817 thermal_battery: 30000
+
+--- sample 8 pkg=com.retroarch.aarch64 ts=00:19:55 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   92642 1010182
+gpu_busy_pct: 9.2
+thermal_skin: 43796 thermal_battery: 30000
+
+--- sample 9 pkg=com.retroarch.aarch64 ts=00:19:58 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   92157 1014934
+gpu_busy_pct: 9.1
+thermal_skin: 43749 thermal_battery: 30000
+
+--- sample 10 pkg=com.retroarch.aarch64 ts=00:20:02 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   92515 1007033
+gpu_busy_pct: 9.2
+thermal_skin: 43729 thermal_battery: 30000
+
+--- sample 11 pkg=com.retroarch.aarch64 ts=00:20:05 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   92395 1013071
+gpu_busy_pct: 9.1
+thermal_skin: 43702 thermal_battery: 30000
+
+--- sample 12 pkg=com.retroarch.aarch64 ts=00:20:08 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   93051 1012805
+gpu_busy_pct: 9.2
+thermal_skin: 43668 thermal_battery: 30000
+
+--- sample 13 pkg=com.retroarch.aarch64 ts=00:20:11 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   90908 1000372
+gpu_busy_pct: 9.1
+thermal_skin: 43642 thermal_battery: 30000
+
+--- sample 14 pkg=com.retroarch.aarch64 ts=00:20:15 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   92921 1013641
+gpu_busy_pct: 9.2
+thermal_skin: 43614 thermal_battery: 30000
+
+--- sample 15 pkg=com.retroarch.aarch64 ts=00:20:18 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   91721 1015041
+gpu_busy_pct: 9.0
+thermal_skin: 43574 thermal_battery: 30000
+
+--- sample 16 pkg=com.retroarch.aarch64 ts=00:20:21 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   91748 1015217
+gpu_busy_pct: 9.0
+thermal_skin: 43547 thermal_battery: 30000
+
+--- sample 17 pkg=com.retroarch.aarch64 ts=00:20:25 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   92156 1014536
+gpu_busy_pct: 9.1
+thermal_skin: 43506 thermal_battery: 30000
+
+--- sample 18 pkg=com.retroarch.aarch64 ts=00:20:28 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   91901 1011132
+gpu_busy_pct: 9.1
+thermal_skin: 43486 thermal_battery: 30000
+
+--- sample 19 pkg=com.retroarch.aarch64 ts=00:20:31 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   91390 1011087
+gpu_busy_pct: 9.0
+thermal_skin: 43459 thermal_battery: 30000
+
+--- sample 20 pkg=com.retroarch.aarch64 ts=00:20:34 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   91801 1012691
+gpu_busy_pct: 9.1
+thermal_skin: 43431 thermal_battery: 30000
+
+--- sample 21 pkg=com.retroarch.aarch64 ts=00:20:38 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   92157 1012877
+gpu_busy_pct: 9.1
+thermal_skin: 43404 thermal_battery: 30000
+
+--- sample 22 pkg=com.retroarch.aarch64 ts=00:20:41 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   92360 1014746
+gpu_busy_pct: 9.1
+thermal_skin: 43370 thermal_battery: 30000
+
+--- sample 23 pkg=com.retroarch.aarch64 ts=00:20:44 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   91032 1006846
+gpu_busy_pct: 9.0
+thermal_skin: 43356 thermal_battery: 30000
+
+--- sample 24 pkg=com.retroarch.aarch64 ts=00:20:48 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   91882 1012911
+gpu_busy_pct: 9.1
+thermal_skin: 43316 thermal_battery: 30000
+
+--- sample 25 pkg=com.retroarch.aarch64 ts=00:20:51 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   92665 1013031
+gpu_busy_pct: 9.1
+thermal_skin: 43296 thermal_battery: 30000
+
+--- sample 26 pkg=com.retroarch.aarch64 ts=00:20:54 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   92150 1012759
+gpu_busy_pct: 9.1
+thermal_skin: 43282 thermal_battery: 30000
+
+--- sample 27 pkg=com.retroarch.aarch64 ts=00:20:57 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   92399 1011472
+gpu_busy_pct: 9.1
+thermal_skin: 43248 thermal_battery: 30000
+
+--- sample 28 pkg=com.retroarch.aarch64 ts=00:21:01 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   92185 1012895
+gpu_busy_pct: 9.1
+thermal_skin: 43220 thermal_battery: 30000
+
+--- sample 29 pkg=com.retroarch.aarch64 ts=00:21:04 ---
+focus_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+resumed_raw:     topResumedActivity=ActivityRecord{a020b44 u0 com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture t11}
+matched_layer: bc18457 ActivityRecordInputSink com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture#288
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=performance,freq=2265600 p2:gov=performance,freq=3148800 p5:gov=performance,freq=2956800 p7:gov=performance,freq=3302400
+gpu_freq_hz: 231000000
+gpu_busy_raw:   90260 1002529
+gpu_busy_pct: 9.0
+thermal_skin: 43206 thermal_battery: 30000
+
+===== 8. WRITE SAFETY TEST (unchanged from v5/v6) =====
+write_test: OK (/sdcard writable)
+cpufreq_write_test: OK (policy0 scaling_max_freq writable)
+
+===== DONE. Log written to /sdcard/pulse_lite_diag_ra_v7.log =====

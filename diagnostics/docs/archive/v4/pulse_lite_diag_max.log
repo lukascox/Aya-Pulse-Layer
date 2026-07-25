@@ -1,0 +1,1596 @@
+
+===== 0. IDENTITY / RUN INFO =====
+suffix: max
+id: uid=0(root) gid=0(root) groups=0(root) context=u:r:xsud:s0
+date: Tue Jul 21 17:57:20 CEST 2026
+>>> REMINDER: note which AYASpace mode was active for this run when reporting back <<<
+
+===== 1. DEVICE / SOC FINGERPRINT =====
+ro.product.model=Pocket FIT
+ro.product.name=AYANEO_Pocket_FIT
+ro.product.device=PocketFIT
+ro.build.flavor=AYANEO_PocketS2-user
+ro.vendor.qti.soc_model=SG8350P
+ro.board.platform=pineapple
+android.version=14
+android.sdk=34
+--- full getprop grep soc/hw/board/gpu ---
+[graphics.gpu.profiler.support]: [true]
+[init.svc.gpu]: [running]
+[init.svc.vendor.qti.hardware.display.allocator]: [running]
+[init.svc.vendor.qti.hardware.display.composer]: [running]
+[init.svc.vendor.qti.hardware.memtrack]: [running]
+[init.svc.vendor.qti.hardware.sensorscalibrate-service]: [running]
+[init.svc.vendor.qti.hardware.spu.service]: [running]
+[init.svc_debug_pid.gpu]: [1549]
+[init.svc_debug_pid.vendor.qti.hardware.display.allocator]: [1424]
+[init.svc_debug_pid.vendor.qti.hardware.display.composer]: [1426]
+[init.svc_debug_pid.vendor.qti.hardware.memtrack]: [1404]
+[init.svc_debug_pid.vendor.qti.hardware.sensorscalibrate-service]: [1468]
+[init.svc_debug_pid.vendor.qti.hardware.spu.service]: [1402]
+[persist.sys.fake.gpu]: [Adreno (TM) 750]
+[persist.sys.soc.model]: []
+[persist.vendor.qcom.bluetooth.soc]: [hamilton]
+[ro.board.api_level]: [34]
+[ro.board.first_api_level]: [34]
+[ro.board.platform]: [pineapple]
+[ro.boot.board_id]: [0x00]
+[ro.boot.boot_devices]: [soc/1d84000.ufshc]
+[ro.boot.hardware]: [qcom]
+[ro.boot.vendor.qspa.gpu]: [enabled]
+[ro.boottime.gpu]: [8136616767]
+[ro.boottime.vendor.qti.hardware.display.allocator]: [8054136715]
+[ro.boottime.vendor.qti.hardware.display.composer]: [8055929579]
+[ro.boottime.vendor.qti.hardware.memtrack]: [8038107183]
+[ro.boottime.vendor.qti.hardware.sensorscalibrate-service]: [8084681350]
+[ro.boottime.vendor.qti.hardware.spu.service]: [8036372392]
+[ro.gfx.driver.1]: [com.qualcomm.qti.gpudrivers.pineapple.api34]
+[ro.hardware]: [qcom]
+[ro.hardware.egl]: [adreno]
+[ro.hardware.keystore_desede]: [true]
+[ro.hardware.vulkan]: [adreno]
+[ro.product.board]: [pineapple]
+[ro.soc.manufacturer]: [QTI]
+[ro.vendor.qti.soc_id]: [682]
+[ro.vendor.qti.soc_model]: [SG8350P]
+[ro.vendor.qti.soc_name]: [pineapple]
+[vendor.display.enable_hdr10_gpu_target]: [1]
+[vendor.display.gpu_rendering]: [true]
+
+===== 2. CPU TOPOLOGY - all policies, full frequency tables + governor =====
+--- policy0 ---
+affected_cpus: 0 1
+scaling_governor: performance
+scaling_available_governors: walt conservative powersave performance schedutil 
+cpuinfo_min_freq: 364800
+cpuinfo_max_freq: 2265600
+scaling_min_freq: 672000
+scaling_max_freq: 1248000
+scaling_cur_freq: 1248000
+scaling_available_frequencies: 364800 460800 556800 672000 787200 902400 1017600 1132800 1248000 1344000 1459200 1574400 1689600 1804800 1920000 2035200 2150400 2265600 
+--- policy2 ---
+affected_cpus: 2 3 4
+scaling_governor: performance
+scaling_available_governors: walt conservative powersave performance schedutil 
+cpuinfo_min_freq: 499200
+cpuinfo_max_freq: 3148800
+scaling_min_freq: 499200
+scaling_max_freq: 3148800
+scaling_cur_freq: 3148800
+scaling_available_frequencies: 499200 614400 729600 844800 960000 1075200 1190400 1286400 1401600 1497600 1612800 1708800 1824000 1920000 2035200 2131200 2188800 2246400 2323200 2380800 2438400 2515200 2572800 2630400 2707200 2764800 2841600 2899200 2956800 3014400 3072000 3148800 
+--- policy5 ---
+affected_cpus: 5 6
+scaling_governor: performance
+scaling_available_governors: walt conservative powersave performance schedutil 
+cpuinfo_min_freq: 499200
+cpuinfo_max_freq: 2956800
+scaling_min_freq: 499200
+scaling_max_freq: 2956800
+scaling_cur_freq: 2956800
+scaling_available_frequencies: 499200 614400 729600 844800 960000 1075200 1190400 1286400 1401600 1497600 1612800 1708800 1824000 1920000 2035200 2131200 2188800 2246400 2323200 2380800 2438400 2515200 2572800 2630400 2707200 2764800 2841600 2899200 2956800 
+--- policy7 ---
+affected_cpus: 7
+scaling_governor: performance
+scaling_available_governors: walt conservative powersave performance schedutil 
+cpuinfo_min_freq: 480000
+cpuinfo_max_freq: 3302400
+scaling_min_freq: 480000
+scaling_max_freq: 3302400
+scaling_cur_freq: 3302400
+scaling_available_frequencies: 480000 576000 672000 787200 902400 1017600 1132800 1248000 1363200 1478400 1593600 1708800 1824000 1939200 2035200 2112000 2169600 2246400 2304000 2380800 2438400 2496000 2553600 2630400 2688000 2745600 2803200 2880000 2937600 2995200 3052800 
+
+===== 3. GPU (kgsl) - full state =====
+max_pwrlevel: 0
+min_pwrlevel: 13
+num_pwrlevels: 14
+gpuclk: 231000000
+gpubusy (raw busy_cycles total_cycles):  134709 1007021
+gpubusypercentage (known broken on this kernel, kept for reference): 
+devfreq/governor: msm-adreno-tz
+devfreq/available_frequencies: 1050000000 1000000000 903000000 834000000 770000000 720000000 680000000 629000000 578000000 500000000 422000000 366000000 310000000 231000000
+
+===== 4. THERMAL ZONES - full list + current temps =====
+thermal_zone0: type=pm8550-bcl-lvl0 temp=0
+thermal_zone1: type=pm8550-bcl-lvl1 temp=0
+thermal_zone10: type=cpuss-0 temp=44600
+thermal_zone11: type=cpuss-1 temp=44200
+thermal_zone12: type=cpuss-2 temp=44900
+thermal_zone13: type=cpuss-3 temp=45300
+thermal_zone14: type=cpu-2-0-0 temp=48800
+thermal_zone15: type=cpu-2-0-1 temp=49600
+thermal_zone16: type=cpu-2-1-0 temp=44600
+thermal_zone17: type=cpu-2-1-1 temp=44600
+thermal_zone18: type=cpu-2-2-0 temp=44900
+thermal_zone19: type=cpu-2-2-1 temp=44600
+thermal_zone2: type=pm8550-bcl-lvl2 temp=0
+thermal_zone20: type=cpu-1-0-0 temp=50000
+thermal_zone21: type=cpu-1-0-1 temp=52700
+thermal_zone22: type=cpu-1-1-0 temp=48800
+thermal_zone23: type=cpu-1-1-1 temp=45700
+thermal_zone24: type=aoss-1 temp=42300
+thermal_zone25: type=cpu-1-2-0 temp=45300
+thermal_zone26: type=cpu-1-2-1 temp=44200
+thermal_zone27: type=cpu-1-2-2 temp=44200
+thermal_zone28: type=cpu-0-0-0 temp=45700
+thermal_zone29: type=cpu-0-1-0 temp=46100
+thermal_zone3: type=vbat temp=3886
+thermal_zone30: type=nsphvx-0 temp=42600
+thermal_zone31: type=nsphvx-1 temp=42300
+thermal_zone32: type=nsphmx-0 temp=41100
+thermal_zone33: type=nsphmx-1 temp=40700
+thermal_zone34: type=nsphmx-2 temp=40700
+thermal_zone35: type=nsphmx-3 temp=41500
+thermal_zone36: type=video temp=44200
+thermal_zone37: type=ddr temp=43400
+thermal_zone38: type=camera-0 temp=41900
+thermal_zone39: type=camera-1 temp=41500
+thermal_zone4: type=pm8550b-ibat-lvl0 temp=187
+thermal_zone40: type=aoss-2 temp=43000
+thermal_zone41: type=gpuss-0 temp=40600
+thermal_zone42: type=gpuss-1 temp=41000
+thermal_zone43: type=gpuss-2 temp=41400
+thermal_zone44: type=gpuss-3 temp=40600
+thermal_zone45: type=gpuss-4 temp=42600
+thermal_zone46: type=gpuss-5 temp=41800
+thermal_zone47: type=gpuss-6 temp=42200
+thermal_zone48: type=gpuss-7 temp=41400
+thermal_zone49: type=mdmss-0 temp=41400
+thermal_zone5: type=pm8550b-ibat-lvl1 temp=281
+thermal_zone50: type=mdmss-1 temp=39900
+thermal_zone51: type=mdmss-2 temp=40300
+thermal_zone52: type=mdmss-3 temp=41400
+thermal_zone53: type=socd temp=36
+thermal_zone54: type=xo-therm temp=40375
+thermal_zone55: type=skin-msm-therm temp=38949
+thermal_zone56: type=cam-flash-therm temp=40304
+thermal_zone57: type=wlan-therm temp=40388
+thermal_zone58: type=pa-therm-1 temp=38772
+thermal_zone59: type=rear-tof-therm temp=40241
+thermal_zone6: type=pm8550b-bcl-lvl0 temp=0
+thermal_zone60: type=usb-therm temp=25982
+thermal_zone61: type=wls-therm temp=64340
+thermal_zone62: type=pm8550b_lite_tz temp=47073
+thermal_zone63: type=pm8550ve_tz temp=39110
+thermal_zone64: type=pm8550vs_c_tz temp=38609
+thermal_zone65: type=pm8550vs_d_tz temp=40081
+thermal_zone66: type=pm8550vs_e_tz temp=42232
+thermal_zone67: type=pm8550vs_g_tz temp=39445
+thermal_zone68: type=pm8550_tz temp=40350
+thermal_zone69: type=pm8550b_tz temp=34796
+thermal_zone7: type=pm8550b-bcl-lvl1 temp=0
+thermal_zone70: type=usb temp=25000
+thermal_zone71: type=wireless temp=62000
+thermal_zone72: type=battery temp=30000
+thermal_zone8: type=pm8550b-bcl-lvl2 temp=0
+thermal_zone9: type=aoss-0 temp=42600
+
+===== 5. INSTALLED EMULATOR/GAMING PACKAGES =====
+package:org.dolphinemu.dolphinemu
+package:com.retrohrai.launcher
+package:com.android.internal.display.cutout.emulation.double
+package:com.android.internal.display.cutout.emulation.hole
+package:com.android.internal.display.cutout.emulation.tall
+package:com.android.internal.display.cutout.emulation.waterfall
+package:com.retroarch.aarch64
+package:com.android.internal.display.cutout.emulation.corner
+
+===== 6. SURFACEFLINGER WINDOW LIST (fallback FPS method reference) =====
+Display 0 name="Built-in Screen"#3
+WindowedMagnification:0:31#4
+HideDisplayCutout:0:14#5
+OneHanded:0:14#6
+FullscreenMagnification:0:12#7
+Leaf:0:1#8
+WallpaperWindowToken{853c819 token=android.os.Binder@6458b60}#88
+e24bfa7 com.android.systemui.wallpapers.ImageWallpaper#89
+com.android.systemui.wallpapers.ImageWallpaper#90
+Wallpaper BBQ wrapper#91
+DefaultTaskDisplayArea#9
+Task=1#46
+Task=85#95
+6c8694b ActivityRecordInputSink com.retrohrai.launcher/.MainActivity#105
+ActivityRecord{9a8ade6 u0 com.retrohrai.launcher/.MainActivity#96
+610618e com.retrohrai.launcher/com.retrohrai.launcher.MainActivity#100
+com.retrohrai.launcher/com.retrohrai.launcher.MainActivity#842
+ImeContainer#12
+WindowToken{f2861a5 type=2011 android.os.Binder@f45a39c}#106
+Surface(name=780959e InputMethod)/@0x7f28877 - animation-leash of insets_animation#898
+780959e InputMethod#109
+Task=3#50
+Task=4#51
+Dim layer#55
+Task=5#52
+Dim layer#56
+Leaf:3:12#10
+WindowToken{b9893f7 type=2038 android.os.BinderProxy@d30172f}#53
+3f823ff ShellDropTarget#54
+ImePlaceholder:13:14#11
+OneHanded:15:15#13
+FullscreenMagnification:15:15#14
+Leaf:15:15#15
+WindowToken{564badf type=2000 android.os.BinderProxy@1e7157e}#76
+Surface(name=44db32c StatusBar)/@0xe0425fb - animation-leash of insets_animation#852
+44db32c StatusBar#77
+StatusBar#87
+HideDisplayCutout:16:16#16
+OneHanded:16:16#17
+FullscreenMagnification:16:16#18
+Leaf:16:16#19
+OneHanded:17:17#20
+FullscreenMagnification:17:17#21
+Leaf:17:17#22
+WindowToken{c52e2e8 type=2040 android.os.BinderProxy@91e240b}#74
+7e74594 NotificationShade#75
+HideDisplayCutout:18:23#23
+OneHanded:18:23#24
+FullscreenMagnification:18:23#25
+Leaf:18:23#26
+Leaf:24:25#27
+WindowToken{a8e2741 type=2019 android.os.BinderProxy@8ece28}#67
+Surface(name=bc2b4e6 NavigationBar0)/@0x7753972 - animation-leash of insets_animation#843
+bc2b4e6 NavigationBar0#68
+NavigationBar0#83
+WindowToken{76c8088 type=2024 android.os.BinderProxy@68b342b}#71
+98c5a21 EdgeBackGestureHandler0#72
+WindowToken{17a1d6c type=2024 android.os.BinderProxy@5b3661f}#81
+37d9f35 SecondaryHomeHandle0#82
+HideDisplayCutout:26:31#28
+OneHanded:26:31#29
+FullscreenMagnification:26:27#30
+Leaf:26:27#31
+Leaf:28:28#32
+FullscreenMagnification:29:31#33
+Leaf:29:31#34
+WindowToken{180d40 type=2016 android.os.BinderProxy@d5ea0c3}#662
+dc75479 com.ayaneo.gamewindow#663
+#664
+WindowToken{39d6bc4 type=2032 android.os.Binder@42416d7}#108
+HideDisplayCutout:32:37#35
+OneHanded:32:32#36
+Leaf:32:32#37
+FullscreenMagnification:33:33#38
+Leaf:33:33#39
+OneHanded:34:37#40
+FullscreenMagnification:34:37#41
+Leaf:34:37#42
+Leaf:38:38#43
+Accessibility Overlays#45
+Display Overlays#44
+[Gesture Monitor] edge-swipe#70
+[Gesture Monitor] swipe-up#80
+IME Handwriting Surface#846
+WindowToken{58eee6d type=2024 android.os.BinderProxy@57ec684}#57
+fceeaa2 ScreenDecorHwcOverlay#58
+ScreenDecorHwcOverlay#65
+WindowToken{871c58b type=2024 android.os.BinderProxy@73ff305}#61
+723a668 ScreenDecorOverlay#62
+WindowToken{843277b type=2024 android.os.BinderProxy@617230a}#63
+ec17998 ScreenDecorOverlayBottom#64
+
+===== 7. FPS + GPU BUSY% SAMPLING - 90s window, current foreground app =====
+Sampling starts NOW on whatever is currently on screen.
+If you want to test a specific game, launch it BEFORE running this script.
+--- sample 0 pkg=com.retrohrai.launcher 17:57:23 ---
+Applications Graphics Acceleration Info:
+Uptime: 7324401 Realtime: 8312446
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 79565
+Janky frames: 15392 (19.35%)
+Janky frames (legacy): 22163 (27.86%)
+50th percentile: 9ms
+90th percentile: 27ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3615
+Number High input latency: 40737
+Number Slow UI thread: 3892
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15385
+Number Frame deadline missed: 15392
+Number Frame deadline missed (legacy): 19357
+HISTOGRAM: 5ms=5499 6ms=9805 7ms=8249 8ms=10245 9ms=10734 10ms=7340 11ms=3533 12ms=4326 13ms=879 14ms=1044 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=103 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2290 3ms=32803 4ms=29688 5ms=9944 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.71 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370387 bytes, 361.71 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  261644 1002789  gpu_busy_pct(computed): n/a
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 1 pkg=com.retrohrai.launcher 17:57:26 ---
+Applications Graphics Acceleration Info:
+Uptime: 7327533 Realtime: 8315578
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 79909
+Janky frames: 15392 (19.26%)
+Janky frames (legacy): 22169 (27.74%)
+50th percentile: 9ms
+90th percentile: 27ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3615
+Number High input latency: 40888
+Number Slow UI thread: 3892
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15385
+Number Frame deadline missed: 15392
+Number Frame deadline missed (legacy): 19361
+HISTOGRAM: 5ms=5499 6ms=9951 7ms=8284 8ms=10349 9ms=10772 10ms=7350 11ms=3543 12ms=4327 13ms=879 14ms=1044 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=103 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2290 3ms=32984 4ms=29796 5ms=9999 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.71 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370387 bytes, 361.71 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  498105 1007756  gpu_busy_pct(computed): 4760
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 2 pkg=com.retrohrai.launcher 17:57:29 ---
+Applications Graphics Acceleration Info:
+Uptime: 7330636 Realtime: 8318680
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 80250
+Janky frames: 15392 (19.18%)
+Janky frames (legacy): 22174 (27.63%)
+50th percentile: 9ms
+90th percentile: 26ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3615
+Number High input latency: 40901
+Number Slow UI thread: 3892
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15385
+Number Frame deadline missed: 15392
+Number Frame deadline missed (legacy): 19366
+HISTOGRAM: 5ms=5513 6ms=10065 7ms=8323 8ms=10446 9ms=10822 10ms=7372 11ms=3547 12ms=4328 13ms=879 14ms=1044 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=103 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2302 3ms=33142 4ms=29912 5ms=10054 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.71 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370387 bytes, 361.71 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  426003 1013328  gpu_busy_pct(computed): -1294
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 3 pkg=com.retrohrai.launcher 17:57:32 ---
+Applications Graphics Acceleration Info:
+Uptime: 7333743 Realtime: 8321788
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 80593
+Janky frames: 15394 (19.10%)
+Janky frames (legacy): 22181 (27.52%)
+50th percentile: 9ms
+90th percentile: 26ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 40924
+Number Slow UI thread: 3892
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15387
+Number Frame deadline missed: 15394
+Number Frame deadline missed (legacy): 19372
+HISTOGRAM: 5ms=5520 6ms=10228 7ms=8367 8ms=10517 9ms=10856 10ms=7390 11ms=3549 12ms=4330 13ms=880 14ms=1044 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2309 3ms=33341 4ms=30006 5ms=10097 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.71 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370387 bytes, 361.71 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  422058 1013625  gpu_busy_pct(computed): -1328
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 4 pkg=com.retrohrai.launcher 17:57:35 ---
+Applications Graphics Acceleration Info:
+Uptime: 7336885 Realtime: 8324930
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 80952
+Janky frames: 15394 (19.02%)
+Janky frames (legacy): 22187 (27.41%)
+50th percentile: 9ms
+90th percentile: 26ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 41081
+Number Slow UI thread: 3892
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15387
+Number Frame deadline missed: 15394
+Number Frame deadline missed (legacy): 19375
+HISTOGRAM: 5ms=5546 6ms=10356 7ms=8420 8ms=10601 9ms=10890 10ms=7415 11ms=3558 12ms=4330 13ms=880 14ms=1044 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2330 3ms=33514 4ms=30116 5ms=10152 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.71 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370387 bytes, 361.71 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  439933 1000238  gpu_busy_pct(computed): n/a
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 5 pkg=com.retrohrai.launcher 17:57:38 ---
+Applications Graphics Acceleration Info:
+Uptime: 7339999 Realtime: 8328044
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 81303
+Janky frames: 15394 (18.93%)
+Janky frames (legacy): 22194 (27.30%)
+50th percentile: 9ms
+90th percentile: 26ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 41146
+Number Slow UI thread: 3892
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15387
+Number Frame deadline missed: 15394
+Number Frame deadline missed (legacy): 19381
+HISTOGRAM: 5ms=5560 6ms=10494 7ms=8469 8ms=10697 9ms=10919 10ms=7431 11ms=3565 12ms=4331 13ms=881 14ms=1044 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2338 3ms=33686 4ms=30223 5ms=10216 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.71 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370387 bytes, 361.71 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  474501 1002489  gpu_busy_pct(computed): 1535
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 6 pkg=com.retrohrai.launcher 17:57:41 ---
+Applications Graphics Acceleration Info:
+Uptime: 7343142 Realtime: 8331187
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 81653
+Janky frames: 15394 (18.85%)
+Janky frames (legacy): 22201 (27.19%)
+50th percentile: 9ms
+90th percentile: 26ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 41312
+Number Slow UI thread: 3892
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15387
+Number Frame deadline missed: 15394
+Number Frame deadline missed (legacy): 19387
+HISTOGRAM: 5ms=5573 6ms=10622 7ms=8515 8ms=10798 9ms=10960 10ms=7446 11ms=3569 12ms=4333 13ms=881 14ms=1044 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2348 3ms=33863 4ms=30333 5ms=10269 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.71 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370387 bytes, 361.71 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  494834 1008814  gpu_busy_pct(computed): 321
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 7 pkg=com.retrohrai.launcher 17:57:44 ---
+Applications Graphics Acceleration Info:
+Uptime: 7346278 Realtime: 8334322
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 81994
+Janky frames: 15394 (18.77%)
+Janky frames (legacy): 22205 (27.08%)
+50th percentile: 9ms
+90th percentile: 26ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 41361
+Number Slow UI thread: 3892
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15387
+Number Frame deadline missed: 15394
+Number Frame deadline missed (legacy): 19391
+HISTOGRAM: 5ms=5588 6ms=10771 7ms=8547 8ms=10891 9ms=10990 10ms=7465 11ms=3571 12ms=4333 13ms=882 14ms=1044 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2359 3ms=34048 4ms=30428 5ms=10319 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.71 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370387 bytes, 361.71 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  501317 1006504  gpu_busy_pct(computed): n/a
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 8 pkg=com.retrohrai.launcher 17:57:48 ---
+Applications Graphics Acceleration Info:
+Uptime: 7349425 Realtime: 8337470
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 82347
+Janky frames: 15395 (18.70%)
+Janky frames (legacy): 22212 (26.97%)
+50th percentile: 9ms
+90th percentile: 26ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 41510
+Number Slow UI thread: 3893
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15388
+Number Frame deadline missed: 15395
+Number Frame deadline missed (legacy): 19397
+HISTOGRAM: 5ms=5600 6ms=10891 7ms=8586 8ms=10992 9ms=11047 10ms=7482 11ms=3576 12ms=4334 13ms=882 14ms=1045 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2367 3ms=34208 4ms=30550 5ms=10382 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.71 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370387 bytes, 361.71 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  479897 1009201  gpu_busy_pct(computed): -794
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 9 pkg=com.retrohrai.launcher 17:57:51 ---
+Applications Graphics Acceleration Info:
+Uptime: 7352560 Realtime: 8340605
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 82703
+Janky frames: 15395 (18.61%)
+Janky frames (legacy): 22218 (26.86%)
+50th percentile: 9ms
+90th percentile: 26ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 41603
+Number Slow UI thread: 3893
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15388
+Number Frame deadline missed: 15395
+Number Frame deadline missed (legacy): 19401
+HISTOGRAM: 5ms=5615 6ms=11030 7ms=8634 8ms=11081 9ms=11084 10ms=7504 11ms=3581 12ms=4335 13ms=882 14ms=1045 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2380 3ms=34387 4ms=30657 5ms=10439 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.71 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370387 bytes, 361.71 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  440075 1008026  gpu_busy_pct(computed): n/a
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 10 pkg=com.retrohrai.launcher 17:57:54 ---
+Applications Graphics Acceleration Info:
+Uptime: 7355679 Realtime: 8343724
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 83069
+Janky frames: 15395 (18.53%)
+Janky frames (legacy): 22221 (26.75%)
+50th percentile: 9ms
+90th percentile: 26ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 41603
+Number Slow UI thread: 3893
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15388
+Number Frame deadline missed: 15395
+Number Frame deadline missed (legacy): 19404
+HISTOGRAM: 5ms=5648 6ms=11172 7ms=8682 8ms=11155 9ms=11128 10ms=7519 11ms=3591 12ms=4335 13ms=882 14ms=1045 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2398 3ms=34574 4ms=30747 5ms=10510 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.71 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370387 bytes, 361.71 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  467405 1009950  gpu_busy_pct(computed): 1420
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 11 pkg=com.retrohrai.launcher 17:57:57 ---
+Applications Graphics Acceleration Info:
+Uptime: 7358800 Realtime: 8346844
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 83422
+Janky frames: 15395 (18.45%)
+Janky frames (legacy): 22228 (26.65%)
+50th percentile: 9ms
+90th percentile: 26ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 41660
+Number Slow UI thread: 3893
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15388
+Number Frame deadline missed: 15395
+Number Frame deadline missed (legacy): 19411
+HISTOGRAM: 5ms=5667 6ms=11322 7ms=8721 8ms=11243 9ms=11154 10ms=7541 11ms=3599 12ms=4336 13ms=882 14ms=1045 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2414 3ms=34759 4ms=30849 5ms=10560 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.71 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370387 bytes, 361.71 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  488638 1006678  gpu_busy_pct(computed): n/a
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 12 pkg=com.retrohrai.launcher 17:58:00 ---
+Applications Graphics Acceleration Info:
+Uptime: 7361941 Realtime: 8349985
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 83778
+Janky frames: 15395 (18.38%)
+Janky frames (legacy): 22232 (26.54%)
+50th percentile: 9ms
+90th percentile: 25ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 41728
+Number Slow UI thread: 3893
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15388
+Number Frame deadline missed: 15395
+Number Frame deadline missed (legacy): 19414
+HISTOGRAM: 5ms=5683 6ms=11455 7ms=8761 8ms=11336 9ms=11203 10ms=7559 11ms=3605 12ms=4337 13ms=882 14ms=1045 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2429 3ms=34926 4ms=30957 5ms=10626 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.94 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370623 bytes, 361.94 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  467765 1001647  gpu_busy_pct(computed): n/a
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 13 pkg=com.retrohrai.launcher 17:58:03 ---
+Applications Graphics Acceleration Info:
+Uptime: 7365087 Realtime: 8353132
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 84129
+Janky frames: 15395 (18.30%)
+Janky frames (legacy): 22239 (26.43%)
+50th percentile: 9ms
+90th percentile: 25ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 41879
+Number Slow UI thread: 3893
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15388
+Number Frame deadline missed: 15395
+Number Frame deadline missed (legacy): 19418
+HISTOGRAM: 5ms=5697 6ms=11591 7ms=8806 8ms=11431 9ms=11240 10ms=7579 11ms=3608 12ms=4338 13ms=882 14ms=1045 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2443 3ms=35106 4ms=31063 5ms=10677 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.94 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370623 bytes, 361.94 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  484513 1005350  gpu_busy_pct(computed): 452
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 14 pkg=com.retrohrai.launcher 17:58:06 ---
+Applications Graphics Acceleration Info:
+Uptime: 7368227 Realtime: 8356272
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 84478
+Janky frames: 15395 (18.22%)
+Janky frames (legacy): 22247 (26.33%)
+50th percentile: 9ms
+90th percentile: 25ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 41981
+Number Slow UI thread: 3893
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15388
+Number Frame deadline missed: 15395
+Number Frame deadline missed (legacy): 19424
+HISTOGRAM: 5ms=5713 6ms=11724 7ms=8843 8ms=11524 9ms=11284 10ms=7596 11ms=3615 12ms=4340 13ms=882 14ms=1045 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2455 3ms=35280 4ms=31168 5ms=10735 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.94 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370623 bytes, 361.94 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  439332 1008062  gpu_busy_pct(computed): -1665
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 15 pkg=com.retrohrai.launcher 17:58:10 ---
+Applications Graphics Acceleration Info:
+Uptime: 7371344 Realtime: 8359388
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 84830
+Janky frames: 15395 (18.15%)
+Janky frames (legacy): 22252 (26.23%)
+50th percentile: 9ms
+90th percentile: 25ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 42096
+Number Slow UI thread: 3893
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15388
+Number Frame deadline missed: 15395
+Number Frame deadline missed (legacy): 19427
+HISTOGRAM: 5ms=5740 6ms=11851 7ms=8884 8ms=11612 9ms=11326 10ms=7612 11ms=3623 12ms=4342 13ms=883 14ms=1045 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2473 3ms=35448 4ms=31263 5ms=10806 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.94 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370623 bytes, 361.94 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  448389 1001323  gpu_busy_pct(computed): n/a
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 16 pkg=com.retrohrai.launcher 17:58:13 ---
+Applications Graphics Acceleration Info:
+Uptime: 7374492 Realtime: 8362537
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 85081
+Janky frames: 15395 (18.09%)
+Janky frames (legacy): 22257 (26.16%)
+50th percentile: 9ms
+90th percentile: 25ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 42200
+Number Slow UI thread: 3893
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15388
+Number Frame deadline missed: 15395
+Number Frame deadline missed (legacy): 19431
+HISTOGRAM: 5ms=5754 6ms=11920 7ms=8916 8ms=11693 9ms=11355 10ms=7631 11ms=3629 12ms=4343 13ms=883 14ms=1045 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2486 3ms=35540 4ms=31375 5ms=10840 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.94 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370623 bytes, 361.94 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  437250 1001610  gpu_busy_pct(computed): -3881
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 17 pkg=com.retrohrai.launcher 17:58:16 ---
+Applications Graphics Acceleration Info:
+Uptime: 7377626 Realtime: 8365671
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 85391
+Janky frames: 15395 (18.03%)
+Janky frames (legacy): 22259 (26.07%)
+50th percentile: 9ms
+90th percentile: 25ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 42233
+Number Slow UI thread: 3893
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15388
+Number Frame deadline missed: 15395
+Number Frame deadline missed (legacy): 19433
+HISTOGRAM: 5ms=5768 6ms=12062 7ms=8967 8ms=11752 9ms=11383 10ms=7643 11ms=3633 12ms=4343 13ms=883 14ms=1045 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2500 3ms=35725 4ms=31462 5ms=10864 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.94 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370623 bytes, 361.94 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  375190 1000380  gpu_busy_pct(computed): n/a
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 18 pkg=com.retrohrai.launcher 17:58:19 ---
+Applications Graphics Acceleration Info:
+Uptime: 7380759 Realtime: 8368803
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 85649
+Janky frames: 15395 (17.97%)
+Janky frames (legacy): 22265 (26.00%)
+50th percentile: 9ms
+90th percentile: 25ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 42327
+Number Slow UI thread: 3893
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15388
+Number Frame deadline missed: 15395
+Number Frame deadline missed (legacy): 19437
+HISTOGRAM: 5ms=5771 6ms=12168 7ms=8989 8ms=11815 9ms=11422 10ms=7662 11ms=3638 12ms=4344 13ms=883 14ms=1045 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2501 3ms=35864 4ms=31557 5ms=10887 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.94 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370623 bytes, 361.94 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  134294 1011242  gpu_busy_pct(computed): -2217
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 19 pkg=com.retrohrai.launcher 17:58:22 ---
+Applications Graphics Acceleration Info:
+Uptime: 7383887 Realtime: 8371932
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 86008
+Janky frames: 15395 (17.90%)
+Janky frames (legacy): 22265 (25.89%)
+50th percentile: 9ms
+90th percentile: 25ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 42327
+Number Slow UI thread: 3893
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15388
+Number Frame deadline missed: 15395
+Number Frame deadline missed (legacy): 19437
+HISTOGRAM: 5ms=5795 6ms=12313 7ms=9029 8ms=11902 9ms=11458 10ms=7683 11ms=3644 12ms=4344 13ms=883 14ms=1045 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2523 3ms=36044 4ms=31666 5ms=10935 6ms=1975 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.94 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370623 bytes, 361.94 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  470535 1004880  gpu_busy_pct(computed): n/a
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 20 pkg=com.retrohrai.launcher 17:58:25 ---
+Applications Graphics Acceleration Info:
+Uptime: 7387031 Realtime: 8375075
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 86339
+Janky frames: 15395 (17.83%)
+Janky frames (legacy): 22270 (25.79%)
+50th percentile: 9ms
+90th percentile: 25ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 42458
+Number Slow UI thread: 3893
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15388
+Number Frame deadline missed: 15395
+Number Frame deadline missed (legacy): 19439
+HISTOGRAM: 5ms=5808 6ms=12431 7ms=9072 8ms=11987 9ms=11511 10ms=7697 11ms=3649 12ms=4344 13ms=883 14ms=1045 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2535 3ms=36212 4ms=31778 5ms=10973 6ms=1976 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.94 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370623 bytes, 361.94 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  467940 1008762  gpu_busy_pct(computed): -66
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 21 pkg=com.retrohrai.launcher 17:58:28 ---
+Applications Graphics Acceleration Info:
+Uptime: 7390137 Realtime: 8378182
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 86690
+Janky frames: 15395 (17.76%)
+Janky frames (legacy): 22275 (25.70%)
+50th percentile: 9ms
+90th percentile: 25ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 42506
+Number Slow UI thread: 3893
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15388
+Number Frame deadline missed: 15395
+Number Frame deadline missed (legacy): 19443
+HISTOGRAM: 5ms=5838 6ms=12553 7ms=9117 8ms=12068 9ms=11555 10ms=7722 11ms=3653 12ms=4344 13ms=883 14ms=1045 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2562 3ms=36376 4ms=31886 5ms=11025 6ms=1976 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.94 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370623 bytes, 361.94 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  437787 1007141  gpu_busy_pct(computed): n/a
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 22 pkg=com.retrohrai.launcher 17:58:31 ---
+Applications Graphics Acceleration Info:
+Uptime: 7393281 Realtime: 8381325
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 87026
+Janky frames: 15395 (17.69%)
+Janky frames (legacy): 22279 (25.60%)
+50th percentile: 9ms
+90th percentile: 24ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 42528
+Number Slow UI thread: 3893
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15388
+Number Frame deadline missed: 15395
+Number Frame deadline missed (legacy): 19447
+HISTOGRAM: 5ms=5843 6ms=12724 7ms=9161 8ms=12136 9ms=11582 10ms=7738 11ms=3657 12ms=4345 13ms=883 14ms=1045 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2562 3ms=36593 4ms=31980 5ms=11050 6ms=1976 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.94 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370623 bytes, 361.94 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  474754 1009647  gpu_busy_pct(computed): 1475
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 23 pkg=com.retrohrai.launcher 17:58:35 ---
+Applications Graphics Acceleration Info:
+Uptime: 7396409 Realtime: 8384454
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 87360
+Janky frames: 15395 (17.62%)
+Janky frames (legacy): 22288 (25.51%)
+50th percentile: 9ms
+90th percentile: 24ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 42528
+Number Slow UI thread: 3893
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15388
+Number Frame deadline missed: 15395
+Number Frame deadline missed (legacy): 19456
+HISTOGRAM: 5ms=5852 6ms=12899 7ms=9203 8ms=12192 9ms=11602 10ms=7759 11ms=3665 12ms=4348 13ms=883 14ms=1045 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2569 3ms=36819 4ms=32053 5ms=11078 6ms=1976 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.94 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370623 bytes, 361.94 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  429494 1005120  gpu_busy_pct(computed): n/a
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 24 pkg=com.retrohrai.launcher 17:58:38 ---
+Applications Graphics Acceleration Info:
+Uptime: 7399558 Realtime: 8387602
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 87696
+Janky frames: 15395 (17.55%)
+Janky frames (legacy): 22293 (25.42%)
+50th percentile: 9ms
+90th percentile: 24ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 42667
+Number Slow UI thread: 3893
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15388
+Number Frame deadline missed: 15395
+Number Frame deadline missed (legacy): 19461
+HISTOGRAM: 5ms=5875 6ms=13048 7ms=9236 8ms=12264 9ms=11639 10ms=7772 11ms=3671 12ms=4350 13ms=884 14ms=1045 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2583 3ms=37006 4ms=32139 5ms=11127 6ms=1976 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.94 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370623 bytes, 361.94 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  449147 1006544  gpu_busy_pct(computed): 1380
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 25 pkg=com.retrohrai.launcher 17:58:41 ---
+Applications Graphics Acceleration Info:
+Uptime: 7402684 Realtime: 8390728
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 87936
+Janky frames: 15395 (17.51%)
+Janky frames (legacy): 22297 (25.36%)
+50th percentile: 9ms
+90th percentile: 24ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 42703
+Number Slow UI thread: 3893
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15388
+Number Frame deadline missed: 15395
+Number Frame deadline missed (legacy): 19465
+HISTOGRAM: 5ms=5881 6ms=13146 7ms=9269 8ms=12320 9ms=11669 10ms=7785 11ms=3673 12ms=4352 13ms=884 14ms=1045 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2585 3ms=37164 4ms=32206 5ms=11140 6ms=1976 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.94 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370623 bytes, 361.94 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  348430 1018679  gpu_busy_pct(computed): -829
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 26 pkg=com.retrohrai.launcher 17:58:44 ---
+Applications Graphics Acceleration Info:
+Uptime: 7405815 Realtime: 8393860
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 88122
+Janky frames: 15396 (17.47%)
+Janky frames (legacy): 22304 (25.31%)
+50th percentile: 9ms
+90th percentile: 24ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 42706
+Number Slow UI thread: 3894
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15389
+Number Frame deadline missed: 15396
+Number Frame deadline missed (legacy): 19472
+HISTOGRAM: 5ms=5881 6ms=13197 7ms=9285 8ms=12366 9ms=11703 10ms=7812 11ms=3684 12ms=4352 13ms=884 14ms=1046 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2585 3ms=37230 4ms=32300 5ms=11166 6ms=1976 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.94 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370623 bytes, 361.94 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  275691 1005345  gpu_busy_pct(computed): n/a
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 27 pkg=com.retrohrai.launcher 17:58:47 ---
+Applications Graphics Acceleration Info:
+Uptime: 7408961 Realtime: 8397006
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 88468
+Janky frames: 15396 (17.40%)
+Janky frames (legacy): 22308 (25.22%)
+50th percentile: 9ms
+90th percentile: 24ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 42820
+Number Slow UI thread: 3894
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15389
+Number Frame deadline missed: 15396
+Number Frame deadline missed (legacy): 19474
+HISTOGRAM: 5ms=5905 6ms=13337 7ms=9326 8ms=12454 9ms=11737 10ms=7825 11ms=3688 12ms=4354 13ms=884 14ms=1046 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2604 3ms=37415 4ms=32393 5ms=11215 6ms=1976 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.94 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370623 bytes, 361.94 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  443144 1009761  gpu_busy_pct(computed): 3791
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 28 pkg=com.retrohrai.launcher 17:58:50 ---
+Applications Graphics Acceleration Info:
+Uptime: 7412108 Realtime: 8400153
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 88749
+Janky frames: 15396 (17.35%)
+Janky frames (legacy): 22311 (25.14%)
+50th percentile: 9ms
+90th percentile: 24ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 42888
+Number Slow UI thread: 3894
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15389
+Number Frame deadline missed: 15396
+Number Frame deadline missed (legacy): 19475
+HISTOGRAM: 5ms=5919 6ms=13413 7ms=9365 8ms=12543 9ms=11782 10ms=7838 11ms=3692 12ms=4355 13ms=884 14ms=1046 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2616 3ms=37532 4ms=32503 5ms=11257 6ms=1976 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.94 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370623 bytes, 361.94 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  270379 1001424  gpu_busy_pct(computed): n/a
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+--- sample 29 pkg=com.retrohrai.launcher 17:58:53 ---
+Applications Graphics Acceleration Info:
+Uptime: 7415243 Realtime: 8403288
+
+** Graphics info for pid 4082 [com.retrohrai.launcher] **
+
+Stats since: 18786522231ns
+Total frames rendered: 89105
+Janky frames: 15396 (17.28%)
+Janky frames (legacy): 22314 (25.04%)
+50th percentile: 9ms
+90th percentile: 24ms
+95th percentile: 32ms
+99th percentile: 40ms
+Number Missed Vsync: 3616
+Number High input latency: 42951
+Number Slow UI thread: 3894
+Number Slow bitmap uploads: 11
+Number Slow issue draw commands: 15389
+Number Frame deadline missed: 15396
+Number Frame deadline missed (legacy): 19478
+HISTOGRAM: 5ms=5932 6ms=13552 7ms=9420 8ms=12635 9ms=11810 10ms=7860 11ms=3699 12ms=4355 13ms=884 14ms=1046 15ms=1224 16ms=1255 17ms=858 18ms=788 19ms=1133 20ms=1608 21ms=1105 22ms=535 23ms=407 24ms=317 25ms=321 26ms=369 27ms=454 28ms=554 29ms=525 30ms=610 31ms=708 32ms=1768 34ms=1439 36ms=637 38ms=343 40ms=232 42ms=143 44ms=104 46ms=86 48ms=106 53ms=101 57ms=83 61ms=43 65ms=19 69ms=13 73ms=3 77ms=6 81ms=2 85ms=1 89ms=1 93ms=2 97ms=0 101ms=1 105ms=1 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=2 200ms=1 250ms=3 300ms=1 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4ms
+90th gpu percentile: 5ms
+95th gpu percentile: 6ms
+99th gpu percentile: 7ms
+GPU HISTOGRAM: 1ms=98 2ms=2625 3ms=37717 4ms=32608 5ms=11313 6ms=1977 7ms=1975 8ms=585 9ms=172 10ms=29 11ms=1 12ms=2 13ms=1 14ms=0 15ms=0 16ms=0 17ms=1 18ms=1 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0
+
+Pipeline=Skia (Vulkan)
+Memory policy:
+  Max surface area: 2073600
+  Max resource usage: 99.53MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 361.94 KB (1 entry)
+  Glyph Count: 85 
+Total CPU memory usage:
+  370623 bytes, 361.94 KB (0.00 bytes is purgeable)
+GPU Caches:
+gpu_busy_raw:  478295 1007355  gpu_busy_pct(computed): 3505
+cpu_cur_freqs: p0=1248000 p2=3148800 p5=2956800 p7=3302400
+
+===== 8. SAFE WRITE TEST - CPU (reversible, restores immediately) =====
+policy0 current governor: performance (note: AYASpace ECO mode sets this to 'powersave', which ignores scaling_max_freq for practical purposes)
+policy0 original scaling_max_freq: 1248000
+after writing 1344000, scaling_max_freq reads: 1344000
+restored to: 1248000
+
+===== 9. SAFE WRITE TEST - GPU (reversible, restores immediately) =====
+gpu original max_pwrlevel: 0
+after writing 9, max_pwrlevel reads: 9 gpuclk=231000000
+restored to: 0
+
+===== DONE =====
+Diagnostics finished. Log: /sdcard/pulse_lite_diag_max.log

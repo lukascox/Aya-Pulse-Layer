@@ -1,0 +1,690 @@
+===== 0. IDENTITY / RUN INFO =====
+suffix: eden_balanced_v7
+id: uid=0(root) gid=0(root) groups=0(root) context=u:r:xsud:s0
+date: Wed Jul 22 00:25:04 CEST 2026
+>>> REMINDER: note which AYASpace mode was active for this run when reporting back <<<
+
+===== 1. DEVICE / SOC FINGERPRINT =====
+Pocket FIT
+AYANEO_Pocket_FIT
+PocketFIT
+AYANEO_PocketS2-user
+SG8350P
+pineapple
+android.version=14
+android.sdk=34
+--- full getprop grep soc/hw/board/gpu ---
+[graphics.gpu.profiler.support]: [true]
+[init.svc.gpu]: [running]
+[init.svc_debug_pid.gpu]: [1819]
+[persist.sys.fake.gpu]: [Adreno (TM) 750]
+[persist.sys.soc.model]: []
+[persist.vendor.qcom.bluetooth.soc]: [hamilton]
+[ro.board.api_level]: [34]
+[ro.board.first_api_level]: [34]
+[ro.board.platform]: [pineapple]
+[ro.boot.board_id]: [0x00]
+[ro.boot.boot_devices]: [soc/1d84000.ufshc]
+[ro.boot.vendor.qspa.gpu]: [enabled]
+[ro.boottime.gpu]: [14394601973]
+[ro.gfx.driver.1]: [com.qualcomm.qti.gpudrivers.pineapple.api34]
+[ro.product.board]: [pineapple]
+[ro.soc.manufacturer]: [QTI]
+[ro.vendor.qti.soc_id]: [682]
+[ro.vendor.qti.soc_model]: [SG8350P]
+[ro.vendor.qti.soc_name]: [pineapple]
+[vendor.display.enable_hdr10_gpu_target]: [1]
+[vendor.display.gpu_rendering]: [true]
+
+===== 2. CPU TOPOLOGY - all policies, full frequency tables + governor (baseline snapshot) =====
+--- policy0 ---
+affected_cpus: 0 1
+scaling_governor: schedutil
+scaling_available_governors: walt conservative powersave performance schedutil 
+cpuinfo_min_freq: 364800
+cpuinfo_max_freq: 2265600
+scaling_min_freq: 672000
+scaling_max_freq: 1248000
+scaling_cur_freq: 672000
+scaling_available_frequencies: 364800 460800 556800 672000 787200 902400 1017600 1132800 1248000 1344000 1459200 1574400 1689600 1804800 1920000 2035200 2150400 2265600 
+--- policy2 ---
+affected_cpus: 2 3 4
+scaling_governor: schedutil
+scaling_available_governors: walt conservative powersave performance schedutil 
+cpuinfo_min_freq: 499200
+cpuinfo_max_freq: 3148800
+scaling_min_freq: 499200
+scaling_max_freq: 3148800
+scaling_cur_freq: 2323200
+scaling_available_frequencies: 499200 614400 729600 844800 960000 1075200 1190400 1286400 1401600 1497600 1612800 1708800 1824000 1920000 2035200 2131200 2188800 2246400 2323200 2380800 2438400 2515200 2572800 2630400 2707200 2764800 2841600 2899200 2956800 3014400 3072000 3148800 
+--- policy5 ---
+affected_cpus: 5 6
+scaling_governor: schedutil
+scaling_available_governors: walt conservative powersave performance schedutil 
+cpuinfo_min_freq: 499200
+cpuinfo_max_freq: 2956800
+scaling_min_freq: 499200
+scaling_max_freq: 2956800
+scaling_cur_freq: 1612800
+scaling_available_frequencies: 499200 614400 729600 844800 960000 1075200 1190400 1286400 1401600 1497600 1612800 1708800 1824000 1920000 2035200 2131200 2188800 2246400 2323200 2380800 2438400 2515200 2572800 2630400 2707200 2764800 2841600 2899200 2956800 
+--- policy7 ---
+affected_cpus: 7
+scaling_governor: schedutil
+scaling_available_governors: walt conservative powersave performance schedutil 
+cpuinfo_min_freq: 480000
+cpuinfo_max_freq: 3302400
+scaling_min_freq: 480000
+scaling_max_freq: 3302400
+scaling_cur_freq: 2630400
+scaling_available_frequencies: 480000 576000 672000 787200 902400 1017600 1132800 1248000 1363200 1478400 1593600 1708800 1824000 1939200 2035200 2112000 2169600 2246400 2304000 2380800 2438400 2496000 2553600 2630400 2688000 2745600 2803200 2880000 2937600 2995200 3052800 
+
+===== 3. GPU (kgsl) - full state (baseline snapshot) =====
+max_pwrlevel: 0
+min_pwrlevel: 13
+num_pwrlevels: 14
+gpuclk: 366000000
+gpubusy (raw busy_cycles total_cycles):  785353 1004924
+devfreq/governor: msm-adreno-tz
+devfreq/available_frequencies: 1050000000 1000000000 903000000 834000000 770000000 720000000 680000000 629000000 578000000 500000000 422000000 366000000 310000000 231000000
+
+===== 4. THERMAL ZONES - full list + current temps =====
+thermal_zone0: type=pm8550-bcl-lvl0 temp=0
+thermal_zone1: type=pm8550-bcl-lvl1 temp=0
+thermal_zone10: type=cpuss-0 temp=66700
+thermal_zone11: type=cpuss-1 temp=62800
+thermal_zone12: type=cpuss-2 temp=62400
+thermal_zone13: type=cpuss-3 temp=65100
+thermal_zone14: type=cpu-2-0-0 temp=60500
+thermal_zone15: type=cpu-2-0-1 temp=60100
+thermal_zone16: type=cpu-2-1-0 temp=60800
+thermal_zone17: type=cpu-2-1-1 temp=62800
+thermal_zone18: type=cpu-2-2-0 temp=61600
+thermal_zone19: type=cpu-2-2-1 temp=62000
+thermal_zone2: type=pm8550-bcl-lvl2 temp=0
+thermal_zone20: type=cpu-1-0-0 temp=74400
+thermal_zone21: type=cpu-1-0-1 temp=71700
+thermal_zone22: type=cpu-1-1-0 temp=64000
+thermal_zone23: type=cpu-1-1-1 temp=65100
+thermal_zone24: type=aoss-1 temp=60700
+thermal_zone25: type=cpu-1-2-0 temp=73400
+thermal_zone26: type=cpu-1-2-1 temp=74900
+thermal_zone27: type=cpu-1-2-2 temp=73800
+thermal_zone28: type=cpu-0-0-0 temp=61500
+thermal_zone29: type=cpu-0-1-0 temp=62300
+thermal_zone3: type=vbat temp=3737
+thermal_zone30: type=nsphvx-0 temp=56100
+thermal_zone31: type=nsphvx-1 temp=56500
+thermal_zone32: type=nsphmx-0 temp=53000
+thermal_zone33: type=nsphmx-1 temp=51500
+thermal_zone34: type=nsphmx-2 temp=51900
+thermal_zone35: type=nsphmx-3 temp=51900
+thermal_zone36: type=video temp=59200
+thermal_zone37: type=ddr temp=61900
+thermal_zone38: type=camera-0 temp=53400
+thermal_zone39: type=camera-1 temp=51900
+thermal_zone4: type=pm8550b-ibat-lvl0 temp=562
+thermal_zone40: type=aoss-2 temp=61800
+thermal_zone41: type=gpuss-0 temp=56300
+thermal_zone42: type=gpuss-1 temp=55100
+thermal_zone43: type=gpuss-2 temp=56700
+thermal_zone44: type=gpuss-3 temp=55500
+thermal_zone45: type=gpuss-4 temp=62600
+thermal_zone46: type=gpuss-5 temp=59400
+thermal_zone47: type=gpuss-6 temp=60200
+thermal_zone48: type=gpuss-7 temp=58600
+thermal_zone49: type=mdmss-0 temp=55100
+thermal_zone5: type=pm8550b-ibat-lvl1 temp=562
+thermal_zone50: type=mdmss-1 temp=50800
+thermal_zone51: type=mdmss-2 temp=52000
+thermal_zone52: type=mdmss-3 temp=54700
+thermal_zone53: type=socd temp=45
+thermal_zone54: type=xo-therm temp=46465
+thermal_zone55: type=skin-msm-therm temp=47563
+thermal_zone56: type=cam-flash-therm temp=46413
+thermal_zone57: type=wlan-therm temp=46370
+thermal_zone58: type=pa-therm-1 temp=45839
+thermal_zone59: type=rear-tof-therm temp=40279
+thermal_zone6: type=pm8550b-bcl-lvl0 temp=0
+thermal_zone60: type=usb-therm temp=26004
+thermal_zone61: type=wls-therm temp=64386
+thermal_zone62: type=pm8550_tz temp=48317
+thermal_zone63: type=pm8550b_tz temp=41627
+thermal_zone64: type=pm8550b_lite_tz temp=40417
+thermal_zone65: type=pm8550ve_tz temp=47207
+thermal_zone66: type=pm8550vs_c_tz temp=47308
+thermal_zone67: type=pm8550vs_d_tz temp=51174
+thermal_zone68: type=pm8550vs_e_tz temp=54737
+thermal_zone69: type=pm8550vs_g_tz temp=47275
+thermal_zone7: type=pm8550b-bcl-lvl1 temp=0
+thermal_zone70: type=usb temp=25000
+thermal_zone71: type=wireless temp=62000
+thermal_zone72: type=battery temp=31000
+thermal_zone8: type=pm8550b-bcl-lvl2 temp=0
+thermal_zone9: type=aoss-0 temp=62800
+
+===== 5. INSTALLED EMULATOR/GAMING PACKAGES =====
+package:com.android.systemui.accessibility.accessibilitymenu
+package:com.android.credentialmanager
+package:org.azahar_emu.azahar
+package:org.dolphinemu.dolphinemu
+package:com.ayaneo.gamewindow
+package:com.retrohrai.launcher
+package:com.android.internal.display.cutout.emulation.double
+package:com.android.systemui
+package:com.android.internal.systemui.navbar.gestural
+package:com.ayaneo.gamelauncher
+package:com.android.internal.systemui.navbar.threebutton
+package:com.android.internal.display.cutout.emulation.hole
+package:com.android.internal.systemui.navbar.gestural_narrow_back
+package:com.android.internal.display.cutout.emulation.tall
+package:com.android.internal.systemui.navbar.gestural_wide_back
+package:com.ayaneo.home
+package:com.android.internal.systemui.navbar.transparent
+package:com.android.systemui.overlay.common
+package:com.android.internal.display.cutout.emulation.waterfall
+package:com.android.internal.systemui.navbar.gestural_extra_wide_back
+package:com.ayaneo.settings
+package:com.retroarch.aarch64
+package:com.android.internal.display.cutout.emulation.corner
+package:com.ayaneo.ayakeytester
+
+===== 6. SURFACEFLINGER WINDOW LIST (reference dump) =====
+Display 0 name="Built-in Screen"#3
+WindowedMagnification:0:31#4
+HideDisplayCutout:0:14#5
+OneHanded:0:14#6
+FullscreenMagnification:0:12#7
+Leaf:0:1#8
+WallpaperWindowToken{711c46d token=android.os.Binder@e8f3484}#89
+8ba8d38 com.android.systemui.wallpapers.ImageWallpaper#90
+com.android.systemui.wallpapers.ImageWallpaper#91
+Wallpaper BBQ wrapper#92
+DefaultTaskDisplayArea#9
+Task=1#46
+Task=6#106
+6e9d92 ActivityRecordInputSink com.retrohrai.launcher/.MainActivity#114
+ActivityRecord{3e06678 u0 com.retrohrai.launcher/.MainActivity#107
+4bace89 com.retrohrai.launcher/com.retrohrai.launcher.MainActivity#109
+Task=2#47
+Task=3#48
+Dim layer#52
+Task=4#49
+Dim layer#53
+Task=13#360
+ac4a45 ActivityRecordInputSink com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity#365
+ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity#361
+63a3ddd com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity#368
+Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#379
+SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity](BLAST)#380
+com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity#369
+Bounds for - com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity#372
+ImeContainer#12
+WindowToken{f9719cf type=2011 android.os.Binder@5cda2e}#101
+Surface(name=6500f7a InputMethod)/@0x78eb121 - animation-leash of insets_animation#377
+6500f7a InputMethod#103
+Leaf:3:12#10
+WindowToken{28e8edf type=2038 android.os.BinderProxy@3a3e059}#50
+6599d83 ShellDropTarget#51
+ImePlaceholder:13:14#11
+OneHanded:15:15#13
+FullscreenMagnification:15:15#14
+Leaf:15:15#15
+WindowToken{26cc9b6 type=2000 android.os.BinderProxy@7134d51}#77
+Surface(name=68b86b7 StatusBar)/@0x5f3cb42 - animation-leash of insets_animation#371
+68b86b7 StatusBar#78
+StatusBar#88
+HideDisplayCutout:16:16#16
+OneHanded:16:16#17
+FullscreenMagnification:16:16#18
+Leaf:16:16#19
+OneHanded:17:17#20
+FullscreenMagnification:17:17#21
+Leaf:17:17#22
+WindowToken{1e3fcde type=2040 android.os.BinderProxy@4f83419}#75
+6d27ebf NotificationShade#76
+HideDisplayCutout:18:23#23
+OneHanded:18:23#24
+FullscreenMagnification:18:23#25
+Leaf:18:23#26
+Leaf:24:25#27
+WindowToken{349af15 type=2019 android.os.BinderProxy@86f00cc}#68
+Surface(name=8f6222a NavigationBar0)/@0x2ac36f6 - animation-leash of insets_animation#370
+8f6222a NavigationBar0#69
+NavigationBar0#84
+WindowToken{62124df type=2024 android.os.BinderProxy@b8ae77e}#72
+8d2d52c EdgeBackGestureHandler0#73
+WindowToken{5d301f6 type=2024 android.os.BinderProxy@b63d2a}#82
+fb4f9f7 SecondaryHomeHandle0#83
+HideDisplayCutout:26:31#28
+OneHanded:26:31#29
+FullscreenMagnification:26:27#30
+Leaf:26:27#31
+Leaf:28:28#32
+FullscreenMagnification:29:31#33
+Leaf:29:31#34
+WindowToken{24e7097 type=2016 android.os.BinderProxy@5e3af16}#156
+d7e2284 com.ayaneo.gamewindow#157
+#158
+WindowToken{e28849 type=2032 android.os.Binder@3b36e50}#116
+HideDisplayCutout:32:37#35
+OneHanded:32:32#36
+Leaf:32:32#37
+FullscreenMagnification:33:33#38
+Leaf:33:33#39
+OneHanded:34:37#40
+FullscreenMagnification:34:37#41
+Leaf:34:37#42
+Leaf:38:38#43
+Accessibility Overlays#45
+Display Overlays#44
+[Gesture Monitor] edge-swipe#71
+[Gesture Monitor] swipe-up#81
+IME Handwriting Surface#275
+WindowToken{945402b type=2024 android.os.BinderProxy@c6204a5}#56
+84b9c88 ScreenDecorHwcOverlay#57
+ScreenDecorHwcOverlay#62
+WindowToken{488f991 type=2024 android.os.BinderProxy@b6337b8}#58
+182a0f6 ScreenDecorOverlay#59
+WindowToken{361c300 type=2024 android.os.BinderProxy@b0a9583}#60
+c43117e ScreenDecorOverlayBottom#61
+
+===== 7. DYNAMIC FPS + CPU/GPU SAMPLING - 90s window, autodetect foreground app =====
+Sampling starts NOW on whatever is currently on screen.
+Focus/layer/FPS are re-detected every sample - no app name hardcoded.
+
+--- sample 0 pkg=com.miHoYo.Yuanshen ts=00:25:08 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1017600 p2:gov=schedutil,freq=1286400 p5:gov=schedutil,freq=614400 p7:gov=schedutil,freq=1478400
+gpu_freq_hz: 310000000
+gpu_busy_raw:  772691 1001387
+gpu_busy_pct: 77.2
+thermal_skin: 47985 thermal_battery: 31000
+
+--- sample 1 pkg=com.miHoYo.Yuanshen ts=00:25:12 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1248000 p2:gov=schedutil,freq=1401600 p5:gov=schedutil,freq=1497600 p7:gov=schedutil,freq=2169600
+gpu_freq_hz: 310000000
+gpu_busy_raw:  766332 1010634
+gpu_busy_pct: 75.8
+thermal_skin: 48363 thermal_battery: 31000
+
+--- sample 2 pkg=com.miHoYo.Yuanshen ts=00:25:15 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1017600 p2:gov=schedutil,freq=3014400 p5:gov=schedutil,freq=2956800 p7:gov=schedutil,freq=2745600
+gpu_freq_hz: 422000000
+gpu_busy_raw:  715086 1007715
+gpu_busy_pct: 71.0
+thermal_skin: 48721 thermal_battery: 31000
+
+--- sample 3 pkg=com.miHoYo.Yuanshen ts=00:25:19 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1248000 p2:gov=schedutil,freq=1286400 p5:gov=schedutil,freq=1075200 p7:gov=schedutil,freq=3110400
+gpu_freq_hz: 366000000
+gpu_busy_raw:  687975 1009993
+gpu_busy_pct: 68.1
+thermal_skin: 49278 thermal_battery: 31000
+
+--- sample 4 pkg=com.miHoYo.Yuanshen ts=00:25:22 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1017600 p2:gov=schedutil,freq=2956800 p5:gov=schedutil,freq=1824000 p7:gov=schedutil,freq=3302400
+gpu_freq_hz: 310000000
+gpu_busy_raw:  693787 1010246
+gpu_busy_pct: 68.7
+thermal_skin: 49427 thermal_battery: 31000
+
+--- sample 5 pkg=com.miHoYo.Yuanshen ts=00:25:26 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1248000 p2:gov=schedutil,freq=1286400 p5:gov=schedutil,freq=1286400 p7:gov=schedutil,freq=1708800
+gpu_freq_hz: 231000000
+gpu_busy_raw:  757597 1007352
+gpu_busy_pct: 75.2
+thermal_skin: 49199 thermal_battery: 31000
+
+--- sample 6 pkg=com.miHoYo.Yuanshen ts=00:25:29 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1248000 p2:gov=schedutil,freq=1286400 p5:gov=schedutil,freq=1286400 p7:gov=schedutil,freq=1593600
+gpu_freq_hz: 231000000
+gpu_busy_raw:  798474 1009234
+gpu_busy_pct: 79.1
+thermal_skin: 49008 thermal_battery: 31000
+
+--- sample 7 pkg=com.miHoYo.Yuanshen ts=00:25:33 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1248000 p2:gov=schedutil,freq=1075200 p5:gov=schedutil,freq=1286400 p7:gov=schedutil,freq=1593600
+gpu_freq_hz: 231000000
+gpu_busy_raw:  725100 1004552
+gpu_busy_pct: 72.2
+thermal_skin: 48865 thermal_battery: 31000
+
+--- sample 8 pkg=com.miHoYo.Yuanshen ts=00:25:36 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1248000 p2:gov=schedutil,freq=1286400 p5:gov=schedutil,freq=499200 p7:gov=schedutil,freq=1363200
+gpu_freq_hz: 231000000
+gpu_busy_raw:  697593 1003410
+gpu_busy_pct: 69.5
+thermal_skin: 48812 thermal_battery: 31000
+
+--- sample 9 pkg=com.miHoYo.Yuanshen ts=00:25:40 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1248000 p2:gov=schedutil,freq=1286400 p5:gov=schedutil,freq=729600 p7:gov=schedutil,freq=1363200
+gpu_freq_hz: 231000000
+gpu_busy_raw:  709165 1004915
+gpu_busy_pct: 70.6
+thermal_skin: 48743 thermal_battery: 31000
+
+--- sample 10 pkg=com.miHoYo.Yuanshen ts=00:25:43 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1132800 p2:gov=schedutil,freq=1286400 p5:gov=schedutil,freq=499200 p7:gov=schedutil,freq=1363200
+gpu_freq_hz: 231000000
+gpu_busy_raw:  726868 1001284
+gpu_busy_pct: 72.6
+thermal_skin: 48721 thermal_battery: 31000
+
+--- sample 11 pkg=com.miHoYo.Yuanshen ts=00:25:47 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1132800 p2:gov=schedutil,freq=1286400 p5:gov=schedutil,freq=499200 p7:gov=schedutil,freq=1363200
+gpu_freq_hz: 231000000
+gpu_busy_raw:  659322 1008218
+gpu_busy_pct: 65.4
+thermal_skin: 48721 thermal_battery: 31000
+
+--- sample 12 pkg=com.miHoYo.Yuanshen ts=00:25:50 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1132800 p2:gov=schedutil,freq=729600 p5:gov=schedutil,freq=1286400 p7:gov=schedutil,freq=1363200
+gpu_freq_hz: 231000000
+gpu_busy_raw:  765649 1000131
+gpu_busy_pct: 76.6
+thermal_skin: 48812 thermal_battery: 31000
+
+--- sample 13 pkg=com.miHoYo.Yuanshen ts=00:25:54 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1248000 p2:gov=schedutil,freq=1286400 p5:gov=schedutil,freq=499200 p7:gov=schedutil,freq=1017600
+gpu_freq_hz: 310000000
+gpu_busy_raw:  782803 1002964
+gpu_busy_pct: 78.0
+thermal_skin: 48926 thermal_battery: 31000
+
+--- sample 14 pkg=com.miHoYo.Yuanshen ts=00:25:58 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1132800 p2:gov=schedutil,freq=1286400 p5:gov=schedutil,freq=499200 p7:gov=schedutil,freq=1132800
+gpu_freq_hz: 310000000
+gpu_busy_raw:  780042 1011567
+gpu_busy_pct: 77.1
+thermal_skin: 49092 thermal_battery: 31000
+
+--- sample 15 pkg=com.miHoYo.Yuanshen ts=00:26:01 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1132800 p2:gov=schedutil,freq=729600 p5:gov=schedutil,freq=844800 p7:gov=schedutil,freq=480000
+gpu_freq_hz: 310000000
+gpu_busy_raw:  703073 1003009
+gpu_busy_pct: 70.1
+thermal_skin: 49215 thermal_battery: 31000
+
+--- sample 16 pkg=com.miHoYo.Yuanshen ts=00:26:05 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1132800 p2:gov=schedutil,freq=1286400 p5:gov=schedutil,freq=499200 p7:gov=schedutil,freq=672000
+gpu_freq_hz: 310000000
+gpu_busy_raw:  770520 1007626
+gpu_busy_pct: 76.5
+thermal_skin: 49278 thermal_battery: 31000
+
+--- sample 17 pkg=com.miHoYo.Yuanshen ts=00:26:08 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1248000 p2:gov=schedutil,freq=1497600 p5:gov=schedutil,freq=614400 p7:gov=schedutil,freq=1478400
+gpu_freq_hz: 310000000
+gpu_busy_raw:  664103 1002663
+gpu_busy_pct: 66.2
+thermal_skin: 49387 thermal_battery: 31000
+
+--- sample 18 pkg=com.miHoYo.Yuanshen ts=00:26:12 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1248000 p2:gov=schedutil,freq=1497600 p5:gov=schedutil,freq=614400 p7:gov=schedutil,freq=2112000
+gpu_freq_hz: 310000000
+gpu_busy_raw:  657525 1007420
+gpu_busy_pct: 65.3
+thermal_skin: 49482 thermal_battery: 31000
+
+--- sample 19 pkg=com.miHoYo.Yuanshen ts=00:26:15 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=902400 p2:gov=schedutil,freq=729600 p5:gov=schedutil,freq=1286400 p7:gov=schedutil,freq=1939200
+gpu_freq_hz: 310000000
+gpu_busy_raw:  728042 1003738
+gpu_busy_pct: 72.5
+thermal_skin: 49677 thermal_battery: 31000
+
+--- sample 20 pkg=com.miHoYo.Yuanshen ts=00:26:19 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1248000 p2:gov=schedutil,freq=1075200 p5:gov=schedutil,freq=1401600 p7:gov=schedutil,freq=1824000
+gpu_freq_hz: 310000000
+gpu_busy_raw:  704505 1006439
+gpu_busy_pct: 70.0
+thermal_skin: 49763 thermal_battery: 31000
+
+--- sample 21 pkg=com.miHoYo.Yuanshen ts=00:26:22 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1248000 p2:gov=schedutil,freq=1286400 p5:gov=schedutil,freq=614400 p7:gov=schedutil,freq=1017600
+gpu_freq_hz: 231000000
+gpu_busy_raw:  733595 1009276
+gpu_busy_pct: 72.7
+thermal_skin: 49802 thermal_battery: 31000
+
+--- sample 22 pkg=com.miHoYo.Yuanshen ts=00:26:26 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1248000 p2:gov=schedutil,freq=1190400 p5:gov=schedutil,freq=499200 p7:gov=schedutil,freq=1363200
+gpu_freq_hz: 231000000
+gpu_busy_raw:  671471 1005966
+gpu_busy_pct: 66.7
+thermal_skin: 49732 thermal_battery: 31000
+
+--- sample 23 pkg=com.miHoYo.Yuanshen ts=00:26:30 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1248000 p2:gov=schedutil,freq=1190400 p5:gov=schedutil,freq=1286400 p7:gov=schedutil,freq=1363200
+gpu_freq_hz: 231000000
+gpu_busy_raw:  684861 1007792
+gpu_busy_pct: 68.0
+thermal_skin: 49630 thermal_battery: 31000
+
+--- sample 24 pkg=com.miHoYo.Yuanshen ts=00:26:33 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1248000 p2:gov=schedutil,freq=960000 p5:gov=schedutil,freq=1286400 p7:gov=schedutil,freq=1363200
+gpu_freq_hz: 231000000
+gpu_busy_raw:  646816 1004696
+gpu_busy_pct: 64.4
+thermal_skin: 49591 thermal_battery: 31000
+
+--- sample 25 pkg=com.miHoYo.Yuanshen ts=00:26:37 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1132800 p2:gov=schedutil,freq=1075200 p5:gov=schedutil,freq=499200 p7:gov=schedutil,freq=1363200
+gpu_freq_hz: 231000000
+gpu_busy_raw:  664041 1000023
+gpu_busy_pct: 66.4
+thermal_skin: 49568 thermal_battery: 31000
+
+--- sample 26 pkg=com.miHoYo.Yuanshen ts=00:26:41 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1248000 p2:gov=schedutil,freq=729600 p5:gov=schedutil,freq=614400 p7:gov=schedutil,freq=1017600
+gpu_freq_hz: 231000000
+gpu_busy_raw:  674363 1007784
+gpu_busy_pct: 66.9
+thermal_skin: 49560 thermal_battery: 31000
+
+--- sample 27 pkg=com.miHoYo.Yuanshen ts=00:26:44 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1248000 p2:gov=schedutil,freq=1286400 p5:gov=schedutil,freq=960000 p7:gov=schedutil,freq=1363200
+gpu_freq_hz: 231000000
+gpu_busy_raw:  639174 1010752
+gpu_busy_pct: 63.2
+thermal_skin: 49599 thermal_battery: 31000
+
+--- sample 28 pkg=com.miHoYo.Yuanshen ts=00:26:48 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=1248000 p2:gov=schedutil,freq=1286400 p5:gov=schedutil,freq=499200 p7:gov=schedutil,freq=1363200
+gpu_freq_hz: 231000000
+gpu_busy_raw:  679137 1006361
+gpu_busy_pct: 67.5
+thermal_skin: 49638 thermal_battery: 31000
+
+--- sample 29 pkg=com.miHoYo.Yuanshen ts=00:26:51 ---
+focus_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+resumed_raw:     topResumedActivity=ActivityRecord{e5ad59a u0 com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity t13}
+matched_layer: Background for SurfaceView[com.miHoYo.Yuanshen/org.yuzu.yuzu_emu.activities.EmulationActivity]#381
+refresh_period_ns: 8333333
+frame_count_in_window: 0
+computed_fps: n/a (low_sample_count=0, likely idle/static frame)
+cpu_snapshot: p0:gov=schedutil,freq=672000 p2:gov=schedutil,freq=960000 p5:gov=schedutil,freq=1286400 p7:gov=schedutil,freq=902400
+gpu_freq_hz: 310000000
+gpu_busy_raw:  716512 1005216
+gpu_busy_pct: 71.3
+thermal_skin: 49763 thermal_battery: 31000
+
+===== 8. WRITE SAFETY TEST (unchanged from v5/v6) =====
+write_test: OK (/sdcard writable)
+cpufreq_write_test: OK (policy0 scaling_max_freq writable)
+
+===== DONE. Log written to /sdcard/pulse_lite_diag_eden_balanced_v7.log =====
