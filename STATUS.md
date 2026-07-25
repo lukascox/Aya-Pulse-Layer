@@ -8,9 +8,41 @@ Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted). Sibling
 repo: `apl-diag` (`git.internal.example/cox/AyaPulseDiag`) — the diagnostics/
 research half of this project, see its own STATUS.md.
 
-## PLAN FOR NEXT SESSION (2026-07-24 end of day)
+## PLAN FOR NEXT SESSION (2026-07-25 end of day)
 
-**Two major findings this session, in order of how much they change the plan:**
+**`research/pulse-glue-assessment` reconnaissance is now closed out** (see
+that folder's `FINDINGS.md`, "Follow-up pass (2026-07-25)" section) — all
+four items from the previous session's "not yet checked" list were
+resolved via a full-module `grep` (not just the original 8-file sample)
+plus targeted reads of the actual control-loop files
+(`AutoTuneController.kt`, `ForegroundAppMonitorService.kt`'s fan-reassert
+loop):
+
+- `RootExec`'s choke point is confirmed at the whole-module level — every
+  caller across all ~80 files goes through `RootSupport.runRootCommand`/
+  `runGeneratedScript`, nothing else touches `PServerBinder`/
+  `ServiceManager`. The glue patch really is just rewriting
+  `RootExec.executeAsRoot()`'s ~15-line body to shell out via `xsu`
+  instead, reusing the already-proven `XsuShell.kt` pattern.
+- `minSdk 31`/`targetSdk 34`/manifest permissions — no conflict, ordinary
+  app permissions, nothing assumes root/system context.
+- **New risk found this pass**: the fan-reassert loop re-checks live fan
+  duty every `FAN_RECHECK_MS = 120L`ms via a root `cat` call, continuously,
+  while a Custom fan profile is active — tuned against a cheap native
+  Binder call, not against `xsu`'s fork+exec overhead (this project's own
+  ~100ms-per-call floor and one observed 126s stall are both uncomfortably
+  close to that budget). Needs an on-device measurement before porting
+  this loop as-is — see FINDINGS.md's mitigation options (confirm
+  no-op-on-our-SoC, widen the interval, or check whether the AIDL bind to
+  `com.ayaneo.gamewindow` exposes a pollable duty read at all).
+
+Writing the actual patch (fork `pulse-upstream`, replace `RootExec.kt`, add
+the `SG8350P` `DeviceProfile` entry) is intentionally deferred to a later
+session — this session was findings-only.
+
+## PLAN FROM PREVIOUS SESSION (2026-07-24 end of day)
+
+**Two major findings that session, in order of how much they change the plan:**
 
 ### 1. `research/pulse-glue-assessment` — maybe don't write `apl/app/` from scratch at all
 
@@ -69,10 +101,12 @@ from-scratch `apl/app/`.
 
 ## Next session, in priority order
 
-1. **Finish the `pulse-glue-assessment` reconnaissance** (the 4 unchecked
-   items in that `FINDINGS.md`) — this decides whether everything below
-   changes from "build from scratch" to "patch `RootExec.kt` + add a
-   `DeviceProfile` entry."
+1. **On-device measurement: does the fan-reassert loop keep up over
+   `xsu`?** (see the new risk in `pulse-glue-assessment/FINDINGS.md`) —
+   the reconnaissance itself is done (module-wide, not just sampled);
+   this is the one remaining open question before deciding "patch
+   `RootExec.kt` + add a `DeviceProfile` entry" is fully ready to execute,
+   vs. needing a cadence/routing adjustment first.
 2. **Decide `apl/app/`'s actuation architecture**: AIDL-bind (now proven)
    vs `xsu` sysfs writes (also proven, but slower/riskier) — likely AIDL
    for whole-profile switches, `xsu` still needed for anything NOT covered
