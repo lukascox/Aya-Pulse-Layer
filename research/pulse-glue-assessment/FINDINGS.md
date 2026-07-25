@@ -242,16 +242,119 @@ rather than just the root layer:
   commands, not polling), so likely not a drop-in fix, but worth a quick
   check before assuming it's ruled out.
 
+## On-device confirmation (2026-07-25): fan control doesn't port at all, not just a cadence risk
+
+Ran directly on the AYANEO Pocket FIT:
+
+```
+PocketFIT:/ $ xsu -c "cat /sys/class/gpio5_pwm2/duty"
+PocketFIT:/ $
+```
+
+Empty output. Tracing what that means in `pulse`'s own code:
+`FanController.customFanAvailable()` ([`FanController.kt:119-122`](../pulse-upstream/app/src/main/java/com/kei/pulse/data/FanController.kt:119))
+does exactly this `cat` and returns `false` on empty/unparseable output. That
+return value gates `isCustomFanSupported()` in
+`ForegroundAppMonitorService.kt`, whose caller returns early at
+[line 873](../pulse-upstream/app/src/main/java/com/kei/pulse/appwatch/ForegroundAppMonitorService.kt:873)
+(`if (!isCustomFanSupported()) return false`) — `customFanRunning` is never
+set to `true`, so `ensureFanReassertLoop()` (the 120ms loop from the
+previous risk section) **never starts on this device**. The cadence-vs-`xsu`
+question above is moot for this specific mechanism — not because it was
+solved, but because the feature gates itself off before that loop ever
+runs, exactly as `DeviceProfiles.forSoc()` gates off gracefully elsewhere.
+
+**Bigger finding from reading the rest of `FanController.kt`**: the
+*discrete* fan modes (Silent/Smart/Sport, `fan_mode` values 1/4/5) go
+through `settings put system fan_mode $mode` — a `Settings.System` key read
+by `com.odin.settings` (the AYN vendor fan-control app), not a generic
+Android mechanism. That's Odin-specific in the same way `gpio5_pwm2` is.
+**Both of `pulse`'s fan-control paths (discrete stock modes AND the custom
+PWM duty curve) are very likely vendor-specific to AYN Odin/RP6/Thor and
+inert on AYANEO hardware** — this isn't a transport-layer "glue" problem
+like `RootExec`, it's a missing feature. Fan control on our device would
+need to be routed entirely differently: through the already-confirmed AIDL
+bind to `com.ayaneo.gamewindow` (which returns fan mode as part of its
+whole-profile callback JSON per `aidl-bind-spike/FINDINGS.md`), as a
+separate, scoped piece of work — not a drop-in replacement inside
+`FanController.kt`/`FanCurveController.kt`. Not yet confirmed: whether
+`settings get system fan_mode` also returns nothing on this device (same
+test, one command, not yet run) — worth doing to fully close this out, but
+the PWM result alone is enough to downgrade "port pulse's fan control" from
+"small glue" to "separate feature, deferred."
+
+## Risk assessment (2026-07-25) — what could actually go wrong on real hardware
+
+Asked explicitly: does porting `pulse` this way risk the device itself? Not
+a rewrite-from-scratch risk (this only replaces one root-transport layer),
+but real risks worth naming before letting any of this run unattended:
+
+1. **Fan/thermal safety (the highest-stakes category, though narrowed by
+   the finding above).** Once real fan control is wired up via AIDL rather
+   than `pulse`'s Odin-specific paths, the relevant risk moves from "cadence
+   vs `xsu`" to whatever timing constraints the AIDL path has — a separate
+   question to re-assess once that work starts. Independent of mechanism:
+   this project's own known `xsu` stall (~126s once observed under heavy
+   load, see `STATUS.md`) is worst-case exactly when a device is thermally
+   stressed. Any actuation path (AIDL or `xsu`) needs to treat "the last
+   command might not have landed" as a real, recurring condition, not a
+   theoretical one — mitigated in practice by the SoC's own independent
+   hardware thermal throttle/shutdown, which doesn't depend on any
+   userspace app, so the realistic worst case is "runs hotter/louder than
+   intended for a while," not hardware damage.
+2. **CPU/GPU frequency writes — low risk.** `pulse` reads real, detected
+   `scaling_available_frequencies`/`gpu_available_frequencies` at runtime
+   rather than hardcoding numbers (confirmed earlier in this document), so
+   there's no path to writing a frequency outside what the hardware itself
+   already advertises as valid.
+3. **Fighting the AYANEO vendor daemon over the same sysfs nodes.**
+   `pulse`'s re-assert logic (`reassertBoundCaps` etc.) was tuned against
+   the *Odin's* vendor daemon behavior (how fast and how it re-pins
+   `scaling_min`/duty). AYANEO's own daemon (`com.ayaneo.gamewindow`, see
+   the teardown findings) may re-pin differently or not at all — realistic
+   worst case is oscillating/unstable clocks under contention, not damage,
+   but worth watching for during first real test runs.
+4. **Display/settings changes (`wm size`/`wm density`, brightness, RGB via
+   `settings put`) are reversible but not crash-safe.** If the process dies
+   mid-sequence (e.g. before a `wm size reset`), the device can be left with
+   a wrong resolution/density/brightness until manually corrected via `adb`
+   — annoying, recoverable, not damaging.
+5. **The world-readable/-executable script file in `runGeneratedScript`**
+   is a minor local-attacker consideration (another app could in principle
+   race to read/tamper with the script between write and exec) — moot once
+   the `xsu`-glue drops the file-based approach in favor of passing script
+   text directly to `xsu -c` (already noted as a simplification opportunity
+   earlier in this document), so no action needed beyond doing that
+   simplification when the patch is written.
+
+**Practical takeaway**: nothing here is a hardware-destructive risk by
+design (frequency scaling and fan control are both bounded by hardware/OS
+safety floors independent of `pulse`), but several items are "silent
+misbehavior for a while before anyone notices" risks, most of them tied to
+`xsu`'s known stall behavior and to code that was tuned against a different
+vendor's firmware quirks. Recommended before letting any ported code run
+as an unattended background service: (a) do the one remaining fan-mode
+settings check noted above, (b) run first sessions under active
+observation (logs + eyes on temperature) rather than silently backgrounded,
+(c) confirm real sysfs behavior under contention with AYANEO's own daemon
+before trusting the re-assert logic unattended.
+
 ## Recommendation
 
 Reconnaissance is now closed out at the whole-module level — both
 load-bearing assumptions (clean root abstraction, generic CPU/GPU
 detection) are confirmed by a full-tree grep, not just the original 8-file
 sample, and the domain-logic control loops were read directly rather than
-inferred. The glue strategy stands: this looks like the right call over
-rewriting from scratch. The one remaining unknown before cutting code is
-no longer "did we read enough of the codebase" but a concrete, testable
-on-device question: whether the 120ms fan-reassert loop is viable over
-`xsu`'s call overhead (see above). Actual patch-writing (fork
-`pulse-upstream`, replace `RootExec.kt`, add the `SG8350P` `DeviceProfile`
-entry) is deferred to a later session.
+inferred. The glue strategy stands for CPU/GPU/display/RGB/AutoTDP: this
+looks like the right call over rewriting from scratch there. **Fan control
+is the one exception**, confirmed on-device (2026-07-25): both of `pulse`'s
+fan mechanisms are vendor-specific to AYN hardware and inert on AYANEO —
+that piece isn't "glue a transport layer," it's "build fan control
+separately," most likely on top of the already-proven AIDL bind to
+`com.ayaneo.gamewindow`. The 120ms cadence-vs-`xsu` question that motivated
+this pass no longer applies to `pulse`'s own fan code (it self-gates off),
+but the same class of question (timing/reliability of whatever actuation
+path drives fan control) will resurface once that separate AIDL-based fan
+work is scoped. Actual patch-writing (fork `pulse-upstream`, replace
+`RootExec.kt`, add the `SG8350P` `DeviceProfile` entry, and scope fan
+control as a distinct follow-up) is deferred to a later session.

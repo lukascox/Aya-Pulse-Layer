@@ -26,19 +26,35 @@ loop):
   instead, reusing the already-proven `XsuShell.kt` pattern.
 - `minSdk 31`/`targetSdk 34`/manifest permissions — no conflict, ordinary
   app permissions, nothing assumes root/system context.
-- **New risk found this pass**: the fan-reassert loop re-checks live fan
-  duty every `FAN_RECHECK_MS = 120L`ms via a root `cat` call, continuously,
-  while a Custom fan profile is active — tuned against a cheap native
-  Binder call, not against `xsu`'s fork+exec overhead (this project's own
-  ~100ms-per-call floor and one observed 126s stall are both uncomfortably
-  close to that budget). Needs an on-device measurement before porting
-  this loop as-is — see FINDINGS.md's mitigation options (confirm
-  no-op-on-our-SoC, widen the interval, or check whether the AIDL bind to
-  `com.ayaneo.gamewindow` exposes a pollable duty read at all).
+- **Risk found this pass, then resolved on-device the same day**: the
+  fan-reassert loop re-checks live fan duty every `FAN_RECHECK_MS = 120L`ms
+  via a root `cat` call — flagged as a possible problem for `xsu`'s
+  fork+exec overhead (vs the cheap native Binder call it was tuned
+  against). Tested directly on the AYANEO Pocket FIT: `xsu -c "cat
+  /sys/class/gpio5_pwm2/duty"` returns empty. Tracing `pulse`'s own gating
+  logic (`FanController.customFanAvailable()` →
+  `ForegroundAppMonitorService.isCustomFanSupported()`), empty output means
+  this loop **never starts** on this device — the cadence question is moot
+  for this mechanism specifically.
+- **Bigger finding that surfaced from this**: both of `pulse`'s fan-control
+  mechanisms (the custom PWM duty curve AND the discrete Silent/Smart/Sport
+  modes via `settings put system fan_mode`, read by the AYN vendor app
+  `com.odin.settings`) are vendor-specific to AYN Odin/RP6/Thor and almost
+  certainly inert on AYANEO hardware. Fan control isn't a "glue the root
+  transport" problem like CPU/GPU/display/RGB/AutoTDP — it needs to be
+  built separately, most likely on top of the already-proven AIDL bind to
+  `com.ayaneo.gamewindow` (which already returns fan mode in its
+  whole-profile callback JSON, per `aidl-bind-spike/FINDINGS.md`). See
+  `pulse-glue-assessment/FINDINGS.md`'s "On-device confirmation" and "Risk
+  assessment" sections for the full writeup, including the other
+  (non-fan) risk categories assessed this session (CPU/GPU write safety,
+  vendor-daemon contention, display/settings recoverability, the
+  world-readable script file).
 
 Writing the actual patch (fork `pulse-upstream`, replace `RootExec.kt`, add
-the `SG8350P` `DeviceProfile` entry) is intentionally deferred to a later
-session — this session was findings-only.
+the `SG8350P` `DeviceProfile` entry, and separately scope AIDL-based fan
+control) is intentionally deferred to a later session — this session was
+findings-only.
 
 ## PLAN FROM PREVIOUS SESSION (2026-07-24 end of day)
 
@@ -101,12 +117,14 @@ from-scratch `apl/app/`.
 
 ## Next session, in priority order
 
-1. **On-device measurement: does the fan-reassert loop keep up over
-   `xsu`?** (see the new risk in `pulse-glue-assessment/FINDINGS.md`) —
-   the reconnaissance itself is done (module-wide, not just sampled);
-   this is the one remaining open question before deciding "patch
-   `RootExec.kt` + add a `DeviceProfile` entry" is fully ready to execute,
-   vs. needing a cadence/routing adjustment first.
+1. **Write the glue patch**: reconnaissance is fully closed out
+   (module-wide, not just sampled) — fork `pulse-upstream`, replace
+   `RootExec.executeAsRoot()` with an `xsu`-backed implementation (reuse
+   `XsuShell.kt`'s pattern), add the `SG8350P` `DeviceProfile` entry. Fan
+   control is explicitly OUT of scope for this patch — confirmed on-device
+   inert on AYANEO (see `pulse-glue-assessment/FINDINGS.md`'s "On-device
+   confirmation" section) — track it as a separate follow-up (item 2
+   below), don't try to glue it alongside the rest.
 2. **Decide `apl/app/`'s actuation architecture**: AIDL-bind (now proven)
    vs `xsu` sysfs writes (also proven, but slower/riskier) — likely AIDL
    for whole-profile switches, `xsu` still needed for anything NOT covered
