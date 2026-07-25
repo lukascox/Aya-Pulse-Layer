@@ -6,6 +6,23 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## Bug (2026-07-25, same incident): `pulse-for-aya` falsely claimed "device not compatible"
+
+Downstream of the `system_server` crash below: after Android auto-killed
+and relaunched `com.kei.pulse`, its main screen showed a red "PSERVER
+UNAVAILABLE" badge and upstream's stock fallback text, "Your device is
+not compatible with this app" — while the HUD right next to it kept
+showing live, correct CPU/GPU/fan/battery numbers. Not a real
+incompatibility: `RootExec.pServerAvailable`'s one-time cached `xsu`
+probe latched `false` after a single failed attempt (almost certainly
+landing during the post-crash `xsud` instability) and never retried —
+`executeAsRoot()` itself doesn't consult that cache, so real functionality
+kept working throughout. **Fixed**: only latch `true`, never latch
+`false` (matches `RgbController.available()`'s existing pattern in the
+same codebase — that lesson was already learned once, just not applied
+here). See `research/pulse-for-aya/README.md`'s "Bug found" section.
+Builds clean, not yet re-verified on-device.
+
 ## INCIDENT (2026-07-25): first real ab-logger session crashed `system_server`, device rebooted
 
 Not a cosmetic bug — read this before running `ab-logger` again. First

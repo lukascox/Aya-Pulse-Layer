@@ -22,8 +22,17 @@ import java.util.concurrent.TimeUnit
  */
 class RootExec {
 
+    // apl glue fix (2026-07-25): only latch a TRUE result. A single transient probe
+    // failure (this device's xsud is known to crash-and-refork on connection close,
+    // see pulse-glue-assessment/FINDINGS.md and STATUS.md's system_server incident --
+    // catching xsud mid-crash on the one lazy probe call is entirely plausible) used
+    // to poison this flag to false for the rest of the process's life, showing "Your
+    // device is not compatible with this app" even while executeAsRoot() kept
+    // working fine underneath (it doesn't consult this cache at all). Same lesson
+    // RgbController.available() already applies elsewhere in this codebase ("DON'T
+    // latch a false here... re-probe on the next call") -- missed here originally.
     val pServerAvailable: Boolean
-        get() = cachedAvailable ?: probe().also { cachedAvailable = it }
+        get() = cachedAvailable ?: probe().also { ok -> if (ok) cachedAvailable = true }
 
     fun executeAsRoot(cmd: String): Result<String?> {
         val result = exec(cmd)

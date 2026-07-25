@@ -27,7 +27,12 @@ full reasoning behind each)
   probe) rather than re-probed on every `RootExec()` construction, since
   `RootSupport.runRootCommand` constructs a fresh instance per call and a
   process-spawn probe on every one of those would double the cost of every
-  root command.
+  root command. **Fixed (2026-07-25): only a `true` probe result gets
+  latched** — a single transient probe failure used to poison this flag
+  to `false` for the rest of the process's life (see "Bug found" below),
+  even though `executeAsRoot()` itself doesn't consult this cache and kept
+  working fine underneath. Same fix `RgbController.available()` already
+  applies elsewhere in this codebase; missed here originally.
 - **`root/RootSupport.kt`** — `runGeneratedScript` simplified to call
   `runRootCommand(scriptContents)` directly instead of writing a
   world-readable/-executable file to app storage first. That dance existed
@@ -57,6 +62,29 @@ full reasoning behind each)
   entry is deferred until the open empirical questions (is the prime
   cluster vendor-floored here? does the firmware honor the Game Mode fps
   cap?) are answered, per `pulse-glue-assessment/FINDINGS.md`.
+
+## Bug found (2026-07-25): false "Your device is not compatible with this app"
+
+Observed on-device during A/B test prep: the main screen showed a red
+"PSERVER UNAVAILABLE" badge and `TunerScreen.kt`'s stock upstream fallback
+text, "Your device is not compatible with this app" — while the live HUD
+right next to it kept showing real CPU/GPU/fan/battery numbers, correctly
+updating. Contradictory on its face, and it was: `executeAsRoot()` (what
+the HUD actually uses) doesn't read `pServerAvailable` at all, so it kept
+working regardless.
+
+Root cause: `pServerAvailable`'s one-time cached probe (see above) latched
+`false` after a single failed attempt and never retried for the rest of
+the process's life. This specific process incarnation of `com.kei.pulse`
+had just been force-killed and relaunched by Android's own automatic
+`system_server` restart (see `STATUS.md`'s "INCIDENT" entry) — landing
+its first probe call during exactly the kind of moment this device's
+`xsud` is known to crash-and-refork on a connection close. One bad
+probe, latched forever, cosmetic-but-alarming message displayed
+indefinitely even after the underlying device was completely fine again.
+**Fixed**: only latch `true`; a failed probe just means "ask again next
+time" (see `RootExec.kt`'s doc comment). Builds clean, not yet
+re-verified on-device.
 
 ## Not yet exercised / open
 
