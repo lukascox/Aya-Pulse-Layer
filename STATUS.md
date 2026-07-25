@@ -50,6 +50,26 @@ loop):
   (non-fan) risk categories assessed this session (CPU/GPU write safety,
   vendor-daemon contention, display/settings recoverability, the
   world-readable script file).
+- **Follow-up, same session: the discrete `fan_mode` writes are NOT gated
+  the way the PWM loop is.** Several call sites in
+  `ForegroundAppMonitorService.kt` (AutoTDP start, per-app profile apply,
+  master-OFF/revert-to-stock, snapshot restore) call
+  `fanController.setMode(...)` unconditionally — i.e. `settings put system
+  fan_mode <N>` fires regardless of whether Custom/PWM fan is supported.
+  Neither AYANEO teardown (`ayaspace-teardown`, `aya-gamewindows-teardown`)
+  found any `Settings.System` key involved in AYANEO's own fan control
+  (it's all AIDL-based there), suggesting this key is orphaned/unread on
+  our device and these writes are no-ops — **not directly verified**.
+  Stated intent: keep relying on native AyaSettings' fan control for now,
+  do AIDL-based fan control as separate later work — so the plan is to
+  explicitly strip/no-op every `fanController.setMode()`/
+  `ensureManualMode()` call site in the fork (not just rely on the
+  existing `customFanAvailable()` gate), guaranteeing zero fan-touching
+  root calls from the ported app instead of assuming the Settings key is
+  dead. See FINDINGS.md's "Important gap" subsection for the full call-site
+  list and the cheap on-device check (`settings get system fan_mode`
+  before/after toggling fan mode in native AyaSettings) that would confirm
+  the key really is orphaned, if we want certainty instead of inference.
 
 Writing the actual patch (fork `pulse-upstream`, replace `RootExec.kt`, add
 the `SG8350P` `DeviceProfile` entry, and separately scope AIDL-based fan

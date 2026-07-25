@@ -283,6 +283,49 @@ test, one command, not yet run) — worth doing to fully close this out, but
 the PWM result alone is enough to downgrade "port pulse's fan control" from
 "small glue" to "separate feature, deferred."
 
+### Important gap: the discrete `fan_mode` writes are NOT gated by `customFanAvailable()`
+
+`isCustomFanSupported()` only gates the PWM-duty reassert loop. Reading the
+rest of `ForegroundAppMonitorService.kt` finds several **unconditional**
+calls to `fanController.setMode(...)` (i.e. `settings put system fan_mode
+$mode`) that run regardless of whether Custom/PWM fan is available at all:
+
+- [`ForegroundAppMonitorService.kt:1453`](../pulse-upstream/app/src/main/java/com/kei/pulse/appwatch/ForegroundAppMonitorService.kt:1453)
+  — starting AutoTDP for a foregrounded app forces `SMART` unless the user
+  has Custom fan active.
+- [`ForegroundAppMonitorService.kt:1887`](../pulse-upstream/app/src/main/java/com/kei/pulse/appwatch/ForegroundAppMonitorService.kt:1887)
+  — applying a per-app profile that has a `fanMode` assigned.
+- [`ForegroundAppMonitorService.kt:1913`](../pulse-upstream/app/src/main/java/com/kei/pulse/appwatch/ForegroundAppMonitorService.kt:1913)
+  — master-OFF / revert-to-stock forces `SMART`.
+- [`ForegroundAppMonitorService.kt:1935`](../pulse-upstream/app/src/main/java/com/kei/pulse/appwatch/ForegroundAppMonitorService.kt:1935)
+  — restoring a saved snapshot.
+
+So even with the PWM loop confirmed dead, a ported-as-is `pulse` would
+still issue `settings put system fan_mode <1|4|5|6>` writes through `xsu`
+at these moments. **Whether that's harmless depends entirely on whether
+anything on AYANEO reads that `Settings.System` key.** Neither
+`ayaspace-teardown/FINDINGS.md` nor `aya-gamewindows-teardown/FINDINGS.md`
+mentions any `Settings.System` key for fan control at all — AYANEO's own
+fan control appears to live entirely behind AIDL commands
+(`com_set_performance_fan` / whole-profile config), not a Settings
+provider — which suggests this key is orphaned/unread on this device and
+these writes are no-ops. **Not directly verified.** Cheap on-device check
+that would confirm it: `settings get system fan_mode` before/after
+toggling fan mode in the native AyaSettings UI — if the value never
+changes and AyaSettings' own fan behavior is unaffected by writing to it
+manually, the key is confirmed dead.
+
+**Decision for the glue patch, given the stated intent to keep relying on
+native AyaSettings' fan control for now and do AIDL-based fan work as a
+separate later project**: don't rely on the "probably orphaned key"
+assumption — explicitly strip or no-op every `fanController.setMode()`/
+`ensureManualMode()` call site in the fork (the four listed above, plus
+whatever else `grep -n "fanController\."` turns up at patch time), not
+just leave the existing `customFanAvailable()` gate as the only protection.
+That guarantees the ported app makes zero fan-touching root calls at all,
+independent of whether the Settings key turns out to be wired to
+something — a guarantee instead of an assumption.
+
 ## Risk assessment (2026-07-25) — what could actually go wrong on real hardware
 
 Asked explicitly: does porting `pulse` this way risk the device itself? Not
