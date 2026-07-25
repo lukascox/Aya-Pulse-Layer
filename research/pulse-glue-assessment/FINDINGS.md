@@ -397,9 +397,10 @@ still cause trouble? Checked each:
   (`joystick_led_light_picker_color`) is documented in-file as shared
   AYN/Retroid vendor code (`com.ro.*`), almost certainly absent on AYANEO,
   so this should self-disable safely with **no stripping needed** — unlike
-  the fan discrete-mode writes above. Worth one on-device sanity check
-  (`xsu -c "settings get system joystick_led_light_picker_color"`, expect
-  `null`) before trusting it, but this is a much better-designed gate than
+  the fan discrete-mode writes above. **Confirmed on-device (2026-07-25)**:
+  `xsu -c "settings get system joystick_led_light_picker_color"` → `null`.
+  RGB is safe to leave as-is in the glue patch, no stripping required.
+  This is a much better-designed gate than
   fan's, and the earlier instinct to lump it in with the fan risk was
   wrong on closer read.
 - **Autostart — no AYANEO-specific concern found.**
@@ -432,6 +433,67 @@ still cause trouble? Checked each:
   differs from the rest of the confirmed-generic control code, but it
   hasn't been opened this pass — the one remaining gap before calling the
   whole-module survey exhaustive.
+
+## The patch was written and it works (2026-07-25): `research/pulse-for-aya/`
+
+Everything above was confirmed enough to act on. `research/pulse-for-aya/`
+is the actual glue patch (`RootExec`/`RootSupport` on `xsu`, `FanController`
+stubbed, RGB left alone, no `DeviceProfile` entry added yet — see that
+folder's own `README.md` for the precise diff and reasoning per change).
+Built clean, installed on the AYANEO Pocket FIT, launched with no crash,
+and is already showing live CPU/GPU/thermal telemetry read over `xsu` in
+its own UI (CPU 3302MHz, GPU 231MHz, 36°C/33°C CPU/GPU temp, 3.3W draw, a
+green "PSERVER · LINKED · NO-ROOT" status badge — cosmetic upstream label
+text, now semantically meaning "the `xsu` probe in `RootExec` succeeded").
+Toggling AutoTDP on correctly triggered the app's own onboarding redirect
+to Android's Usage Access settings (not granted yet, not crashed) —
+confirms the permission-gating code path from the earlier follow-up pass
+works as designed. Actuation itself (AutoTDP's write path) is the next
+concrete on-device step, under supervision per the risk-assessment section
+above, not yet exercised.
+
+## Testing protocol: comparing `pulse-for-aya` against native AyaSettings
+
+No new code needed — `research/autotdp-ab-harness`'s existing CSV sampler
+(`AbSession`, see that folder's `AbHarness.kt`) already samples FPS +
+CPU/GPU/thermal/fan/battery every 2s and labels the output CSV by an
+arbitrary `SessionMode` string; it does not itself drive any actuation —
+that harness's "Start AutoTDP" button separately launches
+`pulse_lite_v3.7.sh` as a background daemon, but the sampler itself is a
+neutral instrument that doesn't care what's actually controlling the
+hardware while it runs. That means it can be reused as-is to compare
+`pulse-for-aya` against native AyaSettings, with the harness's own
+daemon-launch button simply not used this time:
+
+1. Install both `autotdp-ab-harness` (the sampler) and `pulse-for-aya` (the
+   thing being tested) side by side on the device.
+2. Pick one game, decide a session length (e.g. 10 minutes), and run
+   **paired, order-swapped sessions** — the same discipline already
+   established in this repo for Baseline-vs-AutoTDP comparisons (never all
+   of one arm then all of the other, which confounds the comparison with
+   elapsed time/thermal carry-over):
+   - **Native arm**: `pulse-for-aya` closed/AutoTDP off, AyaSettings on
+     whatever profile is the real point of comparison (e.g. its own
+     Balanced/Performance mode). Start the harness's CSV sampler in
+     `BASELINE` mode, play, stop it.
+   - **`pulse-for-aya` arm**: AyaSettings profile set to something neutral
+     that won't fight over the same clocks (e.g. its own Max/uncapped mode,
+     so `pulse-for-aya`'s AutoTDP is the only thing actually capping
+     anything), `pulse-for-aya`'s AutoTDP toggled on for that game. Start
+     the harness's CSV sampler in `AUTOTDP` mode (just relabels the output
+     file — the daemon-launch button is not pressed), play the same
+     game/scene, stop it.
+3. Repeat with the arm order swapped in a second session, same as the
+   existing Baseline/AutoTDP protocol in `autotdp-ab-harness/README.md`.
+4. Pull and compare CSVs (`adb pull /sdcard/pulsefit_<mode>_<timestamp>.csv`)
+   — FPS stability, CPU/GPU temps, fan RPM (still native-driven in both
+   arms, so this is actually a fair, shared variable), and estimated power
+   draw are all already columns the sampler produces.
+
+This is deliberately the same paired/order-swapped discipline and the same
+CSV format already used for the Baseline-vs-pulse_lite comparisons, just
+pointed at a different pair of arms — no new tooling, no new file formats
+to reconcile.
 
 ## Recommendation
 

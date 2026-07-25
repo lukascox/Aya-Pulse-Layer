@@ -8,6 +8,31 @@ Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted). Sibling
 repo: `apl-diag` (`git.internal.example/cox/AyaPulseDiag`) — the diagnostics/
 research half of this project, see its own STATUS.md.
 
+## `research/pulse-for-aya/` exists now (2026-07-25) — first buildable glue port
+
+Acted on the assessment below: forked `pulse-upstream` (commit
+`0d2893e67c`) into `research/pulse-for-aya/`, patched `RootExec.kt`/
+`RootSupport.kt` to run through `xsu` instead of `PServerBinder`, stubbed
+`FanController`'s writes to no-ops (fan stays fully native-AyaSettings-
+owned), left RGB untouched (confirmed self-gating). **Builds clean
+(`./gradlew assembleDebug`), installs, launches on the AYANEO Pocket
+FIT, and is already reading live CPU/GPU/thermal telemetry over `xsu`
+with no crashes** — screenshot showed real values (CPU 3302MHz, GPU
+231MHz, 36°C/33°C, 3.3W draw) and a green "PSERVER · LINKED · NO-ROOT"
+status badge (cosmetic label from upstream, semantically now means "xsu
+probe succeeded"). See `research/pulse-for-aya/README.md` for the exact
+patch list and reasoning.
+
+**Not yet exercised**: AutoTDP's actual actuation path (writing CPU/GPU
+frequencies) — toggling it on in the UI correctly triggered the app's own
+onboarding flow (redirected to Android's Usage Access settings screen,
+since that permission isn't granted yet) rather than crashing or silently
+failing. Granting that permission and doing a supervised first
+AutoTDP run is the next concrete step, followed by an A/B comparison vs
+native AyaSettings (see the pulse-glue-assessment FINDINGS.md follow-up
+for the proposed protocol, adapted from `research/autotdp-ab-harness`'s
+existing paired-session design).
+
 ## PLAN FOR NEXT SESSION (2026-07-25 end of day)
 
 **`research/pulse-glue-assessment` reconnaissance is now closed out** (see
