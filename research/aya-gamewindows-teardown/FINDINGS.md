@@ -17,7 +17,12 @@ independent unprotected component with its own major implication. Pass 3
 (sections 5–6) was prompted by `research/pulse-for-aya`'s glue patch needing
 real RGB/fan mechanisms for AYANEO — found a live, on-device-confirmed sysfs
 PWM fan path that overturns pass 1's "probably serial" guess, plus a
-standard-`Settings.System`-based RGB mechanism.
+standard-`Settings.System`-based RGB mechanism. Pass 4 (section 7) traced a
+direct hardware complaint (over-sensitive analog sticks) as far as static
+analysis and on-device probing allow — found the control is genuinely
+crude (3-step gain, binary deadzone), and that a proper `apl`-side fix is
+blocked by input arriving via privileged event injection rather than a
+normal kernel joystick device, not a small follow-up task.
 
 ## TL;DR — two headline findings
 
@@ -440,6 +445,103 @@ CPU/GPU, through the existing `xsu`-glued `RootExec`, with **no AIDL work
 needed at all**. Not a certainty until the write side is confirmed, but a
 meaningfully smaller, more familiar task than the AIDL-based plan it
 replaces.
+
+## 7. Joystick sensitivity — confirmed crude, and confirmed hard to fix ourselves
+
+Triggered by a direct complaint: the analog sticks feel over-sensitive to
+small deflections, and the suspicion that AYA Settings' "sensitivity"
+control is really just widening the reported range rather than shaping a
+real response curve. Two separate questions got answered: what the
+existing control actually does (crude, confirmed), and whether `apl` could
+build a better one itself (much harder than hoped, confirmed on-device).
+
+### 7a. What "sensitivity" and "deadzone" actually are in AYA's own UI
+
+`JoystickSensitivityView` (the in-game overlay panel) exposes **two
+independent axes (L/R stick), each with exactly 3 discrete steps**: 50%,
+100%, 150% — not a continuous slider, confirmed by the tick labels
+(`AYASeekbar.setTickTexts("50%","100%","150%")`) and by
+`ControllerHolder$bindJoystickSensitivity$2`
+(`evidence/joystick-sensitivity/`), which maps raw values 0/1/2 straight to
+those three label strings with no interpolation. Changing it calls
+`OtherControllerViewModel.configJoystickSensitivity`
+(`evidence/joystick-sensitivity/OtherControllerViewModel$configJoystickSensitivity$1.java`),
+which sends the level+1 (i.e. 1/2/3) as a **single raw byte** over the
+controller's serial link via `OtherControllerSerialManager`/
+`NewControllerSerialManagerKt.b(buffer, commandIndex, byteValue)` —
+command index `4` for the left stick, `5` for the right, `6` for a
+**separate, binary DeadZone on/off toggle**
+(`OtherControllerViewModel$configJoystickDeadZone$1.java` — not a radius,
+just `'0'`/`'1'`).
+
+**What that byte actually does inside the stick's firmware is invisible to
+us** — it's consumed entirely inside the embedded controller MCU on the
+other end of the serial link, not in any Android-side code we can read.
+So the user's specific technical theory (range-widening vs. true curve
+reshaping) can't be confirmed or refuted from this decompilation — but the
+control surface itself is now confirmed to be exactly as coarse as it
+feels: a 3-step gain multiplier plus a binary deadzone flag, not a tunable
+curve/deadzone-radius editor. This mechanism is also **not exposed on the
+external AIDL command bus** (no `com_set_joystick_sensitivity` in the
+`AidlConstants` catalog from section 1/`ayaspace-teardown`) — only reachable
+from GameWindow's own in-process UI.
+
+### 7b. Why a `apl`-side fix is much harder than it first looked
+
+The natural "build our own real curve" plan was: read the standard Android
+joystick `MotionEvent` axes (works from any app, no root), apply a proper
+deadzone+response curve, and re-emit corrected values system-wide by
+grabbing the physical evdev device exclusively (`EVIOCGRAB`) and replaying
+through a virtual `uinput` gamepad — the same technique desktop Linux tools
+like `oversteer`/Steam Input use. Checked the prerequisites for this
+directly on the AYANEO Pocket FIT (2026-07-25):
+
+- **`/dev/uinput` exists** (`crw-rw---- uhid uhid`) — the kernel has uinput
+  support, confirmed.
+- **But there is no joystick evdev device to grab at all.** `cat
+  /proc/bus/input/devices` and `dumpsys input` both list only 8 fixed
+  system devices (haptics, `gpio-keys`, power/volume keys, touchscreen,
+  headset/button jacks, one virtual keyboard) — no `ABS_X`/`ABS_Y`, no
+  device that appears or changes while physically moving the stick. No
+  `xbox`/`controller`-named process is running either.
+
+Traced why in the decompiled source: `com.input.source.InjectInputDispatcher`
+and `com.ayaneo.gamewindow.KeyInputInject`
+(`evidence/joystick-sensitivity/`) both call
+`InputManager.getInstance().injectInputEvent(event, ...)` — the same
+privileged, normally-hidden API `adb shell input tap/swipe/keyevent` itself
+uses (gated to apps holding `INJECT_EVENTS`, i.e. system-signed apps, or to
+the `shell`/root UID). **The analog sticks never exist as a kernel input
+device at all** — GameWindow reads the serial link in-process and
+synthesizes `MotionEvent`/`KeyEvent` objects directly into whichever app
+currently has input focus, bypassing evdev entirely. The actual
+read-and-decide logic behind that (`addInjectParams`, `startInjectTouch`,
+etc.) is declared `native` — a compiled `.so`, invisible to `jadx`, a hard
+wall for any further static analysis of the exact math.
+
+**This closes off the tidy uinput/evdev-grab plan completely — there is
+nothing to grab.** A real fix would instead require reading the raw serial
+UART ourselves (same class of link as `AR03`'s `"dev/ttyHS4"` from the
+earlier fan/RGB passes, though not confirmed to be the same port on
+whichever device class this Pocket FIT actually is) — either racing
+GameWindow for the same port (uncertain if it even allows a second reader)
+or somehow stopping GameWindow's own controller reader first, reverse
+engineering AYA's undocumented framing well enough to decode real stick
+position, then re-injecting corrected events ourselves via the same
+`injectInputEvent` mechanism (reachable from a rooted/`xsu`'d context, same
+privilege tier as `shell`). That's a substantially larger, standalone
+reverse-engineering project — deferred, not pursued further this session.
+
+### Implication
+
+No `apl`-side action taken or recommended from this pass. The concrete,
+useful output is the write-up itself: precise, evidenced documentation of
+what the "sensitivity"/"deadzone" controls currently do (3 fixed gain
+steps, binary deadzone, both opaque past the serial boundary) — worth
+compiling into feedback for AYA directly, independent of anything `apl`
+does. If AYA ever exposes a real curve/deadzone-radius control (or better,
+raw pre-processed stick data) this whole limitation disappears without any
+work on our end.
 
 ## Implications for `apl`
 
