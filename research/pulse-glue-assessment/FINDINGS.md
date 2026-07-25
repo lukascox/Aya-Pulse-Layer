@@ -382,17 +382,71 @@ observation (logs + eyes on temperature) rather than silently backgrounded,
 (c) confirm real sysfs behavior under contention with AYANEO's own daemon
 before trusting the re-assert logic unattended.
 
+## Follow-up pass (2026-07-25, cont'd): RGB, autostart, QS tile checked
+
+Asked directly: is this the state where a CPU/GPU-controlling `pulse` port
+is buildable, and what else (autostart, the Quick Settings tile) might
+still cause trouble? Checked each:
+
+- **RGB — properly self-gated, unlike fan.** Read `RgbController.kt` in
+  full: `setColor()`/`setManual()`/`off()` all start with `if
+  (!available()) return`, and `available()`
+  ([`RgbController.kt:51`](../pulse-upstream/app/src/main/java/com/kei/pulse/data/RgbController.kt:51))
+  correctly distinguishes "root not ready yet, retry" from "`null` — key
+  genuinely absent, cache and stay inert." The key
+  (`joystick_led_light_picker_color`) is documented in-file as shared
+  AYN/Retroid vendor code (`com.ro.*`), almost certainly absent on AYANEO,
+  so this should self-disable safely with **no stripping needed** — unlike
+  the fan discrete-mode writes above. Worth one on-device sanity check
+  (`xsu -c "settings get system joystick_led_light_picker_color"`, expect
+  `null`) before trusting it, but this is a much better-designed gate than
+  fan's, and the earlier instinct to lump it in with the fan risk was
+  wrong on closer read.
+- **Autostart — no AYANEO-specific concern found.**
+  `BootCompletedReceiver.kt` handles both `BOOT_COMPLETED` and
+  `MY_PACKAGE_REPLACED` (the latter specifically because an app update
+  kills the process without `onDestroy`, stranding a Custom-fan-in-progress
+  or a dead watcher — a real bug they already hit and fixed on the Thor).
+  It checks Usage Access before starting the per-app watcher, and the
+  manifest correctly declares `foregroundServiceType="specialUse"` with a
+  `PROPERTY_SPECIAL_USE_FGS_SUBTYPE` (required for targetSdk 34's stricter
+  foreground-service rules). `MainActivity.kt` has working onboarding
+  flows for both special permissions that can't be granted via a normal
+  runtime dialog (`Settings.ACTION_USAGE_ACCESS_SETTINGS` for
+  `PACKAGE_USAGE_STATS`, `Settings.ACTION_MANAGE_OVERLAY_PERMISSION` for
+  the HUD overlay). None of this is AYN-specific — it's generic Android
+  friction every install goes through once, already handled in code.
+- **Quick Settings tile — standard `TileService` API, no vendor
+  dependency.** `PerformanceTileService`/`TileControlActivity` use the
+  stock `android.service.quicksettings.action.QS_TILE`/
+  `QS_TILE_PREFERENCES` intents. The whole-tree grep from the earlier pass
+  already covers `tile/` and `overlay/` — neither references
+  `RootExec`/`PServerBinder`/`ServiceManager`.
+- **Also confirmed generic/safe in passing**: `RefreshRateController`
+  (`data/SystemTuning.kt`) writes stock AOSP `peak_refresh_rate`/
+  `min_refresh_rate` keys, not a vendor-specific mechanism — should work
+  on any Android device whose panel supports the rates in
+  `DeviceProfile.fpsTargetOptions`.
+- **Not yet read**: the `sleep/` package (`SleepProfileMonitorService` —
+  CPU-profile automation on device sleep/wake). No reason yet to expect it
+  differs from the rest of the confirmed-generic control code, but it
+  hasn't been opened this pass — the one remaining gap before calling the
+  whole-module survey exhaustive.
+
 ## Recommendation
 
 Reconnaissance is now closed out at the whole-module level — both
 load-bearing assumptions (clean root abstraction, generic CPU/GPU
 detection) are confirmed by a full-tree grep, not just the original 8-file
 sample, and the domain-logic control loops were read directly rather than
-inferred. The glue strategy stands for CPU/GPU/display/RGB/AutoTDP: this
-looks like the right call over rewriting from scratch there. **Fan control
-is the one exception**, confirmed on-device (2026-07-25): both of `pulse`'s
-fan mechanisms are vendor-specific to AYN hardware and inert on AYANEO —
-that piece isn't "glue a transport layer," it's "build fan control
+inferred. The glue strategy stands for CPU/GPU/display/refresh-rate/
+AutoTDP/per-app-profiles/HUD-overlay/QS-tile/boot-autostart: this looks
+like the right call over rewriting from scratch there, and (aside from the
+unread `sleep/` package) this is now a whole-module-level assessment, not a
+sample. **Fan control is the one exception**, confirmed on-device
+(2026-07-25): both of `pulse`'s fan mechanisms are vendor-specific to AYN
+hardware and inert on AYANEO — that piece isn't "glue a transport layer,"
+it's "build fan control
 separately," most likely on top of the already-proven AIDL bind to
 `com.ayaneo.gamewindow`. The 120ms cadence-vs-`xsu` question that motivated
 this pass no longer applies to `pulse`'s own fan code (it self-gates off),

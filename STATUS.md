@@ -70,11 +70,26 @@ loop):
   list and the cheap on-device check (`settings get system fan_mode`
   before/after toggling fan mode in native AyaSettings) that would confirm
   the key really is orphaned, if we want certainty instead of inference.
+- **Follow-up, same session: RGB, autostart, and the Quick Settings tile
+  all checked clean.** Unlike fan, `RgbController`'s writes ARE properly
+  gated everywhere (`if (!available()) return` before every write) and its
+  vendor key is `com.ro.*`-specific (AYN/Retroid), almost certainly absent
+  on AYANEO — should self-disable safely, no stripping needed (one
+  on-device sanity check recommended, not required).
+  `BootCompletedReceiver`/`MainActivity`'s permission onboarding
+  (`PACKAGE_USAGE_STATS`, overlay) and the `PerformanceTileService` QS tile
+  are all stock Android APIs with no AYN-specific assumptions found. The
+  glue scope for a first build is confirmed as: CPU/GPU/AutoTDP/display/
+  refresh-rate/per-app-profiles/HUD-overlay/QS-tile/boot-autostart — with
+  fan control stripped/deferred (see above) as the only carve-out. One
+  gap: the `sleep/SleepProfileMonitorService` package hasn't been read yet
+  — see `pulse-glue-assessment/FINDINGS.md`'s latest follow-up section for
+  the full writeup.
 
 Writing the actual patch (fork `pulse-upstream`, replace `RootExec.kt`, add
-the `SG8350P` `DeviceProfile` entry, and separately scope AIDL-based fan
-control) is intentionally deferred to a later session — this session was
-findings-only.
+the `SG8350P` `DeviceProfile` entry, strip the fan-mode call sites, and
+separately scope AIDL-based fan control) is intentionally deferred to a
+later session — this session was findings-only.
 
 ## PLAN FROM PREVIOUS SESSION (2026-07-24 end of day)
 
