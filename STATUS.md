@@ -4,9 +4,46 @@ Living document — update this in place at the end of a working session,
 commit with a descriptive message. Do not create a new dated/versioned copy
 of this file; `git log` is the history.
 
-Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted). Sibling
-repo: `apl-diag` (`git.internal.example/cox/AyaPulseDiag`) — the diagnostics/
-research half of this project, see its own STATUS.md.
+Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
+
+**Merged in (2026-07-25)**: the formerly-separate `apl-diag`
+(`AyaPulseDiag`) repo is now `diagnostics/` in this repo, not a sibling —
+see "Repo merge" section below and `diagnostics/README.md` for why. That
+repo's own STATUS.md is retired; its content is folded into this section.
+
+## `diagnostics/` (folded in from `apl-diag`, 2026-07-25)
+
+Raw hardware facts and the validated FPS/telemetry measurement script —
+see `diagnostics/README.md` and `diagnostics/docs/HARDWARE_PROFILE.md` for
+full detail. Carried over, still true, don't re-litigate:
+
+- Foreground-app detection: `dumpsys activity activities | grep
+  topResumedActivity=` (not `mCurrentFocus`/`mResumedActivity` — confirmed
+  to return nothing on this Android 14 build).
+- SurfaceFlinger layer selection needs the 4-tier priority search (BLAST >
+  plain SurfaceView > last non-helper match > old fallback) — this took
+  four buggy iterations (v4-v7) to get right, already solved, don't redo it.
+- `dumpsys gfxinfo` is unreliable for native SurfaceView renderers
+  (RetroArch/Eden/Dolphin) — returns 0 frames or frozen/cached stats.
+- GPU busy signal: raw `kgsl-3d0/gpubusy`, not `gpubusypercentage`
+  (confirmed broken on this kernel) — but the raw counter itself
+  wraps/resets between reads, so no controller should trust a single read.
+- CPU cores directly observed at 87-96°C with no throttling response from
+  AYASpace's Gaming mode — thermal safety is this project's own
+  responsibility to design for, not something the vendor firmware is
+  confirmed to handle.
+- Full CPU OPP tables (per-policy `scaling_available_frequencies`, 18-32
+  steps per policy) and the AIDL-sourced per-mode config (fan mode, GPU
+  min/max, per-core CPU caps for all 5 AYASpace modes) are both captured in
+  `diagnostics/docs/HARDWARE_PROFILE.md` — this is the reference to check
+  before assuming a frequency/fan-mode fact needs re-measuring.
+
+**Known open items carried over, still open**: the AYASpace
+write-conflict question (what happens if a controller and AYASpace write
+the same sysfs node simultaneously — relevant now to the vendor-daemon-
+contention risk noted in `pulse-glue-assessment/FINDINGS.md`) was never
+directly tested; the "zero span" FPS edge case (~17% of Eden samples) is
+low-priority and fails safe.
 
 ## `research/pulse-for-aya/` exists now (2026-07-25) — first buildable glue port
 
@@ -170,7 +207,7 @@ per-core caps, fan mode, GPU frequency range) also came back live in the
 callback JSON — resolved the long-standing "Gaming vs Max identical?"
 mystery (answer: GPU cap only, 834MHz vs 1050MHz/uncapped) — see
 `research/aidl-bind-spike/FINDINGS.md` and the updated table in
-`apl-diag/docs/HARDWARE_PROFILE.md`. This remains relevant regardless of
+`diagnostics/docs/HARDWARE_PROFILE.md`. This remains relevant regardless of
 the glue decision above — it's a faster/safer path than `xsu` specifically
 for whole-profile switches, whether that code lives in a `pulse` fork or a
 from-scratch `apl/app/`.
@@ -227,9 +264,10 @@ technical conclusions summarized below.
   (`kgsl-3d0/max_pwrlevel`) writes both confirmed working through that
   channel, with read-back verification.
 - The FPS pipeline (foreground app → SurfaceFlinger layer match →
-  `--latency` FPS calc), originally built and validated in the sibling
-  `apl-diag` repo's shell script, is confirmed reachable the same way,
-  across RetroArch/Eden/Dolphin (three distinct layer-naming conventions).
+  `--latency` FPS calc), originally built and validated in what's now the
+  `diagnostics/` folder's shell script (formerly the separate `apl-diag`
+  repo), is confirmed reachable the same way, across RetroArch/Eden/Dolphin
+  (three distinct layer-naming conventions).
 - The "stdin" `xsu` invocation method is broken (silent false positive,
   never diagnosed) — do not use it. Use the `args` method only.
 - `pulse_lite`'s old tier/hysteresis/floor controller architecture (see
@@ -255,9 +293,10 @@ condition, not a theoretical edge case.
   package renamed to `pl.ayapulselite.app`, nothing implemented).
 - No `XsuShell.kt`/`AutoTdpController.kt` real implementation exists yet.
 - Full `scaling_available_frequencies` OPP table per CPU policy — flagged
-  as missing in `apl-diag`'s hardware profile, still needed before a
-  precise step-controller can be designed (currently only 4 discrete
-  points per cluster are known).
+  as missing in `diagnostics`'s hardware profile at the time (later
+  resolved, see "run2" below), still needed before a precise
+  step-controller can be designed (currently only 4 discrete points per
+  cluster are known).
 - Test 6/7 from the probe's v2 spec (full CPU frequency table dump,
   governor write+verify) were coded but not yet run on-device before this
   migration — see FINDINGS.md.
@@ -273,7 +312,7 @@ battery, one CSV row every 2s), where AutoTDP launches this repo's own
 already-validated `docs/archive/pulse_lite/v3.7/pulse_lite_v3.7.sh` as a
 background daemon and just observes — no controller logic is ported into
 Kotlin here.
-Resulting CSVs, once collected, should be copied into `apl-diag/logs/
+Resulting CSVs, once collected, should be copied into `diagnostics/logs/
 ab-comparison/` — the code lives here for the Gradle/Kotlin scaffolding,
 the data belongs there.
 
@@ -284,7 +323,7 @@ table) came back completely empty — fixed (split into one call per policy,
 explicit raw-exec logging).
 
 **run2 (2026-07-24):** Test 6 fix confirmed working — full CPU OPP table
-captured and folded into `apl-diag`'s `HARDWARE_PROFILE.md` (this closes
+captured and folded into `diagnostics`'s `HARDWARE_PROFILE.md` (this closes
 the "still missing" item open since v6). Azahar (Citra 3DS fork) confirmed
 as a fourth working app for the layer-matching heuristic. A new FPS
 pipeline edge case found (idle-screen stale-buffer FPS decay, not a stall)
@@ -318,7 +357,7 @@ serial/EC-based) comes along for free — the AIDL callback delivers the
 full per-mode config (fan mode, GPU frequency range, per-core CPU caps),
 which also resolved the old "Gaming vs Max identical?" question (answer:
 GPU max frequency cap only, 834MHz vs 1050MHz/uncapped — folded into
-`apl-diag/docs/HARDWARE_PROFILE.md`). Bonus: the same command surface
+`diagnostics/docs/HARDWARE_PROFILE.md`). Bonus: the same command surface
 covers controller/key remapping (`com_set_abxy_mode`, `com_set_l1l2r1r2_mode`,
 `com_set_single_key_mapping`) — Module 2, deferred since the project's very
 first README, might turn out to be nearly free, though not itself tested yet.

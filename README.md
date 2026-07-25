@@ -1,91 +1,127 @@
-# APL — AyaPulseLite
+# apl — AYANEO Pocket FIT performance research + a `pulse` glue patch
 
-Native Android GUI app for the KONKR/AYANEO Pocket FIT (Snapdragon 8 Gen
-3-class SoC, Adreno GPU, Android 14), replacing the manual "Root Script"
-workflow in AYA Settings with a real background service.
-
-Architecture/inspiration: [`pulse`](https://github.com/keiretrogaming/pulse)
-(AutoTDP logic), but with a root layer built on the device's native `xsu`
-binary (`Runtime.exec("xsu", "-c", cmd)`, confirmed working from an
-installed app — see `research/xsu-capability-probe/FINDINGS.md`) instead of
-reflection into `PServerBinder` (not available on this device).
+Device-capability research for the KONKR/AYANEO Pocket FIT (Snapdragon 8
+Gen 3-class SoC / SG8350P, Adreno GPU, Android 14) — root-access
+mechanisms, sysfs/thermal behavior, and the undocumented AIDL surface
+behind AYASpace's own performance profiles. The findings feed a **glue
+patch onto the existing, mature [`pulse`](https://github.com/keiretrogaming/pulse)
+app** (AutoTDP, fan curve, HUD overlay, RGB, per-app profiles — GPL-2.0,
+tested on real AYN/Retroid hardware) rather than a ground-up rewrite of
+the same logic.
 
 The author is not a professional programmer. This project is built
 iteratively with AI assistance (Claude Code) plus manual builds/tests on
-real hardware. See `STATUS.md` for the current state — that file is kept up
-to date in place rather than accumulating a new handoff document per
+real hardware. See `STATUS.md` for the current state — that file is kept
+up to date in place rather than accumulating a new handoff document per
 session (the pattern used before this repo existed, see `docs/archive/`).
 
-## Scope (priority order)
+## Why this exists
 
-1. **Module 1 — AutoTDP (in progress).** Background service, boots
-   automatically, reads active app FPS, a hysteresis-based step controller
-   picks CPU/GPU limits to hold a target FPS (default 60) at minimum power.
-   Writes to sysfs via `xsu`.
-2. **Module 2 — Key remapping (deferred).** Arbitrary physical button
-   rebinding. Likely Accessibility Service + InputManager, or root-level
-   `getevent`/`sendevent` if buttons are firmware-reserved. Early research
-   for this lives outside this repo for now (see project root's `external
-   buttons/` folder) — will become its own separate project, not a module
-   of this one, once it's actually started.
-3. **Module 3 — Fan curve (deferred, priority may rise).** PI controller
-   holding minimum RPM against temperature. `HARDWARE_PROFILE.md` (in the
-   sibling `apl-diag` repo) found CPU cores hitting ~93.8°C with no observed
-   throttling response from AYASpace — do not assume the vendor firmware is
-   already handling thermals safely.
+AYASpace ships 5 closed power profiles (Eco/Balanced/Gaming/Streaming/Max)
+with no visibility into what they actually do at the kernel level, and no
+way to define a custom one, an FPS-target-driven controller, a custom fan
+curve, or per-app automatic profile switching. `pulse` already implements
+all of that — closed-loop AutoTDP, custom fan curve, HUD/OSD overlay, RGB,
+per-app profiles, Quick Settings tile, tested and maintained on real
+AYN/Retroid hardware. Its only blocker for this device was its root
+mechanism (`PServerBinder`, an AYN/Retroid-specific broker, not present
+here). This repo exists to answer, empirically, whether that blocker is a
+narrow substitution or something deeper — and, having confirmed the
+former, to build and validate that substitution.
 
-## Design principles
+## Current state (2026-07-25)
 
-- **KISS.** Every module is its own small, testable class. No god objects.
-- **Modularity.** Transport layer (`xsu`), data-reading layer (FPS/temp),
-  logic layer (controllers), and UI are separated and don't know each
-  other's implementation details (`root/`, `fps/`, `tdp/`, `ui/`).
-- **Small steps.** Each iteration is one small, verifiable increment.
-- **No vendor magic copy-pasting.** `pulse`'s architecture is a reference,
-  not a source to fork 1:1 — the root mechanism differs.
+- **`research/pulse-for-aya/`** — the actual glue patch: a fork of
+  upstream `pulse` with its root-transport layer swapped from
+  `PServerBinder` to `xsu` (this device's confirmed root-shell
+  equivalent), fan control stubbed out (native AyaSettings keeps owning
+  it — see below), RGB left untouched (self-gates off safely on its own).
+  **Builds clean, installs, launches, and reads live CPU/GPU/thermal
+  telemetry on-device with no crashes.** Actuation (AutoTDP's write path)
+  and an A/B comparison against native AyaSettings are the next concrete
+  steps — see that folder's own `README.md`.
+- **`research/pulse-glue-assessment/`** — the analysis behind the patch:
+  why "glue, not rewrite" is the right call, exactly what needed patching
+  (root layer, fan control) and what didn't (CPU/GPU detection, RGB,
+  display/refresh-rate, autostart, the Quick Settings tile — all already
+  generic or self-gating), plus a device-risk assessment and the A/B
+  testing protocol.
+- **`research/aidl-bind-spike/`** — confirmed, on-device, that a plain
+  installed app (no root) can drive AYANEO's own performance-profile
+  switching directly over Binder to `com.ayaneo.gamewindow` — a second,
+  faster actuation path for whole-profile switches, independent of the
+  `pulse` glue, and the likely route for fan control later (see below).
+- **`research/ayaspace-teardown/`** and **`research/aya-gamewindows-teardown/`**
+  — static analysis of the AYANEO vendor apps that found the AIDL service
+  above is exported with no caller-identity verification at all — the
+  finding that made the spike above worth trying.
+- **`research/xsu-capability-probe/`** and **`research/autotdp-ab-harness/`**
+  — the probes that first confirmed `xsu` works from an installed app,
+  validated the sysfs read/write mechanics and the FPS-measurement
+  pipeline, and built the A/B comparison harness now being reused to test
+  `pulse-for-aya` against native AyaSettings.
+- **`diagnostics/`** — raw hardware facts (full CPU OPP tables, per-mode
+  fan/GPU config sourced from AYASpace's own AIDL callback, thermal
+  thresholds) and the validated FPS-measurement shell script. Folded in
+  from the formerly-separate `apl-diag` repo (2026-07-25) — see
+  `diagnostics/README.md` for why: once this repo itself became research
+  rather than "the app", the two-repo split no longer matched reality.
+- **`app/`** — the original from-scratch skeleton this repo started as
+  (TODO-comment stubs, never implemented). Superseded by the glue-patch
+  approach above; not actively developed. Kept as the historical starting
+  point, not a target to keep building out.
+
+## Why glue, not rewrite
+
+`pulse`'s root abstraction turned out to be a single, narrow choke point
+(one ~15-line method), its CPU/GPU frequency detection is already fully
+dynamic (reads the hardware's own advertised OPP tables at runtime, no
+per-SoC hardcoding), and its one real per-device gate degrades gracefully
+for an unrecognized SoC instead of crashing. That reconnaissance — and the
+decision it led to — is fully written up in
+`research/pulse-glue-assessment/FINDINGS.md`. Fan control is the one
+confirmed exception: both of `pulse`'s fan mechanisms are AYN-vendor-
+specific and inert on AYANEO hardware, so it's explicitly out of scope for
+this patch (native AyaSettings keeps doing it, and does it well) — the
+plan is a dedicated fan-control loop later, on top of the AIDL bind
+confirmed above, not a `pulse` patch.
 
 ## Repo layout
 
 ```
 apl/
-├── app/                        -- the real source (seeded from the original
-│                                   pulsefit_skeleton.zip, package renamed
-│                                   pl.pulsefit.app -> pl.ayapulselite.app)
 ├── research/
-│   └── xsu-capability-probe/    -- throwaway probe that validated the xsu-from-app
-│                                   channel; FINDINGS.md has the conclusions that
-│                                   inform app/'s XsuShell.kt
-├── docs/
-│   └── archive/                 -- frozen pre-git history (do not extend further,
-│                                   see "Handoff workflow" below)
-├── STATUS.md                    -- current state, living document
-└── build.gradle.kts / settings.gradle.kts / gradlew / gradle/wrapper/
+│   ├── pulse-for-aya/             -- the actual glue patch, working prototype
+│   ├── pulse-glue-assessment/     -- analysis + risk assessment behind the patch
+│   ├── pulse-upstream/            -- gitignored, read-only clone of upstream pulse
+│   ├── aidl-bind-spike/           -- confirmed no-root AYASpace profile-switch path
+│   ├── ayaspace-teardown/
+│   ├── aya-gamewindows-teardown/  -- vendor app static analysis (found the AIDL gap)
+│   ├── xsu-capability-probe/
+│   └── autotdp-ab-harness/        -- root-channel probes + A/B comparison harness
+├── diagnostics/                   -- raw hardware facts + FPS script (formerly apl-diag)
+├── app/                           -- original from-scratch skeleton, superseded, not active
+├── docs/archive/                  -- frozen pre-git history (do not extend further)
+└── STATUS.md                      -- current state, living document
 ```
 
-## What's already confirmed (see `research/xsu-capability-probe/FINDINGS.md` for detail)
+## Design principles
 
-- `xsu` works via `Runtime.exec()`/`ProcessBuilder` from an installed app
-  (debug AND release builds) — the single biggest open question this
-  project carried is now closed.
-- CPU (`cpufreq/policy*/scaling_max_freq`) and GPU
-  (`kgsl-3d0/max_pwrlevel`) sysfs writes both confirmed working through
-  this channel.
-- The FPS measurement pipeline (foreground-app detect → SurfaceFlinger
-  layer match → `--latency` FPS calc), ported from the sibling `apl-diag`
-  project's validated shell script, is confirmed reachable through the
-  same channel, across three different emulator layer-naming conventions.
-- A real, recurring failure mode exists under heavy device load (a batched
-  sysfs-read call stalled ~126s once during Dolphin gameplay) — see
-  FINDINGS.md's "Real failure mode" section before designing the actual
-  polling loop.
-- The "stdin" `xsu` invocation method (piping commands into an interactive
-  process) is confirmed broken (silent false positive) — the production
-  code must use the `args` method (`ProcessBuilder("xsu", "-c", cmd)`).
+- **Glue over rewrite, where a mature implementation already exists.**
+  Reuse hard-won domain knowledge (fan-curve math, CPU/GPU detection
+  quirks, thermal behavior) instead of rediscovering it from scratch —
+  this reframed the whole project after `pulse-glue-assessment`.
+- **Findings before code.** Each `research/` subfolder's `FINDINGS.md` is
+  the record of what was actually checked and confirmed, so nothing needs
+  re-discovering next session. `STATUS.md` is the one living cross-cutting
+  document — write there, don't create a new handoff doc.
+- **Small, verifiable increments**, validated on real hardware, not
+  assumed from reading code alone.
 
 ## Handoff workflow
 
 Historically (see `docs/archive/`), this project wrote a new handoff `.md`
 file per script/session. Going forward, in git, **that pattern is
 replaced**: `STATUS.md` is a single living document updated in place, and
-`git log` is the version history. Do not create `HANDOFF_v2.md`-style files
-— update `STATUS.md` and write a good commit message instead.
+`git log` is the version history. Do not create `HANDOFF_v2.md`-style
+files — update `STATUS.md` and write a good commit message instead.
