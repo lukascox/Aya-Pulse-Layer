@@ -6,6 +6,26 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## ROOT CAUSE FOUND (2026-07-26): the empty-CSV bug is `xsud` segfaulting on long `xsu -c` commands
+
+Follow-up to INCIDENT #3 below. Root-caused live on-device, outside any
+app: `ab-logger`'s combined per-sample `xsu` call (~3150 chars on this
+device, 19 CPU + 8 GPU thermal zones) reliably crashes `xsud` (`received
+signal 11`, respawned by `init`) or gets silently dropped — this is the
+exact mechanism behind "100% empty" CSV rows, not root/hardware flakiness.
+Bisected: the failure threshold is a fuzzy band around ~1000-1200
+characters (raw command length, NOT the number of `$(...)` subshells —
+tested head-to-head), consistent with a real race rather than a fixed
+buffer size. Validated fix: splitting a combined command into chunks under
+~800 chars each survives repeatedly (0/5 failures per chunk, 15/15 on a
+sustained 5s-interval run) and still returns correct data. Full
+methodology, bisection table, and the recommended chunk-size fix are in
+`research/xsu-capability-probe/FINDINGS.md`'s newest section — this
+supersedes INCIDENT #2's "combine all calls into one" mitigation, which
+traded process-spawn count for exactly this crash. **Not yet applied** to
+`LoggerSession.kt`'s actual `buildCombinedCommand()`/`buildFullSnapshotCommand()`
+— next session's first task.
+
 ## INCIDENT #3 (2026-07-26): empty-CSV bug recurs, then device powers off entirely, `BatteryService` left stuck
 
 Two `ab-logger`-only sessions run back-to-back for the native-vs-`pulse-for-aya`

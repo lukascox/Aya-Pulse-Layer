@@ -179,6 +179,112 @@ even notice it happened. **This is not a fix — `AutoTdpController` needs to
 treat "this call might just not return" as a real, recurring condition
 under heavy load, not an edge case.**
 
+## Root cause found: `xsud` crashes (SIGSEGV) on long `-c` commands — this is the "100% empty CSV" bug, and likely the source of several `apl`-side reboot incidents (2026-07-26)
+
+Traced from `research/ab-logger`'s empty-CSV bug (`apl/STATUS.md` INCIDENT #2
+and #3 — two full A/B sessions where every sample came back
+`?`/`n/a`/`no layer matched` across the board). `LoggerSession.sampleOnce()`
+combines the foreground-app check, SurfaceFlinger layer list, and the full
+CPU/GPU/thermal/fan/battery snapshot into one `xsu -c "<big multi-statement
+string>"` call (`buildCombinedCommand()` + `buildFullSnapshotCommand()`) —
+on the AYANEO Pocket FIT, with its 19 CPU + 8 GPU thermal zones, this string
+is **~3150 characters**. Reproduced live on-device, outside any app, by
+pushing that exact command text to `/data/local/tmp/` and running
+`xsu -c "$(cat ...)"` directly over `adb shell` repeatedly:
+
+- Result was inconsistent per call: sometimes an explicit protocol-level
+  rejection (`a obsolete xsu found, suggest close socket! / receive an
+  invalid package, exit!`, exit code 165), sometimes **zero bytes of output
+  with no error at all** — this second mode is the exact, direct mechanism
+  behind the "100% empty" CSV rows: `PowerFanProbe.parseBlockTags()` finds
+  no `===TAG===` markers because the underlying `xsu` call produced nothing,
+  so every field in `LoggerSession.buildCsvRow()` falls back to its `"?"`/
+  `"n/a"` default.
+- `dmesg`, captured live during this: `init: Service 'xsud' (pid 9642)
+  received signal 11` / `init: process with updatable components 'xsud'
+  exited 4 times in 4 minutes` — **`xsud` (the root broker daemon) is
+  segfaulting** on this input and being respawned by `init`. Calls that land
+  during the crash/respawn window get either the "invalid package" error
+  (hitting the dying socket) or silent emptiness (hitting the gap before the
+  new `xsud` is listening again).
+- Both mechanisms were caught in the same short session where a genuine
+  **full device reboot** (`reboot,userrequested`, not just an `xsud`
+  respawn) also occurred — though that specific reboot was later confirmed
+  by the `apl` maintainer to have been a deliberate manual power-cycle (to
+  regain a frozen GUI), not something triggered by this test. Whether
+  *repeated* `xsud` segfaults can, on their own, cascade into the kind of
+  `system_server`/`BatteryService` instability documented in `apl/STATUS.md`
+  INCIDENT #1 and #3 remains a plausible but **unconfirmed** connection —
+  flagged here, not proven.
+
+### Bisection: it's raw command length, not the number of `$(...)` subshells
+
+Two hypotheses were tested head-to-head at matched total length (~3000
+chars): **(A)** few (6) subshells each with a long inline argument, vs
+**(B)** many (73) small subshells, matching the real command's shape. Both
+failed 5/5 identically — ruling out subshell/fork count as the driver and
+pointing at raw byte length of the single `-c` argument as the relevant
+variable.
+
+Bisecting length alone (`echo A=$(cat /proc/version 2>/dev/null); ` repeated
+N times, 3-5 trials per size), on a device where `xsud` had already
+segfaulted and respawned several times that session:
+
+| length (chars) | failure rate |
+|---|---|
+| 800 | 0/3 |
+| 900 | 0/3 |
+| 1000 | 0/3 |
+| 1050 | 3/5 |
+| 1100 | 5/5 (was 1/3 on an earlier, fresher pass) |
+| 1200 | 3/3 |
+| 1500-3000 | consistently fails |
+
+**The transition is a fuzzy band (~1000-1200 chars), not a sharp cutoff** —
+consistent with a genuine race (buffer contents/size depending on how the
+underlying socket read is chunked) rather than a fixed, deterministic buffer
+size. Note also the caveat in the table: the exact failure rate at a given
+length was not stable across the session — early passes tolerated lengths
+that failed reliably later, suggesting `xsud`'s crash history may itself
+degrade its short-term reliability (consistent with the project's other
+reports of `xsud` being harder to trust the longer/heavier a session runs).
+
+### Validated practical fix: split any combined command into chunks under ~800 chars
+
+- A synthetic 697-char command survived **15/15** consecutive calls spaced
+  5 seconds apart (matching `LoggerService.SESSION_INTERVAL_MS`) — i.e. a
+  75-second window with zero failures.
+- The real `LoggerSession` combined command (the actual ~3150-char string,
+  not synthetic filler) was split on statement boundaries (`"; "`) into 5
+  chunks of ≤790 chars each and each chunk run 5x: **0/5 failures on every
+  chunk**, and each chunk returned real, correctly-tagged data (269
+  `dumpsys`-derived lines in the first chunk, 10-11 sysfs key=value lines in
+  each of the rest).
+- **Recommendation for `ab-logger`/any future `xsu`-based batching code
+  (including `pulse-for-aya`'s `RootExec` if it is ever changed to batch
+  multiple reads into one call)**: keep any single `xsu -c` argument under
+  roughly **800 characters** as a practical safety margin (the measured
+  fuzzy-failure band starts around 1000). This directly conflicts with
+  `apl/STATUS.md` INCIDENT #2's mitigation of combining *all* per-sample
+  reads into one call to reduce process-spawn count — the fix is a middle
+  ground (e.g. 4-5 medium calls instead of 1 giant one or 4 fully separate
+  ones), not a reversion to the original per-attribute call pattern.
+
+### Method note
+
+All of the above was reproduced directly over `adb shell "xsu -c
+\"$(cat /data/local/tmp/<file>)\""` (command text pushed to a file first,
+then substituted as a single shell argument) — not through the app itself.
+Passing the same multi-statement string as a literal, nested-quoted `adb
+shell xsu -c '...'` argument does **not** reproduce this faithfully: `adb
+shell` joins all of its own argv elements with a single space before
+sending them to the device's default shell for a second round of parsing,
+which silently mangles embedded quotes/`$()` and produces a *different*,
+unrelated shell syntax error rather than exercising `xsu`'s own handling of
+a long argument. Use the file + command-substitution approach (or a real
+`ProcessBuilder("xsu", "-c", command)` call, which never has this
+double-parsing problem) for any future test in this area.
+
 ## Not yet executed at the time of this migration
 
 - Test 6 (full CPU `scaling_available_frequencies` OPP table dump) and
