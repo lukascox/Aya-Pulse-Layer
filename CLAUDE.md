@@ -40,6 +40,11 @@ Each `research/<project>/` is an independent Android app — `cd` in first.
   `com.kei.pulse` for diffability.
 - Findings go in the project's own `FINDINGS.md`; `STATUS.md` gets only
   a summary + pointer.
+- Everything written to files in this repo is English-only, regardless of
+  what language the conversation is in, unless the user explicitly asks
+  for a different language for that specific file (e.g.
+  `pulse-for-aya/TESTING.md` is deliberately Polish — a non-technical
+  on-device tester procedure — by prior explicit request, not the default).
 
 ## Hard rules
 - Update `STATUS.md` in place; never create dated/versioned handoff docs
