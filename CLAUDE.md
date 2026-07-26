@@ -51,3 +51,11 @@ Each `research/<project>/` is an independent Android app — `cd` in first.
 - Never run pulse-for-aya + ab-logger together during real gameplay
   unsupervised — correlated twice with device reboots
   (`STATUS.md` INCIDENT entries).
+- Before any command that touches the physical device (any `adb`
+  invocation — installs, pulls, shell commands, `xsu` calls, reboots,
+  anything), first give the user a plain ELI5 explanation of what you're
+  about to do and why, and wait for explicit acceptance. This device has a
+  real history of crashes/reboots from exactly this kind of hands-on
+  session work (`STATUS.md` INCIDENT entries) — never assume standing
+  permission from earlier in the conversation covers a new round of
+  device commands.
