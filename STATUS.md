@@ -30,10 +30,26 @@ combined since its command *text* was never the problem. Also added two
 new CSV columns this session, `pulse_installed`/`pulse_service_running`
 (recorded once at session start, repeated per row), so a pulled CSV no
 longer needs matching against separate session notes to know which A/B
-arm it's from. Builds clean (`./gradlew assembleDebug` in
-`research/ab-logger/`); **not yet re-verified with a real on-device
-session** — that's the next concrete step before resuming real A/B
-testing.
+arm it's from. **Verified on-device (2026-07-26)**: 7 real sessions
+(idle, RetroArch, a longer RetroArch run, and 3 sessions with PULSE's
+AUTOTDP active) all came back with complete data, zero empty rows — the
+chunking fix holds under real use, not just synthetic bisection. Raw CSVs
+kept as evidence in `research/ab-logger/results/apl_ab_logs/pulled_logs/`.
+
+One bug found and fixed during this same verification: `pulse_installed`
+read `false` in every one of those 7 sessions, including ones where
+`pulse_service_running` correctly read `true` — a real inconsistency,
+since a running service implies the app is installed. Cause: Android's
+package-visibility filtering (API 30+, and `ab-logger` targets 34) blocks
+`PackageManager.getPackageInfo("com.kei.pulse", ...)` without an explicit
+`<queries>` declaration, so the lookup always threw and was silently
+caught as `false` — `pulse_service_running` (a root/`dumpsys` check, not
+subject to that filtering) was correct the whole time. Fixed by adding
+`<queries><package android:name="com.kei.pulse"/></queries>` to
+`AndroidManifest.xml`; a fresh one-sample verification session
+(`results/apl_ab_logs/pulled_logs_verify/session_1785099163131.csv`)
+confirms `pulse_installed=true` now reads correctly. `ab-logger` is
+considered ready for real A/B sessions again.
 
 ## Follow-up (2026-07-26, same day): call frequency/concurrency tested, much weaker trigger than command length
 

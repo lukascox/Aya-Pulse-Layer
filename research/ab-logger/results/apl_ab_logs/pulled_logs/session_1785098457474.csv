@@ -1,0 +1,3 @@
+timestamp,sample_idx,foreground_pkg,fps,frame_count,p0_freq,p0_governor,p2_freq,p2_governor,p5_freq,p5_governor,p7_freq,p7_governor,gpu_freq_hz,gpu_busy_pct,temp_cpu_max_c,temp_gpu_max_c,temp_skin_c,temp_battery_c,fan_signal,fan_signal_unit,battery_current_ma,battery_voltage_mv,pulse_installed,pulse_service_running
+1785098458418,0,com.retrohrai.launcher,79.6,58,2265600,performance,3148800,performance,2956800,performance,3302400,performance,231000000,20,50.4,44.6,42.3,30.0,966,fan_rpm_state,1071193,7804468,false,false
+1785098464156,1,com.android.launcher3,120.0,11,2265600,performance,3148800,performance,2956800,performance,3302400,performance,231000000,15,55.4,46.1,42.7,30.0,967,fan_rpm_state,931114,7778582,false,false

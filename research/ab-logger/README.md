@@ -188,3 +188,22 @@ Also added this session: two new CSV columns, `pulse_installed` and
 and repeated on every row — so a pulled CSV is self-describing about which
 A/B arm it's from, without needing to match it up against separately-taken
 session notes/timestamps.
+
+**Verified on-device (2026-07-26)**: 7 real sessions (idle, RetroArch,
+a longer RetroArch run, and 3 sessions with PULSE's AUTOTDP active) all
+came back with complete data — the chunking fix holds under real use.
+Raw CSVs kept in `results/apl_ab_logs/pulled_logs/` as evidence.
+
+One bug found in that same batch: `pulse_installed` read `false` in all 7
+sessions, even ones where `pulse_service_running` correctly read `true` —
+impossible if the app weren't installed. Cause: Android's package-visibility
+filtering (this app targets API 34, well above the API 30 threshold) blocks
+`PackageManager.getPackageInfo("com.kei.pulse", ...)` without an explicit
+`<queries>` declaration in the manifest, so the lookup always threw
+`NameNotFoundException` and was silently caught as `false`.
+`pulse_service_running` (a root/`dumpsys` check, unaffected by app-level
+package visibility) was correct the whole time. **Fixed** by adding
+`<queries><package android:name="com.kei.pulse"/></queries>` to
+`AndroidManifest.xml` — confirmed working with a fresh one-sample
+verification session (`results/apl_ab_logs/pulled_logs_verify/`), which
+reads `pulse_installed=true` correctly.

@@ -1,0 +1,6 @@
+timestamp,sample_idx,foreground_pkg,fps,frame_count,p0_freq,p0_governor,p2_freq,p2_governor,p5_freq,p5_governor,p7_freq,p7_governor,gpu_freq_hz,gpu_busy_pct,temp_cpu_max_c,temp_gpu_max_c,temp_skin_c,temp_battery_c,fan_signal,fan_signal_unit,battery_current_ma,battery_voltage_mv,pulse_installed,pulse_service_running
+1785098687571,0,com.retrohrai.launcher,37.6,58,1804800,walt,499200,walt,1190400,walt,480000,walt,231000000,20,51.9,48.9,46.5,31.0,1085,fan_rpm_state,-368051,7554368,false,true
+1785098693882,1,com.retroarch.aarch64,59.1,69,2265600,walt,499200,walt,1190400,walt,480000,walt,231000000,11,53.1,49.6,46.5,31.0,1083,fan_rpm_state,-342415,7558456,false,true
+1785098699534,2,,n/a (no layer matched),0,?,?,?,?,?,?,?,?,?,n/a,n/a,n/a,n/a,n/a,?,fan_rpm_state,?,?,false,true
+1785098705935,3,com.retroarch.aarch64,60.0,126,556800,walt,499200,walt,1075200,walt,480000,walt,231000000,8,50.8,48.1,46.0,31.0,820,fan_rpm_state,-386362,7552811,false,true
+1785098712107,4,com.retroarch.aarch64,60.0,126,2035200,walt,2899200,walt,1190400,walt,480000,walt,231000000,8,53.0,48.1,45.8,31.0,821,fan_rpm_state,-381784,7554368,false,true
