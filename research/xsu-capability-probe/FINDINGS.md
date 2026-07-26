@@ -285,6 +285,54 @@ a long argument. Use the file + command-substitution approach (or a real
 `ProcessBuilder("xsu", "-c", command)` call, which never has this
 double-parsing problem) for any future test in this area.
 
+## Follow-up: call frequency / concurrency is a much weaker trigger than command length (2026-07-26, same day)
+
+Natural complementary question to the section above: `pulse-for-aya`'s
+`RootExec.executeAsRoot()` (`research/pulse-for-aya/app/src/main/java/com/kei/pulse/root/RootExec.kt`)
+is a plain one-command-per-call pass-through — every caller in that module
+sends its own short single-attribute command (a `cat` of one sysfs node, a
+single `settings put`, etc.), never a combined multi-statement string. So
+the long-command bug above almost certainly does **not** apply to
+`pulse-for-aya` directly. The original suspected mechanism behind
+`ab-logger`'s first incident (`STATUS.md` INCIDENT #1, before the
+call-combining mitigation) was instead **call frequency/concurrency** —
+"3-4 separate `xsu` process spawns every 2 seconds", `ab-logger` and
+`pulse-for-aya` polling concurrently. Tested that variable directly, same
+method as above (short real command: `cat
+/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq`, well under the
+length danger zone):
+
+- **Sequential calls, one at a time, at decreasing intervals** (2000ms down
+  to 0ms/back-to-back, 15 calls per interval): **0/15 failures at every
+  interval tested**, including 0ms. Pure sequential spawn rate, on its own,
+  did not reproduce any instability in this test.
+- **Concurrent (parallel) calls fired at the same instant** (2, 3, 4, 6, 8
+  parallel processes, 3 rounds each): **0/69 calls failed**, but `dmesg`
+  caught one real `xsud` crash (`received signal 6` — `SIGABRT` this time,
+  not the `SIGSEGV` from the length bug) somewhere during this set, with no
+  corresponding visible failure on the caller side (crash+respawn was fast
+  enough that no in-flight call was actually dropped this time).
+- **Sustained realistic load** (4 parallel calls every 2s, 20 rounds, 80
+  calls over ~40s — deliberately matching the original incident's described
+  pattern): **0/80 failures**, no additional crash caught in that specific
+  window.
+
+**Conclusion: concurrent/frequent short `xsu` calls are a real but much
+rarer trigger than long commands** — one crash surfaced across ~254 total
+calls in this session, none of which caused a visible caller-side failure
+except the one already known long-command mode. This does **not** clear
+concurrent polling as safe, it just means synthetic load alone (no game,
+no competing GPU/thermal/binder traffic) rarely reproduces it — the
+original incidents all happened with a real game running concurrently.
+**Reproducing the original incident's crash reliably likely needs real
+competing system load, not just concurrent `xsu` spawns in isolation** —
+this remains an open question, not resolved here. Practical implication for
+`pulse-for-aya`: this session found no evidence that its existing
+one-command-per-call pattern needs to change, but it also doesn't
+positively clear frequent/concurrent polling (e.g. a tight `AutoTdpController`
+loop) as safe under real gameplay load — treat that as still open, not
+confirmed either way.
+
 ## Not yet executed at the time of this migration
 
 - Test 6 (full CPU `scaling_available_frequencies` OPP table dump) and

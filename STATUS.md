@@ -26,6 +26,26 @@ traded process-spawn count for exactly this crash. **Not yet applied** to
 `LoggerSession.kt`'s actual `buildCombinedCommand()`/`buildFullSnapshotCommand()`
 — next session's first task.
 
+## Follow-up (2026-07-26, same day): call frequency/concurrency tested, much weaker trigger than command length
+
+Complementary to the root-cause entry above. Tested whether `xsu` call
+*frequency*/*concurrency* (not length — using short, real, single-attribute
+commands like `pulse-for-aya`'s actual `RootExec` call pattern) also
+crashes `xsud`: sequential calls at any interval down to 0ms showed 0
+failures; concurrent bursts (2-8 parallel) surfaced exactly one real
+`xsud` crash across 69 calls with no visible caller-side failure; a
+sustained realistic load (4 parallel every 2s, 80 calls over ~40s,
+matching the original incident's described pattern) showed 0 failures.
+**Concurrency is a real but much rarer trigger than long commands** — not
+cleared as safe, since none of this synthetic testing had a real game
+adding competing GPU/thermal/binder load, which is what all the original
+incidents had. Full detail in `research/xsu-capability-probe/FINDINGS.md`'s
+newest section. Practical takeaway: `pulse-for-aya`'s `RootExec.kt` already
+uses short, one-command-per-call requests (not the long combined pattern
+that caused the CSV bug), so no change indicated there from this session
+— but a tight `AutoTdpController` polling loop under real gameplay load is
+still an open risk, not confirmed either way.
+
 ## INCIDENT #3 (2026-07-26): empty-CSV bug recurs, then device powers off entirely, `BatteryService` left stuck
 
 Two `ab-logger`-only sessions run back-to-back for the native-vs-`pulse-for-aya`
