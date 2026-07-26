@@ -58,8 +58,10 @@ class LoggerService : Service() {
             val zones = ThermalZones.parseResolveOutput(zoneRes.stdout)
 
             val fanNode = resolveFanNode()
+            val pulseInstalled = isPulseInstalled()
+            val pulseServiceRunning = isPulseServiceRunning()
 
-            val s = LoggerSession(zones, fanNode, filesDir, System.currentTimeMillis())
+            val s = LoggerSession(zones, fanNode, filesDir, System.currentTimeMillis(), pulseInstalled, pulseServiceRunning)
             session = s
             lastCsvPath = s.sdcardCsvPath
 
@@ -100,6 +102,28 @@ class LoggerService : Service() {
         }
     }
 
+    /** No root needed -- plain `PackageManager` lookup. Recorded once per session
+     * (see [LoggerSession]'s `pulse_installed` column) so a pulled CSV says on its
+     * own which A/B arm it's from, instead of relying on separately-taken notes. */
+    private fun isPulseInstalled(): Boolean =
+        try {
+            packageManager.getPackageInfo(PULSE_PACKAGE, 0)
+            true
+        } catch (_: Exception) {
+            false
+        }
+
+    /** One `xsu` call, at session start only (not per-sample -- this is a status
+     * check, not part of the hot sampling loop). `ForegroundAppMonitorService` is
+     * pulse-for-aya's persistent foreground service; it's only alive while AUTOTDP
+     * is actually toggled on, so this distinguishes "installed" from "actively
+     * running" -- installed-but-off would otherwise look identical to native-only
+     * in a pulled CSV. */
+    private fun isPulseServiceRunning(): Boolean {
+        val res = XsuShell.exec("dumpsys activity services $PULSE_PACKAGE", timeoutSec = 6)
+        return res.stdout.contains("ForegroundAppMonitorService")
+    }
+
     private fun stopLogging() {
         loopJob?.cancel()
         loopJob = null
@@ -134,6 +158,10 @@ class LoggerService : Service() {
         // process spawning is the leading suspect in a full system_server crash
         // observed during this app's first real test session.
         private const val SESSION_INTERVAL_MS = 5000L
+
+        /** pulse-for-aya keeps upstream `pulse`'s package id for diffability against
+         * upstream, per apl/CLAUDE.md's Conventions section -- not `pl.*`. */
+        private const val PULSE_PACKAGE = "com.kei.pulse"
 
         // Confirmed live 2026-07-25 (aya-gamewindows-teardown pass 3, FINDINGS.md
         // section 6): AR03/AR13's plain pwm-fan/hwmon interface, NOT a cooling_device.

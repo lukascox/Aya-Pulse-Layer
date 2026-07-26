@@ -164,3 +164,27 @@ its argument depends on parsing the combined call's output first. Net:
 clean; **not yet re-verified on-device** (the device was being restarted
 by the user at the time this fix landed) — the next real session is the
 actual test of whether this mitigation holds.
+
+**Update (2026-07-26): that mitigation was itself the bug.** Two real A/B
+sessions came back 100% empty (every column `?`/`n/a` across 48/48 samples
+each — see `STATUS.md` INCIDENT #2/#3). Root-caused live on-device, outside
+this app entirely: `xsud` segfaults (or silently drops output) once a
+single `xsu -c` argument crosses roughly 1000-1200 characters — a fuzzy,
+race-like threshold, not a hard cutoff — and the combined snapshot command
+above runs ~3150 characters on this device (19 CPU + 8 GPU thermal zones).
+Full bisection methodology and evidence in
+`research/xsu-capability-probe/FINDINGS.md`'s "Root cause found" section.
+**Fixed**: `LoggerSession.sampleOnce()` now keeps the short ACT+LIST call
+combined (its *command text* is short — output size was never the
+problem) but runs the CPU/GPU/thermal/fan/battery snapshot through
+`XsuShell.execChunked()`, which packs those statements into multiple calls
+each safely under ~700 characters. Validated with the same on-device
+bisection method before being applied here (0/5 failures per chunk, 15/15
+over a sustained 5s-interval run) — see the FINDINGS.md section for the
+raw numbers. Do not re-combine the snapshot statements into one call.
+
+Also added this session: two new CSV columns, `pulse_installed` and
+`pulse_service_running`, recorded once at session start (`LoggerService`)
+and repeated on every row — so a pulled CSV is self-describing about which
+A/B arm it's from, without needing to match it up against separately-taken
+session notes/timestamps.

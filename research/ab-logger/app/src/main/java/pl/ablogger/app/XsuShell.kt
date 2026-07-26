@@ -69,4 +69,52 @@ object XsuShell {
             // stream closed after a forced kill on timeout -- ignore
         }
     }
+
+    /**
+     * Packs `statements` (each a complete `something; ` fragment) into groups whose
+     * combined text stays under [maxChars], and runs each group as its own `xsu -c`
+     * call, concatenating their stdout/stderr. Required because `xsud` on this device
+     * segfaults (or silently drops output) once a single `-c` argument crosses
+     * roughly 1000-1200 characters -- a fuzzy, race-like threshold, not a hard byte
+     * cutoff, confirmed by direct on-device bisection (see
+     * research/xsu-capability-probe/FINDINGS.md, "Root cause found: xsud crashes
+     * (SIGSEGV) on long -c commands"). [maxChars] defaults well under that band for
+     * margin. This replaced [LoggerSession]'s original single giant combined call,
+     * which is the confirmed root cause of the "100% empty CSV" bug (STATUS.md
+     * INCIDENT #2/#3) -- do not re-combine the snapshot statements into one call.
+     */
+    fun execChunked(statements: List<String>, maxChars: Int = 700, timeoutSec: Long = 8): ExecResult {
+        val chunks = mutableListOf<String>()
+        val current = StringBuilder()
+        for (stmt in statements) {
+            if (current.isNotEmpty() && current.length + stmt.length > maxChars) {
+                chunks.add(current.toString())
+                current.clear()
+            }
+            current.append(stmt)
+        }
+        if (current.isNotEmpty()) chunks.add(current.toString())
+
+        val allStdout = StringBuilder()
+        val allStderr = StringBuilder()
+        var totalElapsed = 0L
+        var lastExitCode: Int? = 0
+        var firstError: String? = null
+        for (chunk in chunks) {
+            val res = exec(chunk, timeoutSec)
+            allStdout.appendLine(res.stdout)
+            if (res.stderr.isNotBlank()) allStderr.appendLine(res.stderr)
+            totalElapsed += res.elapsedMs
+            lastExitCode = res.exitCode
+            if (firstError == null) firstError = res.error
+        }
+        return ExecResult(
+            command = "<${chunks.size} chunks, ${statements.size} statements>",
+            exitCode = lastExitCode,
+            stdout = allStdout.toString().trim(),
+            stderr = allStderr.toString().trim(),
+            error = firstError,
+            elapsedMs = totalElapsed,
+        )
+    }
 }

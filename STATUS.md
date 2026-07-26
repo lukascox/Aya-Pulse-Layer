@@ -22,9 +22,18 @@ sustained 5s-interval run) and still returns correct data. Full
 methodology, bisection table, and the recommended chunk-size fix are in
 `research/xsu-capability-probe/FINDINGS.md`'s newest section — this
 supersedes INCIDENT #2's "combine all calls into one" mitigation, which
-traded process-spawn count for exactly this crash. **Not yet applied** to
-`LoggerSession.kt`'s actual `buildCombinedCommand()`/`buildFullSnapshotCommand()`
-— next session's first task.
+traded process-spawn count for exactly this crash. **Applied
+(2026-07-26)**: `LoggerSession.sampleOnce()` now runs the snapshot
+statements through `XsuShell.execChunked()` (packed under ~700 chars per
+call) instead of one combined string; the short ACT+LIST call stays
+combined since its command *text* was never the problem. Also added two
+new CSV columns this session, `pulse_installed`/`pulse_service_running`
+(recorded once at session start, repeated per row), so a pulled CSV no
+longer needs matching against separate session notes to know which A/B
+arm it's from. Builds clean (`./gradlew assembleDebug` in
+`research/ab-logger/`); **not yet re-verified with a real on-device
+session** — that's the next concrete step before resuming real A/B
+testing.
 
 ## Follow-up (2026-07-26, same day): call frequency/concurrency tested, much weaker trigger than command length
 

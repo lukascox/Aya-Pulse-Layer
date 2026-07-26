@@ -15,6 +15,8 @@ class LoggerSession(
     private val fanNode: FanNode?,
     filesDir: File,
     startedAtMs: Long,
+    private val pulseInstalled: Boolean,
+    private val pulseServiceRunning: Boolean,
 ) {
     private val csvFileName = "session_$startedAtMs.csv"
     private val localCsvFile: File = File(filesDir, csvFileName)
@@ -30,25 +32,27 @@ class LoggerSession(
     data class SampleTiming(val pipelineMs: Long, val snapshotMs: Long)
 
     /**
-     * apl glue fix (2026-07-25): a single sample used to be 3-4 separate `xsu`
-     * invocations (each one a full ProcessBuilder spawn, and -- per this device's
-     * known `xsud` crash-on-cleanup quirk, see pulse-glue-assessment/FINDINGS.md --
-     * an `xsud` worker fork+crash per call). That call volume, sustained every 2s
-     * indefinitely while backgrounded, is the leading suspect in a full
-     * `system_server` crash observed during this app's first real test session
-     * (see STATUS.md/README.md for the incident writeup). Combined here into ONE
-     * `xsu` call for everything that doesn't need Kotlin-side decisions in between
-     * (foreground-pkg detection, layer list, and the CPU/GPU/thermal/battery
-     * snapshot all run together, split by `===TAG===` markers -- same convention as
-     * PowerFanProbe elsewhere in this app). Only the `--latency` query still needs
-     * its own call, since its argument (the matched layer name) depends on parsing
-     * this combined call's own output first. Net effect: 4 xsu spawns/sample down
-     * to 1-2, on top of the slower [LoggerService.SESSION_INTERVAL_MS] cadence.
+     * apl glue fix (2026-07-25, revised 2026-07-26): a single sample used to be 3-4
+     * separate `xsu` invocations, then was combined into ONE call to cut down
+     * process-spawn count -- that combined call turned out to be the actual root
+     * cause of the "100% empty CSV" bug: on this device, `xsud` segfaults (or
+     * silently drops output) once a single `-c` argument crosses roughly 1000-1200
+     * characters, and the fully-combined command ran ~3150 chars (19 CPU + 8 GPU
+     * thermal zones). Confirmed by direct on-device bisection, see
+     * research/xsu-capability-probe/FINDINGS.md's "Root cause found" section --
+     * do not recombine the snapshot statements into one call.
+     *
+     * Current shape: the ACT+LIST call stays combined (its command text is short --
+     * only the *output* of `dumpsys activity`/`SurfaceFlinger --list` is large, and
+     * output size was never the problem, `-c` argument length was). The CPU/GPU/
+     * thermal/fan/battery snapshot -- the part whose statement count scales with
+     * this device's thermal-zone count -- goes through [XsuShell.execChunked],
+     * which packs statements into multiple calls safely under that threshold.
      */
     fun sampleOnce(): SampleTiming {
         val t0 = System.nanoTime()
-        val combinedRes = XsuShell.exec(buildCombinedCommand(), timeoutSec = 8)
-        val blocks = PowerFanProbe.parseBlockTags(combinedRes.stdout)
+        val actListRes = XsuShell.exec(buildActListCommand(), timeoutSec = 8)
+        val blocks = PowerFanProbe.parseBlockTags(actListRes.stdout)
 
         val (_, pkgShort) = FpsPipeline.parseForegroundPkg(blocks["ACT"].orEmpty())
         val matchedLayer = FpsPipeline.matchLayer(pkgShort, blocks["LIST"].orEmpty())
@@ -61,23 +65,18 @@ class LoggerSession(
             Triple("n/a", 0, "n/a (no layer matched)")
         }
 
-        val tagged = FpsPipeline.parseTaggedLines(blocks["SNAP"].orEmpty())
+        val snapRes = XsuShell.execChunked(buildSnapshotStatements())
+        val tagged = FpsPipeline.parseTaggedLines(snapRes.stdout)
 
         val row = buildCsvRow(pkgShort, fps, frameCount, tagged)
         localCsvFile.appendText(row + "\n")
         sampleIdx++
 
-        return SampleTiming(pipelineMs, combinedRes.elapsedMs)
+        return SampleTiming(pipelineMs, actListRes.elapsedMs + snapRes.elapsedMs)
     }
 
-    private fun buildCombinedCommand(): String = buildString {
-        append("echo ===ACT===; ")
-        append("dumpsys activity activities; ")
-        append("echo ===LIST===; ")
-        append("dumpsys SurfaceFlinger --list; ")
-        append("echo ===SNAP===; ")
-        append(buildFullSnapshotCommand())
-    }
+    private fun buildActListCommand(): String =
+        "echo ===ACT===; dumpsys activity activities; echo ===LIST===; dumpsys SurfaceFlinger --list; "
 
     /** Copies the local CSV to /sdcard via the root shell (uid=0 can read our
      * app-private file), same mechanism every probe in this repo uses -- the app
@@ -86,20 +85,23 @@ class LoggerSession(
         XsuShell.exec("mkdir -p $SDCARD_LOG_DIR; cat '${localCsvFile.absolutePath}' > $sdcardCsvPath")
     }
 
-    private fun buildFullSnapshotCommand(): String = buildString {
+    /** One statement per value, packed into safely-sized `xsu` calls by
+     * [XsuShell.execChunked] -- see that function's doc comment for why this can't
+     * go back to being one combined string. */
+    private fun buildSnapshotStatements(): List<String> = buildList {
         for (p in listOf(0, 2, 5, 7)) {
-            append("echo P${p}_GOV=\$(cat /sys/devices/system/cpu/cpufreq/policy$p/scaling_governor); ")
-            append("echo P${p}_FREQ=\$(cat /sys/devices/system/cpu/cpufreq/policy$p/scaling_cur_freq); ")
+            add("echo P${p}_GOV=\$(cat /sys/devices/system/cpu/cpufreq/policy$p/scaling_governor); ")
+            add("echo P${p}_FREQ=\$(cat /sys/devices/system/cpu/cpufreq/policy$p/scaling_cur_freq); ")
         }
-        append("echo GPU_CLK=\$(cat /sys/class/kgsl/kgsl-3d0/gpuclk); ")
-        append("echo GPU_BUSY=\$(cat /sys/class/kgsl/kgsl-3d0/gpubusy); ")
-        zones.cpuZones.forEachIndexed { i, z -> append("echo CPUZ_$i=\$(cat $z 2>/dev/null); ") }
-        zones.gpuZones.forEachIndexed { i, z -> append("echo GPUZ_$i=\$(cat $z 2>/dev/null); ") }
-        zones.skinZone?.let { append("echo SKIN=\$(cat $it 2>/dev/null); ") }
-        zones.batteryZone?.let { append("echo BATTZONE=\$(cat $it 2>/dev/null); ") }
-        fanNode?.let { append("echo FAN=\$(cat ${it.curStatePath} 2>/dev/null); ") }
-        append("echo BATT_CURRENT=\$(cat /sys/class/power_supply/battery/current_now 2>/dev/null); ")
-        append("echo BATT_VOLTAGE=\$(cat /sys/class/power_supply/battery/voltage_now 2>/dev/null)")
+        add("echo GPU_CLK=\$(cat /sys/class/kgsl/kgsl-3d0/gpuclk); ")
+        add("echo GPU_BUSY=\$(cat /sys/class/kgsl/kgsl-3d0/gpubusy); ")
+        zones.cpuZones.forEachIndexed { i, z -> add("echo CPUZ_$i=\$(cat $z 2>/dev/null); ") }
+        zones.gpuZones.forEachIndexed { i, z -> add("echo GPUZ_$i=\$(cat $z 2>/dev/null); ") }
+        zones.skinZone?.let { add("echo SKIN=\$(cat $it 2>/dev/null); ") }
+        zones.batteryZone?.let { add("echo BATTZONE=\$(cat $it 2>/dev/null); ") }
+        fanNode?.let { add("echo FAN=\$(cat ${it.curStatePath} 2>/dev/null); ") }
+        add("echo BATT_CURRENT=\$(cat /sys/class/power_supply/battery/current_now 2>/dev/null); ")
+        add("echo BATT_VOLTAGE=\$(cat /sys/class/power_supply/battery/voltage_now 2>/dev/null); ")
     }
 
     private fun buildCsvRow(pkg: String, fps: String, frameCount: Int, tagged: Map<String, String>): String {
@@ -129,6 +131,8 @@ class LoggerSession(
             fanUnit,
             g("BATT_CURRENT"),
             g("BATT_VOLTAGE"),
+            pulseInstalled.toString(),
+            pulseServiceRunning.toString(),
         )
         return cols.joinToString(",") { csvEscape(it) }
     }
@@ -163,6 +167,14 @@ class LoggerSession(
                 "gpu_freq_hz,gpu_busy_pct," +
                 "temp_cpu_max_c,temp_gpu_max_c,temp_skin_c,temp_battery_c," +
                 "fan_signal,fan_signal_unit," +
-                "battery_current_ma,battery_voltage_mv"
+                "battery_current_ma,battery_voltage_mv," +
+                // apl glue addition (2026-07-26): recorded once at session start (see
+                // LoggerService.resolvePulseStatus()) and repeated on every row, so a
+                // pulled CSV is self-describing -- no separate notes needed to tell
+                // which A/B arm a file belongs to. pulse_installed uses PackageManager
+                // (no root); pulse_service_running checks whether pulse-for-aya's
+                // ForegroundAppMonitorService is actually alive (i.e. AUTOTDP is on),
+                // via one xsu call at session start only, not per-sample.
+                "pulse_installed,pulse_service_running"
     }
 }
