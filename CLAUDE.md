@@ -13,6 +13,8 @@ Deliverable is a glue patch on the existing `pulse` app
   upstream `pulse` — consult for diffing only; never build or modify it.
 - Never read `docs/archive/` (frozen history) or `app/` (dead placeholder).
 - For any exploration beyond the current project, use the `scout` subagent.
+- For mechanical, fully-specified work (boilerplate, renames, test stubs,
+  docstrings, format conversions), delegate to the `grunt` subagent.
 
 ## Commands
 No root-level build (`app/` is an unconfigured stub; no root `gradlew`).
