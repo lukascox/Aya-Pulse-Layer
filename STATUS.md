@@ -6,6 +6,74 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## INCIDENT #3 (2026-07-26): empty-CSV bug recurs, then device powers off entirely, `BatteryService` left stuck
+
+Two `ab-logger`-only sessions run back-to-back for the native-vs-`pulse-for-aya`
+A/B comparison (`pl.ablogger.app`, no game actually reached foreground):
+`session_1785093262984.csv` (PULSE not installed) and
+`session_1785093666795.csv` (PULSE installed) — both saved raw to
+`diagnostics/logs/ab-comparison/`. **Both are 100% empty** — 48/48 samples
+each, evenly spaced (~5.1s), but every single column (`foreground_pkg`, `fps`,
+all CPU/GPU freq+governor, GPU busy%, all temps, fan, battery current/voltage)
+is `?`/`n/a`/`n/a (no layer matched)` throughout. This is the exact symptom
+already documented in INCIDENT #2 ("100% empty" CSVs) — **recurring
+unchanged**, which means that incident's mitigation (combining `xsu` calls,
+`LoggerSession.sampleOnce()`) did not fix the underlying cause. Both sessions
+also ran only ~240s (4 min), short of `TESTING.md`'s 10-minute protocol — no
+A/B conclusion about `pulse-for-aya` can be drawn from this data; the failure
+is entirely in the telemetry-capture layer, before any real comparison could
+happen.
+
+**Immediately after, the device powered off entirely and came back with a
+new symptom**: `com.android.settings`/system UI reported no battery data at
+all (matches the user's report — "nie raportuje nawet baterii"). Diagnosed
+live over `adb` right after it rebooted (uptime ~26 min at diagnosis time):
+
+- `persist.sys.boot.reason.history`'s newest entry: `shutdown,userrequested`
+  at unix time `1785093175` (2026-07-26 21:12:55 CEST) — same suspiciously
+  "user requested" label already flagged as unconfirmed in INCIDENT #2's
+  `reboot,userrequested`; nobody actually requested a shutdown.
+- `/sys/fs/pstore/` is empty — **no kernel panic was recorded**, so this
+  wasn't a hard kernel crash, consistent with a triggered/graceful shutdown
+  path instead.
+- `dumpsys battery` showed `present: false`, `level: 0`, `voltage: 0` —
+  looked like a dead/disconnected battery.
+- **But the raw kernel driver disagrees**: `cat
+  /sys/class/power_supply/battery/uevent` (via `xsu`, needed since
+  `/sys/class/power_supply/battery/<individual-attr>` reads gave "Permission
+  denied" even as root — SELinux is permissive so this wasn't a MAC block,
+  cause not fully explained) returned a fully healthy live reading:
+  `PRESENT=1`, `CAPACITY=43`, `STATUS=Discharging`, `HEALTH=Good`,
+  `VOLTAGE_NOW=7591153`. **The battery itself is fine.** `dmesg` shows
+  `healthd` logging a transient `battery none chg=` right around the
+  shutdown window, then recovering — the working theory is `system_server`'s
+  `BatteryService` got stuck on that transient empty read and never
+  resynced, independent of the (healthy) hardware state underneath.
+- `dumpsys battery reset` (standard adb debug command, clears a forced
+  override) did **not** fix the stuck `present: false` — so this isn't a
+  simple debug-override artifact, it's a real stuck framework/HAL state.
+  Not yet resolved on-device; likely fixable by briefly plugging in USB
+  power (forces a fresh `uevent`) or a full manual power-cycle — not
+  confirmed this session.
+
+**This is the third incident in the same family** (INCIDENT #1: `xsud`
+crash → `BatteryService$Led` HAL call → `system_server` crash; INCIDENT #2:
+`xsu`-heavy dual-app session → full device reboot + empty CSVs; this one:
+empty CSVs recur + a different system service, `BatteryService`, left
+stuck post-reboot) — all three correlate with test sessions putting heavy
+concurrent load on `xsu`/`xsud`. Treat this as a real, recurring reliability
+ceiling of the current `xsu`-polling approach under sustained/repeated use,
+not three unrelated one-off flukes.
+
+**Decision, picked up next session**: do not resume real A/B test sessions
+until the empty-CSV recurrence itself is root-caused — the isolation step
+already planned in INCIDENT #2 (verify `xsu` survives sustained polling over
+minutes, not just a single manual `id`/`cat` check) still hasn't been done
+and is now confirmed necessary, not optional. Raw CSVs from this incident
+kept as evidence in `diagnostics/logs/ab-comparison/` (not renamed into the
+usual `native_runN`/`pulse_runN` layout — they contain no usable comparison
+data, they're incident evidence).
+
 ## INCIDENT #2 (2026-07-25, later same day): full device reboot during PULSE + ab-logger + Eden
 
 After the mitigation below, ran PULSE + `ab-logger` + Eden (Mario, ~1-2 min
