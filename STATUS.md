@@ -6,7 +6,7 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
-## To investigate next session: AutoTDP's own tick loop appears to never actually run during real gameplay
+## RESOLVED (2026-07-27, later session): AutoTDP's own tick loop — root cause found and fixed
 
 Raised by the user (2026-07-27 night) after a clean ~2m49s Minecraft
 session on the pre-daemon build (no crash this time — see the daemon/FIFO
@@ -135,6 +135,240 @@ condition on `overlayShouldShow`/`quickAccessShouldShow` gating the
 whole block, or similar) — this is now the single highest-priority
 correctness bug in the app, confirmed reproducible in 3/3 real sessions
 across 2 different games.
+
+**Resolution (2026-07-27, later session)**: added one diagnostic log line
+(`ForegroundAppMonitorService.kt` ~line 801, tag `PulseAutoTdp`,
+`"TICK-SKIP overlayShouldShow=... autoActive=... autoTdpPackage=..."`)
+right at the only `return` in `tick()` that can skip `stepAutoTdp()`
+without throwing. First attempt at capturing it came back completely
+empty — not just for this tag, for **every** `Pulse*`-tagged log line,
+including ones known to fire reliably (`PulseDaemon`, `PulseWatcher`).
+Root cause turned out to be logcat itself: this device's default `main`
+ring buffer is only **256 KiB**, and `xsu`/`xsud`'s own internal protocol
+logging (`xsu_api: xsu_recv type and len`, etc.) is extremely chatty —
+bursts of **2800-4800 lines/second** were observed during real gameplay
+(worse under Eden than Minecraft, since the emulator's own engine logging
+compounds it). At that rate a 256 KiB buffer overflows and evicts other
+processes' rarer log lines — including our own — well before `adb logcat`
+can read them. Bumping the buffer (`adb logcat -G 16M`) helped
+materially but didn't fully solve it under the heaviest Eden sessions —
+logcat is no longer trusted as the primary verification method for this
+class of question (see the ground-truth alternative below).
+
+With the bigger buffer, one capture (`minecraft_tickskip_full2.log`)
+finally got real signal: `TICK-SKIP` fired correctly pre-engage
+(`autoActive=false`, as expected before a game is bound), then the
+engage-time `release()` write fired right on schedule (`cpu2/3/4
+online=1`, then the combined `policy0/2/5` min/max-freq write) — but
+**zero** further `Pulse*` output for the rest of the session, including no
+`PulseDaemon` governor-engage log, which should have printed unconditionally
+right after that write. That pinpointed the hang to the code between
+those two points: `setAutoTdpGovernorBalanced()`'s call into the brand-new
+`PulseDaemon` FIFO bridge (added earlier the same night, never verified
+on-device until now).
+
+**Real bug found and fixed**: `PulseDaemon.setCap()`
+(`research/pulse-for-aya/app/src/main/java/com/kei/pulse/root/PulseDaemon.kt`)
+opened its FIFO for writing with a bare, unbounded `FileOutputStream` —
+opening a FIFO for write blocks until a reader is on the other end, and
+`start()` marks `running = true` unconditionally right after firing the
+one-shot launch `xsu` call, without ever confirming the daemon script
+actually reached its read loop (or is still alive — this device's `xsud`
+has well-documented crash/instability under load, see the crash
+investigation below). If the daemon was ever not-yet-ready or already
+dead, `setCap()` would block **forever**. Since `setAutoTdpGovernorBalanced()`
+calls it synchronously from `startAutoTdp()`, itself inside the single
+`pollLoop()` coroutine, a hang there froze the *entire* watcher (overlay,
+fan, RGB, AutoTDP — everything in that loop) permanently, with no
+exception and no log — indistinguishable from "the tick loop never runs"
+from the outside. **Fixed**: the FIFO write now runs on a throwaway daemon
+thread with a bounded 500 ms `join()` (`SET_CAP_TIMEOUT_MS`); on timeout
+`setCap()` returns `false` like any other failure, which the existing
+xsu-fallback path already handles correctly. 500 ms is generous slack — a
+healthy daemon round-trips in under a millisecond.
+
+**Ground-truth re-verification, independent of logcat entirely**: built
+`research/pulse-for-aya/scripts/poll-cpufreq.sh` — plain `adb shell cat`
+(no root, no `xsu`, so it can't contribute to the very channel under
+investigation) polling both `scaling_cur_freq` (the live, governor-scaled
+clock) and `scaling_max_freq` (the actual AutoTDP cap) for all 4 CPU
+policies plus the GPU's live clock, once a second, entirely bypassing
+logcat. Confirmed AutoTDP is genuinely regulating: converged caps land on
+combinations that don't match any of the 5 rows in
+`diagnostics/docs/HARDWARE_PROFILE.md`'s AYASpace mode table (e.g.
+`787200/3148800/2956800/3052800` — AYASpace can only ever produce one of
+its 5 fixed presets, never an arbitrary combination like this), and in one
+longer session the cap itself visibly moved over real time (`policy2`:
+`3148800→1286400→1612800→1708800→1612800`). This is real, live,
+load-adaptive regulation, not a one-shot engage write left untouched.
+
+**Two side-questions resolved along the way, neither a bug**:
+- `policy0` (efficiency cluster) sitting at a fixed value (`787200`)
+  across every test looked suspicious at first but isn't: its real
+  `selectableMaxFreq` is `1248000` (the kernel's actual OPP-table
+  ceiling — `CpuPolicyDetector.kt`'s `selectableMax = supported.lastOrNull()`),
+  not the `cpuinfo_max_freq` spec of `2265600` that
+  `HARDWARE_PROFILE.md`'s table implies; and `startAutoTdp()`
+  deliberately warm-starts every policy's cap from the app's own
+  persisted `loadAutoTdpCaps(pkg)` result immediately after `release()`
+  resets everything to 100%, so a previously-converged low value
+  correctly reappears session to session. The raise/trim priority order
+  also visits the efficiency cluster last (it's almost never the
+  bottleneck for these games), so nothing forces it to move.
+- What's visibly changing on AYASpace's own HUD/FPS-counter overlay is
+  `scaling_cur_freq` (the live governor-scaled clock, which legitimately
+  bounces under `schedutil` load with or without AutoTDP doing anything)
+  — not proof of AutoTDP activity by itself. The cap (`scaling_max_freq`)
+  is the thing AutoTDP actually controls, and can correctly sit flat for
+  a long stretch once converged; that's "holding," not "stalled."
+
+**Net effect**: the original "zero `PulseAutoTdp` lines across 3/3 real
+sessions" finding had (at least) two independent, stacked causes —
+logcat's own unreliability under real `xsu`+game load (a capture
+artifact, not a functional bug) *and* a real, now-fixed hang in the
+brand-new `PulseDaemon` FIFO bridge. Both needed resolving before this
+could be called closed. **Not yet re-verified with a full real
+crash-timing Minecraft/Eden session on the fixed build** — only shorter
+test sessions so far (tens of seconds to a couple minutes) — worth one
+more longer confirmation pass next session before fully retiring this
+thread. Evidence: `research/ab-logger/results/minecraft_tickskip_full2.log`
+(trimmed to the TICK-SKIP sequence + the release-write),
+`cap_poll.log`/`cap_poll2.log`/`cap_poll3_120fps_force.log`/
+`cap_poll4_120fps_force.log`/`cap_poll5.log` (ground-truth cap/cur data,
+`research/ab-logger/results/`). `poll-cpufreq.sh` is now the recommended
+primary verification method for "is AutoTDP actually doing anything"
+questions — prefer it over parsing logcat.
+
+## To investigate next session: does Minecraft's post-install crash-until-reboot ritual trace to the boot receiver's unconditional core re-online?
+
+Raised by the user (2026-07-27, later session): every session so far has
+needed a device reboot between installing/reinstalling `pulse-for-aya` and
+Minecraft launching successfully — an established, unquestioned ritual by
+now, but never actually root-caused. New candidate found this session,
+**not yet tested**:
+
+`BootCompletedReceiver.kt` (confirmed byte-identical to upstream `pulse` —
+this is inherited stock behavior, not something this fork added) listens
+for both `ACTION_BOOT_COMPLETED` and `ACTION_MY_PACKAGE_REPLACED`. The
+second one fires on **every** `adb install -r` — no manual app-open
+needed — and restarts `ForegroundAppMonitorService` if `WatcherActivation.shouldRun(...)`
+is true (which it is, once AutoTDP permission/config exists, as it does
+for every build installed this session). Inside `pollLoop()`'s own
+startup (`ForegroundAppMonitorService.kt` ~line 645-652), there's an
+"anti-stranding net" that **unconditionally** re-onlines the prime CPU
+cluster's cores via `cpuN/online` writes on every service (re)start — a
+real CPU hotplug operation, happening automatically after every reinstall,
+before any game is even foreground.
+
+This lines up with the already-documented round5 crash mechanism further
+down this file: Minecraft's bundled `cpuinfo`/XNNPACK library reads
+`/sys/devices/system/cpu/possible`/`present` at startup and crashes
+(`SIGABRT`, `cpuinfo_get_packages_count called before cpuinfo is
+initialized`) if those reads land mid-hotplug-transition. Previously this
+was only suspected in connection with `aggressivePark` parking/unparking
+**during** a game session; this is the same write firing at a completely
+different, earlier moment — service (re)start, independent of any game
+being open yet.
+
+**Doesn't fully explain "only a reboot fixes it, not just waiting"** — a
+purely transient hotplug race should clear itself in well under a second,
+not need a full reboot. That's the open gap in this theory.
+
+**Next session, cheapest test, no code change needed**: after the next
+`adb install -r`, **wait ~30-60s before launching Minecraft** instead of
+immediately rebooting. If that alone is enough, the theory holds and the
+fix is straightforward (stop re-onlining unconditionally on every restart,
+only when actually resuming a stranded session). If it still crashes even
+after waiting, this candidate is ruled out and the search moves back to
+"what does a real reboot clear that killing+restarting the service
+doesn't."
+
+## Confirmed: the Odin-specific power ceiling (11/12.5/14 W) does not apply to this device — ruled out as an Eden-FPS cause
+
+Raised by the user (2026-07-27, later session): could `AutoTuneController.powerCeilingW()`'s
+11 W (Efficient) / 12.5 W (Balanced) / 14 W (Smooth) sustained-power caps
+be throttling this SoC too hard, explaining Eden's persistent ~40 FPS
+despite caps visibly changing? **No** — checked directly in code:
+`DeviceProfiles.forSoc()` (`research/pulse-for-aya/app/src/main/java/com/kei/pulse/model/DeviceProfiles.kt`)
+only enables `appliesOdinPowerTuning` for `CQ8725S` (Odin 3) or leaves it
+off for `QCS8550` (Thor/RP6); any other `ro.vendor.qti.soc_model` —
+including this device's confirmed `SG8350P` — resolves to `UNKNOWN`,
+which has `appliesOdinPowerTuning = false`. `SocDetector.kt` correctly
+reads `ro.vendor.qti.soc_model` (the same property
+`HARDWARE_PROFILE.md`'s own hardware ID used), so there's no property-name
+mismatch either. **The watt ceiling genuinely never engages on this
+device** — AutoTDP runs plain FPS/thermal chase-and-harvest instead, same
+as it does on the SD 8 Gen 2 devices. Eden's poor FPS needs a different
+explanation — still open, see the dedicated entry below.
+
+## To investigate next session: Eden (Switch emulation) stays at ~40 FPS despite AutoTDP visibly regulating
+
+Raised by the user (2026-07-27, later session), user-observed: with
+`AutoTdpBias.SMOOTH` forced (highest power-ceiling label, though the
+ceiling itself doesn't actually apply on this SoC — see the entry above),
+Minecraft ran a smooth, stable 120 FPS session — but the same build,
+same device, running Eden (Switch emulation, Super Mario Odyssey) still
+sat around ~40 FPS despite `poll-cpufreq.sh` confirming CPU caps were
+genuinely changing over the session (not frozen). **Not yet investigated
+this session** — ruled out so far: the Odin watt-ceiling (entry above,
+confirmed inapplicable), and "AutoTDP isn't running at all" (ruled out by
+the same cap_poll evidence — it's regulating, just apparently not enough
+to fix Eden specifically, or GPU/emulation-thread-bound rather than
+CPU-cap-bound). Emulation workloads are qualitatively different from a
+native game (heavier single-thread emulation-core load, more erratic
+frame pacing) — worth checking `cpuCorePeakPercent`/bottleneck detection
+in `AutoTuneController.step()` against an actual Eden session's telemetry
+before assuming this is fixable by the CPU/GPU cap path at all; could
+just be Eden's own CPU-bound emulation ceiling on this SoC, unrelated to
+PULSE.
+
+## Confirmed: `pulse-for-aya` is still a clean, small glue patch — not diverged into an unpatchable fork
+
+Raised by the user (2026-07-27, later session), after a long run of
+investigation/mitigation work (the daemon/FIFO architecture, the AIDL
+experiments, this session's `PulseDaemon` fix): given how much has
+accumulated, is this still realistically patchable against upstream
+`pulse`, or has it drifted into a de-facto separate fork? Checked with a
+real `diff` against `research/pulse-upstream/` (the pinned reference
+clone, commit `0d2893e`), not from memory:
+
+- **83 files upstream, 85 in `pulse-for-aya`** — only 2 genuinely new
+  source files (`aidl/AyaAidlClient.kt`, `root/PulseDaemon.kt`) plus one
+  new asset (`assets/pulse_daemon.sh`).
+- **Exactly 6 modified files**, all with modest, surgical line diffs:
+  `RootExec.kt` (+72/-33, the core `xsu`-vs-`PServerBinder` swap —
+  upstream's file is only 48 lines to start with), `RootSupport.kt`
+  (+11/-24), `FanController.kt` (+18/-60, net *shrinks* — stubbed to
+  no-ops as documented elsewhere in this file), `SystemTuning.kt`
+  (+26/-6), `ForegroundAppMonitorService.kt` (+54/-2, small despite being
+  a 2048-line file), `MainActivity.kt` (+239/-0, pure additions — the
+  debug-only AIDL/daemon verification hooks).
+- `AndroidManifest.xml` is **byte-identical** to upstream — every
+  permission/receiver this fork relies on (including `BootCompletedReceiver`,
+  see the Minecraft-reboot entry above) was already there.
+
+**Answer: no, this hasn't turned into an unpatchable fork.** The
+sprawling investigation narrative in this file (crash hunting, reverted
+AIDL migration, the daemon/FIFO redesign, today's tick-loop bug) is real
+work, but almost none of it touched upstream's own logic files — it
+mostly landed in 2 new, wholly-AYANEO-specific files plus small, targeted
+edits to the same handful of glue points identified on day one (this
+file's "`research/pulse-for-aya/` exists now" entry, further down). A
+patch/PR against upstream is still realistic; this remains "glue, not
+rewrite" in practice, not just in intent.
+
+**Housekeeping, same session**: `research/ab-logger/results/` had grown to
+32 MB, mostly full untrimmed host-side `logcat` pulls
+(`minecraft_crash_investigation/round4`, `round6`, `round7`) whose actual
+conclusions were already fully written up in this file. Trimmed each down
+to the crash backtraces/key lines with context (matching the trimming
+convention already used for round8 and others in that folder) — down to
+1.8 MB total, nothing lost, same effective evidence. Also removed a few
+stray/superseded test artifacts from this session (an empty capture, a
+13-second stray capture) and moved the new `cpu_log.sh` diagnostic script
+into `research/pulse-for-aya/scripts/poll-cpufreq.sh` (proper location,
+matching the folder's existing script convention) instead of leaving it
+at the repo root.
 
 ## To investigate next session: native FPS counter shows stale mode label + disappearing per-core frequencies
 

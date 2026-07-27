@@ -1,0 +1,240 @@
+# TRIMMED 2026-07-27 -- original was    17005 lines / 2.1M.
+# This is the capture that first confirmed the PulseDaemon.setCap() hang hypothesis (STATUS.md,
+# AutoTDP-tick-loop investigation, 2026-07-27): 4 TICK-SKIP diagnostic lines (autoActive=false,
+# pre-engage), then the release()-write sequence (cpu2/3/4 online=1, then the combined
+# policy0/2/5 min/max freq write) at ~22:35:47-48, then total silence for the rest of the
+# session -- zero governor write, zero PulseDaemon log, matching a hang inside
+# PulseDaemon.setCap()'s unbounded FIFO write (fixed same session, see PulseDaemon.kt).
+# Kept: the TICK-SKIP/PulseDaemon lines, the actual chmod/echo write commands, service-start
+# markers, and the SELinux AVC denials for com.kei.pulse's own xsu access. Cut: hundreds of
+# routine telemetry 'cat' reads (already characterized in STATUS.md as confirming the poll
+# loop was alive) and unrelated system noise.
+# ---
+33-07-27 22:35:40.154 10543 10543 I top     : type=1400 audit(0.0:6762): avc:  denied  { read } for  scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_poweroptservice_qti:s0 tclass=file permissive=1
+34-07-27 22:35:40.154 10543 10543 I top     : type=1400 audit(0.0:6763): avc:  denied  { read } for  scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_qesdhal_default:s0 tclass=file permissive=1
+35:07-27 22:35:40.216  4536  5477 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+36-07-27 22:35:40.224 10544 10544 I xsu     : sending cmd:cat '/sys/class/kgsl/kgsl-3d0/min_pwrlevel' 2>/dev/null
+37-07-27 22:35:40.224 10544 10544 I xsu     : sending cmd end:cat '/sys/class/kgsl/kgsl-3d0/min_pwrlevel' 2>/dev/null
+38-07-27 22:35:40.224 10544 10544 I xsu     : free cmd end
+39-07-27 22:35:40.224 10544 10544 I xsu     : xsu_recv cmd before
+40-07-27 22:35:40.224 10544 10544 I xsu_api : xsu_recv memset enter
+--
+349-07-27 22:35:41.168 10600 10600 I xsu     : xsu_recv cmd end
+350-07-27 22:35:41.168 10600 10600 I xsu     : end session!
+351:07-27 22:35:41.246  4536  5514 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+352-07-27 22:35:41.263 10606 10606 I xsu     : sending cmd:cat '/sys/class/thermal/thermal_zone10/temp' 2>/dev/null
+353-07-27 22:35:41.263 10606 10606 I xsu     : sending cmd end:cat '/sys/class/thermal/thermal_zone10/temp' 2>/dev/null
+354-07-27 22:35:41.263 10606 10606 I xsu     : free cmd end
+355-07-27 22:35:41.263 10606 10606 I xsu     : xsu_recv cmd before
+356-07-27 22:35:41.263 10606 10606 I xsu_api : xsu_recv memset enter
+--
+818-07-27 22:35:42.274  2254  4095 W ActivityTaskManager: servicetracker HIDL not available
+819-07-27 22:35:42.274  2254  4095 E ActivityTaskManager: Unable to get servicetracker HAL instance
+820:07-27 22:35:42.274  4536  5420 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+821-07-27 22:35:42.275   820   820 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+822-07-27 22:35:42.275  2254  4095 W ActivityTaskManager: servicetracker HIDL not available
+823-07-27 22:35:42.275  2254  4095 E ActivityTaskManager: Unable to get servicetracker HAL instance
+824-07-27 22:35:42.275  2254  4095 D CompatibilityChangeReporter: Compat change id reported: 194480991; UID 10189; state: ENABLED
+825-07-27 22:35:42.279  1450  1558 E ANDR-PERF-UTIL: ANDR-PERF-UTIL: save_node_val() 366: Failed to read /sys/devices/system/cpu/cpufreq/policy5/walt/adaptive_high_freq
+--
+1661-07-27 22:35:43.176 10867 10867 I xsu_api : xsu_recv memset enter
+1662-07-27 22:35:43.176 10867 10867 I xsu_api : xsu_recv memset end
+1663:07-27 22:35:43.170 10867 10867 I xsu     : type=1400 audit(0.0:8162): avc:  denied  { write } for  name="xsud" dev="tmpfs" ino=1474 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsud_socket:s0 tclass=sock_file permissive=1 app=com.kei.pulse
+1664:07-27 22:35:43.170 10867 10867 I xsu     : type=1400 audit(0.0:8163): avc:  denied  { connectto } for  path="/dev/socket/xsud" scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:r:xsud:s0 tclass=unix_stream_socket permissive=1 app=com.kei.pulse
+1665-07-27 22:35:43.177  8288 10870 I xsu_api : xsu_recv memset enter
+1666-07-27 22:35:43.177  8288 10870 I xsu_api : xsu_recv memset end
+1667-07-27 22:35:43.177  8288 10870 I xsu_api : xsu_recv retry end
+1668-07-27 22:35:43.177  8288 10870 I xsu_api : ret=4, version=200, type=0, payload_size=78
+1669-07-27 22:35:43.177  8288 10870 I xsu_api : xsu_recv type and len
+--
+1857-07-27 22:35:43.280  8288 10883 I xsu_api : xsu_recv type and len end
+1858-07-27 22:35:43.280  8288 10883 I xsud    : handle comming cmd:cat '/sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq' 2>/dev/null
+1859:07-27 22:35:43.280  4536  5466 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+1860-07-27 22:35:43.288 10880 10880 I xsu_api : xsu_recv retry end
+1861-07-27 22:35:43.288 10880 10880 I xsu_api : ret=4, version=200, type=1, payload_size=12
+1862-07-27 22:35:43.288 10880 10880 I xsu_api : xsu_recv type and len
+1863-07-27 22:35:43.288 10880 10880 I xsu_api : header.type=1, header.payload_size=12, xsu_header_t=4
+1864-07-27 22:35:43.288 10880 10880 I xsu_api : xsu_recv type and len end
+--
+3150-07-27 22:35:44.188  8288 11013 I xsu_api : xsu_recv memset end
+3151-07-27 22:35:44.188 11010 11010 I xsu     : sending cmd end:cat '/sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq' 2>/dev/null
+3152:07-27 22:35:44.182 11010 11010 I xsu     : type=1400 audit(0.0:8469): avc:  denied  { write } for  name="xsud" dev="tmpfs" ino=1474 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsud_socket:s0 tclass=sock_file permissive=1 app=com.kei.pulse
+3153-07-27 22:35:44.188  8288 11013 I xsu_api : xsu_recv retry end
+3154-07-27 22:35:44.188  8288 11013 I xsu_api : ret=4, version=200, type=0, payload_size=78
+3155-07-27 22:35:44.188  8288 11013 I xsu_api : xsu_recv type and len
+3156-07-27 22:35:44.188  8288 11013 I xsu_api : header.type=0, header.payload_size=78, xsu_header_t=4
+3157-07-27 22:35:44.188  8288 11013 I xsu_api : xsu_recv type and len end
+--
+4196-07-27 22:35:46.380  1366  1366 I android.hardware.power-service: reportActualWorkDuration 
+4197-07-27 22:35:46.390  1537  1677 E ComposerExtn: SmoMoState::FrameIsLate: queued_frames >= 2
+4198:07-27 22:35:46.392 11179 11179 I xsu     : sending cmd:cat '/sys/devices/system/cpu/cpufreq/policy0/scaling_governor' 2>/dev/null
+4199:07-27 22:35:46.393 11179 11179 I xsu     : sending cmd end:cat '/sys/devices/system/cpu/cpufreq/policy0/scaling_governor' 2>/dev/null
+4200-07-27 22:35:46.393 11179 11179 I xsu     : free cmd end
+4201-07-27 22:35:46.393 11179 11179 I xsu     : xsu_recv cmd before
+4202-07-27 22:35:46.393 11179 11179 I xsu_api : xsu_recv memset enter
+4203-07-27 22:35:46.393 11179 11179 I xsu_api : xsu_recv memset end
+4204-07-27 22:35:46.393  8288 11187 I xsu_api : xsu_recv memset enter
+--
+4209-07-27 22:35:46.393  8288 11187 I xsu_api : header.type=0, header.payload_size=78, xsu_header_t=4
+4210-07-27 22:35:46.393  8288 11187 I xsu_api : xsu_recv type and len end
+4211:07-27 22:35:46.393  8288 11187 I xsud    : handle comming cmd:cat '/sys/devices/system/cpu/cpufreq/policy0/scaling_governor' 2>/dev/null
+4212-07-27 22:35:46.402 11179 11179 I xsu_api : xsu_recv retry end
+4213-07-27 22:35:46.402 11179 11179 I xsu_api : ret=4, version=200, type=1, payload_size=14
+4214-07-27 22:35:46.402 11179 11179 I xsu_api : xsu_recv type and len
+4215-07-27 22:35:46.402 11179 11179 I xsu_api : header.type=1, header.payload_size=14, xsu_header_t=4
+4216-07-27 22:35:46.402 11179 11179 I xsu_api : xsu_recv type and len end
+--
+5913-07-27 22:35:47.425  4303 11054 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+5914-07-27 22:35:47.426  1537  2584 E ComposerExtn: SmoMoState::FrameIsLate: queued_frames >= 2
+5915:07-27 22:35:47.418 11360 11360 I DefaultDispatch: type=1400 audit(0.0:8924): avc:  denied  { execute } for  name="xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+5916-07-27 22:35:47.427  1366  1366 I android.hardware.power-service: reportActualWorkDuration 
+5917:07-27 22:35:47.418 11360 11360 I DefaultDispatch: type=1400 audit(0.0:8925): avc:  denied  { read open } for  path="/product/bin/xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+5918:07-27 22:35:47.418 11360 11360 I DefaultDispatch: type=1400 audit(0.0:8926): avc:  denied  { execute_no_trans } for  path="/product/bin/xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+5919:07-27 22:35:47.418 11360 11360 I xsu     : type=1400 audit(0.0:8927): avc:  denied  { map } for  path="/product/bin/xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+5920:07-27 22:35:47.418 11360 11360 I xsu     : type=1400 audit(0.0:8928): avc:  denied  { getattr } for  path="/product/bin/xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+5921-07-27 22:35:47.432 11360 11360 I xsu     : sending cmd:cat '/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq' 2>/dev/null
+5922-07-27 22:35:47.432 11360 11360 I xsu     : sending cmd end:cat '/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq' 2>/dev/null
+5923-07-27 22:35:47.432 11360 11360 I xsu     : free cmd end
+5924-07-27 22:35:47.432 11360 11360 I xsu     : xsu_recv cmd before
+5925-07-27 22:35:47.432 11360 11360 I xsu_api : xsu_recv memset enter
+--
+6561-07-27 22:35:47.874  1366  1366 I android.hardware.power-service: reportActualWorkDuration 
+6562-07-27 22:35:47.890  1537  2584 E ComposerExtn: SmoMoState::FrameIsLate: queued_frames >= 2
+6563:07-27 22:35:47.938 11413 11413 I xsu     : sending cmd:chmod 666 /sys/devices/system/cpu/cpu2/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu2/online; chmod 666 /sys/devices/system/cpu/cpu3/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu3/online; chmod 666 /sys/devices/system/cpu/cpu4/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu4/online
+6564-07-27 22:35:47.938  8288 11416 I xsu_api : xsu_recv memset enter
+6565-07-27 22:35:47.938  8288 11416 I xsu_api : xsu_recv memset end
+6566:07-27 22:35:47.938 11413 11413 I xsu     : sending cmd end:chmod 666 /sys/devices/system/cpu/cpu2/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu2/online; chmod 666 /sys/devices/system/cpu/cpu3/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu3/online; chmod 666 /sys/devices/system/cpu/cpu4/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu4/online
+6567-07-27 22:35:47.938  8288 11416 I xsu_api : xsu_recv retry end
+6568-07-27 22:35:47.938  8288 11416 I xsu_api : ret=4, version=200, type=0, payload_size=317
+6569-07-27 22:35:47.938  8288 11416 I xsu_api : xsu_recv type and len
+6570-07-27 22:35:47.938  8288 11416 I xsu_api : header.type=0, header.payload_size=317, xsu_header_t=4
+6571-07-27 22:35:47.938  8288 11416 I xsu_api : xsu_recv type and len end
+6572:07-27 22:35:47.938  8288 11416 I xsud    : handle comming cmd:chmod 666 /sys/devices/system/cpu/cpu2/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu2/online; chmod 666 /sys/devices/system/cpu/cpu3/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu3/online; chmod 666 /sys/devices/system/cpu/cpu4/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu4/online
+6573-07-27 22:35:47.938 11413 11413 I xsu     : free cmd end
+6574-07-27 22:35:47.938 11413 11413 I xsu     : xsu_recv cmd before
+6575-07-27 22:35:47.938 11413 11413 I xsu_api : xsu_recv memset enter
+6576-07-27 22:35:47.938 11413 11413 I xsu_api : xsu_recv memset end
+6577-07-27 22:35:47.955 11413 11413 I xsu_api : xsu_recv retry end
+--
+6700-07-27 22:35:48.239  1537  2137 E ComposerExtn: SmoMoState::FrameIsLate: queued_frames >= 2
+6701-07-27 22:35:48.240  1366  1366 I android.hardware.power-service: reportActualWorkDuration 
+6702:07-27 22:35:48.247 11443 11443 I xsu     : sending cmd:chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; echo 364800 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; echo 2265600 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; echo 3148800 > /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpu
+6703:07-27 22:35:48.247 11443 11443 I xsu     : sending cmd end:chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; echo 364800 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; echo 2265600 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; echo 3148800 > /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; chmod 644 /sys/devices/system/cpu
+6704-07-27 22:35:48.247 11443 11443 I xsu     : free cmd end
+6705-07-27 22:35:48.247  8288 11446 I xsu_api : xsu_recv memset enter
+6706-07-27 22:35:48.247  8288 11446 I xsu_api : xsu_recv memset end
+6707-07-27 22:35:48.247  8288 11446 I xsu_api : xsu_recv retry end
+6708-07-27 22:35:48.247  8288 11446 I xsu_api : ret=4, version=200, type=0, payload_size=1963
+--
+6713-07-27 22:35:48.247 11443 11443 I xsu_api : xsu_recv memset enter
+6714-07-27 22:35:48.247 11443 11443 I xsu_api : xsu_recv memset end
+6715:07-27 22:35:48.247  8288 29811 I xsud    : handle comming cmd:chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; echo 364800 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; echo 2265600 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; echo 3148800 > /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; chmod 644 /sys/devices/system/
+6716-07-27 22:35:48.258  1537  2137 E ComposerExtn: SmoMoState::FrameIsLate: queued_frames >= 2
+6717-07-27 22:35:48.259  1366  1366 I android.hardware.power-service: reportActualWorkDuration 
+6718-07-27 22:35:48.273  1537  2137 E ComposerExtn: SmoMoState::FrameIsLate: queued_frames >= 2
+6719-07-27 22:35:48.274  1366  1366 I android.hardware.power-service: reportActualWorkDuration 
+6720-07-27 22:35:48.290  1537  2137 E ComposerExtn: SmoMoState::FrameIsLate: queued_frames >= 2
+--
+6786-07-27 22:35:48.442  1537  2137 E ComposerExtn: SmoMoState::FrameIsLate: queued_frames >= 2
+6787-07-27 22:35:48.443  1366  1366 I android.hardware.power-service: reportActualWorkDuration 
+6788:07-27 22:35:48.438 11466 11466 I DefaultDispatch: type=1400 audit(0.0:9122): avc:  denied  { execute } for  name="xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+6789-07-27 22:35:48.452 11466 11466 I xsu     : sending cmd:cat '/sys/class/kgsl/kgsl-3d0/max_pwrlevel' 2>/dev/null
+6790-07-27 22:35:48.452 11466 11466 I xsu     : sending cmd end:cat '/sys/class/kgsl/kgsl-3d0/max_pwrlevel' 2>/dev/null
+6791-07-27 22:35:48.452 11466 11466 I xsu     : free cmd end
+6792-07-27 22:35:48.452 11466 11466 I xsu     : xsu_recv cmd before
+6793-07-27 22:35:48.452 11466 11466 I xsu_api : xsu_recv memset enter
+--
+6801-07-27 22:35:48.453 11465 11469 I xsu_api : xsu_recv type and len end
+6802-07-27 22:35:48.453 11465 11469 I xsud    : handle comming cmd:cat '/sys/class/kgsl/kgsl-3d0/max_pwrlevel' 2>/dev/null
+6803:07-27 22:35:48.438 11466 11466 I DefaultDispatch: type=1400 audit(0.0:9123): avc:  denied  { read open } for  path="/product/bin/xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+6804:07-27 22:35:48.438 11466 11466 I DefaultDispatch: type=1400 audit(0.0:9124): avc:  denied  { execute_no_trans } for  path="/product/bin/xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+6805:07-27 22:35:48.438 11466 11466 I xsu     : type=1400 audit(0.0:9125): avc:  denied  { map } for  path="/product/bin/xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+6806:07-27 22:35:48.442 11466 11466 I xsu     : type=1400 audit(0.0:9126): avc:  denied  { getattr } for  path="/product/bin/xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+6807-07-27 22:35:48.456  1537  2137 E ComposerExtn: SmoMoState::FrameIsLate: queued_frames >= 2
+6808-07-27 22:35:48.457  1366  1366 I android.hardware.power-service: reportActualWorkDuration 
+6809-07-27 22:35:48.467 11466 11466 I xsu_api : xsu_recv retry end
+6810-07-27 22:35:48.467 11466 11466 I xsu_api : ret=4, version=200, type=1, payload_size=6
+6811-07-27 22:35:48.467 11466 11466 I xsu_api : xsu_recv type and len
+--
+7498-07-27 22:35:49.693 11609 11609 I xsu     : sending cmd:cat '/sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq' 2>/dev/null
+7499-07-27 22:35:49.693 11609 11609 I xsu     : sending cmd end:cat '/sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq' 2>/dev/null
+7500:07-27 22:35:49.686 11609 11609 I xsu     : type=1400 audit(0.0:9217): avc:  denied  { connectto } for  path="/dev/socket/xsud" scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:r:xsud:s0 tclass=unix_stream_socket permissive=1 app=com.kei.pulse
+7501-07-27 22:35:49.693  1366  1366 I android.hardware.power-service: reportActualWorkDuration 
+7502-07-27 22:35:49.693 11609 11609 I xsu     : free cmd end
+7503-07-27 22:35:49.693 11609 11609 I xsu     : xsu_recv cmd before
+7504-07-27 22:35:49.693 11609 11609 I xsu_api : xsu_recv memset enter
+7505-07-27 22:35:49.693 11609 11609 I xsu_api : xsu_recv memset end
+--
+9756-07-27 22:35:55.222 11950 11950 I xsu_api : xsu_recv memset enter
+9757-07-27 22:35:55.222 11950 11950 I xsu_api : xsu_recv memset end
+9758:07-27 22:35:55.214 11950 11950 I xsu     : type=1400 audit(0.0:9563): avc:  denied  { write } for  name="xsud" dev="tmpfs" ino=1475 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsud_socket:s0 tclass=sock_file permissive=1 app=com.kei.pulse
+9759-07-27 22:35:55.222  1366  1366 I android.hardware.power-service: reportActualWorkDuration 
+9760-07-27 22:35:55.222 11465 11953 I xsu_api : xsu_recv memset enter
+9761-07-27 22:35:55.222 11465 11953 I xsu_api : xsu_recv memset end
+9762-07-27 22:35:55.222 11465 11953 I xsu_api : xsu_recv retry end
+9763-07-27 22:35:55.222 11465 11953 I xsu_api : ret=4, version=200, type=0, payload_size=78
+--
+10212-07-27 22:35:56.825  1537  2584 E ComposerExtn: SmoMoState::FrameIsLate: queued_frames >= 2
+10213-07-27 22:35:56.826  1366  1366 I android.hardware.power-service: reportActualWorkDuration 
+10214:07-27 22:35:56.826  4536  4536 I DefaultDispatch: type=1400 audit(0.0:9582): avc:  denied  { open } for  path="/proc/stat" dev="proc" ino=4026532011 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:proc_stat:s0 tclass=file permissive=1 app=com.kei.pulse
+10215-07-27 22:35:56.843  1537  2584 E ComposerExtn: SmoMoState::FrameIsLate: queued_frames >= 2
+10216-07-27 22:35:56.845  1366  1366 I android.hardware.power-service: reportActualWorkDuration 
+10217-07-27 22:35:56.850 12025 12025 I xsu     : sending cmd:cat '/sys/class/kgsl/kgsl-3d0/gpuclk' 2>/dev/null
+10218-07-27 22:35:56.850 12025 12025 I xsu     : sending cmd end:cat '/sys/class/kgsl/kgsl-3d0/gpuclk' 2>/dev/null
+10219-07-27 22:35:56.850 12025 12025 I xsu     : free cmd end
+--
+12198-07-27 22:36:01.570  4303  4303 I DefaultDispatch: type=1400 audit(0.0:9734): avc:  denied  { getattr } for  path="/dev/ttyHS5" dev="tmpfs" ino=1173 scontext=u:r:system_app:s0 tcontext=u:object_r:device:s0 tclass=chr_file permissive=1
+12199-07-27 22:36:01.579  2254 12286 W ActivityManager: Native stack dump failed!
+12200:07-27 22:36:01.586 12289 12289 I xsu     : type=1400 audit(0.0:9735): avc:  denied  { read } for  path="/product/bin/xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+12201-07-27 22:36:01.592  1537  2137 E ComposerExtn: SmoMoState::FrameIsLate: queued_frames >= 2
+12202-07-27 22:36:01.594  1366  1366 I android.hardware.power-service: reportActualWorkDuration 
+12203-07-27 22:36:01.597 12289 12289 I xsu     : sending cmd:cat '/sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq' 2>/dev/null
+12204-07-27 22:36:01.597 12289 12289 I xsu     : sending cmd end:cat '/sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq' 2>/dev/null
+12205:07-27 22:36:01.590 12289 12289 I xsu     : type=1400 audit(0.0:9736): avc:  denied  { write } for  name="xsud" dev="tmpfs" ino=1475 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsud_socket:s0 tclass=sock_file permissive=1 app=com.kei.pulse
+12206-07-27 22:36:01.597 12289 12289 I xsu     : free cmd end
+12207-07-27 22:36:01.597 12289 12289 I xsu     : xsu_recv cmd before
+12208:07-27 22:36:01.590 12289 12289 I xsu     : type=1400 audit(0.0:9737): avc:  denied  { connectto } for  path="/dev/socket/xsud" scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:r:xsud:s0 tclass=unix_stream_socket permissive=1 app=com.kei.pulse
+12209-07-27 22:36:01.597 12289 12289 I xsu_api : xsu_recv memset enter
+12210-07-27 22:36:01.597 12289 12289 I xsu_api : xsu_recv memset end
+12211-07-27 22:36:01.597 11465 12292 I xsu_api : xsu_recv memset enter
+12212-07-27 22:36:01.598 11465 12292 I xsu_api : xsu_recv memset end
+12213-07-27 22:36:01.598 11465 12292 I xsu_api : xsu_recv retry end
+--
+14951-07-27 22:36:08.244 12682 12682 I xsu_api : xsu_recv memset enter
+14952-07-27 22:36:08.244 12682 12682 I xsu_api : xsu_recv memset end
+14953:07-27 22:36:08.238 12682 12682 I xsu     : type=1400 audit(0.0:10142): avc:  denied  { write } for  name="xsud" dev="tmpfs" ino=1475 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsud_socket:s0 tclass=sock_file permissive=1 app=com.kei.pulse
+14954-07-27 22:36:08.244 11465 12685 I xsu_api : xsu_recv memset enter
+14955-07-27 22:36:08.244 11465 12685 I xsu_api : xsu_recv memset end
+14956-07-27 22:36:08.244 11465 12685 I xsu_api : xsu_recv retry end
+14957-07-27 22:36:08.244 11465 12685 I xsu_api : ret=4, version=200, type=0, payload_size=78
+14958-07-27 22:36:08.244 11465 12685 I xsu_api : xsu_recv type and len
+--
+15540-07-27 22:36:09.295 11465 12759 I xsu_api : xsu_recv type and len end
+15541-07-27 22:36:09.295 11465 12759 I xsud    : handle comming cmd:cat '/sys/class/kgsl/kgsl-3d0/min_pwrlevel' 2>/dev/null
+15542:07-27 22:36:09.290 12756 12756 I xsu     : type=1400 audit(0.0:10172): avc:  denied  { connectto } for  path="/dev/socket/xsud" scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:r:xsud:s0 tclass=unix_stream_socket permissive=1 app=com.kei.pulse
+15543-07-27 22:36:09.297  4303  4303 W InputReader: pauseServer
+15544-07-27 22:36:09.298  2254  2254 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+15545-07-27 22:36:09.299  2254  2254 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+15546-07-27 22:36:09.299  2254  2254 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+15547-07-27 22:36:09.306  2254  2657 W InputManager: Input devices don't support segment Prebaked{effect=CLICK, strength=MEDIUM, fallback=true}
+--
+15605-07-27 22:36:09.380  2254  2254 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+15606-07-27 22:36:09.381  1366  1366 I android.hardware.power-service: reportActualWorkDuration 
+15607:07-27 22:36:09.382 12762 12762 I DefaultDispatch: type=1400 audit(0.0:10173): avc:  denied  { execute } for  name="xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+15608:07-27 22:36:09.382 12762 12762 I DefaultDispatch: type=1400 audit(0.0:10174): avc:  denied  { read open } for  path="/product/bin/xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+15609:07-27 22:36:09.382 12762 12762 I DefaultDispatch: type=1400 audit(0.0:10175): avc:  denied  { execute_no_trans } for  path="/product/bin/xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+15610:07-27 22:36:09.382 12762 12762 I xsu     : type=1400 audit(0.0:10176): avc:  denied  { map } for  path="/product/bin/xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+15611-07-27 22:36:09.393  2254  2254 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+15612-07-27 22:36:09.393  2254  2254 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+15613-07-27 22:36:09.393  2254  2254 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+15614-07-27 22:36:09.396  1537  2584 E ComposerExtn: SmoMoState::FrameIsLate: queued_frames >= 2
+15615-07-27 22:36:09.396 12762 12762 I xsu     : sending cmd:cat '/sys/devices/system/cpu/cpufreq/policy5/scaling_max_freq' 2>/dev/null
+--
+16266-07-27 22:36:10.375 11465 12829 I xsu_api : xsu_recv type and len end
+16267-07-27 22:36:10.375 11465 12829 I xsud    : handle comming cmd:cat '/sys/class/thermal/thermal_zone41/temp' 2>/dev/null
+16268:07-27 22:36:10.370 12826 12826 I xsu     : type=1400 audit(0.0:10331): avc:  denied  { connectto } for  path="/dev/socket/xsud" scontext=u:r:untrusted_app:s0:c200,c256,c512,c768 tcontext=u:r:xsud:s0 tclass=unix_stream_socket permissive=1 app=com.kei.pulse
+16269-07-27 22:36:10.394 12826 12826 I xsu_api : xsu_recv retry end
+16270-07-27 22:36:10.394 12826 12826 I xsu_api : ret=4, version=200, type=1, payload_size=10
+16271-07-27 22:36:10.394 12826 12826 I xsu_api : xsu_recv type and len
+16272-07-27 22:36:10.394 12826 12826 I xsu_api : header.type=1, header.payload_size=10, xsu_header_t=4
+16273-07-27 22:36:10.394 12826 12826 I xsu_api : xsu_recv type and len end

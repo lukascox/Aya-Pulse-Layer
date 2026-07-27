@@ -29,17 +29,41 @@ here). This repo exists to answer, empirically, whether that blocker is a
 narrow substitution or something deeper — and, having confirmed the
 former, to build and validate that substitution.
 
-## Current state (2026-07-25)
+## Current state (2026-07-27)
 
 - **`research/pulse-for-aya/`** — the actual glue patch: a fork of
   upstream `pulse` with its root-transport layer swapped from
   `PServerBinder` to `xsu` (this device's confirmed root-shell
   equivalent), fan control stubbed out (native AyaSettings keeps owning
   it — see below), RGB left untouched (self-gates off safely on its own).
-  **Builds clean, installs, launches, and reads live CPU/GPU/thermal
-  telemetry on-device with no crashes.** Actuation (AutoTDP's write path)
-  and an A/B comparison against native AyaSettings are the next concrete
-  steps — see that folder's own `README.md`.
+  **Builds clean, installs, launches, reads live CPU/GPU/thermal
+  telemetry, and its AutoTDP write path is built, tested, and confirmed
+  regulating live on real hardware** — verified independently of the
+  app's own logs by polling `scaling_cur_freq`/`scaling_max_freq`
+  directly (`research/pulse-for-aya/scripts/poll-cpufreq.sh`), not just by
+  trusting the app said so. Despite the amount of investigation this took
+  (see below), a direct diff against `research/pulse-upstream/` confirms
+  it's still a small, clean glue patch — 6 modified files with modest,
+  targeted line diffs plus 2 new AYANEO-specific files, not a de-facto
+  rewrite. Two threads are still open: a not-yet-explained "Minecraft
+  needs a reboot after every reinstall" ritual, and persistently low FPS
+  in one emulator (Eden) despite confirmed-live regulation. See
+  `STATUS.md` for all of the above in detail.
+- A real, reproducible **vendor bug** was found along the way: this
+  device's root-shell daemon (`xsud`, closed-source) has a stack-overflow
+  bug (`xsu_conn_handler`) that a real gameplay session's cumulative `xsu`
+  connection load can trigger, eventually crashing `system_server`. Not
+  fixable from this repo (closed vendor binary) — mitigated instead by
+  cutting `pulse-for-aya`'s own contribution to that connection load: a
+  root daemon launched once per session via a single `xsu` call, driven
+  over a named pipe for every subsequent write, instead of one `xsu`
+  connection per write (previously the app's single largest contributor
+  to that load). An AIDL-based mitigation attempt (driving AYASpace's own
+  Binder interface instead of `xsu` for the same writes) was tried first,
+  confirmed to not help — and confirmed to be net-*negative*, since
+  AYASpace's own AIDL receiver shells out through `xsu` internally too,
+  with *more* connections than `pulse-for-aya`'s own code — and was
+  reverted. Full timeline in `STATUS.md`.
 - **`research/pulse-glue-assessment/`** — the analysis behind the patch:
   why "glue, not rewrite" is the right call, exactly what needed patching
   (root layer, fan control) and what didn't (CPU/GPU detection, RGB,
