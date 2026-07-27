@@ -53,6 +53,23 @@ discarded rather than duplicated here):
 `walt`.** Rules out governor choice as the root cause — see STATUS.md for
 the revised theory and next steps.
 
+## round5_2026-07-27_1053_unplugged_new_ablogger/
+
+Reproduced unplugged (no charger), with the fixed `ab-logger` build (the
+2026-07-27 `startCrashCapture()` rewrite) — this is the first round where
+`ab-logger`'s own in-app `logcat` capture actually produced output.
+`session_1785142405772.csv`/`logcat_1785142405772.log` is a short false
+start (empty CSV, logcat just shows a normal thermal-zone scan getting cut
+off by a clean `pkill`, no crash signature — not the real repro).
+`session_1785142413182.csv`/`logcat_1785142413182.log` is the real one: 3
+CSV rows, then a genuine crash caught in the logcat. **Different crash
+mechanism than round 4** — not `BatteryService`/`system_server` this time,
+see STATUS.md for the full analysis (short version: Minecraft's own
+`XNNPACK`/`cpuinfo` library aborts trying to read CPU topology, `Fatal
+signal 6 (SIGABRT)` in Minecraft's own process, not system-wide). Confirms
+this is not a single narrow bug — PULSE's activity is destabilizing more
+than one subsystem.
+
 ## round4_2026-07-27_1035_schedutil_logcat_capture/
 
 Host-side `adb logcat -v threadtime` capture (not `ab-logger`'s own

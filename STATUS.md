@@ -338,6 +338,78 @@ section for the full before/after. Builds clean, **not yet verified
 on-device** — the next unplugged repro is the real test, and this time
 it's the only log source available if it doesn't work.
 
+**Update (2026-07-27): crash reproduced unplugged too, `ab-logger`'s fixed
+capture worked, and it caught a DIFFERENT crash mechanism — `battery/online`
+theory is weakened, not the whole story.** Two file pairs pulled to
+`research/ab-logger/results/minecraft_crash_investigation/round5_2026-07-27_1053_unplugged_new_ablogger/`
+(`NOTES.md` has the file index). The real capture
+(`logcat_1785142413182.log`) shows the fixed `startCrashCapture()` finally
+producing real output — confirms that fix works.
+
+**This crash is NOT the `BatteryService`/`system_server` one from round
+4.** This time it's `com.mojang.minecraftpe`'s own process aborting
+directly:
+
+```
+E XNNPACK : failed to parse the list of possible processors in /sys/devices/system/cpu/possible
+E XNNPACK : failed to parse the list of present processors in /sys/devices/system/cpu/present
+F XNNPACK : cpuinfo_get_packages_count called before cpuinfo is initialized
+F libc    : Fatal signal 6 (SIGABRT) ... pid 9230 (ang.minecraftpe)
+Abort message: 'cpuinfo_get_packages_count called before cpuinfo is initialized'
+```
+
+Minecraft bundles Google's `cpuinfo` library (via XNNPACK, its ML/inference
+backend) to detect CPU topology at startup. It tries to read
+`/sys/devices/system/cpu/possible` and `.../present` — two standard,
+normally-static kernel files listing which CPU indices exist — and both
+reads come back unparseable, which crashes `cpuinfo` init and, downstream,
+Minecraft's own process (crash, not an ANR, not `system_server` this
+time). This happened ~2 seconds into Minecraft's launch
+(`Process uptime: 2s` in the tombstone), immediately after its Vulkan/
+`GameActivity` init.
+
+**This weakens (doesn't kill) the `battery/online` theory**: this crash
+happened fully unplugged, no charger, and has nothing to do with
+`BatteryService` at all — so `battery/online`-forcing can't be the *only*
+mechanism at play. **Confirms the broader reframe from the last update
+though**: PULSE's activity is destabilizing more than one subsystem, not
+one narrow bug — round 4 broke `BatteryService`'s charging-LED path, round
+5 breaks Minecraft's own CPU-topology detection. Both crash sites read
+CPU-topology-adjacent kernel state; both happen right as PULSE/AutoTDP is
+active.
+
+**Timeline right before the crash** (from `logcat_1785142413182.log`):
+in the ~600ms immediately before the `XNNPACK` failure, the only `xsu`
+activity was `ab-logger`'s own routine sampling (`chmod 750 /storage;
+setenforce 0` — **not this repo's code either**, grepped both apps' source,
+no match; likely an AYASpace/ROM "game launch prep" hook reacting to
+Minecraft coming to foreground, sharing the same `xsu` channel again, same
+pattern as `battery/online`/`core_ctl/min_cpus` from round 4).
+`aggressivePark`'s core-unpark (`cpu2/3/4 online=1`) and AutoTDP's
+governor/freq-cap reset both fire ~350-450ms **after** the crash, not
+before — consistent with `AutoTuneController` reacting to the sudden stall
+(Minecraft dying), not causing this particular instance. That doesn't
+clear `aggressivePark` as a suspect, though: whether cores were already
+parked *before* this log's window started (3.5s before the crash) is
+unknown — an earlier park cycle from earlier in the same session could
+still have left `cpuN/online` state disrupted right when Minecraft's
+`cpuinfo` init ran.
+
+**Answering the user's question ("could this be a PULSE option?")**:
+`aggressivePark` remains the single most mechanistically plausible PULSE
+lever — it's the only thing in `pulse-for-aya`'s own code that touches
+`cpuN/online`, and `possible`/`present` are exactly the kind of
+CPU-topology sysfs paths a hotplug operation could transiently disrupt for
+a concurrent reader. Not proven, but now the most concrete, testable
+PULSE-side suspect.
+
+**Next session, most direct test**: reproduce with `aggressivePark`
+explicitly turned OFF, everything else the same (still unplugged, still
+`schedutil`) — if the crash (either shape) stops, `aggressivePark` is
+confirmed as at least one real trigger; if it still happens, the remaining
+suspects are the write/chmod cadence itself or contention with the other
+(non-PULSE) actors sharing `xsu` around app-launch moments.
+
 ## ROOT CAUSE FOUND (2026-07-26): the empty-CSV bug is `xsud` segfaulting on long `xsu -c` commands
 
 Follow-up to INCIDENT #3 below. Root-caused live on-device, outside any

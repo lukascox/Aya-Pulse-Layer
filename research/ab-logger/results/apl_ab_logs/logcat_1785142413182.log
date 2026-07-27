@@ -1,0 +1,1549 @@
+BOOT_REASON_AT_START=reboot,1785142352 reboot,14 reboot,userrequested,1785141948 reboot,1785141487
+--------- beginning of main
+07-27 10:53:33.242  9104  9104 I xsu     : sending cmd:cat '/sys/class/thermal/thermal_zone41/temp' 2>/dev/null
+07-27 10:53:33.242  9104  9104 I xsu     : sending cmd end:cat '/sys/class/thermal/thermal_zone41/temp' 2>/dev/null
+07-27 10:53:33.242  9104  9104 I xsu     : free cmd end
+07-27 10:53:33.242  9104  9104 I xsu     : xsu_recv cmd before
+07-27 10:53:33.242  8139  9107 I xsu_api : xsu_recv memset enter
+07-27 10:53:33.242  9104  9104 I xsu_api : xsu_recv memset enter
+07-27 10:53:33.242  9104  9104 I xsu_api : xsu_recv memset end
+07-27 10:53:33.242  8139  9107 I xsu_api : xsu_recv memset end
+07-27 10:53:33.242  8139  9107 I xsu_api : xsu_recv retry end
+07-27 10:53:33.242  8139  9107 I xsu_api : ret=4, version=200, type=0, payload_size=60
+07-27 10:53:33.242  8139  9107 I xsu_api : xsu_recv type and len
+07-27 10:53:33.242  8139  9107 I xsu_api : header.type=0, header.payload_size=60, xsu_header_t=4
+07-27 10:53:33.242  8139  9107 I xsu_api : xsu_recv type and len end
+07-27 10:53:33.242  8139  9107 I xsud    : handle comming cmd:cat '/sys/class/thermal/thermal_zone41/temp' 2>/dev/null
+07-27 10:53:33.265  9104  9104 I xsu_api : xsu_recv retry end
+07-27 10:53:33.265  9104  9104 I xsu_api : ret=4, version=200, type=1, payload_size=10
+07-27 10:53:33.265  9104  9104 I xsu_api : xsu_recv type and len
+07-27 10:53:33.265  9104  9104 I xsu_api : header.type=1, header.payload_size=10, xsu_header_t=4
+07-27 10:53:33.265  9104  9104 I xsu_api : xsu_recv type and len end
+07-27 10:53:33.265  9104  9104 I xsu     : xsu_recv cmd end
+07-27 10:53:33.265  9104  9104 I xsu     : xsu_recv cmd before
+07-27 10:53:33.265  9104  9104 I xsu_api : xsu_recv memset enter
+07-27 10:53:33.265  9104  9104 I xsu_api : xsu_recv memset end
+07-27 10:53:33.265  9104  9104 I xsu_api : xsu_recv retry end
+07-27 10:53:33.265  9104  9104 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:33.265  9104  9104 I xsu_api : xsu_recv type and len
+07-27 10:53:33.265  9104  9104 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:33.265  9104  9104 I xsu_api : xsu_recv type and len end
+07-27 10:53:33.265  9104  9104 I xsu     : xsu_recv cmd end
+07-27 10:53:33.265  9104  9104 I xsu     : end session!
+07-27 10:53:33.278  1349  1668 E Diag_Lib: diag: Diag_LSM_Init: invoked for pid: 1349 with init_count: 0
+07-27 10:53:33.278  1349  1668 E Diag_Lib: diag:failed to connect to diag socket
+07-27 10:53:33.278  1349  1668 E Diag_Lib:  Diag_LSM_Init: Failed to open handle to diag driver, error = 111
+07-27 10:53:33.278  1349  1668 I ATS     : vendor/qcom/proprietary/args/acdb/ats/transports/diag/linux/actp/src/actp.c:actp_diag_init:105 Error[1]: Failed to initialize DIAG
+07-27 10:53:33.278  1349  1668 E ATS     : vendor/qcom/proprietary/args/acdb/ats/src/ats.c:ats_init:143 Error[1]: Failed to initialize Diag
+07-27 10:53:33.278  1349  1668 E ATS     : vendor/qcom/proprietary/args/acdb/ats/src/ats.c:ats_init:263 Error[1]: Failed to initialize ATS
+07-27 10:53:33.278  1349  1668 E AGM: API: ats_init_thread: 65 ats_init failed retry 63 err 1
+07-27 10:53:33.348  9111  9111 I xsu     : sending cmd:dumpsys SurfaceFlinger --timestats -dump -maxlayers 16 2>/dev/null | awk '
+07-27 10:53:33.348  9111  9111 I xsu     :   function commitLayer(){ if((lf+0)>(blf+0) && lname !~ /= none/){ blf=lf; blaf=laf } }
+07-27 10:53:33.348  9111  9111 I xsu     :   BEGIN{ g=1 }
+07-27 10:53:33.348  9111  9111 I xsu     :   /layerName =/ { commitLayer(); g=0; lf=0; laf=0; lname=$0 }
+07-27 10:53:33.348  9111  9111 I xsu     :   g==1 && $1=="totalFrames" { gf=$3 }
+07-27 10:53:33.348  9111  9111 I xsu     :   g==1 && $1=="displayRefreshRate" { rr=$3 }
+07-27 10:53:33.348  9111  9111 I xsu     :   g==1 && /presentToPresent histogram/ { gh=1; next }
+07-27 10:53:33.348  9111  9111 I xsu     :   g==1 && gh==1 { gh=0; for(i=1;i<=NF;i++){ split($i,a,"="); ms=a[1]+0; c=a[2]+0; if(c>0 && ms<100){ sc+=c; sm+=ms*c; if(ms>worst)worst=ms; if(ms>=33)slow+=c } } }
+07-27 10:53:33.348  9111  9111 I xsu     :   g==0 && $1=="totalFrames" { lf=$3 }
+07-27 10:53:33.348  9111  9111 I xsu     :   g==0 && $1=="averageFPS" { laf=$3 }
+07-27 10:53:33.348  9111  9111 I xsu     :   END{
+07-27 10:53:33.348  9111  9111 I xsu     :     commitLayer();
+07-27 10:53:33.348  9111  9111 I xsu     :     fps=(sm>0)?(1000.0*sc/sm):0;
+07-27 10:53:33.348  9111  9111 I xsu     :     if(rr>0 && fps>rr) fps=rr;
+07-27 10:53:33.348  9111  9111 I xsu     :     printf "FR %d AF %.2f WORST %d SLOW %d LF %d LAF %.2f\n", gf+0, fps, worst+0, slow+0, blf+0, blaf+0
+07-27 10:53:33.348  9111  9111 I xsu     :   }
+07-27 10:53:33.348  9111  9111 I xsu     : '
+07-27 10:53:33.348  9111  9111 I xsu     : dumpsys SurfaceFlinger --timestats -clear >/dev/null 2>&1
+07-27 10:53:33.348  9111  9111 I xsu     : sending cmd end:dumpsys SurfaceFlinger --timestats -dump -maxlayers 16 2>/dev/null | awk '
+07-27 10:53:33.348  9111  9111 I xsu     :   function commitLayer(){ if((lf+0)>(blf+0) && lname !~ /= none/){ blf=lf; blaf=laf } }
+07-27 10:53:33.348  9111  9111 I xsu     :   BEGIN{ g=1 }
+07-27 10:53:33.348  9111  9111 I xsu     :   /layerName =/ { commitLayer(); g=0; lf=0; laf=0; lname=$0 }
+07-27 10:53:33.348  9111  9111 I xsu     :   g==1 && $1=="totalFrames" { gf=$3 }
+07-27 10:53:33.348  9111  9111 I xsu     :   g==1 && $1=="displayRefreshRate" { rr=$3 }
+07-27 10:53:33.348  9111  9111 I xsu     :   g==1 && /presentToPresent histogram/ { gh=1; next }
+07-27 10:53:33.348  9111  9111 I xsu     :   g==1 && gh==1 { gh=0; for(i=1;i<=NF;i++){ split($i,a,"="); ms=a[1]+0; c=a[2]+0; if(c>0 && ms<100){ sc+=c; sm+=ms*c; if(ms>worst)worst=ms; if(ms>=33)slow+=c } } }
+07-27 10:53:33.348  9111  9111 I xsu     :   g==0 && $1=="totalFrames" { lf=$3 }
+07-27 10:53:33.348  9111  9111 I xsu     :   g==0 && $1=="averageFPS" { laf=$3 }
+07-27 10:53:33.348  9111  9111 I xsu     :   END{
+07-27 10:53:33.348  9111  9111 I xsu     :     commitLayer();
+07-27 10:53:33.348  9111  9111 I xsu     :     fps=(sm>0)?(1000.0*sc/sm):0;
+07-27 10:53:33.348  9111  9111 I xsu     :     if(rr>0 && fps>rr) fps=rr;
+07-27 10:53:33.348  9111  9111 I xsu     :     printf "FR %d AF %.2f WORST %d SLOW %d LF %d LAF %.2f\n", gf+0, fps, worst+0, slow+0, blf+0, blaf+0
+07-27 10:53:33.348  9111  9111 I xsu     :   }
+07-27 10:53:33.348  9111  9111 I xsu     : '
+07-27 10:53:33.348  9111  9111 I xsu     : dumpsys SurfaceFlinger --timestats -clear >/dev/null 2>&1
+07-27 10:53:33.348  9111  9111 I xsu     : free cmd end
+07-27 10:53:33.348  9111  9111 I xsu     : xsu_recv cmd before
+07-27 10:53:33.348  9111  9111 I xsu_api : xsu_recv memset enter
+07-27 10:53:33.348  9111  9111 I xsu_api : xsu_recv memset end
+07-27 10:53:33.349  8139  9114 I xsu_api : xsu_recv memset enter
+07-27 10:53:33.349  8139  9114 I xsu_api : xsu_recv memset end
+07-27 10:53:33.349  8139  9114 I xsu_api : xsu_recv retry end
+07-27 10:53:33.349  8139  9114 I xsu_api : ret=4, version=200, type=0, payload_size=878
+07-27 10:53:33.349  8139  9114 I xsu_api : xsu_recv type and len
+07-27 10:53:33.349  8139  9114 I xsu_api : header.type=0, header.payload_size=878, xsu_header_t=4
+07-27 10:53:33.349  8139  9114 I xsu_api : xsu_recv type and len end
+07-27 10:53:33.349  8139  9114 I xsud    : handle comming cmd:dumpsys SurfaceFlinger --timestats -dump -maxlayers 16 2>/dev/null | awk '
+07-27 10:53:33.349  8139  9114 I xsud    :   function commitLayer(){ if((lf+0)>(blf+0) && lname !~ /= none/){ blf=lf; blaf=laf } }
+07-27 10:53:33.349  8139  9114 I xsud    :   BEGIN{ g=1 }
+07-27 10:53:33.349  8139  9114 I xsud    :   /layerName =/ { commitLayer(); g=0; lf=0; laf=0; lname=$0 }
+07-27 10:53:33.349  8139  9114 I xsud    :   g==1 && $1=="totalFrames" { gf=$3 }
+07-27 10:53:33.349  8139  9114 I xsud    :   g==1 && $1=="displayRefreshRate" { rr=$3 }
+07-27 10:53:33.349  8139  9114 I xsud    :   g==1 && /presentToPresent histogram/ { gh=1; next }
+07-27 10:53:33.349  8139  9114 I xsud    :   g==1 && gh==1 { gh=0; for(i=1;i<=NF;i++){ split($i,a,"="); ms=a[1]+0; c=a[2]+0; if(c>0 && ms<100){ sc+=c; sm+=ms*c; if(ms>worst)worst=ms; if(ms>=33)slow+=c } } }
+07-27 10:53:33.349  8139  9114 I xsud    :   g==0 && $1=="totalFrames" { lf=$3 }
+07-27 10:53:33.349  8139  9114 I xsud    :   g==0 && $1=="averageFPS" { laf=$3 }
+07-27 10:53:33.349  8139  9114 I xsud    :   END{
+07-27 10:53:33.349  8139  9114 I xsud    :     commitLayer();
+07-27 10:53:33.349  8139  9114 I xsud    :     fps=(sm>0)?(1000.0*sc/sm):0;
+07-27 10:53:33.349  8139  9114 I xsud    :     if(rr>0 && fps>rr) fps=rr;
+07-27 10:53:33.349  8139  9114 I xsud    :     printf "FR %d AF %.2f WORST %d SLOW %d LF %d LAF %.2f\n", gf+0, fps, worst+0, slow+0, blf+0, blaf+0
+07-27 10:53:33.349  8139  9114 I xsud    :   }
+07-27 10:53:33.349  8139  9114 I xsud    : '
+07-27 10:53:33.349  8139  9114 I xsud    : dumpsys SurfaceFlinger --timestats -clear >/dev/null 2>&1
+07-27 10:53:33.367  1516  2493 D TimeStats: Dumping TimeStats as text
+07-27 10:53:33.391  1516  2493 D TimeStats: Cleared global stats
+07-27 10:53:33.391  1516  2493 D TimeStats: Cleared layer stats
+07-27 10:53:33.394  9111  9111 I xsu_api : xsu_recv retry end
+07-27 10:53:33.394  9111  9111 I xsu_api : ret=4, version=200, type=1, payload_size=53
+07-27 10:53:33.394  9111  9111 I xsu_api : xsu_recv type and len
+07-27 10:53:33.394  9111  9111 I xsu_api : header.type=1, header.payload_size=53, xsu_header_t=4
+07-27 10:53:33.394  9111  9111 I xsu_api : xsu_recv type and len end
+07-27 10:53:33.394  9111  9111 I xsu     : xsu_recv cmd end
+07-27 10:53:33.394  9111  9111 I xsu     : xsu_recv cmd before
+07-27 10:53:33.394  9111  9111 I xsu_api : xsu_recv memset enter
+07-27 10:53:33.394  9111  9111 I xsu_api : xsu_recv memset end
+07-27 10:53:33.395  9111  9111 I xsu_api : xsu_recv retry end
+07-27 10:53:33.395  9111  9111 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:33.395  9111  9111 I xsu_api : xsu_recv type and len
+07-27 10:53:33.395  9111  9111 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:33.395  9111  9111 I xsu_api : xsu_recv type and len end
+07-27 10:53:33.395  9111  9111 I xsu     : xsu_recv cmd end
+07-27 10:53:33.395  9111  9111 I xsu     : end session!
+07-27 10:53:33.441  4259  6302 D PulseFps: pkg=pl.ablogger.app raw=FR 136 AF 51.55 WORST 86 SLOW 11 LF 80 LAF 32.03
+07-27 10:53:33.637  1911  1911 E LocSvc_launcher: Parent woken up!
+07-27 10:53:33.784  8733  8733 W HidlServiceManagement: Waited one second for vendor.qti.diaghal@1.0::Idiag/default
+07-27 10:53:33.785   786   786 I hwservicemanager: Since vendor.qti.diaghal@1.0::Idiag/default is not registered, trying to start it as a lazy HAL (if it's not configured to be a lazy HAL, it may be stuck starting or still starting).
+07-27 10:53:33.785  8733  8733 I HidlServiceManagement: getService: Trying again for vendor.qti.diaghal@1.0::Idiag/default...
+07-27 10:53:33.787   786  9122 W libc    : Unable to set property "ctl.interface_start" to "vendor.qti.diaghal@1.0::Idiag/default": error code: 0x20
+07-27 10:53:33.787   786  9122 I hwservicemanager: Tried to start vendor.qti.diaghal@1.0::Idiag/default as a lazy service, but was unable to. Usually this happens when a service is not installed, but if the service is intended to be used as a lazy service, then it may be configured incorrectly.
+07-27 10:53:34.184  1354  3724 I vendor.qti.bluetooth@1.1-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+07-27 10:53:34.184  1354  3724 D vendor.qti.bluetooth@1.1-ibs_handler: SerialClockVote: vote for UART CLK ON
+07-27 10:53:34.185  1354  3724 D vendor.qti.bluetooth@1.1-wake_lock: Acquire wakelock is acquired 
+07-27 10:53:34.185  1354  3724 I vendor.qti.bluetooth@1.1-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+07-27 10:53:34.186  2774  3726 I bt_stack: [INFO:btm_ble_gap.cc(3263)] btm_ble_process_adv_pkt_cont Data Complete xx:xx:xx:xx:xx:xx
+07-27 10:53:34.187  2774  3726 I bt_stack: [INFO:btm_ble_gap.cc(3263)] btm_ble_process_adv_pkt_cont Data Complete xx:xx:xx:xx:xx:xx
+07-27 10:53:34.187  2774  3726 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+07-27 10:53:34.189  2774  3224 D BluetoothAdapterService: getIdentityAddress null retruning xx:xx:xx:xx:xx:xx
+07-27 10:53:34.195  3263  6019 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+07-27 10:53:34.226  1354  3724 I vendor.qti.bluetooth@1.1-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+07-27 10:53:34.226  1354  3724 D vendor.qti.bluetooth@1.1-ibs_handler: SerialClockVote: vote for UART CLK OFF
+07-27 10:53:34.279  1349  1668 E Diag_Lib: diag: Diag_LSM_Init: invoked for pid: 1349 with init_count: 0
+07-27 10:53:34.279  1349  1668 E Diag_Lib: diag:failed to connect to diag socket
+07-27 10:53:34.279  1349  1668 E Diag_Lib:  Diag_LSM_Init: Failed to open handle to diag driver, error = 111
+07-27 10:53:34.279  1349  1668 I ATS     : vendor/qcom/proprietary/args/acdb/ats/transports/diag/linux/actp/src/actp.c:actp_diag_init:105 Error[1]: Failed to initialize DIAG
+07-27 10:53:34.280  1349  1668 E ATS     : vendor/qcom/proprietary/args/acdb/ats/src/ats.c:ats_init:143 Error[1]: Failed to initialize Diag
+07-27 10:53:34.280  1349  1668 E ATS     : vendor/qcom/proprietary/args/acdb/ats/src/ats.c:ats_init:263 Error[1]: Failed to initialize ATS
+07-27 10:53:34.280  1349  1668 E AGM: API: ats_init_thread: 65 ats_init failed retry 64 err 1
+07-27 10:53:34.318  9123  9123 I top     : type=1400 audit(0.0:10197): avc:  denied  { getattr } for  path="/proc/1438" dev="proc" ino=42688 scontext=u:r:system_app:s0 tcontext=u:r:hal_fingerprint_default:s0 tclass=dir permissive=1
+07-27 10:53:34.318  9123  9123 I top     : type=1400 audit(0.0:10198): avc:  denied  { search } for  name="1438" dev="proc" ino=42688 scontext=u:r:system_app:s0 tcontext=u:r:hal_fingerprint_default:s0 tclass=dir permissive=1
+07-27 10:53:34.318  9123  9123 I top     : type=1400 audit(0.0:10199): avc:  denied  { getattr } for  path="/proc/1445" dev="proc" ino=41793 scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_capabilityconfigstore_qti_default:s0 tclass=dir permissive=1
+07-27 10:53:34.318  9123  9123 I top     : type=1400 audit(0.0:10200): avc:  denied  { search } for  name="1445" dev="proc" ino=41793 scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_capabilityconfigstore_qti_default:s0 tclass=dir permissive=1
+07-27 10:53:34.318  9123  9123 I top     : type=1400 audit(0.0:10201): avc:  denied  { getattr } for  path="/proc/1710" dev="proc" ino=45189 scontext=u:r:system_app:s0 tcontext=u:r:vendor_per_proxy:s0 tclass=dir permissive=1
+07-27 10:53:34.376  1354  3240 D vendor.qti.bluetooth@1.1-wake_lock: Release wakelock is released 
+--------- beginning of system
+07-27 10:53:34.392  2273  2468 D ActivityManager: freezing 5267 com.google.android.apps.turbo
+07-27 10:53:34.486  9124  9124 I xsu     : sending cmd:cat '/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq' 2>/dev/null
+07-27 10:53:34.487  9124  9124 I xsu     : sending cmd end:cat '/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq' 2>/dev/null
+07-27 10:53:34.487  9124  9124 I xsu     : free cmd end
+07-27 10:53:34.487  8139  9127 I xsu_api : xsu_recv memset enter
+07-27 10:53:34.487  9124  9124 I xsu     : xsu_recv cmd before
+07-27 10:53:34.487  9124  9124 I xsu_api : xsu_recv memset enter
+07-27 10:53:34.487  9124  9124 I xsu_api : xsu_recv memset end
+07-27 10:53:34.487  8139  9127 I xsu_api : xsu_recv memset end
+07-27 10:53:34.487  8139  9127 I xsu_api : xsu_recv retry end
+07-27 10:53:34.487  8139  9127 I xsu_api : ret=4, version=200, type=0, payload_size=78
+07-27 10:53:34.487  8139  9127 I xsu_api : xsu_recv type and len
+07-27 10:53:34.487  8139  9127 I xsu_api : header.type=0, header.payload_size=78, xsu_header_t=4
+07-27 10:53:34.487  8139  9127 I xsu_api : xsu_recv type and len end
+07-27 10:53:34.487  8139  9127 I xsud    : handle comming cmd:cat '/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq' 2>/dev/null
+07-27 10:53:34.502  9124  9124 I xsu_api : xsu_recv retry end
+07-27 10:53:34.502  9124  9124 I xsu_api : ret=4, version=200, type=1, payload_size=12
+07-27 10:53:34.502  9124  9124 I xsu_api : xsu_recv type and len
+07-27 10:53:34.502  9124  9124 I xsu_api : header.type=1, header.payload_size=12, xsu_header_t=4
+07-27 10:53:34.502  9124  9124 I xsu_api : xsu_recv type and len end
+07-27 10:53:34.502  9124  9124 I xsu     : xsu_recv cmd end
+07-27 10:53:34.502  9124  9124 I xsu     : xsu_recv cmd before
+07-27 10:53:34.502  9124  9124 I xsu_api : xsu_recv memset enter
+07-27 10:53:34.502  9124  9124 I xsu_api : xsu_recv memset end
+07-27 10:53:34.502  9124  9124 I xsu_api : xsu_recv retry end
+07-27 10:53:34.502  9124  9124 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:34.502  9124  9124 I xsu_api : xsu_recv type and len
+07-27 10:53:34.502  9124  9124 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:34.502  9124  9124 I xsu_api : xsu_recv type and len end
+07-27 10:53:34.502  9124  9124 I xsu     : xsu_recv cmd end
+07-27 10:53:34.502  9124  9124 I xsu     : end session!
+07-27 10:53:34.589  9130  9130 I xsu     : sending cmd:cat '/sys/devices/system/cpu/cpufreq/policy2/scaling_cur_freq' 2>/dev/null
+07-27 10:53:34.590  9130  9130 I xsu     : sending cmd end:cat '/sys/devices/system/cpu/cpufreq/policy2/scaling_cur_freq' 2>/dev/null
+07-27 10:53:34.590  9130  9130 I xsu     : free cmd end
+07-27 10:53:34.590  9130  9130 I xsu     : xsu_recv cmd before
+07-27 10:53:34.590  9130  9130 I xsu_api : xsu_recv memset enter
+07-27 10:53:34.590  9130  9130 I xsu_api : xsu_recv memset end
+07-27 10:53:34.590  8139  9133 I xsu_api : xsu_recv memset enter
+07-27 10:53:34.590  8139  9133 I xsu_api : xsu_recv memset end
+07-27 10:53:34.590  8139  9133 I xsu_api : xsu_recv retry end
+07-27 10:53:34.590  8139  9133 I xsu_api : ret=4, version=200, type=0, payload_size=78
+07-27 10:53:34.590  8139  9133 I xsu_api : xsu_recv type and len
+07-27 10:53:34.590  8139  9133 I xsu_api : header.type=0, header.payload_size=78, xsu_header_t=4
+07-27 10:53:34.590  8139  9133 I xsu_api : xsu_recv type and len end
+07-27 10:53:34.590  8139  9133 I xsud    : handle comming cmd:cat '/sys/devices/system/cpu/cpufreq/policy2/scaling_cur_freq' 2>/dev/null
+07-27 10:53:34.613  9130  9130 I xsu_api : xsu_recv retry end
+07-27 10:53:34.613  9130  9130 I xsu_api : ret=4, version=200, type=1, payload_size=11
+07-27 10:53:34.613  9130  9130 I xsu_api : xsu_recv type and len
+07-27 10:53:34.613  9130  9130 I xsu_api : header.type=1, header.payload_size=11, xsu_header_t=4
+07-27 10:53:34.613  9130  9130 I xsu_api : xsu_recv type and len end
+07-27 10:53:34.613  9130  9130 I xsu     : xsu_recv cmd end
+07-27 10:53:34.613  9130  9130 I xsu     : xsu_recv cmd before
+07-27 10:53:34.613  9130  9130 I xsu_api : xsu_recv memset enter
+07-27 10:53:34.613  9130  9130 I xsu_api : xsu_recv memset end
+07-27 10:53:34.613  9130  9130 I xsu_api : xsu_recv retry end
+07-27 10:53:34.613  9130  9130 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:34.613  9130  9130 I xsu_api : xsu_recv type and len
+07-27 10:53:34.613  9130  9130 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:34.613  9130  9130 I xsu_api : xsu_recv type and len end
+07-27 10:53:34.613  9130  9130 I xsu     : xsu_recv cmd end
+07-27 10:53:34.613  9130  9130 I xsu     : end session!
+07-27 10:53:34.649  2273  4567 D CoreBackPreview: Window{e8397a u0 com.retrohrai.launcher/com.retrohrai.launcher.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@51542c3, mPriority=0, mIsAnimationCallback=true}
+07-27 10:53:34.685  9136  9136 I xsu     : sending cmd:cat '/sys/devices/system/cpu/cpufreq/policy5/scaling_cur_freq' 2>/dev/null
+07-27 10:53:34.685  9136  9136 I xsu     : sending cmd end:cat '/sys/devices/system/cpu/cpufreq/policy5/scaling_cur_freq' 2>/dev/null
+07-27 10:53:34.685  8139  9139 I xsu_api : xsu_recv memset enter
+07-27 10:53:34.686  8139  9139 I xsu_api : xsu_recv memset end
+07-27 10:53:34.686  9136  9136 I xsu     : free cmd end
+07-27 10:53:34.686  8139  9139 I xsu_api : xsu_recv retry end
+07-27 10:53:34.686  9136  9136 I xsu     : xsu_recv cmd before
+07-27 10:53:34.686  9136  9136 I xsu_api : xsu_recv memset enter
+07-27 10:53:34.686  9136  9136 I xsu_api : xsu_recv memset end
+07-27 10:53:34.686  8139  9139 I xsu_api : ret=4, version=200, type=0, payload_size=78
+07-27 10:53:34.686  8139  9139 I xsu_api : xsu_recv type and len
+07-27 10:53:34.686  8139  9139 I xsu_api : header.type=0, header.payload_size=78, xsu_header_t=4
+07-27 10:53:34.686  8139  9139 I xsu_api : xsu_recv type and len end
+07-27 10:53:34.686  8139  9139 I xsud    : handle comming cmd:cat '/sys/devices/system/cpu/cpufreq/policy5/scaling_cur_freq' 2>/dev/null
+07-27 10:53:34.708  9136  9136 I xsu_api : xsu_recv retry end
+07-27 10:53:34.709  9136  9136 I xsu_api : ret=4, version=200, type=1, payload_size=11
+07-27 10:53:34.709  9136  9136 I xsu_api : xsu_recv type and len
+07-27 10:53:34.709  9136  9136 I xsu_api : header.type=1, header.payload_size=11, xsu_header_t=4
+07-27 10:53:34.709  9136  9136 I xsu_api : xsu_recv type and len end
+07-27 10:53:34.709  9136  9136 I xsu     : xsu_recv cmd end
+07-27 10:53:34.709  9136  9136 I xsu     : xsu_recv cmd before
+07-27 10:53:34.709  9136  9136 I xsu_api : xsu_recv memset enter
+07-27 10:53:34.709  9136  9136 I xsu_api : xsu_recv memset end
+07-27 10:53:34.709  9136  9136 I xsu_api : xsu_recv retry end
+07-27 10:53:34.709  9136  9136 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:34.709  9136  9136 I xsu_api : xsu_recv type and len
+07-27 10:53:34.709  9136  9136 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:34.709  9136  9136 I xsu_api : xsu_recv type and len end
+07-27 10:53:34.709  9136  9136 I xsu     : xsu_recv cmd end
+07-27 10:53:34.709  9136  9136 I xsu     : end session!
+07-27 10:53:34.786  8733  8733 W HidlServiceManagement: Waited one second for vendor.qti.diaghal@1.0::Idiag/default
+07-27 10:53:34.786   786   786 I hwservicemanager: Since vendor.qti.diaghal@1.0::Idiag/default is not registered, trying to start it as a lazy HAL (if it's not configured to be a lazy HAL, it may be stuck starting or still starting).
+07-27 10:53:34.787  8733  8733 I HidlServiceManagement: getService: Trying again for vendor.qti.diaghal@1.0::Idiag/default...
+07-27 10:53:34.788   786  9145 W libc    : Unable to set property "ctl.interface_start" to "vendor.qti.diaghal@1.0::Idiag/default": error code: 0x20
+07-27 10:53:34.788   786  9145 I hwservicemanager: Tried to start vendor.qti.diaghal@1.0::Idiag/default as a lazy service, but was unable to. Usually this happens when a service is not installed, but if the service is intended to be used as a lazy service, then it may be configured incorrectly.
+07-27 10:53:34.788  9142  9142 I xsu     : sending cmd:cat '/sys/devices/system/cpu/cpufreq/policy7/scaling_cur_freq' 2>/dev/null
+07-27 10:53:34.789  9142  9142 I xsu     : sending cmd end:cat '/sys/devices/system/cpu/cpufreq/policy7/scaling_cur_freq' 2>/dev/null
+07-27 10:53:34.789  9142  9142 I xsu     : free cmd end
+07-27 10:53:34.789  9142  9142 I xsu     : xsu_recv cmd before
+07-27 10:53:34.789  9142  9142 I xsu_api : xsu_recv memset enter
+07-27 10:53:34.789  9142  9142 I xsu_api : xsu_recv memset end
+07-27 10:53:34.789  8139  9146 I xsu_api : xsu_recv memset enter
+07-27 10:53:34.790  8139  9146 I xsu_api : xsu_recv memset end
+07-27 10:53:34.790  8139  9146 I xsu_api : xsu_recv retry end
+07-27 10:53:34.790  8139  9146 I xsu_api : ret=4, version=200, type=0, payload_size=78
+07-27 10:53:34.790  8139  9146 I xsu_api : xsu_recv type and len
+07-27 10:53:34.790  8139  9146 I xsu_api : header.type=0, header.payload_size=78, xsu_header_t=4
+07-27 10:53:34.790  8139  9146 I xsu_api : xsu_recv type and len end
+07-27 10:53:34.790  8139  9146 I xsud    : handle comming cmd:cat '/sys/devices/system/cpu/cpufreq/policy7/scaling_cur_freq' 2>/dev/null
+07-27 10:53:34.808  9142  9142 I xsu_api : xsu_recv retry end
+07-27 10:53:34.808  9142  9142 I xsu_api : ret=4, version=200, type=1, payload_size=11
+07-27 10:53:34.808  9142  9142 I xsu_api : xsu_recv type and len
+07-27 10:53:34.808  9142  9142 I xsu_api : header.type=1, header.payload_size=11, xsu_header_t=4
+07-27 10:53:34.808  9142  9142 I xsu_api : xsu_recv type and len end
+07-27 10:53:34.808  9142  9142 I xsu     : xsu_recv cmd end
+07-27 10:53:34.808  9142  9142 I xsu     : xsu_recv cmd before
+07-27 10:53:34.808  9142  9142 I xsu_api : xsu_recv memset enter
+07-27 10:53:34.808  9142  9142 I xsu_api : xsu_recv memset end
+07-27 10:53:34.808  9142  9142 I xsu_api : xsu_recv retry end
+07-27 10:53:34.808  9142  9142 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:34.808  9142  9142 I xsu_api : xsu_recv type and len
+07-27 10:53:34.808  9142  9142 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:34.808  9142  9142 I xsu_api : xsu_recv type and len end
+07-27 10:53:34.808  9142  9142 I xsu     : xsu_recv cmd end
+07-27 10:53:34.808  9142  9142 I xsu     : end session!
+07-27 10:53:34.912  9149  9149 I xsu     : sending cmd:cat '/sys/class/kgsl/kgsl-3d0/gpuclk' 2>/dev/null
+07-27 10:53:34.912  9149  9149 I xsu     : sending cmd end:cat '/sys/class/kgsl/kgsl-3d0/gpuclk' 2>/dev/null
+07-27 10:53:34.913  9149  9149 I xsu     : free cmd end
+07-27 10:53:34.913  9149  9149 I xsu     : xsu_recv cmd before
+07-27 10:53:34.913  9149  9149 I xsu_api : xsu_recv memset enter
+07-27 10:53:34.913  9149  9149 I xsu_api : xsu_recv memset end
+07-27 10:53:34.913  8139  9152 I xsu_api : xsu_recv memset enter
+07-27 10:53:34.913  8139  9152 I xsu_api : xsu_recv memset end
+07-27 10:53:34.913  8139  9152 I xsu_api : xsu_recv retry end
+07-27 10:53:34.913  8139  9152 I xsu_api : ret=4, version=200, type=0, payload_size=53
+07-27 10:53:34.913  8139  9152 I xsu_api : xsu_recv type and len
+07-27 10:53:34.913  8139  9152 I xsu_api : header.type=0, header.payload_size=53, xsu_header_t=4
+07-27 10:53:34.913  8139  9152 I xsu_api : xsu_recv type and len end
+07-27 10:53:34.913  8139  9152 I xsud    : handle comming cmd:cat '/sys/class/kgsl/kgsl-3d0/gpuclk' 2>/dev/null
+07-27 10:53:34.932  9149  9149 I xsu_api : xsu_recv retry end
+07-27 10:53:34.932  9149  9149 I xsu_api : ret=4, version=200, type=1, payload_size=14
+07-27 10:53:34.932  9149  9149 I xsu_api : xsu_recv type and len
+07-27 10:53:34.932  9149  9149 I xsu_api : header.type=1, header.payload_size=14, xsu_header_t=4
+07-27 10:53:34.932  9149  9149 I xsu_api : xsu_recv type and len end
+07-27 10:53:34.932  9149  9149 I xsu     : xsu_recv cmd end
+07-27 10:53:34.932  9149  9149 I xsu     : xsu_recv cmd before
+07-27 10:53:34.932  9149  9149 I xsu_api : xsu_recv memset enter
+07-27 10:53:34.932  9149  9149 I xsu_api : xsu_recv memset end
+07-27 10:53:34.932  9149  9149 I xsu_api : xsu_recv retry end
+07-27 10:53:34.932  9149  9149 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:34.932  9149  9149 I xsu_api : xsu_recv type and len
+07-27 10:53:34.932  9149  9149 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:34.932  9149  9149 I xsu_api : xsu_recv type and len end
+07-27 10:53:34.932  9149  9149 I xsu     : xsu_recv cmd end
+07-27 10:53:34.932  9149  9149 I xsu     : end session!
+07-27 10:53:34.946  1354  3724 I vendor.qti.bluetooth@1.1-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+07-27 10:53:34.946  1354  3724 D vendor.qti.bluetooth@1.1-ibs_handler: SerialClockVote: vote for UART CLK ON
+07-27 10:53:34.947  1354  3724 D vendor.qti.bluetooth@1.1-wake_lock: Acquire wakelock is acquired 
+07-27 10:53:34.947  1354  3724 I vendor.qti.bluetooth@1.1-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+07-27 10:53:34.949  2774  3726 I bt_stack: [INFO:btm_ble_gap.cc(3263)] btm_ble_process_adv_pkt_cont Data Complete xx:xx:xx:xx:xx:xx
+07-27 10:53:34.950  2774  3726 I bt_stack: [INFO:btm_ble_gap.cc(3263)] btm_ble_process_adv_pkt_cont Data Complete xx:xx:xx:xx:xx:xx
+07-27 10:53:34.950  2774  3726 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+07-27 10:53:34.951  2774  3224 D BluetoothAdapterService: getIdentityAddress null retruning xx:xx:xx:xx:xx:xx
+07-27 10:53:34.954  3263  6019 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+07-27 10:53:34.988  1354  3724 I vendor.qti.bluetooth@1.1-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+07-27 10:53:34.988  1354  3724 D vendor.qti.bluetooth@1.1-ibs_handler: SerialClockVote: vote for UART CLK OFF
+07-27 10:53:35.012  9155  9155 I xsu     : sending cmd:cat '/sys/class/kgsl/kgsl-3d0/max_pwrlevel' 2>/dev/null
+07-27 10:53:35.012  9155  9155 I xsu     : sending cmd end:cat '/sys/class/kgsl/kgsl-3d0/max_pwrlevel' 2>/dev/null
+07-27 10:53:35.012  9155  9155 I xsu     : free cmd end
+07-27 10:53:35.012  9155  9155 I xsu     : xsu_recv cmd before
+07-27 10:53:35.012  9155  9155 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.012  9155  9155 I xsu_api : xsu_recv memset end
+07-27 10:53:35.012  8139  9158 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.012  8139  9158 I xsu_api : xsu_recv memset end
+07-27 10:53:35.012  8139  9158 I xsu_api : xsu_recv retry end
+07-27 10:53:35.012  8139  9158 I xsu_api : ret=4, version=200, type=0, payload_size=59
+07-27 10:53:35.012  8139  9158 I xsu_api : xsu_recv type and len
+07-27 10:53:35.012  8139  9158 I xsu_api : header.type=0, header.payload_size=59, xsu_header_t=4
+07-27 10:53:35.012  8139  9158 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.012  8139  9158 I xsud    : handle comming cmd:cat '/sys/class/kgsl/kgsl-3d0/max_pwrlevel' 2>/dev/null
+07-27 10:53:35.035  9155  9155 I xsu_api : xsu_recv retry end
+07-27 10:53:35.035  9155  9155 I xsu_api : ret=4, version=200, type=1, payload_size=6
+07-27 10:53:35.035  9155  9155 I xsu_api : xsu_recv type and len
+07-27 10:53:35.035  9155  9155 I xsu_api : header.type=1, header.payload_size=6, xsu_header_t=4
+07-27 10:53:35.035  9155  9155 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.035  9155  9155 I xsu     : xsu_recv cmd end
+07-27 10:53:35.035  9155  9155 I xsu     : xsu_recv cmd before
+07-27 10:53:35.035  9155  9155 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.035  9155  9155 I xsu_api : xsu_recv memset end
+07-27 10:53:35.035  9155  9155 I xsu_api : xsu_recv retry end
+07-27 10:53:35.035  9155  9155 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:35.035  9155  9155 I xsu_api : xsu_recv type and len
+07-27 10:53:35.035  9155  9155 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:35.035  9155  9155 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.035  9155  9155 I xsu     : xsu_recv cmd end
+07-27 10:53:35.035  9155  9155 I xsu     : end session!
+07-27 10:53:35.113  9162  9162 I xsu     : sending cmd:cat '/sys/class/kgsl/kgsl-3d0/min_pwrlevel' 2>/dev/null
+07-27 10:53:35.113  9162  9162 I xsu     : sending cmd end:cat '/sys/class/kgsl/kgsl-3d0/min_pwrlevel' 2>/dev/null
+07-27 10:53:35.113  9162  9162 I xsu     : free cmd end
+07-27 10:53:35.113  9162  9162 I xsu     : xsu_recv cmd before
+07-27 10:53:35.113  9162  9162 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.113  8139  9165 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.113  8139  9165 I xsu_api : xsu_recv memset end
+07-27 10:53:35.113  8139  9165 I xsu_api : xsu_recv retry end
+07-27 10:53:35.113  9162  9162 I xsu_api : xsu_recv memset end
+07-27 10:53:35.113  8139  9165 I xsu_api : ret=4, version=200, type=0, payload_size=59
+07-27 10:53:35.113  8139  9165 I xsu_api : xsu_recv type and len
+07-27 10:53:35.113  8139  9165 I xsu_api : header.type=0, header.payload_size=59, xsu_header_t=4
+07-27 10:53:35.113  8139  9165 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.113  8139  9165 I xsud    : handle comming cmd:cat '/sys/class/kgsl/kgsl-3d0/min_pwrlevel' 2>/dev/null
+07-27 10:53:35.133  9162  9162 I xsu_api : xsu_recv retry end
+07-27 10:53:35.133  9162  9162 I xsu_api : ret=4, version=200, type=1, payload_size=7
+07-27 10:53:35.133  9162  9162 I xsu_api : xsu_recv type and len
+07-27 10:53:35.133  9162  9162 I xsu_api : header.type=1, header.payload_size=7, xsu_header_t=4
+07-27 10:53:35.133  9162  9162 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.133  9162  9162 I xsu     : xsu_recv cmd end
+07-27 10:53:35.133  9162  9162 I xsu     : xsu_recv cmd before
+07-27 10:53:35.133  9162  9162 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.133  9162  9162 I xsu_api : xsu_recv memset end
+07-27 10:53:35.133  9162  9162 I xsu_api : xsu_recv retry end
+07-27 10:53:35.133  9162  9162 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:35.133  9162  9162 I xsu_api : xsu_recv type and len
+07-27 10:53:35.133  9162  9162 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:35.133  9162  9162 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.133  9162  9162 I xsu     : xsu_recv cmd end
+07-27 10:53:35.133  9162  9162 I xsu     : end session!
+07-27 10:53:35.139  1354  3240 D vendor.qti.bluetooth@1.1-wake_lock: Release wakelock is released 
+07-27 10:53:35.215  9168  9168 I xsu     : sending cmd:cat '/sys/class/kgsl/kgsl-3d0/gpu_busy_percentage' 2>/dev/null
+07-27 10:53:35.216  9168  9168 I xsu     : sending cmd end:cat '/sys/class/kgsl/kgsl-3d0/gpu_busy_percentage' 2>/dev/null
+07-27 10:53:35.216  9168  9168 I xsu     : free cmd end
+07-27 10:53:35.216  9168  9168 I xsu     : xsu_recv cmd before
+07-27 10:53:35.216  9168  9168 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.216  9168  9168 I xsu_api : xsu_recv memset end
+07-27 10:53:35.216  8139  9171 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.216  8139  9171 I xsu_api : xsu_recv memset end
+07-27 10:53:35.216  8139  9171 I xsu_api : xsu_recv retry end
+07-27 10:53:35.216  8139  9171 I xsu_api : ret=4, version=200, type=0, payload_size=66
+07-27 10:53:35.216  8139  9171 I xsu_api : xsu_recv type and len
+07-27 10:53:35.216  8139  9171 I xsu_api : header.type=0, header.payload_size=66, xsu_header_t=4
+07-27 10:53:35.216  8139  9171 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.216  8139  9171 I xsud    : handle comming cmd:cat '/sys/class/kgsl/kgsl-3d0/gpu_busy_percentage' 2>/dev/null
+07-27 10:53:35.234  9168  9168 I xsu_api : xsu_recv retry end
+07-27 10:53:35.234  9168  9168 I xsu_api : ret=4, version=200, type=1, payload_size=9
+07-27 10:53:35.234  9168  9168 I xsu_api : xsu_recv type and len
+07-27 10:53:35.234  9168  9168 I xsu_api : header.type=1, header.payload_size=9, xsu_header_t=4
+07-27 10:53:35.234  9168  9168 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.234  9168  9168 I xsu     : xsu_recv cmd end
+07-27 10:53:35.234  9168  9168 I xsu     : xsu_recv cmd before
+07-27 10:53:35.235  9168  9168 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.235  9168  9168 I xsu_api : xsu_recv memset end
+07-27 10:53:35.235  9168  9168 I xsu_api : xsu_recv retry end
+07-27 10:53:35.235  9168  9168 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:35.235  9168  9168 I xsu_api : xsu_recv type and len
+07-27 10:53:35.235  9168  9168 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:35.235  9168  9168 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.235  9168  9168 I xsu     : xsu_recv cmd end
+07-27 10:53:35.235  9168  9168 I xsu     : end session!
+07-27 10:53:35.281  1349  1668 E Diag_Lib: diag: Diag_LSM_Init: invoked for pid: 1349 with init_count: 0
+07-27 10:53:35.281  1349  1668 E Diag_Lib: diag:failed to connect to diag socket
+07-27 10:53:35.281  1349  1668 E Diag_Lib:  Diag_LSM_Init: Failed to open handle to diag driver, error = 111
+07-27 10:53:35.282  1349  1668 I ATS     : vendor/qcom/proprietary/args/acdb/ats/transports/diag/linux/actp/src/actp.c:actp_diag_init:105 Error[1]: Failed to initialize DIAG
+07-27 10:53:35.282  1349  1668 E ATS     : vendor/qcom/proprietary/args/acdb/ats/src/ats.c:ats_init:143 Error[1]: Failed to initialize Diag
+07-27 10:53:35.282  1349  1668 E ATS     : vendor/qcom/proprietary/args/acdb/ats/src/ats.c:ats_init:263 Error[1]: Failed to initialize ATS
+07-27 10:53:35.282  1349  1668 E AGM: API: ats_init_thread: 65 ats_init failed retry 65 err 1
+07-27 10:53:35.319  9174  9174 I xsu     : sending cmd:cat '/sys/class/power_supply/battery/capacity' 2>/dev/null
+07-27 10:53:35.319  9174  9174 I xsu     : sending cmd end:cat '/sys/class/power_supply/battery/capacity' 2>/dev/null
+07-27 10:53:35.320  9174  9174 I xsu     : free cmd end
+07-27 10:53:35.320  9174  9174 I xsu     : xsu_recv cmd before
+07-27 10:53:35.320  9174  9174 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.320  9174  9174 I xsu_api : xsu_recv memset end
+07-27 10:53:35.320  8139  9177 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.320  8139  9177 I xsu_api : xsu_recv memset end
+07-27 10:53:35.320  8139  9177 I xsu_api : xsu_recv retry end
+07-27 10:53:35.320  8139  9177 I xsu_api : ret=4, version=200, type=0, payload_size=62
+07-27 10:53:35.320  8139  9177 I xsu_api : xsu_recv type and len
+07-27 10:53:35.320  8139  9177 I xsu_api : header.type=0, header.payload_size=62, xsu_header_t=4
+07-27 10:53:35.320  8139  9177 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.320  8139  9177 I xsud    : handle comming cmd:cat '/sys/class/power_supply/battery/capacity' 2>/dev/null
+07-27 10:53:35.327  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: bindService is called for service : com.google.android.permissioncontroller/com.android.permissioncontroller.permission.service.PermissionControllerServiceImpl and for client system
+07-27 10:53:35.328  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for service : com.google.android.permissioncontroller/com.android.permissioncontroller.permission.service.PermissionControllerServiceImplare :1
+07-27 10:53:35.328  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for client : systemare :45
+07-27 10:53:35.328  2273  2605 D CompatibilityChangeReporter: Compat change id reported: 261072174; UID 1000; state: ENABLED
+07-27 10:53:35.326  9161  9161 I top     : type=1400 audit(0.0:10238): avc:  denied  { read } for  scontext=u:r:system_app:s0 tcontext=u:r:hal_ir_default:s0 tclass=file permissive=1
+07-27 10:53:35.326  9161  9161 I top     : type=1400 audit(0.0:10239): avc:  denied  { open } for  path="/proc/1368/stat" dev="proc" ino=54369 scontext=u:r:system_app:s0 tcontext=u:r:hal_ir_default:s0 tclass=file permissive=1
+07-27 10:53:35.326  9161  9161 I top     : type=1400 audit(0.0:10240): avc:  denied  { read } for  scontext=u:r:system_app:s0 tcontext=u:r:hal_power_default:s0 tclass=file permissive=1
+07-27 10:53:35.326  9161  9161 I top     : type=1400 audit(0.0:10241): avc:  denied  { open } for  path="/proc/1370/stat" dev="proc" ino=54370 scontext=u:r:system_app:s0 tcontext=u:r:hal_power_default:s0 tclass=file permissive=1
+07-27 10:53:35.326  9161  9161 I top     : type=1400 audit(0.0:10242): avc:  denied  { getattr } for  path="/proc/1418" dev="proc" ino=42679 scontext=u:r:system_app:s0 tcontext=u:r:vendor_qesdsect:s0 tclass=dir permissive=1
+07-27 10:53:35.332  2712  2726 I PermissionControllerServiceImpl: Updating user sensitive for user 0
+07-27 10:53:35.334  9174  9174 I xsu_api : xsu_recv retry end
+07-27 10:53:35.334  9174  9174 I xsu_api : ret=4, version=200, type=1, payload_size=7
+07-27 10:53:35.334  9174  9174 I xsu_api : xsu_recv type and len
+07-27 10:53:35.335  9174  9174 I xsu_api : header.type=1, header.payload_size=7, xsu_header_t=4
+07-27 10:53:35.335  9174  9174 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.335  9174  9174 I xsu     : xsu_recv cmd end
+07-27 10:53:35.335  9174  9174 I xsu     : xsu_recv cmd before
+07-27 10:53:35.335  9174  9174 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.335  9174  9174 I xsu_api : xsu_recv memset end
+07-27 10:53:35.335  9174  9174 I xsu_api : xsu_recv retry end
+07-27 10:53:35.335  9174  9174 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:35.335  9174  9174 I xsu_api : xsu_recv type and len
+07-27 10:53:35.335  9174  9174 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:35.335  9174  9174 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.335  9174  9174 I xsu     : xsu_recv cmd end
+07-27 10:53:35.335  9174  9174 I xsu     : end session!
+07-27 10:53:35.420  9180  9180 I xsu     : sending cmd:cat '/sys/class/power_supply/battery/status' 2>/dev/null
+07-27 10:53:35.421  9180  9180 I xsu     : sending cmd end:cat '/sys/class/power_supply/battery/status' 2>/dev/null
+07-27 10:53:35.421  9180  9180 I xsu     : free cmd end
+07-27 10:53:35.421  9180  9180 I xsu     : xsu_recv cmd before
+07-27 10:53:35.421  9180  9180 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.421  8139  9183 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.421  9180  9180 I xsu_api : xsu_recv memset end
+07-27 10:53:35.421  8139  9183 I xsu_api : xsu_recv memset end
+07-27 10:53:35.421  8139  9183 I xsu_api : xsu_recv retry end
+07-27 10:53:35.421  8139  9183 I xsu_api : ret=4, version=200, type=0, payload_size=60
+07-27 10:53:35.421  8139  9183 I xsu_api : xsu_recv type and len
+07-27 10:53:35.421  8139  9183 I xsu_api : header.type=0, header.payload_size=60, xsu_header_t=4
+07-27 10:53:35.421  8139  9183 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.421  8139  9183 I xsud    : handle comming cmd:cat '/sys/class/power_supply/battery/status' 2>/dev/null
+07-27 10:53:35.440  9180  9180 I xsu_api : xsu_recv retry end
+07-27 10:53:35.440  9180  9180 I xsu_api : ret=4, version=200, type=1, payload_size=16
+07-27 10:53:35.440  9180  9180 I xsu_api : xsu_recv type and len
+07-27 10:53:35.440  9180  9180 I xsu_api : header.type=1, header.payload_size=16, xsu_header_t=4
+07-27 10:53:35.440  9180  9180 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.440  9180  9180 I xsu     : xsu_recv cmd end
+07-27 10:53:35.440  9180  9180 I xsu     : xsu_recv cmd before
+07-27 10:53:35.440  9180  9180 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.440  9180  9180 I xsu_api : xsu_recv memset end
+07-27 10:53:35.440  9180  9180 I xsu_api : xsu_recv retry end
+07-27 10:53:35.440  9180  9180 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:35.440  9180  9180 I xsu_api : xsu_recv type and len
+07-27 10:53:35.440  9180  9180 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:35.440  9180  9180 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.440  9180  9180 I xsu     : xsu_recv cmd end
+07-27 10:53:35.440  9180  9180 I xsu     : end session!
+07-27 10:53:35.525  9186  9186 I xsu     : sending cmd:cat '/sys/class/power_supply/battery/current_now' 2>/dev/null
+07-27 10:53:35.525  9186  9186 I xsu     : sending cmd end:cat '/sys/class/power_supply/battery/current_now' 2>/dev/null
+07-27 10:53:35.525  9186  9186 I xsu     : free cmd end
+07-27 10:53:35.526  9186  9186 I xsu     : xsu_recv cmd before
+07-27 10:53:35.526  9186  9186 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.526  9186  9186 I xsu_api : xsu_recv memset end
+07-27 10:53:35.526  8139  9189 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.526  8139  9189 I xsu_api : xsu_recv memset end
+07-27 10:53:35.526  8139  9189 I xsu_api : xsu_recv retry end
+07-27 10:53:35.526  8139  9189 I xsu_api : ret=4, version=200, type=0, payload_size=65
+07-27 10:53:35.526  8139  9189 I xsu_api : xsu_recv type and len
+07-27 10:53:35.526  8139  9189 I xsu_api : header.type=0, header.payload_size=65, xsu_header_t=4
+07-27 10:53:35.526  8139  9189 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.526  8139  9189 I xsud    : handle comming cmd:cat '/sys/class/power_supply/battery/current_now' 2>/dev/null
+07-27 10:53:35.549  9186  9186 I xsu_api : xsu_recv retry end
+07-27 10:53:35.549  9186  9186 I xsu_api : ret=4, version=200, type=1, payload_size=12
+07-27 10:53:35.549  9186  9186 I xsu_api : xsu_recv type and len
+07-27 10:53:35.549  9186  9186 I xsu_api : header.type=1, header.payload_size=12, xsu_header_t=4
+07-27 10:53:35.549  9186  9186 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.549  9186  9186 I xsu     : xsu_recv cmd end
+07-27 10:53:35.549  9186  9186 I xsu     : xsu_recv cmd before
+07-27 10:53:35.549  9186  9186 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.549  9186  9186 I xsu_api : xsu_recv memset end
+07-27 10:53:35.549  9186  9186 I xsu_api : xsu_recv retry end
+07-27 10:53:35.549  9186  9186 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:35.549  9186  9186 I xsu_api : xsu_recv type and len
+07-27 10:53:35.549  9186  9186 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:35.549  9186  9186 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.549  9186  9186 I xsu     : xsu_recv cmd end
+07-27 10:53:35.549  9186  9186 I xsu     : end session!
+07-27 10:53:35.631  9192  9192 I xsu     : sending cmd:cat '/sys/class/power_supply/battery/voltage_now' 2>/dev/null
+07-27 10:53:35.631  9192  9192 I xsu     : sending cmd end:cat '/sys/class/power_supply/battery/voltage_now' 2>/dev/null
+07-27 10:53:35.631  9192  9192 I xsu     : free cmd end
+07-27 10:53:35.631  9192  9192 I xsu     : xsu_recv cmd before
+07-27 10:53:35.631  9192  9192 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.631  9192  9192 I xsu_api : xsu_recv memset end
+07-27 10:53:35.632  8139  9195 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.632  8139  9195 I xsu_api : xsu_recv memset end
+07-27 10:53:35.632  8139  9195 I xsu_api : xsu_recv retry end
+07-27 10:53:35.632  8139  9195 I xsu_api : ret=4, version=200, type=0, payload_size=65
+07-27 10:53:35.632  8139  9195 I xsu_api : xsu_recv type and len
+07-27 10:53:35.632  8139  9195 I xsu_api : header.type=0, header.payload_size=65, xsu_header_t=4
+07-27 10:53:35.632  8139  9195 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.632  8139  9195 I xsud    : handle comming cmd:cat '/sys/class/power_supply/battery/voltage_now' 2>/dev/null
+07-27 10:53:35.653  9192  9192 I xsu_api : xsu_recv retry end
+07-27 10:53:35.653  9192  9192 I xsu_api : ret=4, version=200, type=1, payload_size=12
+07-27 10:53:35.653  9192  9192 I xsu_api : xsu_recv type and len
+07-27 10:53:35.653  9192  9192 I xsu_api : header.type=1, header.payload_size=12, xsu_header_t=4
+07-27 10:53:35.653  9192  9192 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.653  9192  9192 I xsu     : xsu_recv cmd end
+07-27 10:53:35.653  9192  9192 I xsu     : xsu_recv cmd before
+07-27 10:53:35.653  9192  9192 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.653  9192  9192 I xsu_api : xsu_recv memset end
+07-27 10:53:35.653  9192  9192 I xsu_api : xsu_recv retry end
+07-27 10:53:35.653  9192  9192 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:35.653  9192  9192 I xsu_api : xsu_recv type and len
+07-27 10:53:35.653  9192  9192 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:35.653  9192  9192 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.653  9192  9192 I xsu     : xsu_recv cmd end
+07-27 10:53:35.653  9192  9192 I xsu     : end session!
+07-27 10:53:35.713  1354  3724 I vendor.qti.bluetooth@1.1-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+07-27 10:53:35.713  1354  3724 D vendor.qti.bluetooth@1.1-ibs_handler: SerialClockVote: vote for UART CLK ON
+07-27 10:53:35.713  1354  3724 D vendor.qti.bluetooth@1.1-wake_lock: Acquire wakelock is acquired 
+07-27 10:53:35.713  1354  3724 I vendor.qti.bluetooth@1.1-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+07-27 10:53:35.715  2774  3726 I bt_stack: [INFO:btm_ble_gap.cc(3263)] btm_ble_process_adv_pkt_cont Data Complete xx:xx:xx:xx:xx:xx
+07-27 10:53:35.715  2774  3726 I bt_stack: [INFO:btm_ble_gap.cc(3263)] btm_ble_process_adv_pkt_cont Data Complete xx:xx:xx:xx:xx:xx
+07-27 10:53:35.715  2774  3726 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+07-27 10:53:35.717  2774  3224 D BluetoothAdapterService: getIdentityAddress null retruning xx:xx:xx:xx:xx:xx
+07-27 10:53:35.720  3263  6019 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+07-27 10:53:35.739  9198  9198 I xsu     : sending cmd:cat '/sys/class/thermal/thermal_zone10/temp' 2>/dev/null
+07-27 10:53:35.740  9198  9198 I xsu     : sending cmd end:cat '/sys/class/thermal/thermal_zone10/temp' 2>/dev/null
+07-27 10:53:35.740  9198  9198 I xsu     : free cmd end
+07-27 10:53:35.740  9198  9198 I xsu     : xsu_recv cmd before
+07-27 10:53:35.740  9198  9198 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.740  9198  9198 I xsu_api : xsu_recv memset end
+07-27 10:53:35.740  8139  9201 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.740  8139  9201 I xsu_api : xsu_recv memset end
+07-27 10:53:35.740  8139  9201 I xsu_api : xsu_recv retry end
+07-27 10:53:35.740  8139  9201 I xsu_api : ret=4, version=200, type=0, payload_size=60
+07-27 10:53:35.740  8139  9201 I xsu_api : xsu_recv type and len
+07-27 10:53:35.740  8139  9201 I xsu_api : header.type=0, header.payload_size=60, xsu_header_t=4
+07-27 10:53:35.740  8139  9201 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.740  8139  9201 I xsud    : handle comming cmd:cat '/sys/class/thermal/thermal_zone10/temp' 2>/dev/null
+07-27 10:53:35.754  1354  3724 I vendor.qti.bluetooth@1.1-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+07-27 10:53:35.754  1354  3724 D vendor.qti.bluetooth@1.1-ibs_handler: SerialClockVote: vote for UART CLK OFF
+07-27 10:53:35.754  9198  9198 I xsu_api : xsu_recv retry end
+07-27 10:53:35.754  9198  9198 I xsu_api : ret=4, version=200, type=1, payload_size=10
+07-27 10:53:35.754  9198  9198 I xsu_api : xsu_recv type and len
+07-27 10:53:35.754  9198  9198 I xsu_api : header.type=1, header.payload_size=10, xsu_header_t=4
+07-27 10:53:35.755  9198  9198 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.755  9198  9198 I xsu     : xsu_recv cmd end
+07-27 10:53:35.755  9198  9198 I xsu     : xsu_recv cmd before
+07-27 10:53:35.755  9198  9198 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.755  9198  9198 I xsu_api : xsu_recv memset end
+07-27 10:53:35.755  9198  9198 I xsu_api : xsu_recv retry end
+07-27 10:53:35.755  9198  9198 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:35.755  9198  9198 I xsu_api : xsu_recv type and len
+07-27 10:53:35.755  9198  9198 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:35.755  9198  9198 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.755  9198  9198 I xsu     : xsu_recv cmd end
+07-27 10:53:35.755  9198  9198 I xsu     : end session!
+07-27 10:53:35.787  8733  8733 W HidlServiceManagement: Waited one second for vendor.qti.diaghal@1.0::Idiag/default
+07-27 10:53:35.788   786   786 I hwservicemanager: Since vendor.qti.diaghal@1.0::Idiag/default is not registered, trying to start it as a lazy HAL (if it's not configured to be a lazy HAL, it may be stuck starting or still starting).
+07-27 10:53:35.789  8733  8733 I HidlServiceManagement: getService: Trying again for vendor.qti.diaghal@1.0::Idiag/default...
+07-27 10:53:35.791   786  9204 W libc    : Unable to set property "ctl.interface_start" to "vendor.qti.diaghal@1.0::Idiag/default": error code: 0x20
+07-27 10:53:35.791   786  9204 I hwservicemanager: Tried to start vendor.qti.diaghal@1.0::Idiag/default as a lazy service, but was unable to. Usually this happens when a service is not installed, but if the service is intended to be used as a lazy service, then it may be configured incorrectly.
+07-27 10:53:35.816  9205  9205 I xsu     : sending cmd:echo 28 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+07-27 10:53:35.817  9205  9205 I xsu     : sending cmd end:echo 28 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+07-27 10:53:35.817  9205  9205 I xsu     : free cmd end
+07-27 10:53:35.817  9205  9205 I xsu     : xsu_recv cmd before
+07-27 10:53:35.817  9205  9205 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.817  9205  9205 I xsu_api : xsu_recv memset end
+07-27 10:53:35.817  8139  9206 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.817  8139  9206 I xsu_api : xsu_recv memset end
+07-27 10:53:35.817  8139  9206 I xsu_api : xsu_recv retry end
+07-27 10:53:35.817  8139  9206 I xsu_api : ret=4, version=200, type=0, payload_size=69
+07-27 10:53:35.817  8139  9206 I xsu_api : xsu_recv type and len
+07-27 10:53:35.817  8139  9206 I xsu_api : header.type=0, header.payload_size=69, xsu_header_t=4
+07-27 10:53:35.817  8139  9206 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.818  8139  9206 I xsud    : handle comming cmd:echo 28 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+07-27 10:53:35.828  9205  9205 I xsu_api : xsu_recv retry end
+07-27 10:53:35.828  9205  9205 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:35.828  9205  9205 I xsu_api : xsu_recv type and len
+07-27 10:53:35.828  9205  9205 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:35.828  9205  9205 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.828  9205  9205 I xsu     : xsu_recv cmd end
+07-27 10:53:35.828  9205  9205 I xsu     : end session!
+07-27 10:53:35.835  9208  9208 I xsu     : sending cmd:cat '/sys/class/thermal/thermal_zone41/temp' 2>/dev/null
+07-27 10:53:35.835  9208  9208 I xsu     : sending cmd end:cat '/sys/class/thermal/thermal_zone41/temp' 2>/dev/null
+07-27 10:53:35.836  9208  9208 I xsu     : free cmd end
+07-27 10:53:35.836  8139  9211 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.836  8139  9211 I xsu_api : xsu_recv memset end
+07-27 10:53:35.836  9208  9208 I xsu     : xsu_recv cmd before
+07-27 10:53:35.836  8139  9211 I xsu_api : xsu_recv retry end
+07-27 10:53:35.836  8139  9211 I xsu_api : ret=4, version=200, type=0, payload_size=60
+07-27 10:53:35.836  9208  9208 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.836  8139  9211 I xsu_api : xsu_recv type and len
+07-27 10:53:35.836  9208  9208 I xsu_api : xsu_recv memset end
+07-27 10:53:35.836  8139  9211 I xsu_api : header.type=0, header.payload_size=60, xsu_header_t=4
+07-27 10:53:35.836  8139  9211 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.836  8139  9211 I xsud    : handle comming cmd:cat '/sys/class/thermal/thermal_zone41/temp' 2>/dev/null
+07-27 10:53:35.847  9208  9208 I xsu_api : xsu_recv retry end
+07-27 10:53:35.848  9208  9208 I xsu_api : ret=4, version=200, type=1, payload_size=10
+07-27 10:53:35.848  9208  9208 I xsu_api : xsu_recv type and len
+07-27 10:53:35.848  9208  9208 I xsu_api : header.type=1, header.payload_size=10, xsu_header_t=4
+07-27 10:53:35.848  9208  9208 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.848  9208  9208 I xsu     : xsu_recv cmd end
+07-27 10:53:35.848  9208  9208 I xsu     : xsu_recv cmd before
+07-27 10:53:35.848  9208  9208 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.848  9208  9208 I xsu_api : xsu_recv memset end
+07-27 10:53:35.848  9208  9208 I xsu_api : xsu_recv retry end
+07-27 10:53:35.848  9208  9208 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:35.848  9208  9208 I xsu_api : xsu_recv type and len
+07-27 10:53:35.848  9208  9208 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:35.848  9208  9208 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.848  9208  9208 I xsu     : xsu_recv cmd end
+07-27 10:53:35.848  9208  9208 I xsu     : end session!
+07-27 10:53:35.904  1354  3240 D vendor.qti.bluetooth@1.1-wake_lock: Release wakelock is released 
+07-27 10:53:35.938  9214  9214 I xsu     : sending cmd:dumpsys SurfaceFlinger --timestats -dump -maxlayers 16 2>/dev/null | awk '
+07-27 10:53:35.938  9214  9214 I xsu     :   function commitLayer(){ if((lf+0)>(blf+0) && lname !~ /= none/){ blf=lf; blaf=laf } }
+07-27 10:53:35.938  9214  9214 I xsu     :   BEGIN{ g=1 }
+07-27 10:53:35.938  9214  9214 I xsu     :   /layerName =/ { commitLayer(); g=0; lf=0; laf=0; lname=$0 }
+07-27 10:53:35.938  9214  9214 I xsu     :   g==1 && $1=="totalFrames" { gf=$3 }
+07-27 10:53:35.938  9214  9214 I xsu     :   g==1 && $1=="displayRefreshRate" { rr=$3 }
+07-27 10:53:35.938  9214  9214 I xsu     :   g==1 && /presentToPresent histogram/ { gh=1; next }
+07-27 10:53:35.938  9214  9214 I xsu     :   g==1 && gh==1 { gh=0; for(i=1;i<=NF;i++){ split($i,a,"="); ms=a[1]+0; c=a[2]+0; if(c>0 && ms<100){ sc+=c; sm+=ms*c; if(ms>worst)worst=ms; if(ms>=33)slow+=c } } }
+07-27 10:53:35.938  9214  9214 I xsu     :   g==0 && $1=="totalFrames" { lf=$3 }
+07-27 10:53:35.938  9214  9214 I xsu     :   g==0 && $1=="averageFPS" { laf=$3 }
+07-27 10:53:35.938  9214  9214 I xsu     :   END{
+07-27 10:53:35.938  9214  9214 I xsu     :     commitLayer();
+07-27 10:53:35.938  9214  9214 I xsu     :     fps=(sm>0)?(1000.0*sc/sm):0;
+07-27 10:53:35.938  9214  9214 I xsu     :     if(rr>0 && fps>rr) fps=rr;
+07-27 10:53:35.938  9214  9214 I xsu     :     printf "FR %d AF %.2f WORST %d SLOW %d LF %d LAF %.2f\n", gf+0, fps, worst+0, slow+0, blf+0, blaf+0
+07-27 10:53:35.938  9214  9214 I xsu     :   }
+07-27 10:53:35.938  9214  9214 I xsu     : '
+07-27 10:53:35.938  9214  9214 I xsu     : dumpsys SurfaceFlinger --timestats -clear >/dev/null 2>&1
+07-27 10:53:35.938  9214  9214 I xsu     : sending cmd end:dumpsys SurfaceFlinger --timestats -dump -maxlayers 16 2>/dev/null | awk '
+07-27 10:53:35.938  9214  9214 I xsu     :   function commitLayer(){ if((lf+0)>(blf+0) && lname !~ /= none/){ blf=lf; blaf=laf } }
+07-27 10:53:35.938  9214  9214 I xsu     :   BEGIN{ g=1 }
+07-27 10:53:35.938  9214  9214 I xsu     :   /layerName =/ { commitLayer(); g=0; lf=0; laf=0; lname=$0 }
+07-27 10:53:35.938  9214  9214 I xsu     :   g==1 && $1=="totalFrames" { gf=$3 }
+07-27 10:53:35.938  9214  9214 I xsu     :   g==1 && $1=="displayRefreshRate" { rr=$3 }
+07-27 10:53:35.938  9214  9214 I xsu     :   g==1 && /presentToPresent histogram/ { gh=1; next }
+07-27 10:53:35.938  9214  9214 I xsu     :   g==1 && gh==1 { gh=0; for(i=1;i<=NF;i++){ split($i,a,"="); ms=a[1]+0; c=a[2]+0; if(c>0 && ms<100){ sc+=c; sm+=ms*c; if(ms>worst)worst=ms; if(ms>=33)slow+=c } } }
+07-27 10:53:35.938  9214  9214 I xsu     :   g==0 && $1=="totalFrames" { lf=$3 }
+07-27 10:53:35.938  9214  9214 I xsu     :   g==0 && $1=="averageFPS" { laf=$3 }
+07-27 10:53:35.938  9214  9214 I xsu     :   END{
+07-27 10:53:35.938  9214  9214 I xsu     :     commitLayer();
+07-27 10:53:35.938  9214  9214 I xsu     :     fps=(sm>0)?(1000.0*sc/sm):0;
+07-27 10:53:35.938  9214  9214 I xsu     :     if(rr>0 && fps>rr) fps=rr;
+07-27 10:53:35.938  9214  9214 I xsu     :     printf "FR %d AF %.2f WORST %d SLOW %d LF %d LAF %.2f\n", gf+0, fps, worst+0, slow+0, blf+0, blaf+0
+07-27 10:53:35.938  9214  9214 I xsu     :   }
+07-27 10:53:35.938  9214  9214 I xsu     : '
+07-27 10:53:35.938  9214  9214 I xsu     : dumpsys SurfaceFlinger --timestats -clear >/dev/null 2>&1
+07-27 10:53:35.939  9214  9214 I xsu     : free cmd end
+07-27 10:53:35.939  9214  9214 I xsu     : xsu_recv cmd before
+07-27 10:53:35.939  9214  9214 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.939  9214  9214 I xsu_api : xsu_recv memset end
+07-27 10:53:35.939  8139  9217 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.939  8139  9217 I xsu_api : xsu_recv memset end
+07-27 10:53:35.939  8139  9217 I xsu_api : xsu_recv retry end
+07-27 10:53:35.939  8139  9217 I xsu_api : ret=4, version=200, type=0, payload_size=878
+07-27 10:53:35.939  8139  9217 I xsu_api : xsu_recv type and len
+07-27 10:53:35.939  8139  9217 I xsu_api : header.type=0, header.payload_size=878, xsu_header_t=4
+07-27 10:53:35.939  8139  9217 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.939  8139  9217 I xsud    : handle comming cmd:dumpsys SurfaceFlinger --timestats -dump -maxlayers 16 2>/dev/null | awk '
+07-27 10:53:35.939  8139  9217 I xsud    :   function commitLayer(){ if((lf+0)>(blf+0) && lname !~ /= none/){ blf=lf; blaf=laf } }
+07-27 10:53:35.939  8139  9217 I xsud    :   BEGIN{ g=1 }
+07-27 10:53:35.939  8139  9217 I xsud    :   /layerName =/ { commitLayer(); g=0; lf=0; laf=0; lname=$0 }
+07-27 10:53:35.939  8139  9217 I xsud    :   g==1 && $1=="totalFrames" { gf=$3 }
+07-27 10:53:35.939  8139  9217 I xsud    :   g==1 && $1=="displayRefreshRate" { rr=$3 }
+07-27 10:53:35.939  8139  9217 I xsud    :   g==1 && /presentToPresent histogram/ { gh=1; next }
+07-27 10:53:35.939  8139  9217 I xsud    :   g==1 && gh==1 { gh=0; for(i=1;i<=NF;i++){ split($i,a,"="); ms=a[1]+0; c=a[2]+0; if(c>0 && ms<100){ sc+=c; sm+=ms*c; if(ms>worst)worst=ms; if(ms>=33)slow+=c } } }
+07-27 10:53:35.939  8139  9217 I xsud    :   g==0 && $1=="totalFrames" { lf=$3 }
+07-27 10:53:35.939  8139  9217 I xsud    :   g==0 && $1=="averageFPS" { laf=$3 }
+07-27 10:53:35.939  8139  9217 I xsud    :   END{
+07-27 10:53:35.939  8139  9217 I xsud    :     commitLayer();
+07-27 10:53:35.939  8139  9217 I xsud    :     fps=(sm>0)?(1000.0*sc/sm):0;
+07-27 10:53:35.939  8139  9217 I xsud    :     if(rr>0 && fps>rr) fps=rr;
+07-27 10:53:35.939  8139  9217 I xsud    :     printf "FR %d AF %.2f WORST %d SLOW %d LF %d LAF %.2f\n", gf+0, fps, worst+0, slow+0, blf+0, blaf+0
+07-27 10:53:35.939  8139  9217 I xsud    :   }
+07-27 10:53:35.939  8139  9217 I xsud    : '
+07-27 10:53:35.939  8139  9217 I xsud    : dumpsys SurfaceFlinger --timestats -clear >/dev/null 2>&1
+07-27 10:53:35.958  1516  2493 D TimeStats: Dumping TimeStats as text
+07-27 10:53:35.980  1516  2493 D TimeStats: Cleared global stats
+07-27 10:53:35.980  1516  2493 D TimeStats: Cleared layer stats
+07-27 10:53:35.983  9214  9214 I xsu_api : xsu_recv retry end
+07-27 10:53:35.983  9214  9214 I xsu_api : ret=4, version=200, type=1, payload_size=52
+07-27 10:53:35.983  9214  9214 I xsu_api : xsu_recv type and len
+07-27 10:53:35.983  9214  9214 I xsu_api : header.type=1, header.payload_size=52, xsu_header_t=4
+07-27 10:53:35.983  9214  9214 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.983  9214  9214 I xsu     : xsu_recv cmd end
+07-27 10:53:35.983  9214  9214 I xsu     : xsu_recv cmd before
+07-27 10:53:35.983  9214  9214 I xsu_api : xsu_recv memset enter
+07-27 10:53:35.983  9214  9214 I xsu_api : xsu_recv memset end
+07-27 10:53:35.983  9214  9214 I xsu_api : xsu_recv retry end
+07-27 10:53:35.983  9214  9214 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:35.983  9214  9214 I xsu_api : xsu_recv type and len
+07-27 10:53:35.983  9214  9214 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:35.983  9214  9214 I xsu_api : xsu_recv type and len end
+07-27 10:53:35.983  9214  9214 I xsu     : xsu_recv cmd end
+07-27 10:53:35.983  9214  9214 I xsu     : end session!
+07-27 10:53:36.035  4259  5611 D PulseFps: pkg=pl.ablogger.app raw=FR 89 AF 35.09 WORST 66 SLOW 51 LF 86 LAF 35.41
+07-27 10:53:36.049  4259  5611 D PulseAutoTdp: tgt=60 fps=35.1 jank=51 tail=66ms act=HOLD bn=- cpuB=15 cpuPk=51 primePk=18 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=3.29W cT=51 gT=48 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:499,5:844,7:787] gpu=231 gcap=1050[0/13] lrn=0
+07-27 10:53:36.117  2273  2273 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 10:53:36.117  2273  2273 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 10:53:36.117  2273  2273 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 10:53:36.120  2273  2273 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 10:53:36.121  2273  2273 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 10:53:36.121  2273  2273 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 10:53:36.130  2273  2273 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 10:53:36.131  2273  2273 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 10:53:36.131  2273  2273 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 10:53:36.134  2273  2273 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 10:53:36.134  2273  2273 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 10:53:36.134  2273  2273 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 10:53:36.147  2273  2273 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 10:53:36.147  2273  2273 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 10:53:36.147  2273  2273 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 10:53:36.150  2273  2273 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 10:53:36.150  2273  2273 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 10:53:36.150  2273  2273 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 10:53:36.163  2273  2273 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 10:53:36.163  2273  2273 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 10:53:36.163  2273  2273 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 10:53:36.167  2273  2273 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 10:53:36.167  2273  2273 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 10:53:36.167  2273  2273 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 10:53:36.167  2273  2273 D InputDispatcher: resetMergeMotionEntryLocked
+07-27 10:53:36.170  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 161252188; UID 10189; state: DISABLED
+07-27 10:53:36.171  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 265464455; UID 10189; state: DISABLED
+07-27 10:53:36.171  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 265452344; UID 10189; state: DISABLED
+07-27 10:53:36.171  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 266124927; UID 10189; state: DISABLED
+07-27 10:53:36.171  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 265451093; UID 10189; state: DISABLED
+07-27 10:53:36.172  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 265456536; UID 10189; state: DISABLED
+07-27 10:53:36.172  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 255940284; UID 10189; state: DISABLED
+07-27 10:53:36.172  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 236283604; UID 10189; state: DISABLED
+07-27 10:53:36.172  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 263959004; UID 10189; state: DISABLED
+07-27 10:53:36.172  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 264304459; UID 10189; state: DISABLED
+07-27 10:53:36.173  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 264301586; UID 10189; state: DISABLED
+07-27 10:53:36.173  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 254631730; UID 10189; state: DISABLED
+07-27 10:53:36.173  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 273509367; UID 10189; state: DISABLED
+07-27 10:53:36.173  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 263259275; UID 10189; state: DISABLED
+07-27 10:53:36.173  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 174042980; UID 10189; state: DISABLED
+07-27 10:53:36.174  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 174042936; UID 10189; state: DISABLED
+07-27 10:53:36.174  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 181136395; UID 10189; state: DISABLED
+07-27 10:53:36.190   786   786 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 10:53:36.190  2273  4380 W ActivityTaskManager: servicetracker HIDL not available
+07-27 10:53:36.191  2273  4380 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 10:53:36.191   786   786 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 10:53:36.191  2273  4380 W ActivityTaskManager: servicetracker HIDL not available
+07-27 10:53:36.191  2273  4380 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 10:53:36.192  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 194480991; UID 10189; state: ENABLED
+07-27 10:53:36.195  1451  1545 E ANDR-PERF-UTIL: ANDR-PERF-UTIL: save_node_val() 366: Failed to read /sys/devices/system/cpu/cpufreq/policy5/walt/adaptive_high_freq
+07-27 10:53:36.195  1451  1545 E ANDR-PERF-OPTSHANDLER: ANDR-PERF-OPTSHANDLER: modify_sysfsnode() 1095: Failed to read /sys/devices/system/cpu/cpufreq/policy5/walt/adaptive_high_freq
+07-27 10:53:36.195  1451  1545 E ANDR-PERF-RESOURCEQS: ANDR-PERF-RESOURCEQS: AddAndApply() 167: Failed to apply optimization [2, 3]
+07-27 10:53:36.195  1451  1545 E ANDR-PERF-UTIL: ANDR-PERF-UTIL: save_node_val() 366: Failed to read /sys/devices/system/cpu/cpufreq/policy5/walt/adaptive_low_freq
+07-27 10:53:36.195  1451  1545 E ANDR-PERF-OPTSHANDLER: ANDR-PERF-OPTSHANDLER: modify_sysfsnode() 1095: Failed to read /sys/devices/system/cpu/cpufreq/policy5/walt/adaptive_low_freq
+07-27 10:53:36.195  1451  1545 E ANDR-PERF-RESOURCEQS: ANDR-PERF-RESOURCEQS: AddAndApply() 167: Failed to apply optimization [2, 2]
+07-27 10:53:36.198   786   786 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.1::IServicetracker/default in either framework or device VINTF manifest.
+07-27 10:53:36.198  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 184838306; UID 10189; state: DISABLED
+07-27 10:53:36.198  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 185004937; UID 10189; state: DISABLED
+07-27 10:53:36.198   786   786 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.0::IServicetracker/default in either framework or device VINTF manifest.
+07-27 10:53:36.198  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 197654537; UID 10189; state: ENABLED
+07-27 10:53:36.199  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 205907456; UID 10189; state: ENABLED
+07-27 10:53:36.199  2273  4380 D ActivityTrigger: ActivityTrigger activityPauseTrigger 
+07-27 10:53:36.199  2787  2864 I DynamicDDSService: handleMessage(ACTIVITY_INVOKE{appInfo=com.mojang.minecraftpe isFullScreen=}true)
+07-27 10:53:36.199   786   786 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 10:53:36.199  1451  3709 E ANDR-PERF-LM: DependentServices: getSTServiceAndLinkToDeath() 66: IServicetracker::getService failed!
+07-27 10:53:36.199  2273  4380 W ActivityTaskManager: servicetracker HIDL not available
+07-27 10:53:36.199  2273  4380 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 10:53:36.200  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 194833441; UID 10189; state: ENABLED
+07-27 10:53:36.200  2273  4380 I ActivityTaskManager: START u0 {act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10010000 pkg=com.mojang.minecraftpe cmp=com.mojang.minecraftpe/.MainActivity} with LAUNCH_SINGLE_TASK from uid 10179 (BAL_ALLOW_ALLOWLISTED_COMPONENT) result code=0
+07-27 10:53:36.200  2624  2658 V WindowManagerShell: Transition requested: android.os.BinderProxy@d8ad8ee TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=120 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10010000 pkg=com.mojang.minecraftpe cmp=com.mojang.minecraftpe/.MainActivity } baseActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} topActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} origActivity=null realActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} numActivities=1 lastActiveTime=71856 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@84b118f} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{aea3c1c com.mojang.minecraftpe.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null }
+07-27 10:53:36.201  4070  4144 W InputReader: pauseServer
+07-27 10:53:36.201  2273  2323 D CompatibilityChangeReporter: Compat change id reported: 135634846; UID 10189; state: DISABLED
+07-27 10:53:36.201  2273  2323 D CompatibilityChangeReporter: Compat change id reported: 177438394; UID 10189; state: DISABLED
+07-27 10:53:36.201  2273  2323 D CompatibilityChangeReporter: Compat change id reported: 135772972; UID 10189; state: DISABLED
+07-27 10:53:36.201  2273  2323 D CompatibilityChangeReporter: Compat change id reported: 135754954; UID 10189; state: ENABLED
+07-27 10:53:36.201  2273  2350 D CompatibilityChangeReporter: Compat change id reported: 143937733; UID 10189; state: ENABLED
+07-27 10:53:36.204  1397  1487 I ANDR-PWR-OPT: PowerAppClassifier: getAppType() 59: checking app [com.mojang.minecraftpe] is type 2
+07-27 10:53:36.204  1397  1487 I QLM-Client-Lib: qlm_client_init: Initialized client poweropt-service
+07-27 10:53:36.204  1397  1487 I ANDR-PWR-OPT: PowerAppClassifier: getAppType() 59: checking app [com.retrohrai.launcher] is type 4
+07-27 10:53:36.204   786   786 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 10:53:36.205  2273  4568 W ActivityTaskManager: servicetracker HIDL not available
+07-27 10:53:36.205  2273  4568 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 10:53:36.207  9227  9227 I xsu     : sending cmd:chmod 750 /storage
+07-27 10:53:36.208  9227  9227 I xsu     : sending cmd end:chmod 750 /storage
+07-27 10:53:36.208  9227  9227 I xsu     : free cmd end
+07-27 10:53:36.208  9227  9227 I xsu     : xsu_recv cmd before
+07-27 10:53:36.208  9227  9227 I xsu_api : xsu_recv memset enter
+07-27 10:53:36.208  9227  9227 I xsu_api : xsu_recv memset end
+07-27 10:53:36.208  8139  9228 I xsu_api : xsu_recv memset enter
+07-27 10:53:36.208  8139  9228 I xsu_api : xsu_recv memset end
+07-27 10:53:36.208  8139  9228 I xsu_api : xsu_recv retry end
+07-27 10:53:36.208  8139  9228 I xsu_api : ret=4, version=200, type=0, payload_size=22
+07-27 10:53:36.208  8139  9228 I xsu_api : xsu_recv type and len
+07-27 10:53:36.208  8139  9228 I xsu_api : header.type=0, header.payload_size=22, xsu_header_t=4
+07-27 10:53:36.208  8139  9228 I xsu_api : xsu_recv type and len end
+07-27 10:53:36.208  8139  9228 I xsud    : handle comming cmd:chmod 750 /storage
+07-27 10:53:36.209  2273  2459 D CompatibilityChangeReporter: Compat change id reported: 265195908; UID 10189; state: ENABLED
+07-27 10:53:36.210  2273  4596 W WindowManager: Failed looking up window session=Session{c89398b 2624:u0a10132} callers=com.android.server.wm.WindowManagerService.windowForClientLocked:6067 com.android.server.wm.Session.updateRequestedVisibleTypes:690 android.view.IWindowSession$Stub.onTransact:1034 
+07-27 10:53:36.210  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 168419799; UID 10189; state: DISABLED
+07-27 10:53:36.210  2273  4380 D CompatibilityChangeReporter: Compat change id reported: 273564678; UID 10189; state: DISABLED
+07-27 10:53:36.211  1397  1487 I ANDR-PWR-OPT: PowerAppClassifier: getAppType() 59: checking app [com.mojang.minecraftpe] is type 2
+07-27 10:53:36.211  1397  1487 I QLM-Client-Lib: qlm_client_init: Initialized client poweropt-service
+07-27 10:53:36.211  1248  1248 D Zygote  : Forked child process 9230
+07-27 10:53:36.212  2273  9231 W ContextImpl: Calling a method in the system process without a qualified user: android.app.ContextImpl.sendBroadcast:1220 com.qualcomm.qti.Performance$SendGameLaunchBroadcast.run:248 java.lang.Thread.run:1564 <bottom of call stack> <bottom of call stack> 
+07-27 10:53:36.213  4039  4463 W SQLiteLog: (28) double-quoted string literal: "com.mojang.minecraftpe"
+07-27 10:53:36.214  2273  2350 I ActivityManager: Start proc 9230:com.mojang.minecraftpe/u0a189 for next-top-activity {com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity}
+07-27 10:53:36.217  1451  1545 E ANDR-PERF-UTIL: ANDR-PERF-UTIL: save_node_val() 366: Failed to read /sys/devices/system/cpu/cpufreq/policy5/walt/adaptive_high_freq
+07-27 10:53:36.217  1451  1545 E ANDR-PERF-OPTSHANDLER: ANDR-PERF-OPTSHANDLER: modify_sysfsnode() 1095: Failed to read /sys/devices/system/cpu/cpufreq/policy5/walt/adaptive_high_freq
+07-27 10:53:36.217  1451  1545 E ANDR-PERF-RESOURCEQS: ANDR-PERF-RESOURCEQS: AddAndApply() 167: Failed to apply optimization [2, 3]
+07-27 10:53:36.217  1451  1545 E ANDR-PERF-UTIL: ANDR-PERF-UTIL: save_node_val() 366: Failed to read /sys/devices/system/cpu/cpufreq/policy5/walt/adaptive_low_freq
+07-27 10:53:36.217  1451  1545 E ANDR-PERF-OPTSHANDLER: ANDR-PERF-OPTSHANDLER: modify_sysfsnode() 1095: Failed to read /sys/devices/system/cpu/cpufreq/policy5/walt/adaptive_low_freq
+07-27 10:53:36.217  1451  1545 E ANDR-PERF-RESOURCEQS: ANDR-PERF-RESOURCEQS: AddAndApply() 167: Failed to apply optimization [2, 2]
+07-27 10:53:36.217  1451  1545 E ANDR-PERF-RESOURCEQS: ANDR-PERF-RESOURCEQS: AddAndApply() 131: Resource value ffffffff is not supported
+07-27 10:53:36.218  9230  9230 I ang.minecraftpe: Using CollectorTypeCMC GC.
+07-27 10:53:36.219  9227  9227 I xsu_api : xsu_recv retry end
+07-27 10:53:36.219  9227  9227 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:36.219  9227  9227 I xsu_api : xsu_recv type and len
+07-27 10:53:36.219  9227  9227 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:36.219  9227  9227 I xsu_api : xsu_recv type and len end
+07-27 10:53:36.219  9227  9227 I xsu     : xsu_recv cmd end
+07-27 10:53:36.219  9227  9227 I xsu     : end session!
+07-27 10:53:36.221  3339  4756 D AdvertisingIdClient: AdvertisingIdClient already created.
+07-27 10:53:36.221  9230  9230 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+07-27 10:53:36.222  3339  4756 I AdvertisingIdClient: shouldSendLog 26733
+07-27 10:53:36.222  3339  4756 I AdvertisingIdClient: GetInfoInternal elapse 1ms
+07-27 10:53:36.223  2273  4380 D CompatibilityInfo: mCompatibilityFlags - 0
+07-27 10:53:36.223  2273  4380 D CompatibilityInfo: applicationDensity - 374
+07-27 10:53:36.223  2273  4380 D CompatibilityInfo: applicationScale - 1.0
+07-27 10:53:36.224  1516  1516 I BpBinder: onLastStrongRef automatically unlinking death recipients: 
+07-27 10:53:36.224  9236  9236 I xsu     : sending cmd:setenforce 0
+07-27 10:53:36.224  2273  4741 D InputDispatcher: onFocusChangedLocked
+07-27 10:53:36.224  9236  9236 I xsu     : sending cmd end:setenforce 0
+07-27 10:53:36.224  9236  9236 I xsu     : free cmd end
+07-27 10:53:36.224  9236  9236 I xsu     : xsu_recv cmd before
+07-27 10:53:36.224  9236  9236 I xsu_api : xsu_recv memset enter
+07-27 10:53:36.224  9236  9236 I xsu_api : xsu_recv memset end
+07-27 10:53:36.225  8139  9246 I xsu_api : xsu_recv memset enter
+07-27 10:53:36.225  8139  9246 I xsu_api : xsu_recv memset end
+07-27 10:53:36.225  8139  9246 I xsu_api : xsu_recv retry end
+07-27 10:53:36.225  8139  9246 I xsu_api : ret=4, version=200, type=0, payload_size=16
+07-27 10:53:36.225  8139  9246 I xsu_api : xsu_recv type and len
+07-27 10:53:36.225  8139  9246 I xsu_api : header.type=0, header.payload_size=16, xsu_header_t=4
+07-27 10:53:36.225  8139  9246 I xsu_api : xsu_recv type and len end
+07-27 10:53:36.225  8139  9246 I xsud    : handle comming cmd:setenforce 0
+07-27 10:53:36.225  2273  4568 D CoreBackPreview: Window{d161158 u0 Splash Screen com.mojang.minecraftpe}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@e56460f, mPriority=0, mIsAnimationCallback=false}
+07-27 10:53:36.225  2273  4380 I DisplayRotation: rotationForOrientation: orientation=6, preferredRotation=1, sensorRotation=1, lastRotation=1
+07-27 10:53:36.225  2273  4380 I DisplayRotation: updateRotation: lastOrientation=6, oldRotation=1, newRotation=1
+07-27 10:53:36.226   786   786 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 10:53:36.226  2273  4380 W ActivityTaskManager: servicetracker HIDL not available
+07-27 10:53:36.226  2273  4380 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 10:53:36.227  9230  9230 D CompatibilityChangeReporter: Compat change id reported: 171979766; UID 10189; state: ENABLED
+07-27 10:53:36.227  9230  9230 D CompatibilityChangeReporter: Compat change id reported: 242716250; UID 10189; state: ENABLED
+07-27 10:53:36.228  2273  4249 D CompatibilityChangeReporter: Compat change id reported: 170503758; UID 10189; state: ENABLED
+07-27 10:53:36.228  1446  1446 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 10:53:36.228  1446  1446 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 10:53:36.228  1446  1446 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 10:53:36.228  1446  1446 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 10:53:36.228  2273  2321 V GameManagerService: Game power mode ON (process state was changed to foreground)
+07-27 10:53:36.228  1446  1446 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 10:53:36.229  1446  1446 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 10:53:36.229  1446  1446 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 10:53:36.229  1446  1446 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 10:53:36.229  1370  1370 I QTI PowerHAL: Power isModeSupported: 15
+07-27 10:53:36.229  2624  2713 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+07-27 10:53:36.230  9230  9230 D nativeloader: Configuring clns-4 for other apk /system/framework/org.apache.http.legacy.jar. target_sdk_version=35, uses_libraries=ALL, library_path=/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64:/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/base.apk!/lib/arm64-v8a:/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/split_config.arm64_v8a.apk!/lib/arm64-v8a:/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/split_config.en.apk!/lib/arm64-v8a:/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/split_config.xxhdpi.apk!/lib/arm64-v8a:/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/split_install_pack.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.mojang.minecraftpe
+07-27 10:53:36.230  9230  9230 D nativeloader: Extending system_exposed_libraries: libbinauralrenderer_wrapper.qti.so:libhoaeffects.qti.so:libQOC.qti.so:libupdateprof.qti.so:libthermalclient.qti.so:libQOC.qti.so:libdiag_system.qti.so:libqape.qti.so:libqesdk_ndk_platform.qti.so:liblistenjni.qti.so
+07-27 10:53:36.232  2273  2320 V WindowManager: Sent Transition #14 createdAt=07-27 10:53:36.193 via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=120 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10010000 pkg=com.mojang.minecraftpe cmp=com.mojang.minecraftpe/.MainActivity } baseActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} topActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} origActivity=null realActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} numActivities=1 lastActiveTime=71856 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{d3b342b Task{1c97abe #120 type=standard A=10189:com.mojang.minecraftpe}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{5c8088 com.mojang.minecraftpe.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null }
+07-27 10:53:36.232  2273  2320 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+07-27 10:53:36.232  2273  2320 V WindowManager:     info={id=14 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{RemoteToken{d3b342b Task{1c97abe #120 type=standard A=10189:com.mojang.minecraftpe}}} m=OPEN f=NO_ANIMATION leash=Surface(name=Task=120)/@0xee1d8a5 sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0},{WCT{RemoteToken{5d9f19a Task{31cd6b6 #1 type=home}}} m=TO_BACK f=NONE leash=Surface(name=Task=1)/@0x63796fb sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0}]}
+07-27 10:53:36.232  2624  2658 V WindowManagerShell: onTransitionReady android.os.BinderProxy@d8ad8ee: {id=14 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@15ff938} m=OPEN f=NO_ANIMATION leash=Surface(name=Task=120)/@0xc528c95 sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0},{WCT{android.window.IWindowContainerToken$Stub$Proxy@d1c5d11} m=TO_BACK f=NONE leash=Surface(name=Task=1)/@0x63971aa sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0}]}
+07-27 10:53:36.232  2624  2658 V WindowManagerShell: Playing animation for (#14)android.os.BinderProxy@d8ad8ee@0
+07-27 10:53:36.232  2624  2658 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultMixedHandler@50df967
+07-27 10:53:36.232  2624  2658 V WindowManagerShell:  try handler com.android.wm.shell.keyguard.KeyguardTransitionHandler@573bed0
+07-27 10:53:36.232  2624  2658 V WindowManagerShell:  try handler com.android.wm.shell.activityembedding.ActivityEmbeddingController@b4bcec9
+07-27 10:53:36.232  2624  2658 V WindowManagerShell:  try handler com.android.wm.shell.recents.RecentsTransitionHandler@be79ce
+07-27 10:53:36.232  2624  2658 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+07-27 10:53:36.232  2624  2658 V WindowManagerShell:  try handler com.android.wm.shell.pip.PipTransition@d8ad0ef
+07-27 10:53:36.232  2624  2658 V WindowManagerShell:  try handler com.android.wm.shell.splitscreen.StageCoordinator@79df7fc
+07-27 10:53:36.233  2624  2658 V WindowManagerShell:  try handler com.android.wm.shell.transition.RemoteTransitionHandler@8b98e85
+07-27 10:53:36.233  2624  2658 V WindowManagerShell: Transition doesn't have explicit remote, search filters for match for {id=14 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@15ff938} m=OPEN f=NO_ANIMATION leash=Surface(name=Task=120)/@0xc528c95 sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0},{WCT{android.window.IWindowContainerToken$Stub$Proxy@d1c5d11} m=TO_BACK f=NONE leash=Surface(name=Task=1)/@0x63971aa sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0}]}
+07-27 10:53:36.233  2624  2658 V WindowManagerShell:  Delegate animation for #14 to null
+07-27 10:53:36.233  2624  2658 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultTransitionHandler@4c64da
+07-27 10:53:36.233  2624  2658 V WindowManagerShell: start default transition animation, info = {id=14 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@15ff938} m=OPEN f=NO_ANIMATION leash=Surface(name=Task=120)/@0xc528c95 sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0},{WCT{android.window.IWindowContainerToken$Stub$Proxy@d1c5d11} m=TO_BACK f=NONE leash=Surface(name=Task=1)/@0x63971aa sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0}]}
+07-27 10:53:36.233  2624  2658 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#14)android.os.BinderProxy@d8ad8ee@0
+07-27 10:53:36.233  2273  2320 V WindowManager: Finish Transition #14: created at 07-27 10:53:36.193 collect-started=0.1ms request-sent=7.295ms started=7.936ms ready=33.642ms sent=39.325ms finished=40.475ms
+07-27 10:53:36.234  2624  2658 V WindowManagerShell: Track 0 became idle
+07-27 10:53:36.234  2624  2658 V WindowManagerShell: All active transition animations finished
+07-27 10:53:36.234  2624  2658 V WindowManagerShell:  animated by com.android.wm.shell.transition.DefaultTransitionHandler@4c64da
+07-27 10:53:36.234  2624  2658 V WindowManagerShell: Track 0 became idle
+07-27 10:53:36.234  2624  2658 V WindowManagerShell: All active transition animations finished
+07-27 10:53:36.236  9236  9236 I xsu_api : xsu_recv retry end
+07-27 10:53:36.236  9236  9236 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:36.236  9236  9236 I xsu_api : xsu_recv type and len
+07-27 10:53:36.236  9236  9236 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:36.236  9236  9236 I xsu_api : xsu_recv type and len end
+07-27 10:53:36.236  9236  9236 I xsu     : xsu_recv cmd end
+07-27 10:53:36.236  9236  9236 I xsu     : end session!
+07-27 10:53:36.241  9230  9230 W ang.minecraftpe: Failed to find entry 'classes.dex': Entry not found
+07-27 10:53:36.242  9230  9230 W ang.minecraftpe: Failed to find entry 'classes.dex': Entry not found
+07-27 10:53:36.242  9230  9230 W ang.minecraftpe: Failed to find entry 'classes.dex': Entry not found
+07-27 10:53:36.247  9230  9230 W ang.minecraftpe: Failed to find entry 'classes.dex': Entry not found
+07-27 10:53:36.247  9230  9230 D nativeloader: Configuring clns-5 for other apk /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/base.apk:/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/split_config.arm64_v8a.apk:/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/split_config.en.apk:/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/split_config.xxhdpi.apk:/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/split_install_pack.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64:/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/base.apk!/lib/arm64-v8a:/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/split_config.arm64_v8a.apk!/lib/arm64-v8a:/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWm
+07-27 10:53:36.249  9230  9230 D nativeloader: Load /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libpairipcore.so using class loader ns clns-5 (caller=/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/base.apk!classes2.dex): ok
+07-27 10:53:36.253  2273  2376 I DisplayBrightnessStrategySelector: Changing the DisplayBrightnessStrategy from OverrideBrightnessStrategy toInvalidBrightnessStrategy for display 0
+07-27 10:53:36.254  2273  2376 V DisplayPowerController2[0]: Brightness [0.40623304] reason changing to: 'manual', previous reason: 'override'.
+07-27 10:53:36.254  2273  2376 I DisplayPowerController2[0]: BrightnessEvent: disp=0, physDisp=local:4630946852602928515, brt=0.40623304, initBrt=0.39215687, rcmdBrt=NaN, preBrt=NaN, lux=0.0, preLux=0.0, hbmMax=1.0, hbmMode=off, rbcStrength=50, thrmMax=1.0, powerFactor=1.0, wasShortTermModelActive=false, flags=, reason=manual, autoBrightness=false, strategy=InvalidBrightnessStrategy
+07-27 10:53:36.254  2273  2323 D DisplayManagerService: Ignore redundant display event 0/4 to 10096/4815
+07-27 10:53:36.254  2273  2323 D DisplayManagerService: Ignore redundant display event 0/4 to 10195/6073
+07-27 10:53:36.282  1349  1668 E Diag_Lib: diag: Diag_LSM_Init: invoked for pid: 1349 with init_count: 0
+07-27 10:53:36.282  1349  1668 E Diag_Lib: diag:failed to connect to diag socket
+07-27 10:53:36.282  1349  1668 E Diag_Lib:  Diag_LSM_Init: Failed to open handle to diag driver, error = 111
+07-27 10:53:36.282  1349  1668 I ATS     : vendor/qcom/proprietary/args/acdb/ats/transports/diag/linux/actp/src/actp.c:actp_diag_init:105 Error[1]: Failed to initialize DIAG
+07-27 10:53:36.282  1349  1668 E ATS     : vendor/qcom/proprietary/args/acdb/ats/src/ats.c:ats_init:143 Error[1]: Failed to initialize Diag
+07-27 10:53:36.282  1349  1668 E ATS     : vendor/qcom/proprietary/args/acdb/ats/src/ats.c:ats_init:263 Error[1]: Failed to initialize ATS
+07-27 10:53:36.282  1349  1668 E AGM: API: ats_init_thread: 65 ats_init failed retry 66 err 1
+07-27 10:53:36.335  9230  9230 D nativeloader: Load libframework-connectivity-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity.jar: ok
+07-27 10:53:36.335  2273  4568 V AlarmManager: set(PendingIntent{24ffda3: PendingIntentRecord{a68d8a0 com.google.android.gms/com.google.android.gms.container startService}}) : type=3 triggerAtTime=2036-07-24 10:53:36 win=3600000 maxElapsed=315363671991 interval=0 flags=0x0 callingUid=10097
+07-27 10:53:36.336  9230  9230 I Perf    : Connecting to perf service.
+07-27 10:53:36.337  9230  9230 V GraphicsEnvironment: Currently set values for:
+07-27 10:53:36.337  9230  9230 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+07-27 10:53:36.337  9230  9230 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+07-27 10:53:36.337  9230  9230 V GraphicsEnvironment: ANGLE GameManagerService for com.mojang.minecraftpe: false
+07-27 10:53:36.337  9230  9230 V GraphicsEnvironment: com.mojang.minecraftpe is not listed in per-application setting
+07-27 10:53:36.337  9230  9230 V GraphicsEnvironment: Updatable production driver is not supported on the device.
+07-27 10:53:36.338  9230  9230 I SignatureCheck: Signature check ok
+07-27 10:53:36.338  9230  9230 D LicenseClient: Connecting to the main licensing service...
+07-27 10:53:36.338  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: bindService is called for service : com.android.vending/com.google.android.finsky.services.LicensingService and for client com.mojang.minecraftpe
+07-27 10:53:36.338  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for service : com.android.vending/com.google.android.finsky.services.LicensingServiceare :1
+07-27 10:53:36.338  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for client : com.mojang.minecraftpeare :1
+07-27 10:53:36.339  2273  8184 D CompatibilityChangeReporter: Compat change id reported: 261072174; UID 10189; state: ENABLED
+07-27 10:53:36.339  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: bindService is called for service : com.google.android.gms/.chimera.PersistentDirectBootAwareApiService and for client com.google.android.gms
+07-27 10:53:36.339  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for service : com.google.android.gms/.chimera.PersistentDirectBootAwareApiServiceare :9
+07-27 10:53:36.339  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for client : com.google.android.gmsare :4
+07-27 10:53:36.340  9230  9230 D CompatibilityChangeReporter: Compat change id reported: 183155436; UID 10189; state: ENABLED
+07-27 10:53:36.340  9230  9230 I FirebaseApp: Device unlocked: initializing all Firebase APIs for app [DEFAULT]
+07-27 10:53:36.341  3263  3263 D BoundBrokerSvc: onRebind: Intent { act=com.google.android.gms.libs.gmscorelogger.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentDirectBootAwareApiService }
+07-27 10:53:36.341  9230  9230 I FirebaseInitProvider: FirebaseApp initialization successful
+07-27 10:53:36.342  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: bindService is called for service : com.android.vending/com.google.android.finsky.scheduler.process.mainimpl.PhoneskyJobServiceMain and for client system
+07-27 10:53:36.342  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for service : com.android.vending/com.google.android.finsky.scheduler.process.mainimpl.PhoneskyJobServiceMainare :1
+07-27 10:53:36.342  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for client : systemare :46
+07-27 10:53:36.344  2273  4727 I ActivityManager: Flag disabled. Ignoring finishAttachApplication from uid: 10189. pid: 9230
+07-27 10:53:36.344  4815  4815 I Finsky  : [2] SCH: job service start with id 9065.
+07-27 10:53:36.345  9230  9266 D vulkan  : searching for layers in '/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64'
+07-27 10:53:36.345  9230  9266 D vulkan  : searching for layers in '/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/base.apk!/lib/arm64-v8a'
+07-27 10:53:36.345  9230  9266 D vulkan  : searching for layers in '/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/split_config.arm64_v8a.apk!/lib/arm64-v8a'
+07-27 10:53:36.346  4815  5204 I Finsky  : [64] SCH: Satisfied jobs for 9065 are: 12-1, 37-302, 37-306
+07-27 10:53:36.346  4815  9268 I Finsky  : [128] SCH: Job 12-1 starting
+07-27 10:53:36.346  4815  9268 I Finsky  : [128] SCH: Job 37-302 starting
+07-27 10:53:36.346  4815  9268 I Finsky  : [128] SCH: Job 37-306 starting
+07-27 10:53:36.346  4815  4815 I Finsky  : [2] WM::SCH: Logging work start for 12-1
+07-27 10:53:36.346  4815  4815 I Finsky  : [2] [ContentSync] job started
+07-27 10:53:36.346  4815  4815 I Finsky  : [2] WM::SCH: Logging work start for 37-302
+07-27 10:53:36.346  4815  9271 I Finsky  : [129] PSR: Package cache is empty, setup cache.
+07-27 10:53:36.347  4815  4815 I Finsky  : [2] WM::SCH: Logging work start for 37-306
+07-27 10:53:36.347  9230  9266 D vulkan  : searching for layers in '/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/split_config.en.apk!/lib/arm64-v8a'
+07-27 10:53:36.347  9230  9266 D vulkan  : searching for layers in '/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/split_config.xxhdpi.apk!/lib/arm64-v8a'
+07-27 10:53:36.348  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: bindService is called for service : com.google.android.gms/.games.chimera.GamesAndroidServiceProxy and for client com.mojang.minecraftpe
+07-27 10:53:36.348  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for service : com.google.android.gms/.games.chimera.GamesAndroidServiceProxyare :1
+07-27 10:53:36.348  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for client : com.mojang.minecraftpeare :2
+07-27 10:53:36.348  9230  9230 D nativeloader: Load /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libc++_shared.so using class loader ns clns-5 (caller=/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/base.apk!classes3.dex): ok
+07-27 10:53:36.348  4815  5169 I Finsky  : [56] System was updated or GL extensions were already cached.
+07-27 10:53:36.349  4815  5170 I Finsky  : [57] Initializing FirebaseApp
+07-27 10:53:36.350  4815  5170 W ComponentDiscovery: Class com.google.firebase.installations.FirebaseInstallationsKtxRegistrar is not an found.
+07-27 10:53:36.350  4815  5170 I FirebaseApp: Device unlocked: initializing all Firebase APIs for app [DEFAULT]
+07-27 10:53:36.352  4815  5172 D libEGL  : loaded /vendor/lib64/egl/libEGL_adreno.so
+07-27 10:53:36.352  4815  5170 I Finsky  : [57] Start requesting FCM Reg Id
+07-27 10:53:36.352  9230  9266 D vulkan  : searching for layers in '/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/split_install_pack.apk!/lib/arm64-v8a'
+07-27 10:53:36.353  4815  9280 W DynamiteModule: Local module descriptor class for com.google.android.gms.measurement.dynamite not found.
+07-27 10:53:36.354  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: bindService is called for service : com.google.android.gms/.gcm.PushMessagingRegistrarProxy and for client com.mojang.minecraftpe
+07-27 10:53:36.354  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for service : com.google.android.gms/.gcm.PushMessagingRegistrarProxyare :1
+07-27 10:53:36.354  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for client : com.mojang.minecraftpeare :3
+07-27 10:53:36.355  4815  5172 D libEGL  : loaded /vendor/lib64/egl/libGLESv1_CM_adreno.so
+07-27 10:53:36.357  4815  5172 D libEGL  : loaded /vendor/lib64/egl/libGLESv2_adreno.so
+07-27 10:53:36.354  9230  9230 I RenderThread: type=1400 audit(0.0:10442): avc:  denied  { open } for  path="/dev/__properties__/u:object_r:aac_drc_prop:s0" dev="tmpfs" ino=100 scontext=u:r:untrusted_app:s0:c189,c256,c512,c768 tcontext=u:object_r:aac_drc_prop:s0 tclass=file permissive=1 app=com.mojang.minecraftpe
+07-27 10:53:36.354  9230  9230 I RenderThread: type=1400 audit(0.0:10443): avc:  denied  { getattr } for  path="/dev/__properties__/u:object_r:aac_drc_prop:s0" dev="tmpfs" ino=100 scontext=u:r:untrusted_app:s0:c189,c256,c512,c768 tcontext=u:object_r:aac_drc_prop:s0 tclass=file permissive=1 app=com.mojang.minecraftpe
+07-27 10:53:36.354  9230  9230 I RenderThread: type=1400 audit(0.0:10444): avc:  denied  { map } for  path="/dev/__properties__/u:object_r:aac_drc_prop:s0" dev="tmpfs" ino=100 scontext=u:r:untrusted_app:s0:c189,c256,c512,c768 tcontext=u:object_r:aac_drc_prop:s0 tclass=file permissive=1 app=com.mojang.minecraftpe
+07-27 10:53:36.354  9230  9230 I RenderThread: type=1400 audit(0.0:10445): avc:  denied  { open } for  path="/dev/__properties__/u:object_r:ab_update_gki_prop:s0" dev="tmpfs" ino=102 scontext=u:r:untrusted_app:s0:c189,c256,c512,c768 tcontext=u:object_r:ab_update_gki_prop:s0 tclass=file permissive=1 app=com.mojang.minecraftpe
+07-27 10:53:36.354  9230  9230 I RenderThread: type=1400 audit(0.0:10446): avc:  denied  { getattr } for  path="/dev/__properties__/u:object_r:ab_update_gki_prop:s0" dev="tmpfs" ino=102 scontext=u:r:untrusted_app:s0:c189,c256,c512,c768 tcontext=u:object_r:ab_update_gki_prop:s0 tclass=file permissive=1 app=com.mojang.minecraftpe
+07-27 10:53:36.368  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: bindService is called for service : com.google.android.gms/.gcm.PushMessagingRegistrarProxy and for client com.android.vending
+07-27 10:53:36.368  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for service : com.google.android.gms/.gcm.PushMessagingRegistrarProxyare :2
+07-27 10:53:36.368  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for client : com.android.vendingare :2
+07-27 10:53:36.371  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: unbindService is called for service : com.google.android.gms/.gcm.PushMessagingRegistrarProxy and for client com.android.vending
+07-27 10:53:36.371  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: size of service connections for service: com.google.android.gms/.gcm.PushMessagingRegistrarProxyafter removal is 1
+07-27 10:53:36.371  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: size of client connections for client: com.android.vendingafter removal is 1
+07-27 10:53:36.371  4815  5185 E Finsky  : [60] Error when retrieving FCM instance id
+07-27 10:53:36.371  4815  9283 E FirebaseInstanceId: Topic sync or token retrieval failed on hard failure exceptions: AUTHENTICATION_FAILED. Won't retry the operation.
+07-27 10:53:36.373  4815  5172 I AdrenoGLES-0: QUALCOMM build                   : 43c70540de, Ibee7afe120
+07-27 10:53:36.373  4815  5172 I AdrenoGLES-0: Build Date                       : 07/17/24
+07-27 10:53:36.373  4815  5172 I AdrenoGLES-0: OpenGL ES Shader Compiler Version: E031.45.02.16
+07-27 10:53:36.373  4815  5172 I AdrenoGLES-0: Local Branch                     : 
+07-27 10:53:36.373  4815  5172 I AdrenoGLES-0: Remote Branch                    : refs/tags/AU_LINUX_ANDROID_LA.VENDOR.14.3.0.11.00.00.973.576
+07-27 10:53:36.373  4815  5172 I AdrenoGLES-0: Remote Branch                    : NONE
+07-27 10:53:36.373  4815  5172 I AdrenoGLES-0: Reconstruct Branch               : NOTHING
+07-27 10:53:36.373  4815  5172 I AdrenoGLES-0: Build Config                     : S P 16.1.2 AArch64
+07-27 10:53:36.373  4815  5172 I AdrenoGLES-0: Driver Path                      : /vendor/lib64/egl/libGLESv2_adreno.so
+07-27 10:53:36.373  4815  5172 I AdrenoGLES-0: Driver Version                   : 0762.24
+07-27 10:53:36.373  4815  5172 I AdrenoGLES-0: Process Name                     : com.android.vending
+07-27 10:53:36.373  4815  9280 W android.vending: ClassLoaderContext classpath size mismatch. expected=1, found=0 (DLC[];PCL[base.apk*2502948536]{PCL[/system/framework/org.apache.http.legacy.jar*365604909]#PCL[/system/framework/com.android.location.provider.jar*3994156537]#PCL[/system/framework/com.android.media.remotedisplay.jar*2114713712]} | DLC[];PCL[])
+07-27 10:53:36.374  4815  9280 I DynamiteModule: Considering local module com.google.android.gms.measurement.dynamite:0 and remote module com.google.android.gms.measurement.dynamite:198
+07-27 10:53:36.374  4815  9280 I DynamiteModule: Selected remote version of com.google.android.gms.measurement.dynamite, version >= 198
+07-27 10:53:36.375  4815  9293 I Finsky  : [147] Frosting DB delete succeeded: true
+07-27 10:53:36.375  4815  5172 I AdrenoGLES-0: PFP: 0x01520175, ME: 0x01520023
+07-27 10:53:36.376  4815  9271 W Finsky  : [129] SLM: no metadata property com.android.vending.derived.apk.id found for shared library com.google.android.trichromelibrary_677826033:
+07-27 10:53:36.376  4815  9271 W Finsky  : [129] SLM: no metadata property com.android.vending.sdk.version.patch found for shared library com.google.android.trichromelibrary_677826033:
+07-27 10:53:36.377  1485  1485 I qspmHal : enter getGpuProf at: -1563978759
+07-27 10:53:36.377  1485  1485 I qspmHal : Coudn't match the GFX PID 4815 to AT PID 9230. Checking in local cache.
+07-27 10:53:36.377  1485  1485 I qspmHal : Found the GFX PID in cache
+07-27 10:53:36.377  1485  1485 I qspmHal : PID 4815 from GFX matched.
+07-27 10:53:36.377  1485  1485 I qspmHal : gpuProfName:com.android.vending-gpu - gpu prof_info.path:/data/vendor/gaming/com.android.vending-gpu
+07-27 10:53:36.377  1485  1485 E qspmHal : GPU profile file NOT found !!
+07-27 10:53:36.377  4815  9280 W System  : ClassLoader referenced unknown path: 
+07-27 10:53:36.377  4815  9280 D nativeloader: Configuring clns-7 for other apk . target_sdk_version=37, uses_libraries=, library_path=/data/app/~~u7ZPnv6I2MFtOnSPS7FWig==/com.google.android.gms-Fg2Wo-SK_Nl1vk4CNPGRRA==/lib/arm64:/data/app/~~u7ZPnv6I2MFtOnSPS7FWig==/com.google.android.gms-Fg2Wo-SK_Nl1vk4CNPGRRA==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+07-27 10:53:36.378  4815  5172 I AdrenoUtils: <ReadGpuID:357>: Reading chip ID through GSL
+07-27 10:53:36.381  4815  9280 W android.vending: ClassLoaderContext classpath element checksum mismatch. expected=2502948536, found=1432174622 (DLC[];PCL[base.apk*2502948536]{PCL[/system/framework/org.apache.http.legacy.jar*365604909]#PCL[/system/framework/com.android.location.provider.jar*3994156537]#PCL[/system/framework/com.android.media.remotedisplay.jar*2114713712]} | DLC[];PCL[/data/app/~~Bk5Giaz5c7elzGvrfCgIYw==/com.android.vending-h-dFkcJvRypTfV-8xdhQbQ==/base.apk*1432174622]{PCL[/system/framework/org.apache.http.legacy.jar*365604909]})
+07-27 10:53:36.385  4815  9280 W DynamiteModule: Local module descriptor class for com.google.android.gms.measurement.dynamite not found.
+07-27 10:53:36.389  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: bindService is called for service : com.google.android.gms/.chimera.PersistentApiService and for client com.android.vending
+07-27 10:53:36.389  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for service : com.google.android.gms/.chimera.PersistentApiServiceare :16
+07-27 10:53:36.389  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for client : com.android.vendingare :2
+07-27 10:53:36.399  4815  9296 E android.vending: No package ID 6a found for resource ID 0x6a0b0013.
+07-27 10:53:36.399  4815  9296 I FA      : App measurement initialized, version: 174000
+07-27 10:53:36.399  4815  9296 I FA      : To enable debug logging run: adb shell setprop log.tag.FA VERBOSE
+07-27 10:53:36.399  4815  9296 I FA      : To enable faster debug mode event logging run:
+07-27 10:53:36.399  4815  9296 I FA      :   adb shell setprop debug.firebase.analytics.app com.android.vending
+07-27 10:53:36.405  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: bindService is called for service : com.google.android.gms/.measurement.service.MeasurementBrokerService and for client com.android.vending
+07-27 10:53:36.405  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for service : com.google.android.gms/.measurement.service.MeasurementBrokerServiceare :2
+07-27 10:53:36.405  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for client : com.android.vendingare :3
+07-27 10:53:36.407  4815  9296 I FA      : Tag Manager is not found and thus will not be used
+07-27 10:53:36.411  3339  4756 D AdvertisingIdClient: AdvertisingIdClient already created.
+07-27 10:53:36.413  3339  4756 I AdvertisingIdClient: shouldSendLog 26733
+07-27 10:53:36.413  3339  4756 I AdvertisingIdClient: GetInfoInternal elapse 2ms
+07-27 10:53:36.414  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: bindService is called for service : com.google.android.gms/.chimera.PersistentApiService and for client com.android.vending
+07-27 10:53:36.414  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for service : com.google.android.gms/.chimera.PersistentApiServiceare :16
+07-27 10:53:36.414  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for client : com.android.vendingare :3
+07-27 10:53:36.415  3263  3263 D BoundBrokerSvc: onRebind: Intent { act=com.google.android.gms.common.telemetry.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+07-27 10:53:36.434  9230  9230 D nativeloader: Load /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libmaesdk.so using class loader ns clns-5 (caller=/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/base.apk!classes3.dex): ok
+07-27 10:53:36.436  1485  1485 I qspmHal : enter getGpuProf at: -1563978700
+07-27 10:53:36.436  1485  1485 I qspmHal : PID 9230 from GFX matched.
+07-27 10:53:36.436  1485  1485 I qspmHal : gpuProfName:com.android.vending-gpu - gpu prof_info.path:/data/vendor/gaming/com.android.vending-gpu
+07-27 10:53:36.436  1485  1485 E qspmHal : GPU profile file NOT found !!
+07-27 10:53:36.436  9230  9230 D nativeloader: Load /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libHttpClient.Android.so using class loader ns clns-5 (caller=/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/base.apk!classes3.dex): ok
+07-27 10:53:36.436  9230  9266 I AdrenoVK-0: ===== BEGIN DUMP OF OVERRIDDEN SETTINGS =====
+07-27 10:53:36.437  9230  9266 I AdrenoVK-0: ===== END DUMP OF OVERRIDDEN SETTINGS =====
+07-27 10:53:36.502  4815  5172 I Finsky  : [59] [PLUS] Adding payload case=7
+07-27 10:53:36.502  4815  5172 I Finsky  : [59] [PLUS] Adding payload case=8
+07-27 10:53:36.502  4815  5172 I Finsky  : [59] [PLUS] Adding payload case=10
+07-27 10:53:36.502  4815  5172 I Finsky  : [59] [PLUS] Adding payload case=11
+07-27 10:53:36.502  4815  5172 I Finsky  : [59] [PLUS] Adding payload case=12
+07-27 10:53:36.502  4815  5172 I Finsky  : [59] [PLUS] Adding payload case=13
+07-27 10:53:36.503  4815  5172 I Finsky  : [59] [PLUS] Adding payload case=14
+07-27 10:53:36.503  4815  5172 I Finsky  : [59] [PLUS] Adding payload case=15
+07-27 10:53:36.503  4815  5172 I Finsky  : [59] [PLUS] Adding payload case=16
+07-27 10:53:36.503  4815  5172 I Finsky  : [59] [PLUS] Adding payload case=18
+07-27 10:53:36.503  4815  5172 I Finsky  : [59] [PLUS] Adding payload case=19
+07-27 10:53:36.503  4815  5172 I Finsky  : [59] [PLUS] Adding payload case=20
+07-27 10:53:36.503  4815  5172 I Finsky  : [59] [PLUS] Adding payload case=21
+07-27 10:53:36.503  4815  5172 I Finsky  : [59] [PLUS] Adding payload case=24
+07-27 10:53:36.503  4815  5172 I Finsky  : [59] [PLUS] Adding payload case=34
+07-27 10:53:36.503  4815  5172 I Finsky  : [59] [PLUS] Triggering sync due to NOW urgency payload
+07-27 10:53:36.504  4815  5185 I Finsky  : [60] [PLUS] Syncing for users with urgency above: NOW
+07-27 10:53:36.504  4815  5172 I Finsky  : [59] [PLUS] Syncing 1 train(s)
+07-27 10:53:36.504  4815  5185 I Finsky  : [60] [PLUS] Sending payloads for account: [mb5OSniMdqg4UNtE5EwPerN2M1owJjP4-g1PXigkMhw]
+07-27 10:53:36.511  4815  5170 I Finsky  : [57] [PLUS] Adding payload case=7
+07-27 10:53:36.511  4815  5170 I Finsky  : [57] [PLUS] Adding payload case=8
+07-27 10:53:36.511  4815  5170 I Finsky  : [57] [PLUS] Adding payload case=10
+07-27 10:53:36.511  4815  5170 I Finsky  : [57] [PLUS] Adding payload case=11
+07-27 10:53:36.511  4815  5170 I Finsky  : [57] [PLUS] Adding payload case=12
+07-27 10:53:36.511  4815  5170 I Finsky  : [57] [PLUS] Adding payload case=13
+07-27 10:53:36.511  4815  5170 I Finsky  : [57] [PLUS] Adding payload case=14
+07-27 10:53:36.511  4815  5170 I Finsky  : [57] [PLUS] Adding payload case=15
+07-27 10:53:36.511  4815  5170 I Finsky  : [57] [PLUS] Adding payload case=16
+07-27 10:53:36.511  4815  5170 I Finsky  : [57] [PLUS] Adding payload case=18
+07-27 10:53:36.511  4815  5170 I Finsky  : [57] [PLUS] Adding payload case=19
+07-27 10:53:36.511  4815  5170 I Finsky  : [57] [PLUS] Adding payload case=20
+07-27 10:53:36.511  4815  5170 I Finsky  : [57] [PLUS] Adding payload case=21
+07-27 10:53:36.511  4815  5170 I Finsky  : [57] [PLUS] Adding payload case=24
+07-27 10:53:36.511  4815  5170 I Finsky  : [57] [PLUS] Adding payload case=34
+07-27 10:53:36.512  4815  5170 I Finsky  : [57] [PLUS] Triggering sync due to NOW urgency payload
+07-27 10:53:36.512  4815  5170 I Finsky  : [57] [PLUS] Syncing for users with urgency above: NOW
+07-27 10:53:36.517  9230  9230 D nativeloader: Load /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libPlayFabMultiplayer.so using class loader ns clns-5 (caller=/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/base.apk!classes3.dex): ok
+07-27 10:53:36.518  2273  4727 D CompatibilityChangeReporter: Compat change id reported: 319212206; UID 10189; state: ENABLED
+07-27 10:53:36.519  2273  2545 D ConnectivityService: NetReassign [no changes] [c 0] [a 1] [i 0]
+07-27 10:53:36.520  9230  9230 D nativeloader: Load /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libfmod.so using class loader ns clns-5 (caller=/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/base.apk!classes3.dex): ok
+07-27 10:53:36.522  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.mainline.primary.libs' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.525  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.compos' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.526  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.wifi' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.529  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.tzdata5' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.538  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.permission' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.577  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.apex.cts.shim' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.649  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.appsearch' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.649  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.media.swcodec' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.650  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.art' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.659  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.mediaprovider' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.666  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.virt' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.668  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.adbd' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.669  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.resolv' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.672  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.i18n' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.675  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.configinfrastructure' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.675  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.media' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.675  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.conscrypt' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.679  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.vndk.v31' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.679  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.vndk.v30' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.679  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.vndk.v33' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.680  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.vndk.v32' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.680  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.neuralnetworks' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.680  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.vndk.v34' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.681  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.ipsec' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.681  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.devicelock' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.689  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.ondevicepersonalization' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.692  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.sdkext' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.693  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.healthfitness' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.696  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.adservices' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.696  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.tethering' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.701  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.uwb' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.701  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.extservices' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.704  1397  1505 I ANDR-PWR-OPT: PowerHelper: getNodeData() 196: FPS43.000000 FRAMECOUNT45
+07-27 10:53:36.704  1397  1505 I ANDR-PWR-OPT: PowerHelper: getFps() 168: Returned fps value: 43.000000
+07-27 10:53:36.705  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: bindService is called for service : com.google.android.gms/.chimera.PersistentDirectBootAwareApiService and for client com.google.android.gms.persistent
+07-27 10:53:36.705  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for service : com.google.android.gms/.chimera.PersistentDirectBootAwareApiServiceare :9
+07-27 10:53:36.705  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for client : com.google.android.gms.persistentare :6
+07-27 10:53:36.706  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.runtime' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.707  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.os.statsd' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.708  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.cellbroadcast' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.718  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.rkpd' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.723  4815  4815 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.scheduling' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+07-27 10:53:36.726  4815  4815 I Finsky  : [2] App states replicator found 44 unowned apps
+07-27 10:53:36.729  4815  5185 I Finsky  : [60] Completed 0 account content syncs with 0 successful.
+07-27 10:53:36.729  4815  4815 I Finsky  : [2] [ContentSync] Installation state replication succeeded.
+07-27 10:53:36.729  4815  4815 I Finsky  : [2] SCH: jobFinished: 12-1. TimeElapsed: 383ms.
+07-27 10:53:36.729  4815  4815 I Finsky  : [2] WM::SCH: Logging work end for 12-1
+07-27 10:53:36.785  9230  9230 D nativeloader: Load /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libminecraftpe.so using class loader ns clns-5 (caller=/data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/base.apk!classes3.dex): ok
+07-27 10:53:36.785  9230  9230 V Minecraft: Entering JNI_OnLoad 0x725190c4f8
+07-27 10:53:36.785  9230  9266 I AdrenoVK-0: QUALCOMM build          : 43c70540de, Ibee7afe120
+07-27 10:53:36.785  9230  9266 I AdrenoVK-0: Build Date              : 07/17/24
+07-27 10:53:36.785  9230  9266 I AdrenoVK-0: Shader Compiler Version : E031.45.02.16
+07-27 10:53:36.785  9230  9266 I AdrenoVK-0: Local Branch            : 
+07-27 10:53:36.785  9230  9266 I AdrenoVK-0: Remote Branch           : refs/tags/AU_LINUX_ANDROID_LA.VENDOR.14.3.0.11.00.00.973.576
+07-27 10:53:36.785  9230  9266 I AdrenoVK-0: Remote Branch           : NONE
+07-27 10:53:36.785  9230  9266 I AdrenoVK-0: Reconstruct Branch      : NOTHING
+07-27 10:53:36.785  9230  9266 I AdrenoVK-0: Build Config            : S P 16.1.2 AArch64
+07-27 10:53:36.786  9230  9266 I AdrenoVK-0: Driver Path             : /vendor/lib64/hw/vulkan.adreno.so
+07-27 10:53:36.786  9230  9266 I AdrenoVK-0: Driver Version          : 0762.24
+07-27 10:53:36.786  9230  9266 I AdrenoVK-0: PFP                     : 0x01520175
+07-27 10:53:36.786  9230  9266 I AdrenoVK-0: ME                      : 0x01520023
+07-27 10:53:36.786  9230  9266 I AdrenoVK-0: Application Name    : android framework
+07-27 10:53:36.786  9230  9266 I AdrenoVK-0: Application Version : 0x00000000
+07-27 10:53:36.786  9230  9266 I AdrenoVK-0: Engine Name         : android framework
+07-27 10:53:36.786  9230  9266 I AdrenoVK-0: Engine Version      : 0x00000000
+07-27 10:53:36.786  9230  9266 I AdrenoVK-0: Api Version         : 0x00401000
+07-27 10:53:36.786  9230  9230 V Minecraft: JNI_OnLoad completed
+07-27 10:53:36.787  9230  9230 I MinecraftPlatform: MainActivity::onCreate
+07-27 10:53:36.790  8733  8733 W HidlServiceManagement: Waited one second for vendor.qti.diaghal@1.0::Idiag/default
+07-27 10:53:36.790  9230  9230 D gti.InputConnection: InputConnection created
+07-27 10:53:36.790   786   786 I hwservicemanager: Since vendor.qti.diaghal@1.0::Idiag/default is not registered, trying to start it as a lazy HAL (if it's not configured to be a lazy HAL, it may be stuck starting or still starting).
+07-27 10:53:36.790  8733  8733 I HidlServiceManagement: getService: Trying again for vendor.qti.diaghal@1.0::Idiag/default...
+07-27 10:53:36.791  9230  9230 I GameActivity: Looking for library libminecraftpe.so
+07-27 10:53:36.791  9230  9230 I GameActivity: Found library libminecraftpe.so. Loading...
+07-27 10:53:36.791   786  9304 W libc    : Unable to set property "ctl.interface_start" to "vendor.qti.diaghal@1.0::Idiag/default": error code: 0x20
+07-27 10:53:36.791   786  9304 I hwservicemanager: Tried to start vendor.qti.diaghal@1.0::Idiag/default as a lazy service, but was unable to. Usually this happens when a service is not installed, but if the service is intended to be used as a lazy service, then it may be configured incorrectly.
+07-27 10:53:36.792  9230  9230 D GameActivity: GameActivity_register
+07-27 10:53:36.792  9230  9230 D GameActivity: SDK version: 34
+07-27 10:53:36.792  9230  9305 I Minecraft: android_main starting. internalDataPath is '/data/user/0/com.mojang.minecraftpe/files', externalDataPath is '/storage/emulated/0/Android/data/com.mojang.minecraftpe/files'
+07-27 10:53:36.795  9230  9269 W ServiceBindIntentUtils: Dynamic lookup for intent failed for action: com.google.android.gms.games.internal.connect.service.START
+07-27 10:53:36.795  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: bindService is called for service : com.google.android.gms/.games.chimera.GamesAndroidServiceProxy and for client com.mojang.minecraftpe
+07-27 10:53:36.795  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for service : com.google.android.gms/.games.chimera.GamesAndroidServiceProxyare :1
+07-27 10:53:36.795  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: total connections for client : com.mojang.minecraftpeare :3
+07-27 10:53:36.796  9230  9305 E MCPE    : *** setCachedDeviceId(a76b9d6c45724eb9899fab0033919833)
+07-27 10:53:36.799  9230  9305 I Bedrock : Breakpad config: directory is: /data/user/0/com.mojang.minecraftpe/crash, sessionid is: fdd09e80-7138-4164-b462-c153a2172643
+07-27 10:53:36.800  9230  9305 E XNNPACK : failed to parse the list of possible processors in /sys/devices/system/cpu/possible
+07-27 10:53:36.800  9230  9305 E XNNPACK : failed to parse the list of present processors in /sys/devices/system/cpu/present
+07-27 10:53:36.800  9230  9305 E XNNPACK : failed to parse both lists of possible and present processors
+07-27 10:53:36.801  9230  9305 I System.out: getwidth: 1920
+07-27 10:53:36.801  9230  9305 I System.out: getheight: 1024
+07-27 10:53:36.802  9230  9305 I Minecraft: NO LOG FILE! - AppPlatform_android::setStorageDirectory - using AppData dir - CurrentFileStoragePath is now '/data/user/0/com.mojang.minecraftpe'
+07-27 10:53:36.802  9230  9305 I Minecraft: 
+07-27 10:53:36.802  9230  9305 F XNNPACK : cpuinfo_get_packages_count called before cpuinfo is initialized
+07-27 10:53:36.802  9230  9305 W Bedrock : Breakpad _filterCallback called
+07-27 10:53:36.809  9230  9305 W Bedrock : Breakpad _dumpCallback called, dump path: /data/user/0/com.mojang.minecraftpe/crash/fdd09e80-7138-4164-b462-c153a2172643.dmp
+--------- beginning of crash
+07-27 10:53:36.809  9230  9305 F libc    : Fatal signal 6 (SIGABRT), code -6 (SI_TKILL) in tid 9305 (Thread-5), pid 9230 (ang.minecraftpe)
+07-27 10:53:36.827  9311  9311 I crash_dump64: obtaining output fd from tombstoned, type: kDebuggerdTombstoneProto
+07-27 10:53:36.827  1096  1096 I tombstoned: received crash request for pid 9305
+07-27 10:53:36.827  9311  9311 I crash_dump64: performing dump of process 9230 (target tid = 9305)
+07-27 10:53:36.845  1447  1681 I SDM     : DisplayBase::CommitThread: Received idle timeout, panel: video, timeout: 69999 us
+07-27 10:53:36.880  1447  1681 I SDM     : HWDeviceDRM::SetupConcurrentWriteback: Tear down the Concurrent Writeback topology
+07-27 10:53:36.922  2273  2612 D ConnectivityService: requestNetwork for uid/pid:10097/3339 activeRequest: null callbackRequest: 139 [NetworkRequest [ REQUEST id=140, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10097 RequestorUid: 10097 RequestorPkg: com.google.android.gms UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647 isUidTracked: false declaredMethods: AVAIL|LOST|NC
+07-27 10:53:36.923  2273  2537 D WifiNetworkFactory: got request NetworkRequest [ REQUEST id=140, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10097 RequestorUid: 10097 RequestorPkg: com.google.android.gms UnderlyingNetworks: Null] ]
+07-27 10:53:36.923  2273  2537 D UntrustedWifiNetworkFactory: got request NetworkRequest [ REQUEST id=140, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10097 RequestorUid: 10097 RequestorPkg: com.google.android.gms UnderlyingNetworks: Null] ]
+07-27 10:53:36.923  2273  2537 D OemPaidWifiNetworkFactory: got request NetworkRequest [ REQUEST id=140, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10097 RequestorUid: 10097 RequestorPkg: com.google.android.gms UnderlyingNetworks: Null] ]
+07-27 10:53:36.923  2273  2537 D MultiInternetWifiNetworkFactory: got request NetworkRequest [ REQUEST id=140, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10097 RequestorUid: 10097 RequestorPkg: com.google.android.gms UnderlyingNetworks: Null] ]
+07-27 10:53:36.923  2273  2545 D ConnectivityService: NetReassign [140 : null → 100] [c 0] [a 1] [i 0]
+07-27 10:53:36.936  9311  9311 F DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+07-27 10:53:36.936  9311  9311 F DEBUG   : Build fingerprint: 'AYANEO/AYANEO_Pocket_FIT/PocketFIT:14/01.00_20251226_private_user/eng.scm.20251226.033130:user/release-keys'
+07-27 10:53:36.936  9311  9311 F DEBUG   : Revision: '0'
+07-27 10:53:36.936  9311  9311 F DEBUG   : ABI: 'arm64'
+07-27 10:53:36.936  9311  9311 F DEBUG   : Timestamp: 2026-07-27 10:53:36.831651329+0200
+07-27 10:53:36.936  9311  9311 F DEBUG   : Process uptime: 2s
+07-27 10:53:36.936  9311  9311 F DEBUG   : Cmdline: com.mojang.minecraftpe
+07-27 10:53:36.936  9311  9311 F DEBUG   : pid: 9230, tid: 9305, name: Thread-5  >>> com.mojang.minecraftpe <<<
+07-27 10:53:36.936  9311  9311 F DEBUG   : uid: 10189
+07-27 10:53:36.936  9311  9311 F DEBUG   : tagged_addr_ctrl: 0000000000000001 (PR_TAGGED_ADDR_ENABLE)
+07-27 10:53:36.936  9311  9311 F DEBUG   : pac_enabled_keys: 000000000000000f (PR_PAC_APIAKEY, PR_PAC_APIBKEY, PR_PAC_APDAKEY, PR_PAC_APDBKEY)
+07-27 10:53:36.936  9311  9311 F DEBUG   : signal 6 (SIGABRT), code -6 (SI_TKILL), fault addr --------
+07-27 10:53:36.936  9311  9311 F DEBUG   : Abort message: 'cpuinfo_get_packages_count called before cpuinfo is initialized'
+07-27 10:53:36.936  9311  9311 F DEBUG   :     x0  0000000000000000  x1  0000000000002459  x2  0000000000000006  x3  0000006e8b69e1c0
+07-27 10:53:36.936  9311  9311 F DEBUG   :     x4  646b6b60621f736d  x5  646b6b60621f736d  x6  646b6b60621f736d  x7  7f7f7f7f7f7f7f7f
+07-27 10:53:36.936  9311  9311 F DEBUG   :     x8  00000000000000f0  x9  000000724709e1b8  x10 0000000000000001  x11 00000072470e6924
+07-27 10:53:36.936  9311  9311 F DEBUG   :     x12 0000006e8b69cb50  x13 0000000000000040  x14 0000006e8b69ddc8  x15 00000000593d27cf
+07-27 10:53:36.936  9311  9311 F DEBUG   :     x16 000000724714ed18  x17 000000724712a3b0  x18 0000006ddc656000  x19 000000000000240e
+07-27 10:53:36.936  9311  9311 F DEBUG   :     x20 0000000000002459  x21 00000000ffffffff  x22 b400007069e88178  x23 b400007069e88178
+07-27 10:53:36.936  9311  9311 F DEBUG   :     x24 0000000070a17658  x25 0000006e8b69e500  x26 0000006df1c09688  x27 000000004a1f44e0
+07-27 10:53:36.936  9311  9311 F DEBUG   :     x28 000000004a1f44c0  x29 0000006e8b69e240
+07-27 10:53:36.936  9311  9311 F DEBUG   :     lr  00000072470d7624  sp  0000006e8b69e1a0  pc  00000072470d7650  pst 0000000000001000
+07-27 10:53:36.936  9311  9311 F DEBUG   : 8 total frames
+07-27 10:53:36.936  9311  9311 F DEBUG   : backtrace:
+07-27 10:53:36.936  9311  9311 F DEBUG   :       #00 pc 000000000005b650  /apex/com.android.runtime/lib64/bionic/libc.so (abort+168) (BuildId: 50118287324a156bc7be11d3d940c7be)
+07-27 10:53:36.936  9311  9311 F DEBUG   :       #01 pc 0000000007b6748c  /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libminecraftpe.so (BuildId: 2e318db12824cadb2618754ab7c82fa96fb30659)
+07-27 10:53:36.936  9311  9311 F DEBUG   :       #02 pc 0000000007b6774c  /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libminecraftpe.so (cpuinfo_get_packages_count+40) (BuildId: 2e318db12824cadb2618754ab7c82fa96fb30659)
+07-27 10:53:36.936  9311  9311 F DEBUG   :       #03 pc 0000000008534fa8  /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libminecraftpe.so (BuildId: 2e318db12824cadb2618754ab7c82fa96fb30659)
+07-27 10:53:36.936  9311  9311 F DEBUG   :       #04 pc 0000000008527c64  /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libminecraftpe.so (BuildId: 2e318db12824cadb2618754ab7c82fa96fb30659)
+07-27 10:53:36.936  9311  9311 F DEBUG   :       #05 pc 0000000007c181e0  /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libminecraftpe.so (BuildId: 2e318db12824cadb2618754ab7c82fa96fb30659)
+07-27 10:53:36.936  9311  9311 F DEBUG   :       #06 pc 00000000000c3644  /apex/com.android.runtime/lib64/bionic/libc.so (__pthread_start(void*)+208) (BuildId: 50118287324a156bc7be11d3d940c7be)
+07-27 10:53:36.936  9311  9311 F DEBUG   :       #07 pc 000000000005cfa4  /apex/com.android.runtime/lib64/bionic/libc.so (__start_thread+68) (BuildId: 50118287324a156bc7be11d3d940c7be)
+07-27 10:53:36.941  4815  4815 I Finsky  : [2] [PLUS] Received response
+07-27 10:53:36.942  4815  5131 I Finsky  : [55] [PLUS] Successfully updated PayloadValueStore
+07-27 10:53:36.943  4815  5170 I Finsky  : [57] [PLUS] Sync complete, number synced: 1, number failed: 0
+07-27 10:53:36.943  4815  5170 I Finsky  : [57] SCH: jobFinished: 37-302. TimeElapsed: 597ms.
+07-27 10:53:36.943  4815  5170 I Finsky  : [57] WM::SCH: Logging work end for 37-302
+07-27 10:53:36.943  4815  5185 I Finsky  : [60] [PLUS] Syncing 0 train(s)
+07-27 10:53:36.943  4815  5185 I Finsky  : [60] [PLUS] Sync complete, number synced: 0, number failed: 0
+07-27 10:53:36.943  4815  5185 I Finsky  : [60] SCH: jobFinished: 37-306. TimeElapsed: 596ms.
+07-27 10:53:36.943  4815  5185 I Finsky  : [60] WM::SCH: Logging work end for 37-306
+07-27 10:53:36.943  1096  1096 E tombstoned: Tombstone written to: tombstone_22
+07-27 10:53:36.945  2273  9318 I DropBoxManagerService: add tag=data_app_native_crash isTagEnabled=true flags=0x2
+07-27 10:53:36.945  2273  2462 I BootReceiver: Copying /data/tombstones/tombstone_22 to DropBox (SYSTEM_TOMBSTONE)
+07-27 10:53:36.945  2273  9317 W ActivityTaskManager:   Force finishing activity com.mojang.minecraftpe/.MainActivity
+07-27 10:53:36.945  2273  2462 I DropBoxManagerService: add tag=SYSTEM_TOMBSTONE isTagEnabled=true flags=0x6
+07-27 10:53:36.945  2624  2658 V WindowManagerShell: Transition requested: android.os.BinderProxy@1ecb750 TransitionRequestInfo { type = CLOSE, triggerTask = null, remoteTransition = null, displayChange = null }
+07-27 10:53:36.947  2273  9317 D ActivityTrigger: ActivityTrigger activityPauseTrigger 
+07-27 10:53:36.947   786   786 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 10:53:36.947  2273  9317 W ActivityTaskManager: servicetracker HIDL not available
+07-27 10:53:36.948  2273  9317 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 10:53:36.949  2273  2462 I DropBoxManagerService: add tag=SYSTEM_TOMBSTONE_PROTO_WITH_HEADERS isTagEnabled=true flags=0x4
+07-27 10:53:36.950  4070  4620 W InputReader: pauseServer
+07-27 10:53:36.950  1447  1681 I SDM     : DisplayBase::CommitThread: Received idle timeout, panel: video, timeout: 70000 us
+07-27 10:53:36.951  4815  5169 I Finsky  : [56] SCH: Scheduling phonesky job Id: 1-1337, CT: 1785135156106, Constraints: [{ L: 31106961, D: 74306961, C: CHARGING_NONE, I: IDLE_NONE, N: NET_ANY, B: BATTERY_ANY }]
+07-27 10:53:36.951  4815  5169 I Finsky  : [56] SCH: Scheduling phonesky job Id: 34-385, CT: 1785135157390, Constraints: [{ L: 604800000, D: 2530149806, C: CHARGING_NONE, I: IDLE_NONE, N: NET_ANY, B: BATTERY_ANY }]
+07-27 10:53:36.951  4815  5169 I Finsky  : [56] SCH: Scheduling phonesky job Id: 34-391, CT: 1785135157390, Constraints: [{ L: 17345534, D: 1313345534, C: CHARGING_NONE, I: IDLE_NONE, N: NET_ANY, B: BATTERY_ANY }]
+07-27 10:53:36.951  4815  5170 I Finsky  : [57] SCH: Scheduling 1 system job(s)
+07-27 10:53:36.951  4815  5170 I Finsky  : [57] SCH: Scheduling system job Id: 9081, L: 10085973, D: 67046116, C: false, I: false, N: 1
+07-27 10:53:36.952  1397  1487 I ANDR-PWR-OPT: PowerAppClassifier: getAppType() 59: checking app [com.mojang.minecraftpe] is type 2
+07-27 10:53:36.953  4815  9268 I Finsky  : [128] SCH: job service finished with id 9065.
+07-27 10:53:36.953  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: unbindService is called for service : com.android.vending/com.google.android.finsky.scheduler.process.mainimpl.PhoneskyJobServiceMain and for client system
+07-27 10:53:36.953  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: size of service connections for service: com.android.vending/com.google.android.finsky.scheduler.process.mainimpl.PhoneskyJobServiceMainafter removal is 0
+07-27 10:53:36.953  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: size of client connections for client: systemafter removal is 45
+07-27 10:53:36.953  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: destroyService is called for service : com.android.vending/com.google.android.finsky.scheduler.process.mainimpl.PhoneskyJobServiceMain
+07-27 10:53:36.953  9320  9320 I xsu     : sending cmd:chmod 750 /storage
+07-27 10:53:36.954  9320  9320 I xsu     : sending cmd end:chmod 750 /storage
+07-27 10:53:36.954  9320  9320 I xsu     : free cmd end
+07-27 10:53:36.954  9320  9320 I xsu     : xsu_recv cmd before
+07-27 10:53:36.954  9320  9320 I xsu_api : xsu_recv memset enter
+07-27 10:53:36.954  9320  9320 I xsu_api : xsu_recv memset end
+07-27 10:53:36.954  8139  9321 I xsu_api : xsu_recv memset enter
+07-27 10:53:36.954  8139  9321 I xsu_api : xsu_recv memset end
+07-27 10:53:36.954  8139  9321 I xsu_api : xsu_recv retry end
+07-27 10:53:36.954  8139  9321 I xsu_api : ret=4, version=200, type=0, payload_size=22
+07-27 10:53:36.954  8139  9321 I xsu_api : xsu_recv type and len
+07-27 10:53:36.954  8139  9321 I xsu_api : header.type=0, header.payload_size=22, xsu_header_t=4
+07-27 10:53:36.954  8139  9321 I xsu_api : xsu_recv type and len end
+07-27 10:53:36.954  8139  9321 I xsud    : handle comming cmd:chmod 750 /storage
+07-27 10:53:36.954  2273  2612 V AlarmManager: set(android) : type=2 triggerAtTime=2026-07-27 14:41:41 win=3600000 maxElapsed=17357467 interval=0 flags=0x0 callingUid=1000
+07-27 10:53:36.961  2273  4249 I ActivityManager: Process com.mojang.minecraftpe (pid 9230) has died: prcp TOP 
+07-27 10:53:36.961  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: killProcess is called for pid : 9230
+07-27 10:53:36.961  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: process with pid 9230 is client
+07-27 10:53:36.961  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: size of service connections for service: com.android.vending/com.google.android.finsky.services.LicensingServiceafter removal is 0
+07-27 10:53:36.961  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: size of service connections for service: com.google.android.gms/.gcm.PushMessagingRegistrarProxyafter removal is 0
+07-27 10:53:36.961  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: removing client with pid 9230process namecom.mojang.minecraftpe
+07-27 10:53:36.961  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: destroyService is called for service : com.google.android.gms/.gcm.PushMessagingRegistrarProxy
+07-27 10:53:36.961  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: destroyService is called for service : com.google.android.gms/.games.chimera.GamesAndroidServiceProxy
+07-27 10:53:36.961  2273  2357 I libprocessgroup: Successfully killed process cgroup uid 10189 pid 9230 in 0ms
+07-27 10:53:36.961  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: destroyService is called for service : com.android.vending/com.google.android.finsky.services.LicensingService
+07-27 10:53:36.961  1248  1248 I Zygote  : Process 9230 exited due to signal 6 (Aborted)
+07-27 10:53:36.963   786   786 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 10:53:36.963  2273  4249 W ActivityTaskManager: servicetracker HIDL not available
+07-27 10:53:36.963  2273  4249 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 10:53:36.963  9320  9320 I xsu_api : xsu_recv retry end
+07-27 10:53:36.963  9320  9320 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:36.963  9320  9320 I xsu_api : xsu_recv type and len
+07-27 10:53:36.963  9320  9320 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:36.963  9320  9320 I xsu_api : xsu_recv type and len end
+07-27 10:53:36.963  9320  9320 I xsu     : xsu_recv cmd end
+07-27 10:53:36.963  9320  9320 I xsu     : end session!
+07-27 10:53:36.963  2273  2321 D DisplayManagerService: Drop pending events for gone uid 10189
+07-27 10:53:36.963  2273  2321 V GameManagerService: Game power mode OFF (process remomved or state changed to background)
+07-27 10:53:36.963   786   786 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 10:53:36.963  2273  4249 W ActivityTaskManager: servicetracker HIDL not available
+07-27 10:53:36.963  2273  4249 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 10:53:36.963   786   786 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 10:53:36.963  2273  4249 W ActivityTaskManager: servicetracker HIDL not available
+07-27 10:53:36.964  2273  4249 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 10:53:36.964   786   786 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 10:53:36.964  2273  4249 W ActivityTaskManager: servicetracker HIDL not available
+07-27 10:53:36.964  2273  4249 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 10:53:36.965  1397  1487 I ANDR-PWR-OPT: PowerAppClassifier: getAppType() 59: checking app [com.retrohrai.launcher] is type 4
+07-27 10:53:36.965  2273  4249 I DisplayRotation: rotationForOrientation: orientation=6, preferredRotation=1, sensorRotation=1, lastRotation=1
+07-27 10:53:36.965  2273  4249 I DisplayRotation: updateRotation: lastOrientation=6, oldRotation=1, newRotation=1
+07-27 10:53:36.966  1451  1451 E ANDR-PERF-LM: PrefAppsFeature: getData() 344: Could not get preferred apps, Prefered apps list is empty or device is low on memory.
+07-27 10:53:36.968  9324  9324 I xsu     : sending cmd:setenforce 0
+07-27 10:53:36.968  9324  9324 I xsu     : sending cmd end:setenforce 0
+07-27 10:53:36.968  9324  9324 I xsu     : free cmd end
+07-27 10:53:36.968  9324  9324 I xsu     : xsu_recv cmd before
+07-27 10:53:36.968  9324  9324 I xsu_api : xsu_recv memset enter
+07-27 10:53:36.968  9324  9324 I xsu_api : xsu_recv memset end
+07-27 10:53:36.968  8139  9325 I xsu_api : xsu_recv memset enter
+07-27 10:53:36.968  8139  9325 I xsu_api : xsu_recv memset end
+07-27 10:53:36.968  8139  9325 I xsu_api : xsu_recv retry end
+07-27 10:53:36.968  8139  9325 I xsu_api : ret=4, version=200, type=0, payload_size=16
+07-27 10:53:36.968  8139  9325 I xsu_api : xsu_recv type and len
+07-27 10:53:36.968  8139  9325 I xsu_api : header.type=0, header.payload_size=16, xsu_header_t=4
+07-27 10:53:36.968  8139  9325 I xsu_api : xsu_recv type and len end
+07-27 10:53:36.968  8139  9325 I xsud    : handle comming cmd:setenforce 0
+07-27 10:53:36.974  1516  1516 I BpBinder: onLastStrongRef automatically unlinking death recipients: 
+07-27 10:53:36.974  9324  9324 I xsu_api : xsu_recv retry end
+07-27 10:53:36.974  9324  9324 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:36.974  9324  9324 I xsu_api : xsu_recv type and len
+07-27 10:53:36.974  9324  9324 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:36.974  9324  9324 I xsu_api : xsu_recv type and len end
+07-27 10:53:36.974  9324  9324 I xsu     : xsu_recv cmd end
+07-27 10:53:36.974  9324  9324 I xsu     : end session!
+07-27 10:53:36.974  4105  4105 D DualScreenManager: setSecondScreenConnected: false
+07-27 10:53:36.974  4105  4105 D DualScreenManager: Reset second screen launch state: display disconnected
+07-27 10:53:36.974  4105  4105 D DualScreenManager: setGameActive: false
+07-27 10:53:36.994  1446  1446 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 10:53:36.994  1446  1446 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 10:53:36.994  1446  1824 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 10:53:36.994  1446  1824 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 10:53:36.994  1446  1446 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 10:53:36.994  1446  1446 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 10:53:36.995  1446  1824 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 10:53:36.995  1446  1824 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 10:53:36.995  4105  4472 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+07-27 10:53:37.006  1446  1824 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 10:53:37.006  1446  1824 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 10:53:37.008  4105  4472 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+07-27 10:53:37.008  2273  2320 V WindowManager: Sent Transition #15 createdAt=07-27 10:53:36.945 via request=TransitionRequestInfo { type = CLOSE, triggerTask = null, remoteTransition = null, displayChange = null }
+07-27 10:53:37.008  2273  2320 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+07-27 10:53:37.008  2273  2320 V WindowManager:     info={id=15 t=CLOSE f=0x10 trk=0 r=[0@Point(0, 0)] c=[{WCT{RemoteToken{5d9f19a Task{31cd6b6 #1 type=home}}} m=TO_FRONT f=MOVE_TO_TOP leash=Surface(name=Task=1)/@0x63796fb sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0},{WCT{RemoteToken{d3b342b Task{1c97abe #120 type=standard A=10189:com.mojang.minecraftpe}}} m=CLOSE f=NONE leash=Surface(name=Task=120)/@0xee1d8a5 sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0}]}
+07-27 10:53:37.008  2624  2658 V WindowManagerShell: onTransitionReady android.os.BinderProxy@1ecb750: {id=15 t=CLOSE f=0x10 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@1edf87c} m=TO_FRONT f=MOVE_TO_TOP leash=Surface(name=Task=1)/@0x9849d49 sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0},{WCT{android.window.IWindowContainerToken$Stub$Proxy@ff0c505} m=CLOSE f=NONE leash=Surface(name=Task=120)/@0x4d9664e sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0}]}
+07-27 10:53:37.008  2624  2658 V WindowManagerShell: Playing animation for (#15)android.os.BinderProxy@1ecb750@0
+07-27 10:53:37.008  2624  2658 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultMixedHandler@50df967
+07-27 10:53:37.008  2624  2658 V WindowManagerShell:  try handler com.android.wm.shell.keyguard.KeyguardTransitionHandler@573bed0
+07-27 10:53:37.008  2624  2658 V WindowManagerShell:  try handler com.android.wm.shell.activityembedding.ActivityEmbeddingController@b4bcec9
+07-27 10:53:37.008  2624  2658 V WindowManagerShell:  try handler com.android.wm.shell.recents.RecentsTransitionHandler@be79ce
+07-27 10:53:37.008  2624  2658 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+07-27 10:53:37.008  2624  2658 V WindowManagerShell:  try handler com.android.wm.shell.pip.PipTransition@d8ad0ef
+07-27 10:53:37.008  2624  2658 V WindowManagerShell:  try handler com.android.wm.shell.splitscreen.StageCoordinator@79df7fc
+07-27 10:53:37.008  2624  2658 V WindowManagerShell:  try handler com.android.wm.shell.transition.RemoteTransitionHandler@8b98e85
+07-27 10:53:37.009  2624  2658 V WindowManagerShell: Transition doesn't have explicit remote, search filters for match for {id=15 t=CLOSE f=0x10 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@1edf87c} m=TO_FRONT f=MOVE_TO_TOP leash=Surface(name=Task=1)/@0x9849d49 sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0},{WCT{android.window.IWindowContainerToken$Stub$Proxy@ff0c505} m=CLOSE f=NONE leash=Surface(name=Task=120)/@0x4d9664e sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0}]}
+07-27 10:53:37.009  2624  2658 V WindowManagerShell:  Delegate animation for #15 to null
+07-27 10:53:37.009  2624  2658 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultTransitionHandler@4c64da
+07-27 10:53:37.009  2624  2658 V WindowManagerShell: start default transition animation, info = {id=15 t=CLOSE f=0x10 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@1edf87c} m=TO_FRONT f=MOVE_TO_TOP leash=Surface(name=Task=1)/@0x9849d49 sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0},{WCT{android.window.IWindowContainerToken$Stub$Proxy@ff0c505} m=CLOSE f=NONE leash=Surface(name=Task=120)/@0x4d9664e sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0}]}
+07-27 10:53:37.009  2624  2658 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@b4be78b animAttr=0xb type=CLOSE isEntrance=false
+07-27 10:53:37.009  2624  2658 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@97f126 animAttr=0xa type=CLOSE isEntrance=true
+07-27 10:53:37.011  2624  2658 V WindowManagerShell:  animated by com.android.wm.shell.transition.DefaultTransitionHandler@4c64da
+07-27 10:53:37.011  2273  2376 I DisplayBrightnessStrategySelector: Changing the DisplayBrightnessStrategy from InvalidBrightnessStrategy toOverrideBrightnessStrategy for display 0
+07-27 10:53:37.012  2273  2376 V DisplayPowerController2[0]: Brightness [0.39215687] reason changing to: 'override', previous reason: 'manual'.
+07-27 10:53:37.012  2273  2376 I DisplayPowerController2[0]: BrightnessEvent: disp=0, physDisp=local:4630946852602928515, brt=0.39215687, initBrt=0.40623304, rcmdBrt=NaN, preBrt=NaN, lux=0.0, preLux=0.0, hbmMax=1.0, hbmMode=off, rbcStrength=50, thrmMax=1.0, powerFactor=1.0, wasShortTermModelActive=false, flags=, reason=override, autoBrightness=false, strategy=OverrideBrightnessStrategy
+07-27 10:53:37.012  2273  2323 D DisplayManagerService: Ignore redundant display event 0/4 to 10195/6073
+07-27 10:53:37.024  4105  4472 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+07-27 10:53:37.025  2273  2693 D InputDispatcher: onFocusChangedLocked
+07-27 10:53:37.025  2273  4249 I ImeTracker: com.retrohrai.launcher:16d5264d: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_SAME_WINDOW_FOCUSED_WITHOUT_EDITOR
+07-27 10:53:37.025  2273  4249 I ImeTracker: com.retrohrai.launcher:16d5264d: onCancelled at PHASE_SERVER_SHOULD_HIDE
+07-27 10:53:37.026  4807  4807 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():2276 
+07-27 10:53:37.026  4807  4807 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1460 onStartInput(EditorInfo{EditorInfo{packageName=com.retrohrai.launcher, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+07-27 10:53:37.026  4807  4807 W LatinIMEBase: LatinIMEBase.updateInputViewCoverNavigation():322 Null input view, cannot update padding!
+07-27 10:53:37.026  4807  5003 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatusInternal():129 repeatCheckTimes = 0, locked = false
+07-27 10:53:37.026  4807  5003 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatusInternal():129 repeatCheckTimes = 1, locked = false
+07-27 10:53:37.027  2273  4249 W PackageConfigPersister: App-specific configuration not found for packageName: com.retrohrai.launcher and userId: 0
+07-27 10:53:37.041  4105  4472 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+07-27 10:53:37.041  2624  2680 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@e1d5edd
+07-27 10:53:37.041  2273  4573 D CoreBackPreview: Window{d161158 u0 Splash Screen com.mojang.minecraftpe EXITING}: Setting back callback null
+07-27 10:53:37.041  2273  4573 W InputManager-JNI: Input channel object 'd161158 Splash Screen com.mojang.minecraftpe (client)' was disposed without first being removed with the input manager!
+07-27 10:53:37.064  9331  9331 I xsu     : sending cmd:cmd game set --mode 1 pl.ablogger.app
+07-27 10:53:37.065  9331  9331 I xsu     : sending cmd end:cmd game set --mode 1 pl.ablogger.app
+07-27 10:53:37.065  9331  9331 I xsu     : free cmd end
+07-27 10:53:37.065  9331  9331 I xsu     : xsu_recv cmd before
+07-27 10:53:37.065  9331  9331 I xsu_api : xsu_recv memset enter
+07-27 10:53:37.065  9331  9331 I xsu_api : xsu_recv memset end
+07-27 10:53:37.065  8139  9334 I xsu_api : xsu_recv memset enter
+07-27 10:53:37.065  8139  9334 I xsu_api : xsu_recv memset end
+07-27 10:53:37.065  8139  9334 I xsu_api : xsu_recv retry end
+07-27 10:53:37.065  8139  9334 I xsu_api : ret=4, version=200, type=0, payload_size=41
+07-27 10:53:37.065  8139  9334 I xsu_api : xsu_recv type and len
+07-27 10:53:37.065  8139  9334 I xsu_api : header.type=0, header.payload_size=41, xsu_header_t=4
+07-27 10:53:37.065  8139  9334 I xsu_api : xsu_recv type and len end
+07-27 10:53:37.065  8139  9334 I xsud    : handle comming cmd:cmd game set --mode 1 pl.ablogger.app
+07-27 10:53:37.072  2273  4573 I GameManagerService: Package Name: pl.ablogger.app FPS: 0 Scaling: -1.0
+07-27 10:53:37.072  2273  4573 D GameManagerService: No-op for attempt to set game mode for non-game app: pl.ablogger.app
+07-27 10:53:37.073  9331  9331 I xsu_api : xsu_recv retry end
+07-27 10:53:37.073  9331  9331 I xsu_api : ret=4, version=200, type=1, payload_size=128
+07-27 10:53:37.073  9331  9331 I xsu_api : xsu_recv type and len
+07-27 10:53:37.073  9331  9331 I xsu_api : header.type=1, header.payload_size=128, xsu_header_t=4
+07-27 10:53:37.073  9331  9331 I xsu_api : xsu_recv type and len end
+07-27 10:53:37.073  9331  9331 I xsu     : xsu_recv cmd end
+07-27 10:53:37.073  9331  9331 I xsu     : xsu_recv cmd before
+07-27 10:53:37.073  9331  9331 I xsu_api : xsu_recv memset enter
+07-27 10:53:37.073  9331  9331 I xsu_api : xsu_recv memset end
+07-27 10:53:37.073  9331  9331 I xsu_api : xsu_recv retry end
+07-27 10:53:37.073  9331  9331 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:37.073  9331  9331 I xsu_api : xsu_recv type and len
+07-27 10:53:37.073  9331  9331 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:37.073  9331  9331 I xsu_api : xsu_recv type and len end
+07-27 10:53:37.073  9331  9331 I xsu     : xsu_recv cmd end
+07-27 10:53:37.073  9331  9331 I xsu     : end session!
+07-27 10:53:37.166  9341  9341 I xsu     : sending cmd:chmod 666 /sys/devices/system/cpu/cpu2/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu2/online; chmod 666 /sys/devices/system/cpu/cpu3/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu3/online; chmod 666 /sys/devices/system/cpu/cpu4/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu4/online
+07-27 10:53:37.166  9341  9341 I xsu     : sending cmd end:chmod 666 /sys/devices/system/cpu/cpu2/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu2/online; chmod 666 /sys/devices/system/cpu/cpu3/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu3/online; chmod 666 /sys/devices/system/cpu/cpu4/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu4/online
+07-27 10:53:37.166  9341  9341 I xsu     : free cmd end
+07-27 10:53:37.166  9341  9341 I xsu     : xsu_recv cmd before
+07-27 10:53:37.166  9341  9341 I xsu_api : xsu_recv memset enter
+07-27 10:53:37.166  9341  9341 I xsu_api : xsu_recv memset end
+07-27 10:53:37.167  8139  9344 I xsu_api : xsu_recv memset enter
+07-27 10:53:37.167  8139  9344 I xsu_api : xsu_recv memset end
+07-27 10:53:37.167  8139  9344 I xsu_api : xsu_recv retry end
+07-27 10:53:37.167  8139  9344 I xsu_api : ret=4, version=200, type=0, payload_size=317
+07-27 10:53:37.167  8139  9344 I xsu_api : xsu_recv type and len
+07-27 10:53:37.167  8139  9344 I xsu_api : header.type=0, header.payload_size=317, xsu_header_t=4
+07-27 10:53:37.167  8139  9344 I xsu_api : xsu_recv type and len end
+07-27 10:53:37.167  8139  9344 I xsud    : handle comming cmd:chmod 666 /sys/devices/system/cpu/cpu2/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu2/online; chmod 666 /sys/devices/system/cpu/cpu3/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu3/online; chmod 666 /sys/devices/system/cpu/cpu4/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu4/online
+07-27 10:53:37.184  9341  9341 I xsu_api : xsu_recv retry end
+07-27 10:53:37.184  9341  9341 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:37.184  9341  9341 I xsu_api : xsu_recv type and len
+07-27 10:53:37.184  9341  9341 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:37.184  9341  9341 I xsu_api : xsu_recv type and len end
+07-27 10:53:37.184  9341  9341 I xsu     : xsu_recv cmd end
+07-27 10:53:37.184  9341  9341 I xsu     : end session!
+07-27 10:53:37.210  4105  4105 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@72062ed
+07-27 10:53:37.210  2273  4249 D CoreBackPreview: Window{e8397a u0 com.retrohrai.launcher/com.retrohrai.launcher.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@e01b518, mPriority=-1, mIsAnimationCallback=false}
+07-27 10:53:37.242  1354  3724 I vendor.qti.bluetooth@1.1-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+07-27 10:53:37.242  1354  3724 D vendor.qti.bluetooth@1.1-ibs_handler: SerialClockVote: vote for UART CLK ON
+07-27 10:53:37.242  1354  3724 D vendor.qti.bluetooth@1.1-wake_lock: Acquire wakelock is acquired 
+07-27 10:53:37.242  1354  3724 I vendor.qti.bluetooth@1.1-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+07-27 10:53:37.243  2774  3726 I bt_stack: [INFO:btm_ble_gap.cc(3263)] btm_ble_process_adv_pkt_cont Data Complete xx:xx:xx:xx:xx:xx
+07-27 10:53:37.243  2774  3726 I bt_stack: [INFO:btm_ble_gap.cc(3263)] btm_ble_process_adv_pkt_cont Data Complete xx:xx:xx:xx:xx:xx
+07-27 10:53:37.243  2774  3726 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+07-27 10:53:37.243  2774  3224 D BluetoothAdapterService: getIdentityAddress null retruning xx:xx:xx:xx:xx:xx
+07-27 10:53:37.244  3263  6019 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+07-27 10:53:37.246  1459  1459 I vendor.qti.hardware.servicetrackeraidl-service: destroyService is called for service : com.google.android.gms/.chimera.PersistentIntentOperationService
+07-27 10:53:37.268  9349  9349 I xsu     : sending cmd:chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; echo 364800 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; echo 2265600 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; echo 3148800 > /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpu
+07-27 10:53:37.268  9349  9349 I xsu     : sending cmd end:chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; echo 364800 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; echo 2265600 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; echo 3148800 > /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; chmod 644 /sys/devices/system/cpu
+07-27 10:53:37.268  9349  9349 I xsu     : free cmd end
+07-27 10:53:37.268  9349  9349 I xsu     : xsu_recv cmd before
+07-27 10:53:37.268  9349  9349 I xsu_api : xsu_recv memset enter
+07-27 10:53:37.268  9349  9349 I xsu_api : xsu_recv memset end
+07-27 10:53:37.268  8139  9352 I xsu_api : xsu_recv memset enter
+07-27 10:53:37.268  8139  9352 I xsu_api : xsu_recv memset end
+07-27 10:53:37.268  8139  9352 I xsu_api : xsu_recv retry end
+07-27 10:53:37.268  8139  9352 I xsu_api : ret=4, version=200, type=0, payload_size=1963
+07-27 10:53:37.268  8139  9352 I xsu_api : xsu_recv type and len
+07-27 10:53:37.268  8139  9352 I xsu_api : header.type=0, header.payload_size=1963, xsu_header_t=4
+07-27 10:53:37.268  8139  9352 I xsu_api : xsu_recv type and len end
+07-27 10:53:37.268  8139 29811 I xsud    : handle comming cmd:chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; echo 364800 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; echo 2265600 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; echo 3148800 > /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; chmod 644 /sys/devices/system/
+07-27 10:53:37.282  1349  1668 E Diag_Lib: diag: Diag_LSM_Init: invoked for pid: 1349 with init_count: 0
+07-27 10:53:37.283  1349  1668 E Diag_Lib: diag:failed to connect to diag socket
+07-27 10:53:37.283  1349  1668 E Diag_Lib:  Diag_LSM_Init: Failed to open handle to diag driver, error = 111
+07-27 10:53:37.283  1349  1668 I ATS     : vendor/qcom/proprietary/args/acdb/ats/transports/diag/linux/actp/src/actp.c:actp_diag_init:105 Error[1]: Failed to initialize DIAG
+07-27 10:53:37.283  1349  1668 E ATS     : vendor/qcom/proprietary/args/acdb/ats/src/ats.c:ats_init:143 Error[1]: Failed to initialize Diag
+07-27 10:53:37.283  1349  1668 E ATS     : vendor/qcom/proprietary/args/acdb/ats/src/ats.c:ats_init:263 Error[1]: Failed to initialize ATS
+07-27 10:53:37.283  1349  1668 E AGM: API: ats_init_thread: 65 ats_init failed retry 67 err 1
+07-27 10:53:37.283  1354  3724 I vendor.qti.bluetooth@1.1-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+07-27 10:53:37.283  1354  3724 D vendor.qti.bluetooth@1.1-ibs_handler: SerialClockVote: vote for UART CLK OFF
+07-27 10:53:37.329  9349  9349 I xsu_api : xsu_recv retry end
+07-27 10:53:37.329  9349  9349 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 10:53:37.329  9349  9349 I xsu_api : xsu_recv type and len
+07-27 10:53:37.329  9349  9349 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 10:53:37.329  9349  9349 I xsu_api : xsu_recv type and len end
+07-27 10:53:37.329  9349  9349 I xsu     : xsu_recv cmd end
+07-27 10:53:37.329  9349  9349 I xsu     : end session!
+07-27 10:53:37.329  8139 29811 F libc    : stack corruption detected (-fstack-protector)
+07-27 10:53:37.329  8139 29811 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 9352 (xsud), pid 8139 (xsud)
+07-27 10:53:37.335  9368  9368 I crash_dump64: obtaining output fd from tombstoned, type: kDebuggerdTombstoneProto
+07-27 10:53:37.335  1096  1096 I tombstoned: received crash request for pid 9352
+07-27 10:53:37.335  9368  9368 I crash_dump64: performing dump of process 8139 (target tid = 9352)
+07-27 10:53:37.335  9368  9368 E DEBUG   : failed to read process info: failed to open /proc/8139: No such file or directory
+07-27 10:53:37.338  9368  9368 F DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+07-27 10:53:37.338  9368  9368 F DEBUG   : Build fingerprint: 'AYANEO/AYANEO_Pocket_FIT/PocketFIT:14/01.00_20251226_private_user/eng.scm.20251226.033130:user/release-keys'
+07-27 10:53:37.338  9368  9368 F DEBUG   : Revision: '0'
+07-27 10:53:37.338  9368  9368 F DEBUG   : ABI: 'arm64'
+07-27 10:53:37.338  9368  9368 F DEBUG   : Timestamp: 2026-07-27 10:53:37.335785912+0200
+07-27 10:53:37.338  9368  9368 F DEBUG   : Process uptime: 0s
+07-27 10:53:37.338  9368  9368 F DEBUG   : Cmdline: /product/bin/xsud --root_seclabel=u:r:su:s0
+07-27 10:53:37.338  9368  9368 F DEBUG   : pid: 8139, tid: 9352, name: xsud  >>> /product/bin/xsud <<<
+07-27 10:53:37.338  9368  9368 F DEBUG   : uid: 0
+07-27 10:53:37.338  9368  9368 F DEBUG   : tagged_addr_ctrl: 0000000000000001 (PR_TAGGED_ADDR_ENABLE)
+07-27 10:53:37.338  9368  9368 F DEBUG   : pac_enabled_keys: 000000000000000f (PR_PAC_APIAKEY, PR_PAC_APIBKEY, PR_PAC_APDAKEY, PR_PAC_APDBKEY)
+07-27 10:53:37.338  9368  9368 F DEBUG   : signal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+07-27 10:53:37.338  9368  9368 F DEBUG   : Abort message: 'stack corruption detected (-fstack-protector)'
+07-27 10:53:37.338  9368  9368 F DEBUG   :     x0  0000000000000000  x1  0000000000002488  x2  0000000000000006  x3  0000007b21803730
+07-27 10:53:37.338  9368  9368 F DEBUG   :     x4  607372652c271f63  x5  607372652c271f63  x6  607372652c271f63  x7  7f7f7f7f7f7f7f7f
+07-27 10:53:37.338  9368  9368 F DEBUG   :     x8  00000000000000f0  x9  0000007e12a9a1b8  x10 0000000000000001  x11 0000007e12ae2924
+07-27 10:53:37.338  9368  9368 F DEBUG   :     x12 000000006a671c91  x13 000000007fffffff  x14 0000000000008e5a  x15 0000000059d78279
+07-27 10:53:37.338  9368  9368 F DEBUG   :     x16 0000007e12b4ad18  x17 0000007e12b263b0  x18 0000007b210a0000  x19 0000000000001fcb
+07-27 10:53:37.338  9368  9368 F DEBUG   :     x20 0000000000002488  x21 00000000ffffffff  x22 0000000000001fcb  x23 0000007b21805000
+07-27 10:53:37.338  9368  9368 F DEBUG   :     x24 0000007b21804cb0  x25 0000007b21804cb0  x26 0000007b21804ff8  x27 00000000000fc000
+07-27 10:53:37.338  9368  9368 F DEBUG   :     x28 00000000000fe000  x29 0000007b218037b0
+07-27 10:53:37.338  9368  9368 F DEBUG   :     lr  0000007e12ad3624  sp  0000007b21803710  pc  0000007e12ad3650  pst 0000000000001000
+07-27 10:53:37.338  9368  9368 F DEBUG   : 4 total frames
+07-27 10:53:37.338  9368  9368 F DEBUG   : backtrace:
+07-27 10:53:37.338  9368  9368 F DEBUG   :       #00 pc 000000000005b650  /apex/com.android.runtime/lib64/bionic/libc.so (abort+168) (BuildId: 50118287324a156bc7be11d3d940c7be)
+07-27 10:53:37.338  9368  9368 F DEBUG   :       #01 pc 0000000000071d64  /apex/com.android.runtime/lib64/bionic/libc.so (__stack_chk_fail+24) (BuildId: 50118287324a156bc7be11d3d940c7be)
+07-27 10:53:37.338  9368  9368 F DEBUG   :       #02 pc 0000000000002f8c  /product/bin/xsud (xsu_conn_handler.cfi+856) (BuildId: cf12e64c40275bca4c064d86f58ec6f5)
+07-27 10:53:37.338  9368  9368 F DEBUG   :       #03 pc 2000006d6863203b  <unknown>
+07-27 10:53:37.339  2273  2640 W NativeCrashListener: Couldn't find ProcessRecord for pid 8139
+07-27 10:53:37.339  1096  1096 E tombstoned: Tombstone written to: tombstone_23
+07-27 10:53:37.339  2273  2462 E NativeTombstoneManager: Tombstone's UID (0) not an app, ignoring
+07-27 10:53:37.339  2273  2462 E NativeTombstoneManager: Tombstone's UID (0) not an app, ignoring
