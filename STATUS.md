@@ -743,7 +743,21 @@ footprint at all — e.g., revisiting whether AutoTDP can delay its very
 first foreground-change write by a few hundred ms specifically to let
 AYASpace's own hook finish first (untested idea from step 1, still on the
 table), since the pile-up's actual size, not just our small slice of it,
-is what seems to matter.
+is what seems to matter. **User's next research thread (2026-07-27,
+picking up this evening)**: dig further into why `com_set_performance_cpu`
+no-ops for multi-core policies sent one `cpuId` at a time (see this
+file's earlier step-1 update and `research/pulse-for-aya/README.md`'s
+matching section) — user's hypothesis is that `ayasettings` itself likely
+only ever drives a whole-cluster cap through this command, never true
+independent per-core control, which would make the observed behavior a
+hardware/protocol constraint (one shared clock per `cpufreq` policy) NOT
+an AIDL/receiver bug — worth confirming against
+`ayaspace-teardown`'s decompiled `PerformanceViewModel`/`CpuFragment`
+source (does the stock UI even expose per-core sliders within a shared
+policy, or only one shared cap for the whole cluster?) before assuming
+the current "send the whole group together" workaround is the best
+achievable, since if the UI itself can't do per-core either, that's a
+real answer, not a gap in this app's implementation.
 
 **Update (2026-07-27): step 2 implemented, builds clean, not yet run
 on-device.** `startAutoTdp()`'s Balanced-governor write (the exact
