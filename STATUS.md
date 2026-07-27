@@ -6,6 +6,35 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## To investigate next session: native Minecraft fails to launch while PULSE is running
+
+Observed on-device (2026-07-26): with `pulse-for-aya` active, native Android
+**Minecraft fails to launch**; after a reboot with PULSE off, it launches
+fine. Native Android **Stardew Valley launches fine with PULSE active** —
+so this isn't "any app fails while PULSE runs", it's specific to something
+Minecraft's launch path does. Not yet root-caused. Three testable
+hypotheses, in order of suspicion, none confirmed yet:
+
+1. **`aggressivePark`** (`AutoTuneController`) offlines the prime CPU cores
+   when they're not the bottleneck — if Minecraft's engine sizes a thread
+   pool off the live core count at launch, launching while cores are
+   offline could fail outright rather than just run slower. Stardew Valley
+   (simpler 2D engine) may not do this. Test: reproduce with
+   `aggressivePark` OFF but the rest of PULSE active.
+2. **`RefreshRateController`** forces `peak_refresh_rate`/`min_refresh_rate`
+   via `settings put system` — could conflict with however Minecraft
+   negotiates its rendering surface's display mode at creation.
+3. **`GpuFloorController`** locks `min_pwrlevel`/`max_pwrlevel` (`chmod
+   444`) — if the GPU is capped too low exactly when Minecraft's GL/Vulkan
+   context initializes, context creation could fail.
+
+**Next session's first data-gathering step**: capture `logcat` across the
+exact moment of a failed Minecraft launch (ANR vs. crash vs. silent no-op
+would each point to a different one of the three above), and check whether
+`aggressivePark` was actually enabled in the session where this was
+observed — that's the most invasive of the three levers and the easiest to
+isolate first (retry with it off, everything else unchanged).
+
 ## ROOT CAUSE FOUND (2026-07-26): the empty-CSV bug is `xsud` segfaulting on long `xsu -c` commands
 
 Follow-up to INCIDENT #3 below. Root-caused live on-device, outside any
