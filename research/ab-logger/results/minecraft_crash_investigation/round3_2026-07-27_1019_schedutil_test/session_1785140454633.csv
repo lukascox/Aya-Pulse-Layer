@@ -1,0 +1,15 @@
+timestamp,sample_idx,foreground_pkg,fps,frame_count,p0_freq,p0_governor,p2_freq,p2_governor,p5_freq,p5_governor,p7_freq,p7_governor,gpu_freq_hz,gpu_busy_pct,temp_cpu_max_c,temp_gpu_max_c,temp_skin_c,temp_battery_c,fan_signal,fan_signal_unit,battery_current_ma,battery_voltage_mv,pulse_installed,pulse_service_running
+1785140455787,0,com.retrohrai.launcher,51.4,31,2265600,performance,3148800,performance,2956800,performance,3302400,performance,231000000,16,66.7,51.2,43.7,30.0,3020,fan_rpm_state,986962,8024400,true,true
+1785140461943,1,com.kei.pulse,60.0,126,2265600,performance,3148800,performance,2956800,performance,3302400,performance,231000000,16,57.4,48.1,43.7,30.0,1202,fan_rpm_state,1051966,8043863,true,true
+1785140467910,2,com.kei.pulse,60.0,126,2265600,performance,3148800,performance,2956800,performance,3302400,performance,231000000,16,57.0,47.3,43.5,30.0,762,fan_rpm_state,901816,8026735,true,true
+1785140473952,3,com.kei.pulse,29.3,127,2265600,performance,3148800,performance,2956800,performance,3302400,performance,231000000,8,50.8,46.5,43.6,30.0,762,fan_rpm_state,1099575,8059433,true,true
+1785140479811,4,com.retrohrai.launcher,41.5,48,2265600,performance,3148800,performance,2956800,performance,3302400,performance,231000000,22,58.1,46.9,43.7,30.0,761,fan_rpm_state,1041895,8052816,true,true
+1785140486078,5,com.mojang.minecraftpe,50.4,90,2265600,performance,3148800,performance,2956800,performance,3302400,performance,231000000,8,86.1,58.3,45.0,30.0,615,fan_rpm_state,146488,7936816,true,true
+1785140492502,6,com.mojang.minecraftpe,44.1,126,2265600,schedutil,3148800,schedutil,2956800,schedutil,3302400,schedutil,231000000,11,93.0,63.0,46.4,30.0,2482,fan_rpm_state,-10071,7909957,true,true
+1785140498769,7,com.mojang.minecraftpe,41.4,126,1344000,schedutil,1824000,schedutil,2956800,schedutil,2688000,schedutil,231000000,25,88.4,57.9,47.7,30.0,4398,fan_rpm_state,329598,7952581,true,true
+1785140505572,8,com.mojang.minecraftpe,60.0,126,1017600,schedutil,1286400,schedutil,1286400,schedutil,1363200,schedutil,231000000,37,65.7,55.5,47.9,30.0,1730,fan_rpm_state,718706,8011554,true,true
+1785140512303,9,com.mojang.minecraftpe,60.0,126,1248000,schedutil,1286400,schedutil,1286400,schedutil,480000,schedutil,231000000,37,61.1,52.8,47.7,30.0,1411,fan_rpm_state,907310,8038219,true,true
+1785140519072,10,com.mojang.minecraftpe,60.0,126,1248000,schedutil,1286400,schedutil,1286400,schedutil,1363200,schedutil,231000000,42,59.2,54.3,47.9,31.0,1730,fan_rpm_state,783710,8024594,true,true
+1785140525783,11,com.mojang.minecraftpe,60.0,126,1248000,schedutil,1286400,schedutil,1286400,schedutil,480000,schedutil,231000000,46,59.6,52.8,48.1,31.0,1728,fan_rpm_state,970483,8027708,true,true
+1785140532632,12,com.mojang.minecraftpe,59.5,126,1248000,schedutil,1286400,schedutil,1286400,schedutil,1363200,schedutil,231000000,47,63.0,54.7,48.4,31.0,1759,fan_rpm_state,923789,8044252,true,true
+1785140539449,13,com.mojang.minecraftpe,60.0,126,1248000,schedutil,1286400,schedutil,1286400,schedutil,1363200,schedutil,231000000,47,61.6,55.1,48.7,31.0,1904,fan_rpm_state,752582,8024400,true,true

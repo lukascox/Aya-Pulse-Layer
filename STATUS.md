@@ -212,6 +212,44 @@ itself is cleared as a suspect and the search moves elsewhere (e.g.
 `aggressivePark`, the write/chmod cadence); if it doesn't, that's a strong
 signal without needing the still-unresolved `logcat` capture at all.
 
+**Update (2026-07-27): it crashed again under `schedutil` — governor choice
+is cleared as the cause.** Three new sessions pulled to
+`research/ab-logger/results/minecraft_crash_investigation/round3_2026-07-27_1019_schedutil_test/`
+(`NOTES.md` there has the file-level index). `_454633`: Minecraft launches,
+AutoTDP engages `schedutil` at row 6 with a temp spike to **93.0°C** —
+notably the same shape as round 2's 93.8°C spike right as PULSE engaged,
+just with a different governor underneath — plays fine for ~47s afterward
+(temps back to 55-65°C, steady FPS), **then the session truncates with no
+further rows**, same abrupt-cutoff shape as round 1's crashes. Not yet
+confirmed by the user whether this matched the same physical symptom (UI
+slowdown → boot logo → unresponsive) as before — worth confirming, but
+given every truncation in this investigation so far has matched a real
+observed crash, treat it as one until shown otherwise.
+
+**This rules out `walt` as the root cause** — the crash isn't tied to
+which governor is active, it reproduces under the vendor's own validated
+choice too. Revised leading theory: **the trigger is PULSE's AutoTDP
+control loop actually being active/writing** (the `chmod
+666`→`echo`→`chmod 444/644` dance on `scaling_max_freq`/`min_pwrlevel`
+every time it trims/raises a cap, at whatever cadence `AutoTuneController`
+polls), not the specific governor or raw heat alone — `_597194` (round 2)
+proved 96°C alone with PULSE inactive is fine. The **temp spike exactly at
+the moment PULSE engages**, seen in both round 2 and round 3, is also
+worth treating as a real correlate now that it's shown up twice, not a
+one-off. Candidates still open: `aggressivePark` state (still not logged
+by `ab-logger` — unknown whether it was on for either crash), the write/
+chmod cadence itself, or something in `RootExec`/`xsu` call concurrency
+under real gameplay load (echoing the older, weaker "concurrency" trigger
+hypothesis from `xsu-capability-probe/FINDINGS.md`).
+
+**Next session, in priority order**: (1) the `t1.txt`/`t2.txt` backgrounded-
+`xsu` diagnostic above is now higher priority, not lower — governor-
+swapping is exhausted as a cheap lever, and getting `logcat` working is the
+most direct way to actually see what crashes instead of continuing to
+guess from CSV shape; (2) if logcat stays unreachable, next cheapest lever
+is testing with `aggressivePark` explicitly OFF (confirm/deny that
+specific suspect) while everything else stays as-is.
+
 ## ROOT CAUSE FOUND (2026-07-26): the empty-CSV bug is `xsud` segfaulting on long `xsu -c` commands
 
 Follow-up to INCIDENT #3 below. Root-caused live on-device, outside any

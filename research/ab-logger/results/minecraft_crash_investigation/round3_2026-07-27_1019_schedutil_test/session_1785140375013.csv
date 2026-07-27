@@ -1,0 +1,4 @@
+timestamp,sample_idx,foreground_pkg,fps,frame_count,p0_freq,p0_governor,p2_freq,p2_governor,p5_freq,p5_governor,p7_freq,p7_governor,gpu_freq_hz,gpu_busy_pct,temp_cpu_max_c,temp_gpu_max_c,temp_skin_c,temp_battery_c,fan_signal,fan_signal_unit,battery_current_ma,battery_voltage_mv,pulse_installed,pulse_service_running
+1785140375975,0,com.retrohrai.launcher,42.7,43,2265600,performance,3148800,performance,2956800,performance,3302400,performance,231000000,16,49.6,41.0,35.8,30.0,733,fan_rpm_state,-473339,7783642,true,true
+1785140381919,1,com.retrohrai.launcher,35.3,127,2265600,schedutil,3148800,schedutil,960000,schedutil,3052800,schedutil,231000000,9,55.0,42.6,36.2,30.0,732,fan_rpm_state,-638138,7784226,true,true
+1785140388197,2,pl.ablogger.app,n/a (low_sample_count=0),0,2150400,schedutil,614400,schedutil,960000,schedutil,480000,schedutil,231000000,20,46.1,39.9,36.4,30.0,703,fan_rpm_state,-306709,7806609,true,true

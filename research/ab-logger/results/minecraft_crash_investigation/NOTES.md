@@ -31,3 +31,24 @@ Pulled after that build. Four sessions:
 **Still no `logcat_*.log` in this round either** — check on-device at
 `/sdcard/apl_ab_logs/` for a file matching that pattern before assuming the
 capture code is broken; it may just not have been pulled.
+
+## round3_2026-07-27_1019_schedutil_test/
+
+Pulled after `pulse-for-aya` was rebuilt with `schedutil` instead of `walt`
+for Balanced/AutoTDP (commit `64dcb18`). Three genuinely new sessions (the
+pull also re-grabbed 4 already-known round-2 files, byte-identical,
+discarded rather than duplicated here):
+- `_371966` — 1 sample, immediate stop.
+- `_375013` — 3 samples, governor confirmed `schedutil` from row 1, brief.
+- `_454633` — 14 samples: Minecraft launches under `performance` (row 5),
+  AutoTDP engages `schedutil` at row 6 with a temp spike to 93.0°C (same
+  shape as round 2's 93.8°C spike right as PULSE engaged, different
+  governor) — plays fine for ~47s under `schedutil` (rows 6-13, temps back
+  down to 55-65°C, FPS steady), **then the file truncates** — no further
+  rows, matching round 1's abrupt-cutoff shape more than round 2's
+  captured-recovery-window shape. Still no `logcat_*.log` anywhere in this
+  pull either.
+
+**Headline result: the crash reproduces under `schedutil`, not just
+`walt`.** Rules out governor choice as the root cause — see STATUS.md for
+the revised theory and next steps.
