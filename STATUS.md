@@ -672,6 +672,92 @@ activation → crash, compare against the 59s/73s/69s baseline already on
 record) to see whether it actually helps. GPU cap could follow the same
 pattern once CPU governor is proven out.
 
+**Update (2026-07-27): step 2 build's first on-device test hit round 5's
+OTHER crash mechanism twice before AutoTDP ever engaged — inconclusive
+for step 2 itself, but a new confirming data point for round 5.** Log:
+`research/ab-logger/results/minecraft_crash_step2_test.log` (host-side
+`adb logcat`, cable connected). Minecraft launched twice in a row
+(auto-relaunch), both times crashing its own process within ~0.6s
+(`Fatal signal 6 SIGABRT`, `cpuinfo_get_packages_count` — the exact
+XNNPACK/`cpuinfo` signature from round 5), both times immediately
+preceded by the same non-repo `chmod 750 /storage; setenforce 0` hook
+already implicated there. No device reboot, matching round 5. Critically:
+`PulseAidl: bind ready=true` fired at 14:11:39 (well before either
+crash), but **no `engage governor via AIDL`/`...via xsu fallback` log
+ever appears** — `startAutoTdp()` never ran, because the crash lands
+faster (~0.6s post-launch) than `pulse-for-aya`'s foreground-poll loop
+reacts. So this run says nothing about whether step 2 helps — it hit an
+earlier, already-documented, pulse-independent failure mode before
+AutoTDP (and therefore the governor write step 2 changed) ever got a
+chance to run. **Next attempt** (user rebooting and retrying): if
+Minecraft gets past this early crash and plays long enough to reach the
+~60-70s AutoTDP-engaged window, check `PulseAidl` log lines to confirm
+which path (AIDL vs. xsu fallback) actually fired, then compare
+crash-timing against the 59s/73s/69s baseline as originally planned.
+
+**Update (2026-07-27): step 2's real on-device test — AIDL path confirmed
+working, but the crash still happens on baseline timing. The single-call
+migration does not measurably help.** Second restart+retry, log
+`research/ab-logger/results/minecraft_crash_step2_test_restart.log`
+(host-side `adb logcat`, cable connected, no `ab-logger` running). This
+time Minecraft got past the early `cpuinfo`/XNNPACK crash and played long
+enough for AutoTDP to engage — `PulseAidl: engage governor via AIDL`
+fires at 14:14:12.210, confirming the governor-set genuinely went through
+AIDL with zero `xsu` calls, exactly as designed.
+
+**The `system_server`/`BatteryService$Led` crash happened anyway**, same
+exact site as every prior instance (`ServiceSpecificException` code -13 in
+`updateLightsLocked` → `ILights.setLightState`). Timing: Game Mode ON
+14:14:05.728 (t=0) → 3 `xsud` `xsu_conn_handler` crashes at t=+5.9s,
++44.7s (gap 38.8s), +55.2s (gap 10.5s) → `system_server` `FATAL EXCEPTION`
+at t=+60.2s (gap 5.0s from the last `xsud` crash). Same "one long gap then
+tightening" shape as every prior capture, and **60.2s sits squarely inside
+the pre-existing 59s/73s/69s baseline band** — not faster, not slower,
+not fewer `xsud` crashes in any way that reads as improvement. Device was
+plugged in throughout (`plugged: true` until the crash, same as round
+4/7); the non-repo `battery/online` write appeared only 3 times this
+session (vs. round 4's 12) — session-to-session variance in that actor's
+own behavior, not something this repo controls either way.
+
+**Conclusion**: removing this one `xsu` connection (the AutoTDP-engage
+governor write) is confirmed NOT sufficient to prevent, delay, or
+visibly soften this crash. This matches the risk already flagged when
+step 2 was scoped — AYASpace's own foreground-change hooks
+(`chmod 750 /storage; setenforce 0`, `battery/online`, `core_ctl/min_cpus`
+seen in earlier rounds) are still piling onto the same `xsu` channel in
+the same window regardless of what `pulse-for-aya` does, and those are
+outside this repo's control. One fewer call from our side doesn't reduce
+the pile-up enough to matter. **Not a wasted step** — the AIDL path
+itself is now proven reliable in a real crash-reproduction session, not
+just a synthetic verification hook, which is still useful if a future
+session wants to migrate more of `pulse-for-aya`'s own `xsu` traffic (GPU
+cap is the next already-confirmed-working AIDL command) — but expectations
+should reset: this is very unlikely to be the fix for the crash itself,
+consistent with `research/pulse-for-aya/README.md`'s "likely NOT
+independently fixable from this repo" conclusion from step 1.
+
+**Next session, open question**: is it worth migrating the GPU-cap write
+too (marginal further reduction, same ceiling), or should effort instead
+go toward something that isn't about reducing `pulse-for-aya`'s own `xsu`
+footprint at all — e.g., revisiting whether AutoTDP can delay its very
+first foreground-change write by a few hundred ms specifically to let
+AYASpace's own hook finish first (untested idea from step 1, still on the
+table), since the pile-up's actual size, not just our small slice of it,
+is what seems to matter.
+
+**Update (2026-07-27): step 2 implemented, builds clean, not yet run
+on-device.** `startAutoTdp()`'s Balanced-governor write (the exact
+foreground-change collision point) now tries `AyaAidlClient.sendScheduler`
+first and only falls back to the old `xsu` write if AIDL isn't bound or
+the send fails — AutoTDP can never end up without Balanced set. The
+exit-side restore calls (`setGovernorRaw`) stay on `xsu` deliberately
+(they restore an arbitrary captured raw governor name, which doesn't map
+cleanly onto AIDL's 3-value scheduler enum). Full detail:
+`research/pulse-for-aya/README.md`'s "AIDL migration, step 2" section.
+**Next session**: reproduce the Minecraft-crash timing methodology with
+this build (Game-Mode-activation → crash, compare against the
+59s/73s/69s baseline) to see whether it measurably helps.
+
 **Concrete pointers for picking this up cold**: the call site to change is
 `handleForegroundChange()` in
 `research/pulse-for-aya/app/src/main/java/com/kei/pulse/appwatch/ForegroundAppMonitorService.kt`

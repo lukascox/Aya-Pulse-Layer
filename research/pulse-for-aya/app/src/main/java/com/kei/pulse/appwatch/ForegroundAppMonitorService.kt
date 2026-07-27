@@ -23,6 +23,7 @@ import android.media.AudioManager
 import androidx.core.content.getSystemService
 import com.kei.pulse.AppContainer
 import com.kei.pulse.MainActivity
+import com.kei.pulse.aidl.AyaAidlClient
 import com.kei.pulse.R
 import com.kei.pulse.data.AutoTuneController
 import com.kei.pulse.data.FanController
@@ -101,6 +102,13 @@ class ForegroundAppMonitorService : Service() {
     private var customFanGate = CustomFanState()
     private val refreshRateController = RefreshRateController()
     private val governorController = GovernorController()
+    // AIDL migration step 2 (STATUS.md, 2026-07-27): avoids one xsu connection at the exact
+    // foreground-change moment xsud's connection-burst crashes correlate with. Bound for the
+    // service's whole lifetime (not per-call) since bind() is async; aidlReady gates whether
+    // sendScheduler() is even attempted, so a not-yet-ready or failed bind always falls back to
+    // the existing xsu governor write below rather than silently skipping it.
+    private val aidlClient = AyaAidlClient(this)
+    @Volatile private var aidlReady = false
     private val telemetryReader = TelemetryReader()
     private val fpsReader by lazy { FpsReader(this) }
     private val overlay by lazy { PerformanceOverlay(this) }
@@ -576,6 +584,14 @@ class ForegroundAppMonitorService : Service() {
                 0
             },
         )
+        aidlClient.bind { result ->
+            aidlReady = result is AyaAidlClient.BindResult.Ready
+            val detail = when (result) {
+                is AyaAidlClient.BindResult.Ready -> "clientId=${result.clientId}"
+                is AyaAidlClient.BindResult.Failed -> result.reason
+            }
+            android.util.Log.d("PulseAidl", "bind ready=$aidlReady ($detail)")
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -621,6 +637,7 @@ class ForegroundAppMonitorService : Service() {
         if (customFanRunning) {
             Thread { runCatching { fanController.setMode(FanController.SMART) } }.start()
         }
+        aidlClient.unbind()
         serviceScope.cancel()
         super.onDestroy()
     }
@@ -1414,6 +1431,25 @@ class ForegroundAppMonitorService : Service() {
     }
 
     /**
+     * Sets Balanced for AutoTDP's engage step — the exact foreground-change moment STATUS.md's
+     * 2026-07-27 investigation ties to xsud's connection-burst crashes. Tries the AIDL scheduler
+     * command first (zero xsu calls); falls back to the existing xsu governor write whenever AIDL
+     * isn't bound yet or the send throws/fails, so AutoTDP never ends up without Balanced set.
+     * Only this entry point is migrated — the exit-side restore ([setGovernorRaw] call sites)
+     * re-applies whatever raw governor name was captured before the game started, which doesn't
+     * map cleanly onto AIDL's 3-value scheduler enum, so those stay on xsu.
+     */
+    private fun setAutoTdpGovernorBalanced(policies: List<CpuPolicyInfo>) {
+        if (aidlReady && aidlClient.sendScheduler("BALANCED").isSuccess) {
+            android.util.Log.d("PulseAidl", "engage governor via AIDL")
+            return
+        }
+        android.util.Log.d("PulseAidl", "engage governor via xsu fallback (aidlReady=$aidlReady)")
+        GovernorController.OPTIONS.firstOrNull { it.label == "Balanced" }
+            ?.let { governorController.setGovernor(policies, it) }
+    }
+
+    /**
      * Begin an AutoTDP session for [pkg]: snapshot the pre-game state (caps + fan + governor) when
      * entering from unbound, reopen the clocks to full as the loop's starting point, and lock the
      * managed controls — **Smart fan** + the **Balanced governor** (which scales freq to load under
@@ -1451,8 +1487,7 @@ class ForegroundAppMonitorService : Service() {
         // Fan: force vendor Smart UNLESS the user runs the Custom fan — then reassertManagedFan keeps driving
         // their (quieter) closed-loop Custom fan during AutoTDP instead.
         if (settings.managedFanMode != FanController.CUSTOM) fanController.setMode(FanController.SMART)
-        GovernorController.OPTIONS.firstOrNull { it.label == "Balanced" }
-            ?.let { governorController.setGovernor(policies, it) }
+        setAutoTdpGovernorBalanced(policies)
         overlayProfileLabel = "AutoTDP"
         // Only announce explicit per-app AutoTDP bindings — the global default would spam on every
         // app switch.

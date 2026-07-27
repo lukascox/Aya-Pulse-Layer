@@ -321,6 +321,69 @@ CPU/GPU frequency are confirmed, step 2 (replacing
 `PerformanceCommandBuilder`'s `xsu`-based writes with these AIDL sends in
 the live control path) can be scoped for real.
 
+## AIDL migration, step 2 (2026-07-27) — first live-control-path change, builds clean, not yet on-device
+
+Replaces the one `xsu`-based governor write that fires on the exact
+foreground-change moment `xsud`'s connection-burst crashes correlate with:
+`ForegroundAppMonitorService.startAutoTdp()`'s "lock the Balanced governor"
+step (previously `GovernorController.setGovernor(policies, BALANCED)`,
+straight to `xsu`) now goes through a new helper,
+`setAutoTdpGovernorBalanced()`: try `AyaAidlClient.sendScheduler("BALANCED")`
+first (zero `xsu` calls); if the AIDL bind isn't ready yet or the send
+throws/fails, fall back to the exact same `xsu` write as before. AutoTDP
+can never end up without Balanced set — the fallback is unconditional, not
+best-effort.
+
+`ForegroundAppMonitorService` now owns and binds its own `AyaAidlClient`
+for its whole lifetime (`onCreate`/`onDestroy`), separate from
+`MainActivity`'s debug-only verification hooks (left as-is; each bind gets
+its own `clientId` from `AyaAidlService`, so the two don't conflict, just
+duplicate a small amount of setup on debug builds). A `@Volatile aidlReady`
+flag flips once `bind()`'s async callback actually reports
+`BindResult.Ready` — until then (and on any `Failed`), every foreground
+change transparently uses the old `xsu` path, so there's no window where
+AutoTDP's engage step silently does nothing.
+
+**Deliberately NOT touched**: the exit-side restore calls
+(`governorController.setGovernorRaw(...)`, three call sites — the
+GOVERNOR LEAK fix, `restoreSnapshot`, and the scope-commit path) all
+restore an arbitrary *raw* kernel governor name captured before the game
+started (could be anything present on the device, not just this app's own
+three options) — `com_set_performance_scheduler` only accepts the fixed
+`POWER_SAVING`/`BALANCED`/`HIGH_PERFORMANCE` enum, so mapping a captured
+raw name onto it isn't safe without more work. Scoped out for this step;
+`startAutoTdp`'s engage write is the one that actually collides with the
+foreground-change burst this mitigation targets, so it's the meaningful
+win on its own.
+
+Builds clean (`./gradlew assembleDebug testDebugUnitTest`).
+
+`setAutoTdpGovernorBalanced()` logs which path fired on every engage
+(`Log.d("PulseAidl", "engage governor via AIDL")` or `"...via xsu
+fallback (aidlReady=...)"`) — added specifically so a `logcat` capture
+from the reproduction test can confirm which path actually ran at each
+foreground change, not just infer it from the crash timing alone.
+
+**On-device result (2026-07-27): AIDL path confirmed working, crash still
+happens on baseline timing — this migration alone does not help.** Real
+Minecraft-crash reproduction, host-side `adb logcat`, log filed to
+`research/ab-logger/results/minecraft_crash_step2_test_restart.log`.
+`PulseAidl: engage governor via AIDL` fired as designed (zero `xsu` for
+this write), but the same `system_server`/`BatteryService$Led` crash
+happened anyway, ~60.2s after Game Mode activation — squarely inside the
+pre-existing 59s/73s/69s baseline band from `STATUS.md`, with the same
+"one long gap then tightening" `xsud`-crash shape (3 crashes this time,
+gaps 38.8s/10.5s, `system_server` 5.0s after the last one). Full detail
+and the timing table: `STATUS.md`'s Minecraft-crash entry, "step 2's real
+on-device test" update. **Confirms the risk flagged when step 2 was
+scoped**: AYASpace's own foreground-change hooks keep piling onto the
+same `xsu` channel regardless of what this app does, so shaving off one
+of our own calls doesn't reduce the pile-up enough to matter. The AIDL
+plumbing itself is still validated and reusable (e.g. for the GPU cap
+write next), but this specific mitigation goal — stopping the crash by
+reducing our own footprint — is not confirmed to work and shouldn't be
+assumed to, going forward.
+
 ## Not yet exercised / open
 
 - AutoTDP's actual write path (CPU/GPU frequency actuation) — needs Usage
