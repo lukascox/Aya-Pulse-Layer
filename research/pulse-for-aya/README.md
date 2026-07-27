@@ -220,14 +220,106 @@ on-device**. Expected result if this works: readback shows `schedutil`
 (this SoC's native `BALANCED` governor, already confirmed in
 `diagnostics/docs/HARDWARE_PROFILE.md`).
 
-**Next session**: install this build, `xsu -c "touch
-/sdcard/apl_test_aidl_scheduler.txt"`, relaunch/open the app, check the
-Toast and `adb logcat -s AidlVerify`. If the scheduler command works,
-extend `maybeRunSchedulerSendTest`-style verification to
-`sendCpuFrequency`/`sendGpuFrequency`/`sendGpuFixed` before touching
-`ForegroundAppMonitorService` at all — confirm the whole command surface
-works from `pulse-for-aya`'s own signing context before designing the
-actual integration (step 2).
+**Confirmed on-device (2026-07-27)**: it works, first try —
+
+```
+D AidlVerify: AIDL bind OK, clientId=84156219
+D AidlVerify: sendScheduler(BALANCED) result=Success(kotlin.Unit)
+D AidlVerify: scheduler test: send=Success(kotlin.Unit) readback(policy0 governor)=schedutil
+```
+
+`com_set_performance_scheduler` genuinely works from `pulse-for-aya`'s own
+signed/packaged context, not just from `aidl-bind-spike`'s throwaway app —
+the governor actually changed, confirmed by an independent `xsu` readback,
+zero `xsu` calls needed to *set* it. This is the first real evidence the
+mitigation direction is sound, not just plausible on paper.
+
+**Extended (2026-07-27, same day): `sendCpuFrequency`/`sendGpuFrequency`
+verify hooks added**, same self-restoring pattern as the scheduler test
+(read original → apply test value → readback → restore original →
+readback again, no reliance on `com_set_performance_reset`):
+
+- `maybeRunCpuFrequencyTest()`, marker `/sdcard/apl_test_aidl_cpu.txt` —
+  sends `sendCpuFrequency(0, 787200)`, reads back `policy0/scaling_max_freq`.
+- `maybeRunGpuFrequencyTest()`, marker `/sdcard/apl_test_aidl_gpu.txt` —
+  sends `sendGpuFrequency(366000000)`, reads back `kgsl-3d0/devfreq/max_freq`
+  (the node `AyaDevicesUtil$applyGPUFrequency$1` is confirmed to write, per
+  `aya-gamewindows-teardown/FINDINGS.md` section 2 — **not** `max_pwrlevel`,
+  a different, index-based node).
+
+Both test values are raw units already observed live in real `ab-logger`
+captures on this device (known-valid, not guessed) — CPU in `scaling_max_freq`'s
+KHz convention, GPU in `kgsl`'s Hz convention (the GPU AIDL unit itself is
+**unconfirmed** — the "GPU Limit" slider in AYASpace's own UI displays
+truncated MHz like `231`-`1050`, unclear whether that's cosmetic display
+truncation or the actual wire value; this test is exactly what will answer
+that). Builds clean, **not yet run on-device**.
+
+**Confirmed on-device (2026-07-27)**: `sendScheduler` and `sendGpuFrequency`
+both work cleanly. `sendCpuFrequency` is more nuanced — first test
+(`cpuId=0`, shares `policy0` with `cpu1`) sent successfully (no exception)
+but the value never actually changed, read back from both the
+policy-level and per-cpu nodes. Hypothesis: cores that share a real
+hardware frequency domain (a cpufreq policy) can't be set independently
+via this AIDL command, one at a time. **Confirmed correct** — a second
+test against `cpuId=7` (the *sole* member of `policy7`, a genuinely
+independent domain) worked perfectly:
+
+```
+cpu7 freq test: original=3052800 before=[policy7=3052800 cpu7=3302400]
+  send(787200)=Success after=[policy7=787200 cpu7=787200]
+  restore(3052800)=Success after=[policy7=3052800 cpu7=3052800]
+```
+
+(Also note `policy7`/`cpu7` disagreed *before* the test even ran —
+confirms these two sysfs paths genuinely aren't a plain symlink pair on
+this kernel, not just a theoretical concern.)
+
+**So: `com_set_performance_cpu` works for `policy7` (single-core cluster)
+today; `policy0`/`policy2`/`policy5` (multi-core clusters) are no-ops when
+sent one `cpuId` at a time.**
+
+**Update, same day: sending all constituent `cpuId`s of a shared policy
+together DOES unlock the write — but only in one direction.** Tested
+`cpu0`+`cpu1` (both `policy0`) back-to-back with the same target:
+
+```
+cpu group freq test: original=2265600 before=[policy0=2265600 cpu0=2265600 cpu1=2265600]
+  send(787200)=[Success,Success] after=[policy0=787200 cpu0=787200 cpu1=787200]   -- worked
+  restore(2265600)=[Success,Success] after=[policy0=787200 cpu0=787200 cpu1=787200] -- did NOT take effect
+```
+
+Lowering (2265600→787200) worked cleanly for both cores at once. Raising
+back (787200→2265600) with the exact same call pattern did **not** —
+`cpu0`/`cpu1` stayed capped at 787200, live on the device, until manually
+fixed with a plain `xsu` write (`chmod 666` → `echo 2265600` to all three
+paths → `chmod 644`, confirmed restored via readback). Not yet understood
+whether this is a real asymmetry in the command (down safer/easier than
+up, receiver-side) or an unlucky race between two near-simultaneous Binder
+calls that happened to land badly only on the second attempt — the
+lowering test used the identical two-calls-back-to-back pattern and
+worked fine. **Not investigated further this session** — the device was
+left in a degraded-but-safe state (787MHz is a normal, safe operating
+point, just a real performance limitation, not a risk) until the user
+manually restored it via `xsu`.
+
+**Practical conclusion for step 2**: even where `com_set_performance_cpu`
+technically works (single-core policies directly, multi-core policies via
+a synchronized full-group send), it's demonstrably less reliable than
+`sendScheduler`/`sendGpuFrequency` (both of which round-tripped cleanly in
+both directions, no exceptions). Don't lean on it for anything
+safety-relevant without a confirmed, reliable restore path — worth
+revisiting with more care (staggered timing, confirm-then-retry logic) if
+step 2 ever wants to lean on it, but not blocking: the crash-mitigation
+goal only needs `sendScheduler`/`sendGpuFrequency` at the foreground-change
+moment, not per-core control.
+
+`sendGpuFixed`/`sendFanMode` still unverified — fan control specifically
+needs the same care as any fan-control work per `CLAUDE.md`'s hard rule,
+see `STATUS.md`'s fan-control discussion before pursuing that one. Once
+CPU/GPU frequency are confirmed, step 2 (replacing
+`PerformanceCommandBuilder`'s `xsu`-based writes with these AIDL sends in
+the live control path) can be scoped for real.
 
 ## Not yet exercised / open
 

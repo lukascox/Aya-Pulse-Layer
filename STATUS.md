@@ -599,6 +599,79 @@ pushes `pulse-for-aya` further from upstream `pulse` (AIDL only exists on
 AYANEO hardware) — the user has accepted this is now a real
 AYANEO-specific fork, not a thin glue patch, going in.
 
+**Confirmed on-device (2026-07-27), first try**: `sendScheduler("BALANCED")`
+genuinely works from `pulse-for-aya`'s own signed context —
+`readback(policy0 governor)=schedutil` after the send, zero `xsu` calls
+used to set it. This is real evidence the mitigation direction holds, not
+just a plausible theory — see `research/pulse-for-aya/README.md` for the
+full log.
+
+**Update, same day: `sendGpuFrequency` confirmed working too;
+`sendCpuFrequency` works but only for single-core policies.** GPU: clean
+round-trip (set 366000000, read back 366000000, restore, read back
+original). CPU: first test (`cpuId=0`, shares `policy0` with `cpu1`) sent
+without error but never actually changed anything — read back from both
+`policy0/scaling_max_freq` and `cpu0/cpufreq/scaling_max_freq`, neither
+moved. Second test against `cpuId=7` (the sole core in `policy7`, a real
+independent hardware frequency domain, unlike the shared clusters)
+**worked cleanly** — set, read-back-confirmed, restored, read-back-confirmed
+again. So: this AIDL command can set a lone-core policy directly, but
+silently no-ops for a multi-core cluster addressed one `cpuId` at a
+time — not yet tested whether sending every constituent `cpuId` of a
+shared policy together unlocks it. Full logs and detail:
+`research/pulse-for-aya/README.md`'s "AIDL migration, step 1" section.
+
+**Realistic scope check, answering the user directly**: this does NOT
+fully replace `xsu` or give "complete AIDL control." AIDL has zero read
+capability at all — AutoTDP's continuous FPS/thermal/frequency monitoring
+stays on `xsu` regardless. What's confirmed usable so far (scheduler, GPU
+cap, and `policy7`'s CPU cap) covers the *foreground-app-change reaction*
+specifically — the exact collision window this mitigation targets — not
+AutoTDP's ongoing live-tuning writes for the 3 multi-core clusters, which
+still need `xsu` unless the shared-policy question above resolves
+favorably. A meaningful, targeted reduction in `pulse-for-aya`'s own `xsu`
+footprint at the riskiest moment, not a full replacement.
+
+**Update, same day: the shared-policy question resolved, with a caution
+attached.** Sending both `cpu0` and `cpu1` (both `policy0`) together
+*does* unlock the write — lowering both to `787200` in one shot worked
+cleanly. But sending them back up to the original `2265600` the same way
+did **not** take effect — device was left with `policy0` genuinely capped
+at `787200` (safe, just underpowered) until fixed by hand with a plain
+`xsu` write. Root cause not understood (asymmetric command behavior vs. an
+unlucky Binder-call race, indistinguishable from this one data point).
+**Consequence for step 2**: `com_set_performance_cpu` is demonstrably less
+trustworthy than `sendScheduler`/`sendGpuFrequency` (both round-tripped
+cleanly every time) — don't lean on it for anything safety-relevant
+without a confirmed, reliable restore path. Doesn't block the actual
+mitigation goal, which only needs the scheduler/GPU commands at the
+foreground-change moment. Full detail:
+`research/pulse-for-aya/README.md`'s "AIDL migration, step 1" section.
+
+**Where this whole investigation stands, end of 2026-07-27 session** (read
+this first if picking the thread back up): started from "Minecraft crashes
+PULSE" → traced to a real stack-overflow bug in the vendor's `xsud` binary
+(`xsu_conn_handler`, confirmed via matching crash backtraces across every
+capture) → governor choice and `aggressivePark` both directly ruled out as
+the trigger (crash reproduces under `schedutil` and with `aggressivePark`
+off) → current best theory is concurrent `xsu` connection bursts at
+app-launch time, from multiple actors we don't control (AYASpace's own
+native hooks) plus `pulse-for-aya`'s own traffic, which we DO control →
+started an AIDL migration (`AyaAidlClient.kt`) to shrink `pulse-for-aya`'s
+own contribution to that burst, confirmed `sendScheduler`/`sendGpuFrequency`
+work reliably, `sendCpuFrequency` works but is unreliable (a stuck-capped
+core had to be manually fixed once already) and isn't required for the
+mitigation goal anyway. **Nothing has touched the live control path yet**
+— `ForegroundAppMonitorService.kt` is untouched, all AIDL work so far is
+isolated debug-build-only verification hooks in `MainActivity.kt`.
+**Next concrete step (step 2, not started)**: replace the `xsu`-based
+governor write in `ForegroundAppMonitorService`'s foreground-app-change
+handling with `AyaAidlClient.sendScheduler`, then re-run the same
+Minecraft-crash repro + timing methodology from this session (Game-Mode-
+activation → crash, compare against the 59s/73s/69s baseline already on
+record) to see whether it actually helps. GPU cap could follow the same
+pattern once CPU governor is proven out.
+
 ## ROOT CAUSE FOUND (2026-07-26): the empty-CSV bug is `xsud` segfaulting on long `xsu -c` commands
 
 Follow-up to INCIDENT #3 below. Root-caused live on-device, outside any

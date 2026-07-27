@@ -206,9 +206,13 @@ class AyaAidlClient(private val context: Context) {
     fun sendCpuFrequency(cpuId: Int, frequencyKHz: Int): Result<Unit> =
         sendRaw("com_set_performance_cpu:${cpuId}_$frequencyKHz")
 
-    /** `maxFrequencyKHz`: GPU max clock, same raw unit as `kgsl-3d0`'s own frequency nodes.
-     * Confirmed format from `PerformanceViewModel.E()`. */
-    fun sendGpuFrequency(maxFrequencyKHz: Int): Result<Unit> = sendRaw("com_set_performance_gpu:$maxFrequencyKHz")
+    /** `maxFrequencyHz`: GPU max clock in Hz -- matches `kgsl-3d0/max_gpuclk` and
+     * `kgsl-3d0/devfreq/max_freq`'s own unit (confirmed receiver-side in
+     * `AyaDevicesUtil$applyGPUFrequency$1`, `aya-gamewindows-teardown/FINDINGS.md` section 2),
+     * NOT the truncated MHz the "GPU Limit" slider displays (e.g. `231`-`1050`) -- unverified
+     * whether the UI converts before sending or the display is just cosmetic truncation, so
+     * confirm with an `xsu` readback before trusting this on a real value. */
+    fun sendGpuFrequency(maxFrequencyHz: Int): Result<Unit> = sendRaw("com_set_performance_gpu:$maxFrequencyHz")
 
     /** Mirrors the "Lock GPU at Max Frequency" switch. Confirmed format from `PerformanceViewModel.G()`. */
     fun sendGpuFixed(isFixed: Boolean): Result<Unit> = sendRaw("com_set_performance_gpu_is_fixed:$isFixed")
