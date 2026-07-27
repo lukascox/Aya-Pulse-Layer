@@ -86,6 +86,63 @@ indefinitely even after the underlying device was completely fine again.
 time" (see `RootExec.kt`'s doc comment). Builds clean, not yet
 re-verified on-device.
 
+## Open question (2026-07-27): native FPS counter shows stale "Gaming Mode" label + `walt` governor mismatch
+
+Raised by the user ahead of a new on-device test series, investigated via
+code/docs only (no device access this session). Two related observations
+about AYA's own FPS counter overlay (launched from AyaSettings, not part
+of this app) while `pulse-for-aya` is active:
+
+**1. Mode label stuck on "Gaming Mode" (blue) regardless of actual governor.**
+Not yet directly confirmed — the overlay's own code hasn't been located in
+either teardown (`aya-gamewindows-teardown`/`ayaspace-teardown`), that's a
+real gap, not an oversight to re-derive from memory. But a plausible
+mechanism follows from confirmed facts: `com.ayaneo.gamewindow`'s
+`AyaAidlService` only updates its live `currentMode` state (and fires the
+callback that presumably feeds this kind of UI) when something calls
+`com_set_performance_mode` over AIDL (`aidl-bind-spike/FINDINGS.md`).
+`pulse-for-aya` never calls that — it writes governor/frequency straight to
+sysfs via `xsu` (`RootExec`/`RootSupport.runRootCommand`, see
+`pulse-glue-assessment/FINDINGS.md`). If the FPS counter's mode label reads
+`gamewindow`'s cached state rather than sysfs live, it would never learn
+pulse changed anything — staying on whatever AYASpace itself last set
+(explains "always shows Gaming Mode" exactly). **Not confirmed** — needs
+either finding the overlay's actual code, or an on-device check: watch the
+label while forcing a mode change through AYASpace itself vs. through pulse.
+
+**2. `walt` governor: real, but not what native AYASpace uses on this device.**
+Confirmed real cpufreq governor, present in `scaling_available_governors` on
+all 4 policies (`diagnostics/docs/HARDWARE_PROFILE.md`). But
+`aya-gamewindows-teardown/FINDINGS.md` (section 2) shows native AYASpace's
+own Balanced-mode governor choice on *this* SoC is `schedutil` — its code
+only picks `walt` for a different device-flag combination, not the Pocket
+FIT. `SystemTuning.kt`'s `OPTIONS` list here picks `walt` first for
+"Balanced" (comment: inherited from upstream Pulse's Odin 3 convention,
+falls back to `schedutil`/`sched_pixel` if unavailable) — it happens to
+also be present on this device's governor list, so pulse actually lands on
+`walt`, not `schedutil`. **Not a bug** — both are real, valid governors —
+but it means pulse's "Balanced" and AYASpace's own "Balanced" are
+deliberately-different-by-inheritance, not equivalent, on this hardware.
+Worth knowing when comparing behavior/telemetry between the two.
+
+**3. Disappearing per-core frequency readout — leading hypothesis: `aggressivePark`.**
+Ruled out `PerformanceCommandBuilder`'s `chmod` locking (`444`) as the
+cause — it only locks `scaling_max_freq`/`min_pwrlevel`, not
+`scaling_cur_freq`, so that shouldn't block a read. The more likely
+mechanism: `AutoTuneController`'s opt-in `aggressivePark` (default `off`)
+offlines prime cores via `cpuN/online` — an offline core has no valid
+`scaling_cur_freq` to report, which a HUD would plausibly render as blank.
+This is the **same lever already flagged in `STATUS.md`'s open Minecraft
+native-launch-failure investigation** — worth checking, in the same
+upcoming session, whether `aggressivePark` was on during both symptoms; if
+so it's likely one root cause, not two.
+
+**Next-session check (cheap, no code change needed)**: while testing,
+note (a) whether `aggressivePark` was enabled when core speeds vanished,
+and (b) `cat .../scaling_governor` at a moment the FPS counter shows
+"Gaming Mode", to confirm what governor is actually live vs. what the
+label claims.
+
 ## Not yet exercised / open
 
 - AutoTDP's actual write path (CPU/GPU frequency actuation) — needs Usage

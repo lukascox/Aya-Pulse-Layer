@@ -6,6 +6,24 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## To investigate next session: native FPS counter shows stale mode label + disappearing per-core frequencies
+
+Raised by the user (2026-07-27) ahead of a new test series: AYA's own FPS
+counter overlay (from AyaSettings) sometimes stops showing per-core CPU
+clocks after `pulse-for-aya` runs, and its colored mode-name label ("Gaming
+Mode") never seems to reflect that `pulse-for-aya` has put the governor in
+`walt`. Investigated via docs/code only this session (no device access) —
+two plausible-but-unconfirmed mechanisms found, and one real gap (the
+overlay's own code was never located in either AYA teardown). Full writeup,
+evidence, and the cheap on-device check that would confirm/rule out each
+hypothesis: `research/pulse-for-aya/README.md`'s "Open question
+(2026-07-27)" section, with a cross-reference in
+`research/aya-gamewindows-teardown/FINDINGS.md`'s "Implications for apl"
+list. Leading hypothesis for the disappearing core speeds
+(`AutoTuneController`'s `aggressivePark` offlining cores) is the same lever
+already flagged below in the Minecraft investigation — worth checking both
+in the same session, may share one root cause.
+
 ## To investigate next session: native Minecraft fails to launch while PULSE is running
 
 Observed on-device (2026-07-26): with `pulse-for-aya` active, native Android

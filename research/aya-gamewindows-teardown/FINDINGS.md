@@ -587,3 +587,15 @@ work on our end.
   extends to the main face/shoulder buttons depends on whether GameWindow's
   key interceptor sees those `KeyEvent`s before the foreground app does —
   untested.
+- **Gap noted (2026-07-27), not yet closed**: the in-game FPS counter
+  overlay (shown when AyaSettings' HUD is on — FPS number, per-core CPU
+  clocks, colored mode-name label) has not been located in this teardown's
+  decompiled code, in either this package or `ayaspace-teardown`. Whether
+  its mode-name label reads `AyaAidlService`'s live `currentMode` (see
+  section 2 above) or something else is unconfirmed — relevant because
+  `pulse-for-aya` changes governor/frequency via `xsu`/sysfs, never through
+  `com_set_performance_mode`, so if the label does read gamewindow's AIDL
+  state it would go stale under pulse and keep showing whatever AYASpace
+  itself last set. See `pulse-for-aya/README.md`'s "Open question
+  (2026-07-27)" section for the full writeup and the on-device check that
+  would confirm or rule this out.
