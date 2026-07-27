@@ -1,0 +1,36 @@
+# Trimmed from a 33811-line raw adb logcat capture (2026-07-27 night) -- THE
+# DEFINITIVE test: service confirmed running (dumpsys activity services showed
+# isForeground=true before this capture), Game Mode ON confirmed, 729 telemetry
+# reads confirmed happening throughout -- yet still zero PulseAutoTdp lines and
+# only the one initial release() write. Full narrative: STATUS.md.
+
+## service confirmed active before capture (dumpsys output, pasted by user):
+# ServiceRecord{... com.kei.pulse/.appwatch.ForegroundAppMonitorService}
+# isForeground=true foregroundId=32 ...
+
+## Game Mode ON:
+5942:07-27 21:58:26.035  2287  2319 V GameManagerService: Game power mode ON (process state was changed to foreground)
+
+## PulseAutoTdp/PulseDaemon/PulseOverlay (zero matches -- the confirmed bug):
+
+## the ONLY writes of the whole session (both at engage, ~21:58:32, nothing after):
+11844:07-27 21:58:32.413 11601 11601 I xsu     : sending cmd:chmod 666 /sys/devices/system/cpu/cpu2/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu2/online; chmod 666 /sys/devices/system/cpu/cpu3/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu3/online; chmod 666 /sys/devices/system/cpu/cpu4/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu4/online
+12048:07-27 21:58:32.722 11648 11648 I xsu     : sending cmd:chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; echo 364800 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; echo 2265600 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; echo 3148800 > /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpu
+
+## telemetry read volume after Game Mode ON (confirms poll loop alive + busy):
+1001
+
+## SELinux denials for com.kei.pulse's own xsu exec / /proc/stat open (permissive=1,
+## so NOT actually blocking -- but notable, first time this app's own denials were seen):
+1088:07-27 21:58:11.166  9921  9921 I xsu     : type=1400 audit(0.0:5616): avc:  denied  { write } for  name="xsud" dev="tmpfs" ino=1381 scontext=u:r:untrusted_app:s0:c199,c256,c512,c768 tcontext=u:object_r:xsud_socket:s0 tclass=sock_file permissive=1 app=com.kei.pulse
+4009:07-27 21:58:20.978 10475 10475 I DefaultDispatch: type=1400 audit(0.0:5826): avc:  denied  { execute } for  name="xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c199,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+4010:07-27 21:58:20.978 10475 10475 I DefaultDispatch: type=1400 audit(0.0:5827): avc:  denied  { read open } for  path="/product/bin/xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c199,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+4011:07-27 21:58:20.978 10475 10475 I DefaultDispatch: type=1400 audit(0.0:5828): avc:  denied  { execute_no_trans } for  path="/product/bin/xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c199,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+4012:07-27 21:58:20.978 10475 10475 I xsu     : type=1400 audit(0.0:5829): avc:  denied  { map } for  path="/product/bin/xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c199,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+4013:07-27 21:58:20.978 10475 10475 I xsu     : type=1400 audit(0.0:5830): avc:  denied  { getattr } for  path="/product/bin/xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c199,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+4451:07-27 21:58:22.238 10572 10572 I DefaultDispatch: type=1400 audit(0.0:6034): avc:  denied  { execute } for  name="xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c199,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+4452:07-27 21:58:22.238 10572 10572 I DefaultDispatch: type=1400 audit(0.0:6035): avc:  denied  { read open } for  path="/product/bin/xsu" dev="dm-11" ino=188 scontext=u:r:untrusted_app:s0:c199,c256,c512,c768 tcontext=u:object_r:xsu_exec:s0 tclass=file permissive=1 app=com.kei.pulse
+
+## crash check:
+12087:07-27 21:58:32.857  1595 29811 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 11651 (xsud), pid 1595 (xsud)
+12122:07-27 21:58:32.874 11668 11668 F DEBUG   :       #02 pc 0000000000002f8c  /product/bin/xsud (xsu_conn_handler.cfi+856) (BuildId: cf12e64c40275bca4c064d86f58ec6f5)

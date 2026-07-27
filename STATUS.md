@@ -96,6 +96,46 @@ prevent it from ever running without throwing or un-setting
 `autoTdpPackage` — this is now a confirmed, reproducible bug, not a
 one-off capture gap.
 
+**DEFINITIVELY CONFIRMED (2026-07-27, night, third capture)**: user
+verified via `adb shell dumpsys activity services com.kei.pulse` that
+`ForegroundAppMonitorService` was genuinely running (`isForeground=true`)
+*before* starting a clean `adb logcat -c` capture, ruling out the "app
+wasn't running" explanation for the previous inconclusive attempt. Same
+result as every prior test: **zero `PulseAutoTdp` lines**, exactly ONE
+combined write (the `release()` step at engage — unpark cores + reset
+caps to full), and **729 telemetry reads** (`scaling_max_freq`/`pwrlevel`
+alone) confirming the poll loop is genuinely alive and busy throughout —
+it just never reaches the point of calling/logging `stepAutoTdp()`. Full
+trimmed evidence: `minecraft_crash_investigation/round8_2026-07-27_2122_
+no_crash_no_autotdp_tick/logcat5_definitive_confirmation.log`.
+
+**Also noted, not yet explained**: this capture is the first to show
+SELinux AVC denials attributed to `com.kei.pulse` itself trying to
+`execute`/`read open`/`map` `/product/bin/xsu` and open `/proc/stat`
+directly (`scontext=u:r:untrusted_app:s0`, `permissive=1` — logged, not
+actually enforced, so not blocking anything, but worth understanding why
+these appear now when they haven't in earlier sessions' trimmed logs).
+
+**Ruled out this session**: the user's hypothesis that narrowing
+`GovernorController.OPTIONS`'s Balanced candidates (commit `64dcb18`,
+`walt`/`sched_pixel` → `schedutil` only) could be blocking something —
+checked, `Performance`'s own candidates were never touched, and `AutoTDP`
+never switches to `Performance` governor during regulation by design
+(stays on `schedutil`, manages a numeric cap instead). Not the cause.
+
+**Next session, concrete starting point**: read
+`ForegroundAppMonitorService.kt`'s per-tick `try` block (~line 780-857,
+the one wrapping `if (autoActive) stepAutoTdp(...)`) end to end, and
+trace backward from there — `autoActive`/`autoTdpPackage` staying
+non-null (no restore-write ever fires either) rules out a silent
+stop/re-bind, and no `PulseOverlay` error log rules out an exception
+being swallowed in that exact `try`. The bug is upstream of `stepAutoTdp`
+itself somewhere in that tick's control flow (an early `return`, a
+condition on `overlayShouldShow`/`quickAccessShouldShow` gating the
+whole block, or similar) — this is now the single highest-priority
+correctness bug in the app, confirmed reproducible in 3/3 real sessions
+across 2 different games.
+
 ## To investigate next session: native FPS counter shows stale mode label + disappearing per-core frequencies
 
 Raised by the user (2026-07-27) ahead of a new test series: AYA's own FPS
