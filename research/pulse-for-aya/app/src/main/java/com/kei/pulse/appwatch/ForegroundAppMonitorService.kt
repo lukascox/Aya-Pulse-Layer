@@ -35,6 +35,7 @@ import com.kei.pulse.data.RgbController
 import com.kei.pulse.data.SocDetector
 import com.kei.pulse.data.TelemetryReader
 import com.kei.pulse.data.TelemetrySnapshot
+import com.kei.pulse.root.PulseDaemon
 import com.kei.pulse.model.AppSettings
 import com.kei.pulse.model.AutoTdpBias
 import com.kei.pulse.model.CustomFanGate
@@ -101,6 +102,12 @@ class ForegroundAppMonitorService : Service() {
     private var customFanGate = CustomFanState()
     private val refreshRateController = RefreshRateController()
     private val governorController = GovernorController()
+    // One-xsu-connection-per-session daemon (STATUS.md, 2026-07-27 evening: "New direction found
+    // and validated") -- started once for the service's whole lifetime, stopped on teardown. A
+    // service killed by the OS without onDestroy running (e.g. OOM) can leak an idle daemon
+    // process blocked on its FIFO read; harmless (near-zero CPU/memory, no further xsu calls) but
+    // not yet actively cleaned up -- known limitation, not yet worth the extra machinery.
+    private val pulseDaemon by lazy { PulseDaemon(this) }
     private val telemetryReader = TelemetryReader()
     private val fpsReader by lazy { FpsReader(this) }
     private val overlay by lazy { PerformanceOverlay(this) }
@@ -576,6 +583,7 @@ class ForegroundAppMonitorService : Service() {
                 0
             },
         )
+        serviceScope.launch { pulseDaemon.start() }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -621,6 +629,7 @@ class ForegroundAppMonitorService : Service() {
         if (customFanRunning) {
             Thread { runCatching { fanController.setMode(FanController.SMART) } }.start()
         }
+        Thread { runCatching { pulseDaemon.stop() } }.start()
         serviceScope.cancel()
         super.onDestroy()
     }
@@ -1414,6 +1423,31 @@ class ForegroundAppMonitorService : Service() {
     }
 
     /**
+     * Sets Balanced for AutoTDP's engage step via [pulseDaemon] (zero `xsu` calls, the daemon is
+     * already root and already running) instead of a fresh `xsu` connection per policy -- the
+     * exact foreground-change moment STATUS.md's 2026-07-27 investigation ties to `xsud`'s
+     * connection-burst crashes, and the same call site the (reverted) AIDL migration targeted in
+     * step 2. Falls back to the existing xsu-per-policy write ([GovernorController.setGovernor])
+     * if the daemon isn't running yet or any pipe write fails, so AutoTDP never ends up without
+     * Balanced set. Only this entry point is migrated -- the exit-side restore
+     * ([GovernorController.setGovernorRaw] call sites) re-applies whatever raw governor name was
+     * captured before the game started and stays on the existing xsu path for now.
+     */
+    private fun setAutoTdpGovernorBalanced(policies: List<CpuPolicyInfo>) {
+        val option = GovernorController.OPTIONS.firstOrNull { it.label == "Balanced" } ?: return
+        val cpu = policies.filterNot { it.isGpu }
+        val chosen = governorController.resolveGovernor(cpu, option)
+        val sentAll = chosen != null && cpu.isNotEmpty() &&
+            cpu.all { p -> pulseDaemon.setCap("${p.policyPath}/scaling_governor", "644", chosen) }
+        if (sentAll) {
+            android.util.Log.d("PulseDaemon", "engage governor via daemon ($chosen)")
+            return
+        }
+        android.util.Log.d("PulseDaemon", "engage governor via xsu fallback")
+        governorController.setGovernor(policies, option)
+    }
+
+    /**
      * Begin an AutoTDP session for [pkg]: snapshot the pre-game state (caps + fan + governor) when
      * entering from unbound, reopen the clocks to full as the loop's starting point, and lock the
      * managed controls — **Smart fan** + the **Balanced governor** (which scales freq to load under
@@ -1451,8 +1485,7 @@ class ForegroundAppMonitorService : Service() {
         // Fan: force vendor Smart UNLESS the user runs the Custom fan — then reassertManagedFan keeps driving
         // their (quieter) closed-loop Custom fan during AutoTDP instead.
         if (settings.managedFanMode != FanController.CUSTOM) fanController.setMode(FanController.SMART)
-        GovernorController.OPTIONS.firstOrNull { it.label == "Balanced" }
-            ?.let { governorController.setGovernor(policies, it) }
+        setAutoTdpGovernorBalanced(policies)
         overlayProfileLabel = "AutoTDP"
         // Only announce explicit per-app AutoTDP bindings — the global default would spam on every
         // app switch.
@@ -1792,6 +1825,9 @@ class ForegroundAppMonitorService : Service() {
                     stopAutoTdp()
                     clearBoundReassert() // drop any prior Custom/tier cap-hold + its locks before re-binding
                     val firstEntry = boundPackage == null
+                    // Only entering from fully unbound looks like "a game just launched" -- switching
+                    // between two already-tracked apps skips the delay, their hooks already ran earlier.
+                    if (firstEntry) delay(PRE_ENGAGE_DELAY_MS)
                     when {
                         config != null && PerAppConfig.isAuto(config.profileBinding) ->
                             startAutoTdp(foreground, config)
@@ -2010,6 +2046,13 @@ class ForegroundAppMonitorService : Service() {
         private const val FAN_RECHECK_MS = 120L // duty re-check cadence: catch the vendor's game-transition
         // 50% reset fast enough that the re-pin is inaudible (decoupled from the slower ramp above)
         private const val EVENT_WINDOW_MS = 10_000L
+        // Head start for AYASpace's own foreground-change hooks (chmod 750/storage, setenforce,
+        // its own xsu writes) before our own first xsu connection of the session -- STATUS.md's
+        // Minecraft-crash investigation ties xsud's connection-handler crash to concurrent xsu
+        // load right when a game becomes foreground. Imperceptible to the player (games already
+        // take longer than this to finish loading); their hooks fire within ~50-100ms per
+        // captured logs, so this leaves generous headroom without it being a fixed race.
+        private const val PRE_ENGAGE_DELAY_MS = 2_000L
         // Per-app draw is only counted above this load — idle/menu (≈1-2%) is frozen out so it can't poison
         // the average; real play (CPU/GPU load ~15-50%) clears it easily.
         private const val MIN_ACTIVE_LOAD_PERCENT = 12

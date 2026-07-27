@@ -60,15 +60,27 @@ class GovernorController {
     fun setGovernor(policies: List<CpuPolicyInfo>, option: GovernorOption): String? {
         val cpu = policies.filterNot { it.isGpu }
         if (cpu.isEmpty()) return null
-        val avail = availableGovernors(cpu.first())
-        val chosen = option.candidates.firstOrNull { c -> avail.any { it.equals(c, true) } }
-            ?: option.candidates.first()
+        val chosen = resolveGovernor(cpu, option) ?: return null
         val cmd = cpu.joinToString("; ") { p ->
             val path = "${p.policyPath}/scaling_governor"
             "chmod 666 $path; echo $chosen > $path; chmod 644 $path"
         }
         RootSupport.runRootCommand(cmd)
         return chosen
+    }
+
+    /**
+     * Resolves which candidate governor [option] would actually apply on [policies], WITHOUT
+     * writing anything -- the same candidate-picking logic [setGovernor] uses internally, exposed
+     * so callers that write through a different path (e.g. [com.kei.pulse.root.PulseDaemon]) can
+     * reuse it instead of duplicating the "first available candidate" resolution.
+     */
+    fun resolveGovernor(policies: List<CpuPolicyInfo>, option: GovernorOption): String? {
+        val cpu = policies.filterNot { it.isGpu }
+        if (cpu.isEmpty()) return null
+        val avail = availableGovernors(cpu.first())
+        return option.candidates.firstOrNull { c -> avail.any { it.equals(c, true) } }
+            ?: option.candidates.first()
     }
 
     companion object {

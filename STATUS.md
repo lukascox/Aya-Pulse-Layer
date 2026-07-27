@@ -137,11 +137,71 @@ reversible, debug-build-only, and left in `MainActivity.kt` as tooling
    ~59-73s baseline) with that build. Everything above is groundwork;
    this is the only test that actually answers whether it worked.
 
-Nothing from tonight's daemon/FIFO work has touched `pulse-for-aya`'s live
-control path — it's all standalone scripts under `research/pulse-for-aya/
-scripts/` plus two new harmless debug probes in `MainActivity.kt`. Raw
-on-device evidence for every claim above is trimmed to just the relevant
-`logcat` lines (originals were tens of MB) in `research/ab-logger/
+**Update (2026-07-27, same night): points 1-3 implemented, builds clean,
+not yet verified on-device.**
+
+**Point 1 confirmed**: `mkfifo` works fine under the app's own `filesDir`
+(`/data/user/0/com.kei.pulse/files`), not just `/data/local/tmp` —
+verified live with a one-line `xsu` probe (create pipe, background a
+writer, `cat` reads it back correctly).
+
+**Point 2 (pre-engage delay)**: `ForegroundAppMonitorService.
+handleForegroundChange()` now `delay()`s `PRE_ENGAGE_DELAY_MS` (2000ms)
+before doing anything device-facing, but ONLY when `firstEntry` is true
+(entering AutoTDP from fully unbound — switching between two
+already-tracked apps skips it, their hooks already ran earlier).
+Imperceptible to the player; complements the daemon work rather than
+replacing it.
+
+**Point 3 (real Kotlin↔daemon bridge, first cut — governor write only)**:
+new `research/pulse-for-aya/app/src/main/java/com/kei/pulse/root/
+PulseDaemon.kt` + `assets/pulse_daemon.sh`. `ForegroundAppMonitorService`
+starts one `PulseDaemon` for its whole lifetime (`onCreate`/`onDestroy`,
+mirroring the AIDL client's old lifecycle) — one `xsu -c "sh ... &"` call
+launches the script, which then blocks reading a FIFO under `filesDir`
+and applies `chmod <mode>; echo <value>; chmod <mode>` for whatever path
+it's told, zero further `xsu` calls. Protocol is `"<path> <chmod_mode>
+<value>"` per line (mode included so governor writes can keep their
+existing `644` while CPU/GPU caps keep their existing `444` — same
+per-control convention as before, not weakened).
+
+`startAutoTdp()`'s Balanced-governor engage (the same call site the
+reverted AIDL step 2 targeted) now goes through `setAutoTdpGovernorBalanced()`:
+resolves the actual governor name via a new `GovernorController.
+resolveGovernor()` (extracted from the existing `setGovernor()`, no
+behavior change there), sends it to all CPU policies via
+`pulseDaemon.setCap()`, and falls back to the plain `xsu` write
+(`GovernorController.setGovernor()`) if the daemon isn't ready or any
+pipe write fails — AutoTDP can never end up without Balanced set. Only
+this one entry point is migrated so far; the exit-side restore
+(`setGovernorRaw` call sites) and all of `AutoTuneController`'s own
+CPU/GPU cap writes still go through plain `xsu`, same as before.
+
+**Not yet done**:
+- On-device verification that the daemon path actually fires (watch
+  `logcat` for `PulseDaemon` tag: `"engage governor via daemon (...)"` vs
+  `"...via xsu fallback"`) and that zero new `xsu`/`xsud` connections
+  appear for this write, matching tonight's standalone-script results.
+- Extending the bridge to `AutoTuneController`'s CPU/GPU cap writes
+  (currently still one `xsu` connection per write, same as it's always
+  been — this first cut only proves the mechanism on the one call site
+  already used for the AIDL A/B comparison).
+- Known lifecycle gap: a service killed without `onDestroy` running
+  (e.g. OOM) leaks an idle daemon process blocked on its FIFO read.
+  Harmless (near-zero CPU/memory, makes no further `xsu` calls) but not
+  actively cleaned up yet.
+- **Point 4, the actual proof, still pending**: the real Minecraft
+  crash-timing reproduction with this build.
+
+The exploration phase (daemon-persistence-test, fifo-daemon-test, the
+`/data/local/tmp`/`filesDir` probes) stayed entirely in standalone
+scripts and harmless debug-only hooks — none of it touched the live
+control path. Points 2-3 above are the first real change to it
+(`ForegroundAppMonitorService`'s pre-engage delay + the governor-engage
+call now going through `PulseDaemon`), builds clean, **not yet run on a
+real device**. Raw on-device evidence for the exploration phase's claims
+is trimmed to just the relevant `logcat` lines (originals were tens of
+MB) in `research/ab-logger/
 results/`: `aidl_xsu_check.log`, `minecraft_crash_step2_test*.log`,
 `daemon_persistence_test/*/logcat.log`, `fifo_daemon_test/logcat.log`.
 
