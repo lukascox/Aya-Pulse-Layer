@@ -1,0 +1,2 @@
+timestamp,sample_idx,foreground_pkg,fps,frame_count,p0_freq,p0_governor,p2_freq,p2_governor,p5_freq,p5_governor,p7_freq,p7_governor,gpu_freq_hz,gpu_busy_pct,temp_cpu_max_c,temp_gpu_max_c,temp_skin_c,temp_battery_c,fan_signal,fan_signal_unit,battery_current_ma,battery_voltage_mv,pulse_installed,pulse_service_running
+1785137590963,0,pl.ablogger.app,57.3,126,2265600,performance,3148800,performance,2956800,performance,3302400,performance,231000000,10,57.4,48.5,44.0,32.0,1030,fan_rpm_state,-505383,7629301,true,false

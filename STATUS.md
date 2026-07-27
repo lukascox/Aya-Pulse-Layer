@@ -93,10 +93,10 @@ closely supervised, watching for the same early warning signs (`xsud`
 SIGABRT bursts, ANRs) that preceded past incidents, not as an unattended
 background session.
 
-**Update (2026-07-27), analysis of a real repro session** (6 CSVs pulled to
-`research/ab-logger/results/pulled_logs_verify/` — a `pulled_logs_verifywd/`
-copy alongside it is a byte-identical duplicate, likely an accidental
-double-pull, not new data). **Reframes the problem**: this data does NOT
+**Update (2026-07-27), analysis of a real repro session** (6 CSVs, now at
+`research/ab-logger/results/minecraft_crash_investigation/round1_2026-07-27_0915_old_ablogger/`
+— folder reorganized/renamed in a later update below, see that update for
+where round 2's data landed). **Reframes the problem**: this data does NOT
 look like "Minecraft's launch path specifically fails" — it looks like
 **the device crashes repeatedly and quickly (within 12-30s) any time
 PULSE's live tuning is actually active (governor `walt`,
@@ -139,6 +139,49 @@ trusting that column again).
 capture + per-sample sync from this session) before the next reproduction
 attempt — that should finally pin the exact crash signature and confirm
 whether it's tied to the 93.8°C thermal spike or something else entirely.
+
+**Update (2026-07-27), round 2 with the new `ab-logger` build — different
+failure shape than round 1, still no `logcat`.** Four more sessions pulled,
+now organized under
+`research/ab-logger/results/minecraft_crash_investigation/`
+(`round1_.../` = the batch analyzed above, `round2_.../` = this batch;
+`NOTES.md` in that folder indexes every session file, this entry has the
+actual analysis — don't duplicate it there).
+
+- `_597194` (26 samples, 144s): Minecraft under stock `performance`
+  governor (**PULSE not actively tuning**, `pulse_service_running=false`
+  throughout) — hit 90-96°C repeatedly (rows 2, 4, 17, 20-22), same
+  thermal territory as round 1's crash-adjacent readings, and **did not
+  crash**: ran the full session, ended cleanly (last row shows the user
+  back in `ab-logger`'s own UI to hit Stop). Reinforces that raw thermal
+  load alone isn't sufficient to trigger this — PULSE has to be actively
+  tuning.
+- `_879294` (27 samples): PULSE active (`walt`) from row 0. Minecraft plays
+  normally for ~130s (rows 1-21, temps and FPS both unremarkable, nothing
+  like round 1's 93.8°C spike). Then at row 22 `frame_count` collapses to
+  0-3 and the foreground app becomes `retrohrai.launcher`, then row 24 is
+  `com.android.launcher3` — **the actual OS home screen** — matching the
+  user's original description almost exactly ("red Mojang screen → bounces
+  to home"). **Critically, the sampling loop itself never truncates this
+  time** — `ab-logger` kept producing rows straight through this, unlike
+  every crash session in round 1. This looks like a genuinely different
+  failure: **Minecraft itself dies/exits, but the rest of the system (and
+  `ab-logger`'s own `xsu` polling) stays up** — an app-level failure, not
+  the system-level freeze-and-recover pattern round 1's truncations
+  matched.
+
+**Still no `logcat_*.log` was pulled in this round either**, despite the
+new build being installed (confirmed by the working per-sample sync — round
+1's staleness/truncation-loses-data problem doesn't appear here). Two
+explanations, not yet distinguished: the capture file exists on-device at
+`/sdcard/apl_ab_logs/logcat_*.log` and just wasn't included in this pull,
+or `startCrashCapture()`'s `pkill`/`nohup`/backgrounded-`logcat` shell
+sequence doesn't behave as expected on this device's toybox and silently
+no-ops. **Next session**: check `/sdcard/apl_ab_logs/` directly for a
+`logcat_*.log` file before the next test; if genuinely absent, the capture
+command needs on-device debugging (run
+`LoggerSession.startCrashCapture()`'s command by hand over `xsu` and check
+whether a `logcat` process is actually left running with `ps`).
 
 ## ROOT CAUSE FOUND (2026-07-26): the empty-CSV bug is `xsud` segfaulting on long `xsu -c` commands
 

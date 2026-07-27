@@ -1,0 +1,28 @@
+timestamp,sample_idx,foreground_pkg,fps,frame_count,p0_freq,p0_governor,p2_freq,p2_governor,p5_freq,p5_governor,p7_freq,p7_governor,gpu_freq_hz,gpu_busy_pct,temp_cpu_max_c,temp_gpu_max_c,temp_skin_c,temp_battery_c,fan_signal,fan_signal_unit,battery_current_ma,battery_voltage_mv,pulse_installed,pulse_service_running
+1785137880679,0,com.android.launcher3,60.0,15,787200,walt,1920000,walt,499200,walt,902400,walt,231000000,24,59.3,55.1,52.2,34.0,1876,fan_rpm_state,1105068,7851763,true,true
+1785137887183,1,com.mojang.minecraftpe,36.1,126,2265600,walt,3148800,walt,2956800,walt,3187200,walt,231000000,11,96.1,66.5,52.7,34.0,3470,fan_rpm_state,269171,7740435,true,true
+1785137893466,2,com.mojang.minecraftpe,41.7,126,1017600,walt,2707200,walt,1190400,walt,3110400,walt,231000000,11,79.1,62.6,53.5,34.0,5126,fan_rpm_state,791035,7804273,true,true
+1785137899883,3,com.mojang.minecraftpe,60.0,126,787200,walt,844800,walt,1190400,walt,902400,walt,231000000,27,61.5,56.7,53.0,34.0,2404,fan_rpm_state,964074,7837360,true,true
+1785137906402,4,com.mojang.minecraftpe,60.0,126,1248000,walt,1286400,walt,1286400,walt,1363200,walt,231000000,25,60.8,57.1,52.1,34.0,2050,fan_rpm_state,-482494,7645261,true,true
+1785137912992,5,com.mojang.minecraftpe,42.2,127,1248000,walt,844800,walt,1190400,walt,902400,walt,231000000,12,58.1,54.0,50.9,34.0,2178,fan_rpm_state,-388193,7652267,true,true
+1785137919378,6,com.mojang.minecraftpe,43.1,126,2265600,walt,3014400,walt,2956800,walt,3052800,walt,231000000,14,94.6,65.3,50.6,34.0,3632,fan_rpm_state,-1714825,7467758,true,true
+1785137925667,7,com.mojang.minecraftpe,60.0,126,1804800,walt,2707200,walt,2707200,walt,3052800,walt,231000000,36,80.6,60.6,51.3,34.0,3105,fan_rpm_state,-667435,7595630,true,true
+1785137931827,8,com.mojang.minecraftpe,60.0,126,1689600,walt,2707200,walt,2707200,walt,3052800,walt,231000000,44,74.4,61.4,50.9,34.0,3079,fan_rpm_state,-731524,7584731,true,true
+1785137938001,9,com.mojang.minecraftpe,60.0,126,1459200,walt,2707200,walt,2630400,walt,1478400,walt,231000000,45,75.6,60.2,50.9,34.0,3753,fan_rpm_state,-1778913,7450631,true,true
+1785137944382,10,com.mojang.minecraftpe,60.0,126,1804800,walt,2707200,walt,2707200,walt,2304000,walt,231000000,36,92.2,59.8,50.6,34.0,3896,fan_rpm_state,-818501,7570328,true,true
+1785137950446,11,com.mojang.minecraftpe,60.0,126,1017600,walt,2707200,walt,2707200,walt,3052800,walt,231000000,33,79.5,59.0,50.3,34.0,3808,fan_rpm_state,-832234,7564684,true,true
+1785137956704,12,com.mojang.minecraftpe,60.0,126,1804800,walt,2707200,walt,2707200,walt,2438400,walt,231000000,37,72.9,61.8,50.2,34.0,3886,fan_rpm_state,-884421,7542496,true,true
+1785137963083,13,com.mojang.minecraftpe,60.0,127,1804800,walt,2707200,walt,2035200,walt,3052800,walt,231000000,38,77.1,61.0,50.6,34.0,3372,fan_rpm_state,-655533,7552422,true,true
+1785137969370,14,com.mojang.minecraftpe,60.0,126,1804800,walt,2707200,walt,2707200,walt,3052800,walt,231000000,36,70.5,57.5,50.1,34.0,2521,fan_rpm_state,-908225,7552227,true,true
+1785137975734,15,com.mojang.minecraftpe,60.0,127,1689600,walt,2707200,walt,2707200,walt,3052800,walt,231000000,41,84.2,61.4,50.1,34.0,2785,fan_rpm_state,-823995,7553006,true,true
+1785137982213,16,com.mojang.minecraftpe,60.0,126,1804800,walt,2572800,walt,2707200,walt,3052800,walt,231000000,32,95.3,63.0,50.6,34.0,3193,fan_rpm_state,-861532,7526731,true,true
+1785137988381,17,com.mojang.minecraftpe,60.0,126,1132800,walt,2707200,walt,2131200,walt,2995200,walt,231000000,31,87.2,62.2,50.7,34.0,3470,fan_rpm_state,-1001611,7531207,true,true
+1785137994845,18,com.mojang.minecraftpe,60.0,126,1804800,walt,2707200,walt,2707200,walt,3052800,walt,231000000,41,72.9,57.9,50.3,34.0,3225,fan_rpm_state,-622574,7576556,true,true
+1785138001307,19,com.mojang.minecraftpe,60.0,127,1248000,walt,2035200,walt,2707200,walt,1248000,walt,231000000,54,74.2,61.4,50.2,34.0,2170,fan_rpm_state,-888999,7537241,true,true
+1785138007769,20,com.mojang.minecraftpe,60.0,126,1804800,walt,2707200,walt,2707200,walt,2380800,walt,231000000,40,85.7,62.2,50.4,34.0,3046,fan_rpm_state,-878012,7538214,true,true
+1785138014047,21,com.mojang.minecraftpe,60.0,127,787200,walt,844800,walt,960000,walt,902400,walt,231000000,29,60.1,55.9,50.2,34.0,3470,fan_rpm_state,-505383,7496174,true,true
+1785138020633,22,com.retrohrai.launcher,n/a (low_sample_count=3),3,2265600,walt,3148800,walt,2956800,walt,2745600,walt,231000000,12,60.8,52.0,49.3,34.0,1289,fan_rpm_state,-286567,7623851,true,true
+1785138027367,23,com.retrohrai.launcher,n/a (low_sample_count=3),3,364800,walt,499200,walt,1190400,walt,480000,walt,231000000,n/a,52.6,49.6,48.3,34.0,1054,fan_rpm_state,-323189,7621126,true,true
+1785138033630,24,com.android.launcher3,n/a (low_sample_count=0),0,2265600,walt,3148800,walt,1190400,walt,480000,walt,231000000,n/a,54.2,49.6,47.8,34.0,1055,fan_rpm_state,-275580,7627744,true,true
+1785138039359,25,,n/a (no layer matched),0,?,?,?,?,?,?,?,?,?,n/a,n/a,n/a,n/a,n/a,?,fan_rpm_state,?,?,true,true
+1785138045974,26,com.retrohrai.launcher,n/a (low_sample_count=0),0,1804800,walt,499200,walt,729600,walt,480000,walt,231000000,n/a,51.9,48.1,47.0,34.0,1054,fan_rpm_state,-275580,7632026,true,true
