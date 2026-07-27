@@ -1,0 +1,2 @@
+--------- beginning of main
+07-27 20:52:24.283 14047 14114 D DataLocalTmpProbe: FAILED: FileNotFoundException: /data/local/tmp/apl_probe.txt: open failed: EACCES (Permission denied)

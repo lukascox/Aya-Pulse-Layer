@@ -1,0 +1,3 @@
+--------- beginning of main
+07-27 20:57:55.947 16783 16810 D DataLocalTmpProbe: FAILED: FileNotFoundException: /data/local/tmp/apl_probe.txt: open failed: EACCES (Permission denied)
+07-27 20:57:55.948 16783 16811 D FilesDirProbe: OK path=/data/user/0/com.kei.pulse/files wrote+read+deleted, content=pulse-probe

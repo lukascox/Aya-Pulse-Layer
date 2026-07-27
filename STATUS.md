@@ -26,6 +26,127 @@ in the same session, may share one root cause.
 
 ## Minecraft/PULSE crash — ROOT CAUSE CONFIRMED (2026-07-27), new trigger candidate found
 
+**END-OF-SESSION RECAP (2026-07-27, night) — read this first; the full
+blow-by-blow (including two earlier root-causing sessions) is preserved
+below for reference.**
+
+**Confirmed root cause**: `xsud` (the vendor's root-shell broker, used by
+`pulse-for-aya` via `xsu` and, it turns out, by AYASpace's own
+`com.ayaneo.gamewindow` too) has a real stack-overflow bug in
+`xsu_conn_handler`, reliably reproduced across many captures with an
+identical crash backtrace. It's triggered by cumulative/concurrent `xsu`
+connection load building up over the first ~60-70s a game is foreground,
+eventually taking `system_server` down with it (`BatteryService$Led`'s
+charging-LED animation is the specific call site that dies, but it's a
+downstream victim of `xsud`'s corruption, not the root cause itself).
+Governor choice (`walt` vs `schedutil`) and `aggressivePark` are both
+directly ruled out as the trigger.
+
+**Tried and reverted**: migrating `pulse-for-aya`'s AutoTDP-engage
+governor write from `xsu` to AIDL (`com_set_performance_scheduler`).
+Confirmed live it changes nothing (crash still ~60s, matching baseline)
+— then found out why: `gamewindow`'s own AIDL receiver, for this device's
+default code branch (`AR03`), *also* shells out through `xsu` internally
+(`AR03.b() → TcRootShell.a() → Runtime.exec("xsu "+cmd)`), and for the
+scheduler command specifically fires **4** separate bare-echo `xsu`
+connections (one per cpufreq policy) where our own code would have used
+just 1. The migration was net-negative for connection count, not
+neutral. Reverted to the plain `xsu` write (KISS) — see the "AIDL
+migration, step 2" update below and its mirror in
+`research/pulse-for-aya/README.md`.
+
+**Investigated and set aside**: disabling `gamewindow`'s own
+foreground-change reaction (`AyaTaskStackSubscriber`, confirmed to be a
+runtime-registered `TaskStackListener`, not a manifest component) to stop
+it contributing its own `xsu` connections. No user-facing toggle exists;
+`pm disable-user` can't target a non-manifest listener; the one shared
+root-shell chokepoint in `gamewindow`'s own code also carries its fan
+writes, which must not be touched blanket-style. Not pursued further —
+too much blast radius (would mean patching/freezing a signed system app)
+for an uncertain payoff.
+
+**Most promising direction found this session, validated repeatedly**:
+the OLD bash `pulse_lite` (v3.2-v3.7, `docs/archive/pulse_lite/`) never
+called `xsu` per-write at all — it launched ONCE (via AYASpace's own
+"Root Script" feature) and ran its whole tuning loop as plain shell
+builtins already running as root, for the whole session. Replicated the
+core mechanism as a standalone script
+(`research/pulse-for-aya/scripts/daemon-persistence-test.sh`): background
+a script via a single `xsu -c "sh script.sh > out 2>&1 < /dev/null &"`
+call (the stdio redirect is required — without it the launching
+connection stays open for the whole run instead of closing immediately),
+and it can write real `scaling_max_freq` caps continuously with **zero**
+further `xsu` connections. **Confirmed 3-for-3 on real device**,
+including once after a clean reboot, zero crashes each time, launch
+connection closing in single-digit milliseconds. This is the strongest,
+most evidence-backed lever found in the whole investigation — `AutoTDP`'s
+own continuous tick loop is almost certainly the single largest
+contributor to this device's total `xsu` connection volume over a real
+session (far more than `gamewindow`'s one-time per-launch reaction), so
+collapsing it to one connection could meaningfully reduce the pile-up
+this bug thrives on.
+
+**Refined further**: for the Kotlin↔daemon communication (Kotlin sends
+new target values, daemon reports telemetry back), a **named pipe
+(FIFO)** beats plain-file polling — confirmed on-device
+(`research/pulse-for-aya/scripts/fifo-daemon-test.sh`): sub-millisecond
+delivery vs. a multi-second poll interval, same "one connection ever"
+property, no meaningful flash wear either way at this data volume.
+
+**Checked and ruled out**: AIDL cannot help with telemetry reads either —
+the complete `AyaAidlInterface` transaction table has only `send`/
+`registerCallback`/`unregisterCallback`, no query method anywhere, and
+the richer-than-expected callback payload only ever carries the *static*
+5-mode preset table, never live FPS/thermal/busy% data. `TelemetryReader`/
+`FpsReader` (both confirmed to go through `xsu` today) have no AIDL
+shortcut — they'd need to move into the daemon-script pattern too, same
+as the writes.
+
+**One blocker found AND resolved tonight**: a FIFO needs a filesystem
+location both the root daemon and the sandboxed `pulse-for-aya` app can
+open. `/data/local/tmp` works fine for `xsu`/root but `pulse-for-aya`'s
+own process gets `EACCES` there — confirmed live via a debug-only probe
+(`verifyDataLocalTmpAccessOnDebugBuild` in `MainActivity.kt`,
+`FileNotFoundException: ... EACCES`). Fix: the app's own private internal
+storage, `filesDir` — confirmed to resolve to `/data/user/0/com.kei.pulse/
+files` (via a second probe, `verifyFilesDirAccessOnDebugBuild`) — and
+confirmed the root daemon can reach the SAME path too (`xsu -c "echo
+probe > /data/user/0/com.kei.pulse/files/apl_root_probe.txt; cat ...; rm
+..."` succeeded, read back `probe` correctly). Both probes are harmless,
+reversible, debug-build-only, and left in `MainActivity.kt` as tooling
+(not wired into the live path) — same pattern as the existing
+`AyaAidlClient` verification hooks.
+
+**Not yet done — the concrete next steps, in order**:
+1. Confirm `mkfifo` itself works under `/data/user/0/com.kei.pulse/files`
+   specifically (`fifo-daemon-test.sh` only exercised `/data/local/tmp`
+   for the actual pipe creation) — cheap, should just be a path-swap
+   rerun of the same script, but hasn't been done yet.
+2. The small pre-engage delay idea (1-10s before AutoTDP's very first
+   device-facing write on a fresh foreground-app change, to let
+   AYASpace's own launch hooks finish first) has been discussed
+   repeatedly this session but **never actually implemented or tested**.
+   Cheap (a few lines, imperceptible to the user) and complements the
+   daemon idea rather than competing with it.
+3. Build the real thing: wire `AutoTuneController`'s CPU/GPU cap writes
+   (and ideally `TelemetryReader`/`FpsReader`'s reads too) through the
+   daemon+FIFO pattern instead of per-call `xsu`, add the pre-engage
+   delay from (2), rebuild.
+4. **The actual proof**: re-run the full Minecraft crash-timing
+   reproduction (Game Mode ON → crash, compared against the existing
+   ~59-73s baseline) with that build. Everything above is groundwork;
+   this is the only test that actually answers whether it worked.
+
+Nothing from tonight's daemon/FIFO work has touched `pulse-for-aya`'s live
+control path — it's all standalone scripts under `research/pulse-for-aya/
+scripts/` plus two new harmless debug probes in `MainActivity.kt`. Raw
+on-device evidence for every claim above is trimmed to just the relevant
+`logcat` lines (originals were tens of MB) in `research/ab-logger/
+results/`: `aidl_xsu_check.log`, `minecraft_crash_step2_test*.log`,
+`daemon_persistence_test/*/logcat.log`, `fifo_daemon_test/logcat.log`.
+
+---
+
 Observed on-device (2026-07-26): with `pulse-for-aya` active, native Android
 **Minecraft fails to launch**; after a reboot with PULSE off, it launches
 fine. Native Android **Stardew Valley launches fine with PULSE active** —
