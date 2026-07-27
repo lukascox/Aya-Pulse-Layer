@@ -770,6 +770,39 @@ AYA has one either, on any SoC branch inspected (Qualcomm
 `TcRootShell`/`Runtime.exec`, MediaTek `KtRootShell`/JNI `ShellCmd` — both
 spawn fresh per call).
 
+**Investigated and set aside (2026-07-27): "turn off gamewindow's own
+foreground-change hook" has no clean, low-risk implementation.** User's
+idea: since `gamewindow`'s own foreground-change reaction contributes to
+the `xsu` connection burst too, find a way to disable just its CPU/GPU
+handling (leaving fan control alone — not yet researched, out of scope
+per `CLAUDE.md`'s fan hard rule). Checked all three levels:
+1. **No user-facing toggle** exists in `ayasettings`' own UI for
+   "auto-apply performance on game launch" — confirmed absent from the
+   decompiled `PerformanceViewModel`/Settings fragments.
+2. **No disableable component** — the actual hook,
+   `com.ayaneo.gamewindow.observer.AyaTaskStackSubscriber` (verified
+   directly, `aya-gamewindow-decompiled/sources/com/ayaneo/gamewindow/
+   observer/AyaTaskStackSubscriber.java`), is not a manifest-declared
+   `<receiver>`/`<service>` — it's a plain object registered at runtime via
+   the privileged `ActivityManager.registerTaskStackListener()` call in
+   `LauncherApp.onCreate()`. `pm disable-user` only targets manifest
+   components, so there's nothing to disable this way.
+3. **One shared chokepoint exists** (`CmdUtilKt.e()`, the same
+   `Runtime.exec("xsu "+cmd)` call all of `gamewindow`'s root commands
+   funnel through) but it's indiscriminate — CPU/GPU writes, `setenforce`,
+   AND fan writes all go through it, so intercepting there without
+   fragile per-command string-parsing would risk exactly the fan-control
+   interference the user wants to avoid.
+
+**Decision**: not pursuing this further. The only way to actually disable
+`AyaTaskStackSubscriber` would be modifying/hooking the signed system app
+itself or freezing the whole `gamewindow` process (which also hosts the
+AIDL service used elsewhere) — a materially bigger blast radius than
+anything tried so far, on a device with real crash/reboot history, for an
+uncertain payoff (other actors would still contribute to the burst
+either way). Revisit only if the user explicitly wants to accept that
+risk with eyes open.
+
 **Decided (2026-07-27): reverted.** User chose KISS over unproven
 complexity — `ForegroundAppMonitorService` is back to the plain `xsu`
 governor write (`GovernorController.setGovernor`), no AIDL bind, no
