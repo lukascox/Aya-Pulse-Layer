@@ -70,6 +70,20 @@ signal 6 (SIGABRT)` in Minecraft's own process, not system-wide). Confirms
 this is not a single narrow bug — PULSE's activity is destabilizing more
 than one subsystem.
 
+## round6_2026-07-27_1225_unplugged_aggressiveparkoff/
+
+Reproduced unplugged, `schedutil`, `aggressivePark` explicitly OFF — crash
+still happens (rules out `aggressivePark` as the sole/necessary trigger).
+`logcat_1785147913343.log` stops ~75s before the CSV's actual last
+sample — the backgrounded capture connection itself got killed by one of
+the `xsud` `xsu_conn_handler` stack-overflow crashes (see STATUS.md), so
+this file doesn't cover the true end of the session. What it DOES show:
+every `xsud` crash captured across this whole investigation shares the
+identical `__stack_chk_fail` / `xsu_conn_handler.cfi+856` backtrace — a
+real, reproducible bug in the vendor `xsud` binary itself, not in this
+repo's code. Full theory (concurrent `xsu` connection bursts at
+app-launch time, not a specific PULSE option) in STATUS.md.
+
 ## round4_2026-07-27_1035_schedutil_logcat_capture/
 
 Host-side `adb logcat -v threadtime` capture (not `ab-logger`'s own

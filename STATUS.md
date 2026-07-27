@@ -410,6 +410,83 @@ confirmed as at least one real trigger; if it still happens, the remaining
 suspects are the write/chmod cadence itself or contention with the other
 (non-PULSE) actors sharing `xsu` around app-launch moments.
 
+**Update (2026-07-27): `aggressivePark` OFF — crash still happens. Ruled
+out as sole/necessary trigger. But this session's logcat has the
+`xsud` crash's own backtrace for the first time, and it points at a real
+bug in the vendor binary itself, not any app.** Pulled to
+`research/ab-logger/results/minecraft_crash_investigation/round6_2026-07-27_1225_unplugged_aggressiveparkoff/`.
+Minecraft played fine for ~80s under `schedutil` (14 CSV samples, temps
+unremarkable, nothing like the earlier spikes) then the CSV just stops —
+same abrupt-cutoff shape as before, `aggressivePark` explicitly off this
+entire session.
+
+**The `xsud` `Fatal signal 6 (SIGABRT)` crashes (four of them in round 4,
+one here) all share the exact same backtrace**:
+
+```
+#01 pc ... /apex/com.android.runtime/lib64/bionic/libc.so (__stack_chk_fail+24)
+#02 pc ... /product/bin/xsud (xsu_conn_handler.cfi+856)
+```
+
+`__stack_chk_fail` means a stack buffer overflow was *detected* (the
+stack canary tripped) inside `xsud`'s own `xsu_conn_handler` — **this is a
+real bug in the vendor's root-helper binary itself**, not in
+`pulse-for-aya`, `ab-logger`, or anything else in this repo. Confirmed
+identical across every `xsud` crash pulled so far, both rounds, both
+`walt` and `schedutil`, plugged and unplugged — this is a stable,
+reproducible signature, not noise.
+
+**Bonus finding, explains a real gap in `ab-logger`'s own capture**: this
+session's `logcat` file stops at 12:25:37 (right at one of these `xsud`
+crashes), but the CSV kept sampling successfully for another **~75
+seconds** after that, until 12:26:52. The backgrounded `logcat` pipe is
+the *one* long-lived `xsu` connection in this whole system — everything
+else (CSV samples, one-off writes) is a fresh short-lived connection per
+call. If `xsu_conn_handler`'s overflow is more likely to trigger on a
+connection that stays open a long time, our own capture connection is
+exactly the kind of connection most exposed to it — explaining why the
+capture keeps cutting off before the real end of a session. Not yet
+mitigated; the honest fix (making the capture connection itself survive,
+or restart on its own if killed) is nontrivial given `xsud`'s behavior is
+outside our control, and might not be worth chasing further given what
+follows.
+
+**This reframes "why does Minecraft specifically trigger this" — probably
+not anything Minecraft's code does wrong, more likely Minecraft is just
+unusually good at creating a BURST of concurrent `xsu` connections at
+launch.** Every crash reproduction so far has multiple *independent*
+actors hitting `xsu` in the same narrow window right as Minecraft becomes
+foreground: `pulse-for-aya`'s own AutoTDP reacting to the new foreground
+app (governor/freq-cap writes), `ab-logger`'s own polling, and at least
+two confirmed-not-ours actors from earlier rounds (`battery/online`,
+`core_ctl/min_cpus`, the `chmod 750 /storage; setenforce 0` pair) that are
+most likely AYASpace's own native "game launch" hook reacting to the same
+foreground-app change and *also* going through `xsu`. If `xsu_conn_handler`
+has a real concurrency bug (plausible for a stack-overflow triggered
+inconsistently, not on a fixed input), a pile-up of several apps'
+root-shell calls landing within the same short window — which Minecraft's
+heavier launch reliably produces and something like Stardew Valley
+apparently doesn't (see the very first entry in this investigation) — is
+a believable trigger completely independent of which specific PULSE
+option is active. This would explain why swapping governors and disabling
+`aggressivePark` both failed to stop it: neither actually reduces how many
+*other* things hit `xsu` at the same moment.
+
+**This is likely NOT independently fixable from this repo** — `xsud` is a
+closed vendor binary (`/product/bin/xsud`), and AYASpace's own contribution
+to the connection pile-up is outside our control too. The most useful
+remaining question is whether `pulse-for-aya`'s own reaction to a
+foreground-app change can be made to avoid piling onto that same narrow
+window (e.g. a small delay before AutoTDP's first write on a fresh
+foreground app, giving AYASpace's own hook room to finish first) — worth
+trying, but this is now a mitigation for a vendor bug, not a fix for
+anything in our own code being wrong. Getting a real crash-window
+`logcat` via wireless `adb` (the user is investigating SSH-tunneled `adb`)
+would help confirm this theory more directly than continuing to guess from
+timing correlation alone — it would show, for the SAME test, exactly which
+other processes' `xsu` connections are open at the moment `xsu_conn_handler`
+actually crashes.
+
 ## ROOT CAUSE FOUND (2026-07-26): the empty-CSV bug is `xsud` segfaulting on long `xsu -c` commands
 
 Follow-up to INCIDENT #3 below. Root-caused live on-device, outside any
