@@ -672,6 +672,20 @@ activation → crash, compare against the 59s/73s/69s baseline already on
 record) to see whether it actually helps. GPU cap could follow the same
 pattern once CPU governor is proven out.
 
+**Concrete pointers for picking this up cold**: the call site to change is
+`handleForegroundChange()` in
+`research/pulse-for-aya/app/src/main/java/com/kei/pulse/appwatch/ForegroundAppMonitorService.kt`
+(~line 1773, 2048-line file — read the whole surrounding `applyConfig`/
+`startAutoTdp`/`snapshotCurrentState` flow before touching anything, it's
+carefully tuned and already has one documented governor-related bug fixed
+in it, the "GOVERNOR LEAK fix" comment around line 1803); the client to
+use is already built, `research/pulse-for-aya/app/src/main/java/com/kei/pulse/aidl/AyaAidlClient.kt`.
+Build/test with `cd research/pulse-for-aya && ./gradlew assembleDebug
+testDebugUnitTest`. The debug-only verification hooks already in
+`MainActivity.kt` (`verifyAyaAidlBindOnDebugBuild` and friends) can stay as
+regression checks or be stripped once step 2 supersedes them — not
+decided yet, follow-up call for whoever picks this up.
+
 ## ROOT CAUSE FOUND (2026-07-26): the empty-CSV bug is `xsud` segfaulting on long `xsu -c` commands
 
 Follow-up to INCIDENT #3 below. Root-caused live on-device, outside any
