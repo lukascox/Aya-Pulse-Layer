@@ -812,6 +812,94 @@ Builds clean, tests pass. Full step-2 history (why it was tried, why it
 was abandoned) kept in `research/pulse-for-aya/README.md`'s "AIDL
 migration, step 2" section for the record.
 
+**New direction found and validated (2026-07-27, evening): the OLD bash
+`pulse_lite` (v3.2-v3.7, `docs/archive/pulse_lite/`) never used per-write
+`xsu` calls at all — and a live two-for-two on-device test confirms the
+same architecture works on the current hardware.** Re-read `pulse_lite`'s
+actual `.sh` source (user explicitly asked for this one archived read,
+an exception to the usual "never read `docs/archive/`" rule): it's a
+plain `#!/bin/sh` with a `while true; do ...; sleep N; done` loop and
+**zero `xsu` calls inside the loop** — every `chmod`/`echo`/`cat` is a
+bare shell builtin. It was launched ONCE via AYASpace's own "Root Script"
+UI feature (`com.ayaneo.settings`'s `RootScriptFragment`, backed by
+`RootShell`/`YtRootShell` — confirmed via `docs/archive/pulse_lite/
+AYANEO_pulse_lite_MASTER_HANDOFF.md`), which runs the whole script as
+root ONE time; after that, the script's own loop needs no further
+privileged IPC at all. This is exactly the "our own daemon with one open
+channel" idea, and it already worked in production, historically —
+before this repo even had the `xsu`/`xsud` per-call architecture that's
+been at the center of today's whole crash investigation.
+
+**`YtRootShell` = the "ytsu" the user half-remembered** — but replicating
+its own trick (hold one `xsu` process open, feed it commands via stdin)
+is a DEAD END, already proven broken: `research/xsu-capability-probe/
+FINDINGS.md` confirms the stdin invocation method (explicitly named as
+"the pattern from `YtRootShell.java`") returns `exit=0` with silently
+empty output — a false positive, never actually executing. This is why
+`CLAUDE.md` has the hard rule against re-enabling it. **Important
+distinction**: that dead end is about keeping ONE connection open and
+feeding it NEW commands interactively. It is NOT the same as "use `xsu`
+once to launch a self-contained backgrounded script that never needs
+further external input" — the latter is what `pulse_lite` actually did,
+and it doesn't touch the broken stdin mechanism at all.
+
+**On-device validation, two runs**: a standalone test script
+(`research/pulse-for-aya/scripts/daemon-persistence-test.sh`, not wired
+into the app) launched via a single `xsu -c "sh script.sh &"` call, then
+looped writing real `scaling_max_freq` caps directly (the same
+`chmod 666; echo; chmod 444` pattern `GovernorController`/
+`AutoTuneController` already use) for ~2-2.5 minutes each run — comfortably
+longer than the established 59-73s crash window.
+- **Run 1**: confirmed zero NEW `xsu`/`xsud` connections from the write
+  loop itself (no `scaling_max_freq`/`policy7` ever appears in the
+  `logcat`), but the LAUNCHING connection stayed open for the entire
+  ~2m18s test, only closing when the script itself exited — an
+  unexpected wrinkle, matching the "long-lived connections may be more
+  exposed to `xsu_conn_handler`'s bug" caution already on record from
+  `ab-logger`'s own capture connection. No crash occurred regardless.
+- **Run 2**: fixed by explicitly redirecting the backgrounded script's
+  stdin/stdout/stderr away from the inherited pipe
+  (`sh script.sh > out 2>&1 < /dev/null &`) — the launching connection
+  now closes in **11 milliseconds**, not 2+ minutes. Confirmed again:
+  zero new connections from ~49 write cycles over ~85s, correct
+  readback every cycle for the lone-core `policy7`, no crash, despite
+  continuous unrelated `xsu` traffic in the background (AYA's own fan
+  PWM write recurring every ~5s — confirmed pure AYANEO noise, `pulse-
+  for-aya` was uninstalled during this test).
+
+**Side finding, real and unrelated to the test's design**: `policy0`
+(`cpu0`+`cpu1`, the A520 efficiency cluster) was found capped at `787200`
+(the Eco-tier value) at the start of run 2 — NOT something either test
+did; it's a leftover stuck cap, most likely from an earlier session's
+incomplete restore (matches the exact previously-documented "cpu0/cpu1
+stuck at 787200 until fixed by hand" incident from step 1's group-cap
+AIDL test). True stock max per `HARDWARE_PROFILE.md` is `2265600`. Because
+the test script captured "current value" as "original," its policy0
+alternation collapsed to a no-op (787200 ↔ 787200) — so run 2 did NOT
+actually validate shared-policy up/down toggling via direct writes, only
+confirmed the connection-behavior findings above. **Fix handed to user**:
+manual `chmod 666; echo 2265600; chmod 644` on `policy0/scaling_max_freq`.
+**Next test iteration**: re-run with `policy0` actually at its true stock
+value first, so the alternation is a real transition — this directly
+answers whether the earlier AIDL-specific "cap-up doesn't take effect for
+shared policies" bug was specific to `com_set_performance_cpu`'s own
+handling (very likely) or would also affect our own direct writes (not
+yet re-confirmed after the fix).
+
+**Why this matters more than anything else tried today**: this is the
+first `xsu`-connection-reduction idea in the whole investigation with a
+real, working two-for-two on-device confirmation, not just a plausible
+theory (unlike the AIDL migration, which was confirmed to NOT help and
+was reverted). If this pattern were adopted for `pulse-for-aya`'s real
+`AutoTuneController` traffic (which currently opens a fresh `xsu`
+connection for essentially every tick during active tuning — almost
+certainly the single largest contributor to this device's total `xsu`
+connection volume over a real gameplay session, dwarfing `gamewindow`'s
+one-time per-launch reaction), it could collapse that from potentially
+hundreds of connections per session down to one. Not yet designed or
+implemented — this is still a standalone diagnostic script, no app code
+changed.
+
 **Next session, open question**: is it worth migrating the GPU-cap write
 too (marginal further reduction, same ceiling), or should effort instead
 go toward something that isn't about reducing `pulse-for-aya`'s own `xsu`
