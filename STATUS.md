@@ -770,13 +770,14 @@ AYA has one either, on any SoC branch inspected (Qualcomm
 `TcRootShell`/`Runtime.exec`, MediaTek `KtRootShell`/JNI `ShellCmd` — both
 spawn fresh per call).
 
-**Open decision for the user**: given this, should step 2's governor
-migration (`ForegroundAppMonitorService.setAutoTdpGovernorBalanced()`) be
-reverted back to the plain `xsu` path? It's not proven actively harmful
-(today's crash-timing test showed no measurable difference either way),
-but it's confirmed to not help and may add connections at exactly the
-moment that matters — reverting would at least return to a known,
-single-connection baseline instead of an unproven 4-connection one.
+**Decided (2026-07-27): reverted.** User chose KISS over unproven
+complexity — `ForegroundAppMonitorService` is back to the plain `xsu`
+governor write (`GovernorController.setGovernor`), no AIDL bind, no
+fallback branch. `AyaAidlClient.kt`/`MainActivity`'s debug verification
+hooks stay as validated research tooling (not wired into the live path).
+Builds clean, tests pass. Full step-2 history (why it was tried, why it
+was abandoned) kept in `research/pulse-for-aya/README.md`'s "AIDL
+migration, step 2" section for the record.
 
 **Next session, open question**: is it worth migrating the GPU-cap write
 too (marginal further reduction, same ceiling), or should effort instead

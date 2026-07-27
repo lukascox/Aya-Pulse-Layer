@@ -321,7 +321,22 @@ CPU/GPU frequency are confirmed, step 2 (replacing
 `PerformanceCommandBuilder`'s `xsu`-based writes with these AIDL sends in
 the live control path) can be scoped for real.
 
-## AIDL migration, step 2 (2026-07-27) — first live-control-path change, builds clean, not yet on-device
+## AIDL migration, step 2 (2026-07-27) — tried, confirmed not to help, REVERTED
+
+**Reverted (2026-07-27), same day.** After the on-device evidence below
+confirmed `com.ayaneo.gamewindow`'s AIDL receiver shells out through
+`xsu` itself (and does so with MORE connections than our own code would
+for the same write), the user chose to revert to the simplest correct
+implementation (KISS) rather than keep unproven complexity in the live
+control path. `ForegroundAppMonitorService` is back to calling
+`GovernorController.setGovernor(policies, BALANCED)` directly via `xsu`
+on AutoTDP engage, exactly as before this step — no AIDL bind, no
+fallback branch, no `PulseAidl` logging in this file. `AyaAidlClient.kt`
+and `MainActivity`'s debug-only verification hooks are left in place as
+validated research tooling (they're what proved this migration doesn't
+help), just no longer wired into the live path. History below kept for
+the record — this is *why* the strategy was abandoned, not a currently-
+active design.
 
 Replaces the one `xsu`-based governor write that fires on the exact
 foreground-change moment `xsud`'s connection-burst crashes correlate with:
