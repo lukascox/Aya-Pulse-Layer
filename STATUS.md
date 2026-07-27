@@ -867,38 +867,42 @@ longer than the established 59-73s crash window.
   PWM write recurring every ~5s — confirmed pure AYANEO noise, `pulse-
   for-aya` was uninstalled during this test).
 
-**Side finding, real and unrelated to the test's design**: `policy0`
-(`cpu0`+`cpu1`, the A520 efficiency cluster) was found capped at `787200`
-(the Eco-tier value) at the start of run 2 — NOT something either test
-did; it's a leftover stuck cap, most likely from an earlier session's
-incomplete restore (matches the exact previously-documented "cpu0/cpu1
-stuck at 787200 until fixed by hand" incident from step 1's group-cap
-AIDL test). True stock max per `HARDWARE_PROFILE.md` is `2265600`. Because
-the test script captured "current value" as "original," its policy0
-alternation collapsed to a no-op (787200 ↔ 787200) — so run 2 did NOT
-actually validate shared-policy up/down toggling via direct writes, only
-confirmed the connection-behavior findings above. **Fix handed to user**:
-manual `chmod 666; echo 2265600; chmod 644` on `policy0/scaling_max_freq`.
-**Next test iteration**: re-run with `policy0` actually at its true stock
-value first, so the alternation is a real transition — this directly
-answers whether the earlier AIDL-specific "cap-up doesn't take effect for
-shared policies" bug was specific to `com_set_performance_cpu`'s own
-handling (very likely) or would also affect our own direct writes (not
-yet re-confirmed after the fix).
+**Side finding, real and unrelated to the test's design, REVISED after a
+third run**: `policy0` (`cpu0`+`cpu1`, the A520 efficiency cluster) was
+found capped at `787200` (the Eco-tier value; true stock per
+`HARDWARE_PROFILE.md` is `2265600`) at the start of run 2. User manually
+fixed it (`chmod 666; echo 2265600; chmod 644`) and did a clean `adb
+reboot` to test fresh — **but run 3, immediately after that reboot,
+found `policy0` back at `787200` again**, unprompted. This rules out the
+initial "leftover stuck cap from an incomplete restore" theory — a
+one-time manual fix wouldn't un-stick if the true cause were a stale
+value, but it WOULD get overwritten again if something re-applies `787200`
+on every boot (most likely AYASpace re-asserting whatever mode was last
+active — not yet root-caused further, not urgent). Practical consequence,
+unchanged: the test script's own before/after alternation for `policy0`
+collapsed to a no-op (`787200` ↔ `787200`) in all three runs, so shared-
+policy up/down toggling via direct writes is STILL not actually validated
+— would need the script to use hardcoded target values instead of trusting
+"whatever's currently there" as the baseline, given that baseline can't
+be relied on to stay put. Not done yet, lower priority than it seemed
+before this correction.
 
 **Why this matters more than anything else tried today**: this is the
 first `xsu`-connection-reduction idea in the whole investigation with a
-real, working two-for-two on-device confirmation, not just a plausible
-theory (unlike the AIDL migration, which was confirmed to NOT help and
-was reverted). If this pattern were adopted for `pulse-for-aya`'s real
-`AutoTuneController` traffic (which currently opens a fresh `xsu`
-connection for essentially every tick during active tuning — almost
-certainly the single largest contributor to this device's total `xsu`
-connection volume over a real gameplay session, dwarfing `gamewindow`'s
-one-time per-launch reaction), it could collapse that from potentially
-hundreds of connections per session down to one. Not yet designed or
-implemented — this is still a standalone diagnostic script, no app code
-changed.
+real, working **three-for-three** on-device confirmation (including once
+after a clean reboot), not just a plausible theory (unlike the AIDL
+migration, which was confirmed to NOT help and was reverted). If this
+pattern were adopted for `pulse-for-aya`'s real `AutoTuneController`
+traffic (which currently opens a fresh `xsu` connection for essentially
+every tick during active tuning — almost certainly the single largest
+contributor to this device's total `xsu` connection volume over a real
+gameplay session, dwarfing `gamewindow`'s one-time per-launch reaction),
+it could collapse that from potentially hundreds of connections per
+session down to one. Not yet designed or implemented — this is still a
+standalone diagnostic script, no app code changed. Evidence for all
+three runs (logcat + the script's own log where captured, plus a
+run-by-run summary table): `research/ab-logger/results/
+daemon_persistence_test/NOTES.md`.
 
 **Next session, open question**: is it worth migrating the GPU-cap write
 too (marginal further reduction, same ceiling), or should effort instead
