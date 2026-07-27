@@ -904,6 +904,44 @@ three runs (logcat + the script's own log where captured, plus a
 run-by-run summary table): `research/ab-logger/results/
 daemon_persistence_test/NOTES.md`.
 
+**Checked and ruled out: AIDL cannot help with telemetry reads either.**
+Read the complete `AyaAidlInterface` transaction table (only 3 real
+methods exist: `send`/`registerCallback`/`unregisterCallback`, confirmed
+directly in the decompiled `onTransact`, no hidden query method) and
+`AYAAidlManager`'s full message-handling code — the "richer than
+expected" callback payload (`aidl-bind-spike/FINDINGS.md`) only fires on
+`com_set_performance_mode` and only contains the STATIC 5-mode preset
+table, never live FPS/thermal/busy% data, and there's no periodic-push
+mechanism anywhere in the code. This was checked directly, not assumed —
+confirms the "AIDL has zero read capability" line from step 1 with an
+exhaustive rather than partial search. `pulse-for-aya`'s own telemetry
+(`TelemetryReader`, `FpsReader` — both confirmed to go through
+`RootSupport`/`xsu` today, `FpsReader` via `dumpsys SurfaceFlinger
+--timestats`) has no AIDL shortcut; it has to move into the same
+daemon-script pattern as the writes if this is going to help.
+
+**Update, same evening: a named pipe (FIFO) beats plain-file polling for
+the Kotlin↔daemon bridge, confirmed on-device.** User's concern with the
+file-polling design (`daemon_persistence_test`'s implied bridge: Kotlin
+writes a target file, daemon polls it) was reasonable — not real flash
+wear at this volume, but real added latency from polling. Tested the
+alternative: `research/pulse-for-aya/scripts/fifo-daemon-test.sh` creates
+two FIFOs under `/data/local/tmp` (not `/sdcard`, which is often a FUSE
+passthrough that historically doesn't support `mkfifo` reliably) — one
+for target values in, one for fake telemetry out — and the daemon's main
+loop blocks on a `read` from the input FIFO instead of polling a file.
+One clean on-device run: launch connection closed in 5ms (same as
+before), zero new `xsu` connections, no crash, and **four round trips
+each showed under 1ms from write to the daemon noticing** (vs.
+`daemon_persistence_test`'s ~2s poll interval) — the ~33-38ms per round
+trip that WAS observed is the real cost of the `chmod`/`echo`/`chmod`/
+`cat` sysfs cycle itself, not the IPC. Full data:
+`research/ab-logger/results/fifo_daemon_test/NOTES.md`. **Not yet
+checked**: whether `pulse-for-aya`'s own app process (a different
+SELinux domain/UID than an `adb shell` test) can actually open files
+under `/data/local/tmp` — this test only proved the shell-side FIFO
+plumbing works, not that the real app can reach it from its own context.
+
 **Next session, open question**: is it worth migrating the GPU-cap write
 too (marginal further reduction, same ceiling), or should effort instead
 go toward something that isn't about reducing `pulse-for-aya`'s own `xsu`
