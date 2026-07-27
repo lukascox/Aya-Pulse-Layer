@@ -799,6 +799,15 @@ class ForegroundAppMonitorService : Service() {
                 active = settings.quickAccessEnabled && QuickAccessOverlay.hasPermission(this) && screenOn,
             )
             if (!overlayShouldShow && !autoActive && !quickAccessShouldShow) {
+                // DIAG (AutoTDP tick-loop investigation, STATUS.md): confirm directly whether autoActive is
+                // really false when this early-return fires, instead of inferring it from indirect evidence
+                // (RGB/fan telemetry reads happen independently of this path and can't prove autoActive=true).
+                android.util.Log.d(
+                    "PulseAutoTdp",
+                    "TICK-SKIP overlayShouldShow=$overlayShouldShow autoActive=$autoActive " +
+                        "quickAccessShouldShow=$quickAccessShouldShow autoTdpPackage=$autoTdpPackage " +
+                        "boundPackage=$boundPackage lastForeground=$lastForeground",
+                )
                 if (overlay.isShowing) hideOverlay()
                 if (quickAccess.isShowing) quickAccess.hide()
                 ensureQuickAccessSettingsFeed(false)

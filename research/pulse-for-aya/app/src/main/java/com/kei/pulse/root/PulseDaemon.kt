@@ -59,15 +59,37 @@ class PulseDaemon(context: Context) {
      * string so this covers both numeric caps (frequencies) and names (governors) with one
      * protocol. Returns `false` (never throws) if the daemon isn't running or the pipe write
      * fails, so callers can fall back to a direct root-shell write.
+     *
+     * Opening a FIFO for write blocks until a reader is on the other end -- if the daemon script
+     * never actually started (the launch `xsu` call silently failed) or died mid-session (e.g.
+     * killed by `xsud`'s own documented instability under load), NOTHING will ever open the read
+     * end again, so a bare `FileOutputStream` open here would block forever. [start] optimistically
+     * marks `running = true` without confirming the script is actually alive, so that dead-daemon
+     * case is real, not hypothetical. The write runs on a throwaway daemon thread with a bounded
+     * [SET_CAP_TIMEOUT_MS] join instead of directly on the caller's thread/coroutine, so a wedged
+     * daemon can never freeze the caller -- `ForegroundAppMonitorService.tick()`'s single poll-loop
+     * coroutine calls this synchronously from `startAutoTdp()`, and a hang there would silently
+     * stall the whole watcher (overlay/fan/RGB/AutoTDP) with no exception and no log to explain why
+     * (STATUS.md's AutoTDP-tick-loop investigation, 2026-07-27 -- root-caused to exactly this).
+     * On timeout the writer thread is abandoned (never interrupted -- a blocked FIFO open doesn't
+     * reliably respond to `Thread.interrupt()`), a bounded, rare leak that matches the existing
+     * documented lifecycle gap in [start]'s doc rather than introducing a new one.
      */
     fun setCap(path: String, mode: String, value: String): Boolean {
         if (!running) return false
-        return try {
-            FileOutputStream(fifoInPath).use { it.write("$path $mode $value\n".toByteArray()) }
-            true
-        } catch (e: Exception) {
-            false
+        val succeeded = java.util.concurrent.atomic.AtomicBoolean(false)
+        val writer = Thread {
+            try {
+                FileOutputStream(fifoInPath).use { it.write("$path $mode $value\n".toByteArray()) }
+                succeeded.set(true)
+            } catch (e: Exception) {
+                // leave succeeded = false
+            }
         }
+        writer.isDaemon = true
+        writer.start()
+        writer.join(SET_CAP_TIMEOUT_MS)
+        return succeeded.get()
     }
 
     /** Tells the daemon to exit and clean up its FIFO. Safe to call even if never started. */
@@ -83,5 +105,9 @@ class PulseDaemon(context: Context) {
 
     companion object {
         private const val ASSET_NAME = "pulse_daemon.sh"
+
+        // Healthy round trips are sub-millisecond (fifo-daemon-test.sh); this is generous slack for
+        // a live daemon while still cutting a dead one's stall down from "forever" to "unnoticeable."
+        private const val SET_CAP_TIMEOUT_MS = 500L
     }
 }
