@@ -158,30 +158,48 @@ actual analysis — don't duplicate it there).
   tuning.
 - `_879294` (27 samples): PULSE active (`walt`) from row 0. Minecraft plays
   normally for ~130s (rows 1-21, temps and FPS both unremarkable, nothing
-  like round 1's 93.8°C spike). Then at row 22 `frame_count` collapses to
-  0-3 and the foreground app becomes `retrohrai.launcher`, then row 24 is
-  `com.android.launcher3` — **the actual OS home screen** — matching the
-  user's original description almost exactly ("red Mojang screen → bounces
-  to home"). **Critically, the sampling loop itself never truncates this
-  time** — `ab-logger` kept producing rows straight through this, unlike
-  every crash session in round 1. This looks like a genuinely different
-  failure: **Minecraft itself dies/exits, but the rest of the system (and
-  `ab-logger`'s own `xsu` polling) stays up** — an app-level failure, not
-  the system-level freeze-and-recover pattern round 1's truncations
-  matched.
+  like round 1's 93.8°C spike), user played for a bit. **User-confirmed
+  (2026-07-27): this is the session where exiting Minecraft triggered the
+  same UI crash as before** — device slows down, boot logo appears, then
+  stays unresponsive for a while — not a clean Minecraft exit as first
+  guessed from the CSV alone. Revises the earlier read of rows 22-26
+  (`frame_count` collapsing to 0-3, foreground bouncing between
+  `retrohrai.launcher`/`com.android.launcher3`/blank): this is most likely
+  **`ab-logger` capturing the crash-and-recovery window itself, in real
+  time** — nothing is genuinely rendering during those ~30-40s (consistent
+  with a boot-logo/recovery screen, not a real launcher), but critically
+  **`ab-logger`'s own sampling loop and `xsu` polling stayed alive and kept
+  producing rows throughout** — unlike every round-1 crash, which just went
+  silent. First time this repo has any telemetry from *inside* one of these
+  crashes instead of only before/after it.
 
-**Still no `logcat_*.log` was pulled in this round either**, despite the
-new build being installed (confirmed by the working per-sample sync — round
-1's staleness/truncation-loses-data problem doesn't appear here). Two
-explanations, not yet distinguished: the capture file exists on-device at
-`/sdcard/apl_ab_logs/logcat_*.log` and just wasn't included in this pull,
-or `startCrashCapture()`'s `pkill`/`nohup`/backgrounded-`logcat` shell
-sequence doesn't behave as expected on this device's toybox and silently
-no-ops. **Next session**: check `/sdcard/apl_ab_logs/` directly for a
-`logcat_*.log` file before the next test; if genuinely absent, the capture
-command needs on-device debugging (run
-`LoggerSession.startCrashCapture()`'s command by hand over `xsu` and check
-whether a `logcat` process is actually left running with `ps`).
+**Still no `logcat_*.log` exists on-device** — user-confirmed via `ls
+/sdcard/apl_ab_logs` on the device itself, only the 4 CSVs are there, so
+this isn't a missed-pull, the file was genuinely never created. Given
+`autotdp-ab-harness`'s Test 9 already proved a backgrounded `xsu`-launched
+process (the old `pulse_lite_v3.7.sh` daemon) CAN persist past its
+invoking call's own timeout, plain backgrounding isn't the general
+problem — something specific to `startCrashCapture()`'s command is. Not
+yet root-caused; candidates, in rough order of suspicion: (1) this
+device's `xsud` might execute multi-statement `-c` strings through its own
+lightweight interpreter rather than a real POSIX shell with full job
+control, in which case trailing `&` may not mean "detach" the way it does
+in `/system/bin/sh` — worth testing name-brand `nohup`/`logcat` availability
+directly; (2) `xsud`'s already-documented per-connection cleanup (crashes/
+reforks on connection close elsewhere in this repo) might specifically
+target backgrounded children this time, unlike Test 9's daemon-launch case.
+**Cheapest next diagnostic** (one manual `xsu` call, no app rebuild
+needed): `xsu -c "date > /sdcard/apl_ab_logs/t1.txt; (sleep 20; date >
+/sdcard/apl_ab_logs/t2.txt) &"`, then check with `ls -la
+/sdcard/apl_ab_logs/t*.txt` immediately and again after 25s+ — `t1.txt`
+appearing confirms basic redirect+exec works (expected), whether `t2.txt`
+ever appears is the actual test of whether anything backgrounded survives
+past the connection at all on this specific `xsud` build.
+
+**Next session**: run the `t1.txt`/`t2.txt` diagnostic above before
+touching the app again — it'll tell us in one call whether backgrounding
+is salvageable at all on this `xsud`, before sinking more time into
+`startCrashCapture()` specifically.
 
 ## ROOT CAUSE FOUND (2026-07-26): the empty-CSV bug is `xsud` segfaulting on long `xsu -c` commands
 
