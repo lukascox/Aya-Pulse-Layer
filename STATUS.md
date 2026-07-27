@@ -579,6 +579,26 @@ actors" down to just `pulse-for-aya` itself plus whatever AYASpace-side
 hooks fire on a foreground-app change (`ab-logger`'s own polling is
 confirmed *not* required to reproduce this).
 
+**Update (2026-07-27): mitigation path started — replace `pulse-for-aya`'s
+own `xsu` calls with AIDL where possible, to shrink its contribution to
+the connection burst.** Can't fix `xsud` itself (closed vendor binary)
+or AYASpace's own footprint, but we control `pulse-for-aya`'s side of it.
+Reading `com.ayaneo.settings`'s decompiled source turned up a much richer
+AIDL command surface than previously known — not just the whole-profile
+`com_set_performance_mode`, but per-core frequency, GPU cap, CPU
+scheduler, and fan mode too, all pure AIDL with zero sysfs writes on the
+`ayasettings` side. Full detail, exact command formats, and what
+landed vs. what's still untested: `research/pulse-for-aya/README.md`'s
+"AIDL migration, step 1" section. Short version: a new, isolated
+`AyaAidlClient.kt` exists with typed senders for the whole surface, wired
+to two debug-build-only verification hooks in `MainActivity.kt` (one
+safe/automatic bind check, one opt-in marker-file-gated governor-set
+test) — **nothing live-control-path-facing changed yet**, this is purely
+additive and not yet exercised on-device. Worth noting: pursuing this
+pushes `pulse-for-aya` further from upstream `pulse` (AIDL only exists on
+AYANEO hardware) — the user has accepted this is now a real
+AYANEO-specific fork, not a thin glue patch, going in.
+
 ## ROOT CAUSE FOUND (2026-07-26): the empty-CSV bug is `xsud` segfaulting on long `xsu -c` commands
 
 Follow-up to INCIDENT #3 below. Root-caused live on-device, outside any

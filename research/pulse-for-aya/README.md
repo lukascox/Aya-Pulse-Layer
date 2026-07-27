@@ -157,6 +157,78 @@ and (b) `cat .../scaling_governor` at a moment the FPS counter shows
 "Gaming Mode", to confirm what governor is actually live vs. what the
 label claims.
 
+## AIDL migration, step 1 (2026-07-27) — mitigation for the `xsud` crash, not a fix
+
+Follow-up to `STATUS.md`'s Minecraft-crash investigation (governor choice
+and `aggressivePark` both ruled out; root cause is a real stack-overflow
+bug in the vendor's `xsud` binary, most likely triggered by bursts of
+*concurrent* `xsu` connections from multiple actors — `pulse-for-aya`
+itself, `ab-logger`, and confirmed-not-ours processes, most likely
+AYASpace's own native "game launch" hooks — all hitting `xsu` in the same
+narrow window when a game comes to foreground). Since `xsud` and
+AYASpace's own footprint are both outside this repo's control, the only
+lever we have is reducing `pulse-for-aya`'s *own* contribution to that
+connection burst.
+
+`research/aidl-bind-spike` already proved (on this exact hardware, from a
+different app) that `com.ayaneo.gamewindow`'s `AyaAidlService` can be
+driven by any app with a plain Binder call — no `xsu`, no ~100ms-per-call
+floor. Reading `com.ayaneo.settings`'s own decompiled source
+(`research/ayaspace-teardown/evidence/performance/PerformanceViewModel.java`)
+turned up more than the whole-profile switch already known about — the
+native "Custom" profile editor (per-core frequency, GPU cap, CPU
+scheduler, fan mode) is *also* pure AIDL, no sysfs writes on the
+`ayasettings` side at all:
+
+```
+com_set_performance_mode:<0-4>            # Eco/Balanced/Streaming/Gaming/Max
+com_set_performance_scheduler:<mode>      # POWER_SAVING / BALANCED / HIGH_PERFORMANCE
+com_set_performance_cpu:<cpuId>_<freqKHz> # one physical core (0-7) at a time
+com_set_performance_gpu:<freqKHz>
+com_set_performance_gpu_is_fixed:<bool>
+com_set_performance_fan:<FAN_MODE_*>
+com_set_performance_reset:<0-4>
+```
+
+If these hold up on-device, most of what `PerformanceCommandBuilder`/
+`GovernorController` do today via `xsu`'s `chmod`+`echo` dance could go
+through this instead — leaving `xsu` only for the things AIDL can't do
+(continuous FPS/thermal/frequency *reads* for AutoTDP's live loop; AIDL is
+set-only). Reduces `pulse-for-aya`'s own connection-burst contribution,
+doesn't touch `xsud`'s actual bug.
+
+**What landed this session** (`app/src/main/java/com/kei/pulse/aidl/AyaAidlClient.kt`,
+new file): a clean port of `aidl-bind-spike`'s proven wire protocol, plus
+typed `send*()` methods for every command above. **Not wired into any live
+control path** — `ForegroundAppMonitorService.kt` (2048 lines, carefully
+tuned, already has one documented governor-related bug fixed in it) is
+deliberately untouched this step. Two debug-build-only hooks in
+`MainActivity.kt`:
+
+1. `verifyAyaAidlBindOnDebugBuild()` — binds + registers on every
+   debug-build launch, Toasts/logs the `clientId` or the failure reason.
+   Never changes device state, safe to run automatically.
+2. `maybeRunSchedulerSendTest()` — the one thing that DOES change device
+   state (`com_set_performance_scheduler:BALANCED`, then reads back
+   `policy0/scaling_governor` via `xsu` to confirm). Gated behind a marker
+   file (`/sdcard/apl_test_aidl_scheduler.txt`) the tester creates
+   deliberately over their existing root shell — never fires just because
+   the app launched.
+
+Builds clean (`./gradlew assembleDebug`), unit tests pass, **not yet run
+on-device**. Expected result if this works: readback shows `schedutil`
+(this SoC's native `BALANCED` governor, already confirmed in
+`diagnostics/docs/HARDWARE_PROFILE.md`).
+
+**Next session**: install this build, `xsu -c "touch
+/sdcard/apl_test_aidl_scheduler.txt"`, relaunch/open the app, check the
+Toast and `adb logcat -s AidlVerify`. If the scheduler command works,
+extend `maybeRunSchedulerSendTest`-style verification to
+`sendCpuFrequency`/`sendGpuFrequency`/`sendGpuFixed` before touching
+`ForegroundAppMonitorService` at all — confirm the whole command surface
+works from `pulse-for-aya`'s own signing context before designing the
+actual integration (step 2).
+
 ## Not yet exercised / open
 
 - AutoTDP's actual write path (CPU/GPU frequency actuation) — needs Usage

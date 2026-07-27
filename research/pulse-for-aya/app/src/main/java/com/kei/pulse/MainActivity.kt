@@ -1,11 +1,14 @@
 package com.kei.pulse
 
 import android.Manifest
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
+import com.kei.pulse.aidl.AyaAidlClient
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.result.contract.ActivityResultContracts
@@ -79,8 +82,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /** AIDL migration step 1 (`STATUS.md`, 2026-07-27) -- bind-only verification, see
+     * [verifyAyaAidlBindOnDebugBuild]'s doc comment. `null` unless a debug build actually ran it. */
+    private var aidlVerifyClient: AyaAidlClient? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        verifyAyaAidlBindOnDebugBuild()
         enableEdgeToEdge()
         maybeRequestQuickSettingsTileOnFirstRun()
         maybePromptBatteryExemption()
@@ -621,6 +629,79 @@ class MainActivity : ComponentActivity() {
             return
         }
         SleepProfileMonitorService.start(this)
+    }
+
+    /**
+     * AIDL migration step 1 (`STATUS.md`, 2026-07-27 Minecraft-crash investigation): verifies
+     * `AyaAidlClient` can bind to `com.ayaneo.gamewindow`'s `AyaAidlService` and complete the
+     * registration handshake **from pulse-for-aya's own signed/packaged context** -- the one thing
+     * `research/aidl-bind-spike`'s throwaway app couldn't tell us, since it's a different
+     * `applicationId`. Debug builds only (checked via `FLAG_DEBUGGABLE`, not `BuildConfig.DEBUG` --
+     * this module doesn't have `buildFeatures.buildConfig` enabled). The bind+register step itself
+     * never changes device state, so it's safe to run automatically on every debug-build launch;
+     * see [maybeRunSchedulerSendTest] for the one thing this DOES trigger, and why that one needs
+     * an explicit opt-in instead. Toasts + logs the result (tag `AidlVerify`); remove this whole
+     * call once step 2 lands and the bind path is exercised for real instead.
+     */
+    private fun verifyAyaAidlBindOnDebugBuild() {
+        val debuggable = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        if (!debuggable) return
+        val client = AyaAidlClient(this)
+        aidlVerifyClient = client
+        client.bind { result ->
+            when (result) {
+                is AyaAidlClient.BindResult.Ready -> {
+                    val msg = "AIDL bind OK, clientId=${result.clientId}"
+                    Log.d("AidlVerify", msg)
+                    runOnUiThread { Toast.makeText(this, msg, Toast.LENGTH_LONG).show() }
+                    maybeRunSchedulerSendTest(client)
+                }
+                is AyaAidlClient.BindResult.Failed -> {
+                    val msg = "AIDL bind FAILED: ${result.reason}"
+                    Log.w("AidlVerify", msg)
+                    runOnUiThread { Toast.makeText(this, msg, Toast.LENGTH_LONG).show() }
+                }
+            }
+        }
+    }
+
+    /**
+     * Opt-in test of [AyaAidlClient.sendScheduler] -- unlike the bind check above, this DOES
+     * change device state (sets the CPU governor for real), so it must never fire just because a
+     * debug build launched. Gated on a marker file the tester creates deliberately over their
+     * existing root shell: `xsu -c "touch /sdcard/apl_test_aidl_scheduler.txt"`. Checked (and
+     * removed, so it only fires once) via `RootSupport.runRootCommand`, not a plain `File` check --
+     * `/sdcard` isn't reliably reachable through this app's own file APIs under scoped storage, same
+     * reason every other probe in this repo goes through `xsu` for `/sdcard` (see e.g.
+     * `research/ab-logger/README.md`'s Permissions section). On trigger: sends
+     * `com_set_performance_scheduler:BALANCED`, waits 1.5s, then reads back
+     * `scaling_governor` on policy0 via `xsu` -- same empirical-verification pattern
+     * `research/aidl-bind-spike/app/.../MainActivity.kt` already used for `com_set_performance_mode`.
+     * Expect `schedutil` if this works (native `BALANCED` on this SoC, confirmed in
+     * `diagnostics/docs/HARDWARE_PROFILE.md` / `aya-gamewindows-teardown/FINDINGS.md`).
+     */
+    private fun maybeRunSchedulerSendTest(client: AyaAidlClient) {
+        val marker = "/sdcard/apl_test_aidl_scheduler.txt"
+        Thread {
+            val exists = com.kei.pulse.root.RootSupport.runRootCommand("test -f $marker && echo yes")?.trim() == "yes"
+            if (!exists) return@Thread
+            com.kei.pulse.root.RootSupport.runRootCommand("rm -f $marker")
+            val sendResult = client.sendScheduler("BALANCED")
+            Log.d("AidlVerify", "sendScheduler(BALANCED) result=$sendResult")
+            Thread.sleep(1500)
+            val readback = com.kei.pulse.root.RootSupport.runRootCommand(
+                "cat /sys/devices/system/cpu/cpufreq/policy0/scaling_governor",
+            )?.trim()
+            val msg = "scheduler test: send=$sendResult readback(policy0 governor)=$readback"
+            Log.d("AidlVerify", msg)
+            runOnUiThread { Toast.makeText(this, msg, Toast.LENGTH_LONG).show() }
+        }.start()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        aidlVerifyClient?.unbind()
+        aidlVerifyClient = null
     }
 
     private fun maybeRequestQuickSettingsTileOnFirstRun() {
