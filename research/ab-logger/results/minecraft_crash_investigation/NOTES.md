@@ -84,6 +84,30 @@ real, reproducible bug in the vendor `xsud` binary itself, not in this
 repo's code. Full theory (concurrent `xsu` connection bursts at
 app-launch time, not a specific PULSE option) in STATUS.md.
 
+## round7_2026-07-27_1244_cable_host_capture/
+
+Cable reconnected, full host-side `adb logcat` capture
+(`minecraft_crash.log`, 8MB) of another `system_server` crash, run
+simultaneously with `ab-logger`'s own capture
+(`session_1785149052936.csv`/`logcat_1785149052936.log` — the real pair;
+`session_1785148979469.csv`/`logcat_1785148979469.log` is a short false
+start). Used to answer "is there a timing pattern" — full timeline and
+answer in STATUS.md. Short version: no fixed timer, but a consistent
+shape (long quiet gap, then `xsud` crashes clustering tighter and tighter,
+~10s apart, in the final ~20-30s before `system_server` goes down) matches
+round 4 almost exactly. Also caught direct evidence of a system-privileged
+`Performance-Timer` thread (almost certainly AYASpace's own native
+perf-monitor) reading `gpuclk` concurrently — independent confirmation of
+the "other actors sharing `xsu`" theory. `ab-logger`'s own capture died at
+the very first `xsud` crash again, same as round 6 — confirmed reproducible
+limitation, not a one-off.
+
+`minecraft_crash_no_ablogger.log` (also in this folder, 9.5MB): same test
+with `ab-logger` NOT running at all, to check whether its own polling is
+a necessary ingredient. It isn't — same crash, same timing shape (69s
+Game-Mode-to-crash, same accelerating `xsud`-crash gaps). See STATUS.md's
+three-capture comparison table.
+
 ## round4_2026-07-27_1035_schedutil_logcat_capture/
 
 Host-side `adb logcat -v threadtime` capture (not `ab-logger`'s own

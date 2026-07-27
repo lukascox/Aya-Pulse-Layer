@@ -487,6 +487,98 @@ timing correlation alone — it would show, for the SAME test, exactly which
 other processes' `xsu` connections are open at the moment `xsu_conn_handler`
 actually crashes.
 
+**Update (2026-07-27): cable back in, full host-side `adb logcat` capture
+of another crash, filed to
+`research/ab-logger/results/minecraft_crash_investigation/round7_2026-07-27_1244_cable_host_capture/`
+(`minecraft_crash.log`, 8MB, captured simultaneously with `ab-logger`'s
+own — much shorter — capture, `session_1785149052936.csv`/
+`logcat_1785149052936.log`). Answers the user's question ("is there a timing pattern, like always
+~60s?") directly: no fixed timer, but a real, consistent qualitative
+pattern across every `system_server`-crash instance pulled so far.**
+
+**Timeline of this session** (t=0 at `cmd game set --mode 1
+com.mojang.minecraftpe`, i.e. the moment Android's Game Manager — and by
+extension PULSE, which reacts to the same foreground-app change — notices
+Minecraft):
+
+| t (s) | event |
+|---|---|
+| 0 | Game Mode set for Minecraft; `pulse-for-aya` sets governor to `schedutil` ~0.9s later |
+| +4.2 | 1st `xsud` crash (`xsu_conn_handler` stack overflow, same signature as always) |
+| +20.3, +40.4, +60.5 | `ANR in com.qti.diagservices` — suspiciously regular, ~20.1s apart every time; unrelated background noise on this device, not caused by us, but a useful clock |
+| +41.5 | 2nd `xsud` crash (37.3s after the 1st) |
+| +52.5 | 3rd `xsud` crash (11.0s after the 2nd) |
+| +62.8 | 4th `xsud` crash (10.3s after the 3rd) |
+| +72.5 | 5th `xsud` crash (9.7s after the 4th) |
+| **+73.4** | **`system_server` `FATAL EXCEPTION`** (same `BatteryService$Led` site as round 4) |
+| +73.5-+79.4 | cascade: `Performance-Timer` thread (a **system app**, SELinux `system_app` context — almost certainly AYASpace's own native perf-monitor, seen elsewhere in this same log issuing AVC-denied reads of `gpuclk`) crashes, a binder thread crashes, a process named `init` crashes, an `AsyncTask` crashes — dependent Binder callers going down together as `system_server` restarts, not new independent bugs |
+
+Cross-checked against round 4's four `xsud` crashes
+(`10:35:40.913 → 10:36:18.336 → 10:36:28.594 → 10:36:39.540`, gaps `37.4s,
+10.3s, 10.9s`) — **the exact same shape**: one long quiet gap first, then
+crashes clustering tighter and tighter (~10s apart) in the final
+20-30 seconds before `system_server` goes down. Total time from Game-Mode-
+activation to crash: **~59s in round 4, ~73s in this session** — same
+rough ballpark, not identical, and not a fixed countdown.
+
+**Answer to "what triggers it, is it time-based"**: not a timer — a
+**cumulative degradation**. Each `xsud` connection-handler crash seems to
+leave the daemon a little more fragile (consistent with a resource leak or
+corrupted state surviving the crash-and-refork cycle already documented
+elsewhere in this repo), so crashes come faster and faster the longer
+concurrent `xsu` traffic continues, until one lands badly enough to take
+`system_server` down with it. The "~60-70s" the user noticed is real as a
+*rough* characteristic timescale for this particular failure mode, but
+it's downstream of "how long it takes concurrent `xsu` load to degrade
+`xsud` enough," not a hardcoded interval — expect it to vary with how much
+`xsu` traffic is actually happening (more concurrent pollers = faster;
+round 5's completely different `XNNPACK`/`cpuinfo` crash happened in ~2
+seconds flat, because it's not this mechanism at all).
+
+**New concrete confirmation of the "other actors" theory**: this log
+directly shows a **system-privileged app** (SELinux `system_app` context,
+process tag `Performance-Tim[er]`) reading `gpuclk` and other `kgsl`
+paths — independent confirmation that something AYASpace-side is actively
+polling GPU state concurrently with `pulse-for-aya`/`ab-logger`, not just
+inferred from `xsu`/`core_ctl` writes as before.
+
+**`ab-logger`'s own capture died at the very first `xsud` crash again**
+(`logcat_1785149052936.log` stops at the same timestamp as the 1st `xsud`
+crash in the table above) — confirms this is a reliable, reproducible
+limitation of the in-app approach, not a one-off; the host-side `adb
+logcat` capture remains the way to get a full picture.
+
+**Update (2026-07-27): third data point, this time WITHOUT `ab-logger`
+running at all — same pattern, `ab-logger` cleared as a necessary
+contributor.** One more host-side capture, user-named
+`minecraft_crash_no_ablogger.log` (9.5MB, filed alongside round 7's other
+files), specifically to test whether `ab-logger`'s own polling was part of
+what triggers this. It wasn't running this time. Timeline: Game Mode set
+for Minecraft at 12:49:36.762, four `xsud` crashes at 12:49:36.457†,
+12:50:14.232, 12:50:25.799, 12:50:37.262 (†first one lands basically
+simultaneously with Game Mode activation — gaps between the 4:
+**37.8s, 11.6s, 11.5s** — the same long-gap-then-tightening shape as
+every prior instance), then `system_server` `FATAL EXCEPTION` at
+12:50:46.001 — **8.7s after the last `xsud` crash**, **69.2s after Game
+Mode activation**. Same ~20.1s-spaced `ANR in com.qti.diagservices`
+background noise throughout, unaffected by `ab-logger`'s absence
+(confirms that one really is unrelated to anything in this repo).
+
+Three system_server-crash instances now on record, all the same shape:
+
+| capture | time (Game Mode → crash) | xsud crash gaps |
+|---|---|---|
+| round 4 | ~59s | 37.4s, 10.3s, 10.9s |
+| round 7 (`minecraft_crash.log`) | ~73s | 37.3s, 11.0s, 10.3s, 9.7s |
+| round 7 (`minecraft_crash_no_ablogger.log`) | ~69s | 37.8s, 11.6s, 11.5s |
+
+Consistent within roughly a 15-second band, always the same qualitative
+shape, `ab-logger` present or not — strengthens the "cumulative `xsud`
+degradation under concurrent `xsu` load" theory and narrows "concurrent
+actors" down to just `pulse-for-aya` itself plus whatever AYASpace-side
+hooks fire on a foreground-app change (`ab-logger`'s own polling is
+confirmed *not* required to reproduce this).
+
 ## ROOT CAUSE FOUND (2026-07-26): the empty-CSV bug is `xsud` segfaulting on long `xsu -c` commands
 
 Follow-up to INCIDENT #3 below. Root-caused live on-device, outside any

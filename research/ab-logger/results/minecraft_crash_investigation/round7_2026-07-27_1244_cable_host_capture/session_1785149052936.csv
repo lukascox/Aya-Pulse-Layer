@@ -1,0 +1,12 @@
+timestamp,sample_idx,foreground_pkg,fps,frame_count,p0_freq,p0_governor,p2_freq,p2_governor,p5_freq,p5_governor,p7_freq,p7_governor,gpu_freq_hz,gpu_busy_pct,temp_cpu_max_c,temp_gpu_max_c,temp_skin_c,temp_battery_c,fan_signal,fan_signal_unit,battery_current_ma,battery_voltage_mv,pulse_installed,pulse_service_running
+1785149061533,0,com.mojang.minecraftpe,56.0,127,2265600,performance,3148800,performance,2956800,performance,3302400,performance,231000000,10,94.6,64.1,51.4,39.0,2903,fan_rpm_state,283820,8231486,true,true
+1785149067955,1,com.mojang.minecraftpe,49.0,126,2265600,schedutil,3148800,schedutil,2956800,schedutil,2880000,schedutil,231000000,14,95.0,67.3,52.6,39.0,3486,fan_rpm_state,184941,8208520,true,true
+1785149074148,2,com.mojang.minecraftpe,60.0,126,2265600,schedutil,1920000,schedutil,2956800,schedutil,480000,schedutil,231000000,37,69.0,59.8,52.6,39.0,4486,fan_rpm_state,784626,8284815,true,true
+1785149080304,3,com.mojang.minecraftpe,60.0,126,2150400,schedutil,2572800,schedutil,2035200,schedutil,1939200,schedutil,231000000,31,79.5,59.8,52.5,39.0,4017,fan_rpm_state,819417,8289486,true,true
+1785149086378,4,com.mojang.minecraftpe,60.0,126,2265600,schedutil,3148800,schedutil,2956800,schedutil,3302400,schedutil,231000000,39,73.6,58.6,52.2,39.0,2052,fan_rpm_state,533765,8255620,true,true
+1785149092548,5,com.mojang.minecraftpe,60.0,126,2150400,schedutil,1190400,schedutil,2246400,schedutil,480000,schedutil,231000000,39,67.8,58.3,52.5,39.0,5566,fan_rpm_state,769062,8286566,true,true
+1785149098810,6,com.mojang.minecraftpe,60.0,126,1248000,schedutil,1286400,schedutil,2131200,schedutil,480000,schedutil,231000000,44,72.1,56.7,52.0,39.0,2050,fan_rpm_state,823995,8297076,true,true
+1785149104988,7,com.mojang.minecraftpe,60.0,127,1574400,schedutil,1075200,schedutil,1824000,schedutil,480000,schedutil,231000000,39,66.7,56.7,52.0,39.0,2697,fan_rpm_state,918296,8309922,true,true
+1785149111388,8,com.mojang.minecraftpe,60.0,126,1574400,schedutil,1708800,schedutil,2035200,schedutil,480000,schedutil,231000000,44,70.9,60.6,52.1,39.0,2052,fan_rpm_state,713213,8287150,true,true
+1785149117688,9,com.mojang.minecraftpe,60.0,126,1689600,schedutil,2131200,schedutil,2707200,schedutil,480000,schedutil,231000000,46,83.0,60.6,52.6,39.0,2519,fan_rpm_state,725115,8285593,true,true
+1785149124077,10,com.mojang.minecraftpe,60.0,126,2265600,schedutil,1401600,schedutil,729600,schedutil,480000,schedutil,231000000,39,66.3,57.9,52.8,39.0,2958,fan_rpm_state,794697,8298633,true,true

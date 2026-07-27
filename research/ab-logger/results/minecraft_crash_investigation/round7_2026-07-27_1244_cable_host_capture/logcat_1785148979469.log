@@ -1,0 +1,945 @@
+BOOT_REASON_AT_START=shutdown,userrequested,1785148863 reboot,1785148244 reboot,userrequested,1785147890
+--------- beginning of main
+07-27 12:42:59.556  9745  9745 I xsu     : sending cmd:cat '/sys/class/power_supply/battery/capacity' 2>/dev/null
+07-27 12:42:59.556  9745  9745 I xsu     : sending cmd end:cat '/sys/class/power_supply/battery/capacity' 2>/dev/null
+07-27 12:42:59.556  9745  9745 I xsu     : free cmd end
+07-27 12:42:59.556  9745  9745 I xsu     : xsu_recv cmd before
+07-27 12:42:59.556  9745  9745 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.556  9745  9745 I xsu_api : xsu_recv memset end
+07-27 12:42:59.557  8803  9748 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.557  8803  9748 I xsu_api : xsu_recv memset end
+07-27 12:42:59.557  8803  9748 I xsu_api : xsu_recv retry end
+07-27 12:42:59.557  8803  9748 I xsu_api : ret=4, version=200, type=0, payload_size=62
+07-27 12:42:59.557  8803  9748 I xsu_api : xsu_recv type and len
+07-27 12:42:59.557  8803  9748 I xsu_api : header.type=0, header.payload_size=62, xsu_header_t=4
+07-27 12:42:59.557  8803  9748 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.557  8803  9748 I xsud    : handle comming cmd:cat '/sys/class/power_supply/battery/capacity' 2>/dev/null
+07-27 12:42:59.571  9745  9745 I xsu_api : xsu_recv retry end
+07-27 12:42:59.571  9745  9745 I xsu_api : ret=4, version=200, type=1, payload_size=7
+07-27 12:42:59.571  9745  9745 I xsu_api : xsu_recv type and len
+07-27 12:42:59.571  9745  9745 I xsu_api : header.type=1, header.payload_size=7, xsu_header_t=4
+07-27 12:42:59.571  9745  9745 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.571  9745  9745 I xsu     : xsu_recv cmd end
+07-27 12:42:59.571  9745  9745 I xsu     : xsu_recv cmd before
+07-27 12:42:59.571  9745  9745 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.571  9745  9745 I xsu_api : xsu_recv memset end
+07-27 12:42:59.571  9745  9745 I xsu_api : xsu_recv retry end
+07-27 12:42:59.571  9745  9745 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 12:42:59.571  9745  9745 I xsu_api : xsu_recv type and len
+07-27 12:42:59.571  9745  9745 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 12:42:59.571  9745  9745 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.571  9745  9745 I xsu     : xsu_recv cmd end
+07-27 12:42:59.571  9745  9745 I xsu     : end session!
+07-27 12:42:59.630  9259  9259 W HidlServiceManagement: Waited one second for vendor.qti.diaghal@1.0::Idiag/default
+07-27 12:42:59.631   777   777 I hwservicemanager: Since vendor.qti.diaghal@1.0::Idiag/default is not registered, trying to start it as a lazy HAL (if it's not configured to be a lazy HAL, it may be stuck starting or still starting).
+07-27 12:42:59.631  9259  9259 I HidlServiceManagement: getService: Trying again for vendor.qti.diaghal@1.0::Idiag/default...
+07-27 12:42:59.632   777  9751 W libc    : Unable to set property "ctl.interface_start" to "vendor.qti.diaghal@1.0::Idiag/default": error code: 0x20
+07-27 12:42:59.632   777  9751 I hwservicemanager: Tried to start vendor.qti.diaghal@1.0::Idiag/default as a lazy service, but was unable to. Usually this happens when a service is not installed, but if the service is intended to be used as a lazy service, then it may be configured incorrectly.
+07-27 12:42:59.663  9752  9752 I xsu     : sending cmd:cat '/sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq' 2>/dev/null
+07-27 12:42:59.663  9752  9752 I xsu     : sending cmd end:cat '/sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq' 2>/dev/null
+07-27 12:42:59.663  9752  9752 I xsu     : free cmd end
+07-27 12:42:59.663  8803  9755 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.663  9752  9752 I xsu     : xsu_recv cmd before
+07-27 12:42:59.663  8803  9755 I xsu_api : xsu_recv memset end
+07-27 12:42:59.663  9752  9752 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.663  9752  9752 I xsu_api : xsu_recv memset end
+07-27 12:42:59.663  8803  9755 I xsu_api : xsu_recv retry end
+07-27 12:42:59.663  8803  9755 I xsu_api : ret=4, version=200, type=0, payload_size=78
+07-27 12:42:59.663  8803  9755 I xsu_api : xsu_recv type and len
+07-27 12:42:59.663  8803  9755 I xsu_api : header.type=0, header.payload_size=78, xsu_header_t=4
+07-27 12:42:59.663  8803  9755 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.663  8803  9755 I xsud    : handle comming cmd:cat '/sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq' 2>/dev/null
+07-27 12:42:59.684  9752  9752 I xsu_api : xsu_recv retry end
+07-27 12:42:59.684  9752  9752 I xsu_api : ret=4, version=200, type=1, payload_size=12
+07-27 12:42:59.684  9752  9752 I xsu_api : xsu_recv type and len
+07-27 12:42:59.684  9752  9752 I xsu_api : header.type=1, header.payload_size=12, xsu_header_t=4
+07-27 12:42:59.684  9752  9752 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.684  9752  9752 I xsu     : xsu_recv cmd end
+07-27 12:42:59.684  9752  9752 I xsu     : xsu_recv cmd before
+07-27 12:42:59.684  9752  9752 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.684  9752  9752 I xsu_api : xsu_recv memset end
+07-27 12:42:59.684  9752  9752 I xsu_api : xsu_recv retry end
+07-27 12:42:59.684  9752  9752 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 12:42:59.684  9752  9752 I xsu_api : xsu_recv type and len
+07-27 12:42:59.684  9752  9752 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 12:42:59.684  9752  9752 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.684  9752  9752 I xsu     : xsu_recv cmd end
+07-27 12:42:59.684  9752  9752 I xsu     : end session!
+07-27 12:42:59.701  2258  2258 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 12:42:59.701  2258  2258 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 12:42:59.701  2258  2258 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 12:42:59.704  2258  2258 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 12:42:59.704  2258  2258 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 12:42:59.704  2258  2258 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 12:42:59.716  2258  4657 I InputDispatcher: Channel [Gesture Monitor] swipe-up (server) is stealing touch from [ef66d15 pl.ablogger.app/pl.ablogger.app.MainActivity (server), [Gesture Monitor] edge-swipe (server)]
+--------- beginning of system
+07-27 12:42:59.716  2613  2645 V ShellRecents: RecentsTransitionHandler.startRecentsTransition
+07-27 12:42:59.716  2613  2645 V WindowManagerShell: Directly starting a new transition type=3 wct=WindowContainerTransaction { changes = {} hops = [{PendingIntent: options=Bundle[mParcelledData.dataSize=332]}] errorCallbackToken=null taskFragmentOrganizer=null } handler=com.android.wm.shell.recents.RecentsTransitionHandler@45524fc
+07-27 12:42:59.717  2258  2313 W ActivityTaskManager: callingPackage for (uid=1000, pid=2258) is ambiguous: [android, com.android.providers.settings, com.android.server.telecom, com.android.location.fused]
+07-27 12:42:59.717  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 265464455; UID 10138; state: DISABLED
+07-27 12:42:59.717  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 265452344; UID 10138; state: DISABLED
+07-27 12:42:59.717  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 266124927; UID 10138; state: DISABLED
+07-27 12:42:59.718  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 265451093; UID 10138; state: DISABLED
+07-27 12:42:59.718  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 265456536; UID 10138; state: DISABLED
+07-27 12:42:59.718  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 255940284; UID 10138; state: DISABLED
+07-27 12:42:59.718  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 236283604; UID 10138; state: DISABLED
+07-27 12:42:59.718  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 263959004; UID 10138; state: DISABLED
+07-27 12:42:59.718  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 264304459; UID 10138; state: DISABLED
+07-27 12:42:59.718  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 264301586; UID 10138; state: DISABLED
+07-27 12:42:59.718  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 254631730; UID 10138; state: DISABLED
+07-27 12:42:59.718  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 273509367; UID 10138; state: DISABLED
+07-27 12:42:59.718  2258  2258 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 12:42:59.718  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 263259275; UID 10138; state: DISABLED
+07-27 12:42:59.718  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 174042980; UID 10138; state: DISABLED
+07-27 12:42:59.718  2258  2258 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 12:42:59.718  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 174042936; UID 10138; state: DISABLED
+07-27 12:42:59.718  2258  2258 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 12:42:59.718  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 181136395; UID 10138; state: DISABLED
+07-27 12:42:59.719   777   777 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 12:42:59.720  2258  2313 W ActivityTaskManager: servicetracker HIDL not available
+07-27 12:42:59.720  2258  2313 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 12:42:59.720   777   777 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 12:42:59.720  2258  2313 W ActivityTaskManager: servicetracker HIDL not available
+07-27 12:42:59.720  2258  2313 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 12:42:59.720  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 184838306; UID 10138; state: DISABLED
+07-27 12:42:59.720  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 185004937; UID 10138; state: DISABLED
+07-27 12:42:59.720  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 194480991; UID 10138; state: ENABLED
+07-27 12:42:59.721  2258  2258 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 12:42:59.721  2258  2258 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 12:42:59.721  2258  2258 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 12:42:59.723  2258  2313 D CompatibilityChangeReporter: Compat change id reported: 197654537; UID 10138; state: ENABLED
+07-27 12:42:59.723  2258  2313 I ActivityTaskManager: The Process com.android.launcher3 Already Exists in BG. So sending its PID: 2890
+07-27 12:42:59.719  1465  1465 I PERFD-SERVER: type=1400 audit(0.0:10838): avc:  denied  { dac_read_search } for  capability=2  scontext=u:r:vendor_hal_perf_default:s0 tcontext=u:r:vendor_hal_perf_default:s0 tclass=capability permissive=1
+07-27 12:42:59.723  1465  1560 E ANDR-PERF-UTIL: ANDR-PERF-UTIL: save_node_val() 366: Failed to read /sys/devices/system/cpu/cpufreq/policy5/walt/adaptive_high_freq
+07-27 12:42:59.723  1465  1560 E ANDR-PERF-OPTSHANDLER: ANDR-PERF-OPTSHANDLER: modify_sysfsnode() 1095: Failed to read /sys/devices/system/cpu/cpufreq/policy5/walt/adaptive_high_freq
+07-27 12:42:59.723  1465  1560 E ANDR-PERF-RESOURCEQS: ANDR-PERF-RESOURCEQS: AddAndApply() 167: Failed to apply optimization [2, 3]
+07-27 12:42:59.723  1465  1560 E ANDR-PERF-UTIL: ANDR-PERF-UTIL: save_node_val() 366: Failed to read /sys/devices/system/cpu/cpufreq/policy5/walt/adaptive_low_freq
+07-27 12:42:59.723  1465  1560 E ANDR-PERF-OPTSHANDLER: ANDR-PERF-OPTSHANDLER: modify_sysfsnode() 1095: Failed to read /sys/devices/system/cpu/cpufreq/policy5/walt/adaptive_low_freq
+07-27 12:42:59.723  2258  2313 I DisplayRotation: rotationForOrientation: orientation=-1, preferredRotation=1, sensorRotation=1, lastRotation=1
+07-27 12:42:59.723  1465  1560 E ANDR-PERF-RESOURCEQS: ANDR-PERF-RESOURCEQS: AddAndApply() 167: Failed to apply optimization [2, 2]
+07-27 12:42:59.723  2258  2313 I DisplayRotation: updateRotation: lastOrientation=-1, oldRotation=1, newRotation=1
+07-27 12:42:59.724   777   777 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 12:42:59.724  1413  1466 I ANDR-PWR-OPT: PowerAppClassifier: getAppType() 59: checking app [com.android.launcher3] is type 0
+07-27 12:42:59.724  2784  2849 I DynamicDDSService: handleMessage(ACTIVITY_INVOKE{appInfo=com.android.launcher3 isFullScreen=}true)
+07-27 12:42:59.724  2258  2313 W ActivityTaskManager: servicetracker HIDL not available
+07-27 12:42:59.724  2258  2313 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 12:42:59.725  2258  2313 I ActivityTaskManager: START u0 {act=android.intent.action.MAIN cat=[android.intent.category.DEFAULT] flg=0x10000000 pkg=com.android.launcher3 cmp=com.android.launcher3/com.android.quickstep.RecentsActivity (has extras)} with LAUNCH_SINGLE_TASK from uid 10138 (realCallingUid=1000) (BAL_ALLOW_ALLOWLISTED_COMPONENT) result code=0
+07-27 12:42:59.727  4059  8773 W InputReader: pauseServer
+07-27 12:42:59.729  2890  4094 I AdrenoVK-0: QUALCOMM build          : 43c70540de, Ibee7afe120
+07-27 12:42:59.729  2890  4094 I AdrenoVK-0: Build Date              : 07/17/24
+07-27 12:42:59.729  2890  4094 I AdrenoVK-0: Shader Compiler Version : E031.45.02.16
+07-27 12:42:59.729  2890  4094 I AdrenoVK-0: Local Branch            : 
+07-27 12:42:59.729  2890  4094 I AdrenoVK-0: Remote Branch           : refs/tags/AU_LINUX_ANDROID_LA.VENDOR.14.3.0.11.00.00.973.576
+07-27 12:42:59.729  2890  4094 I AdrenoVK-0: Remote Branch           : NONE
+07-27 12:42:59.729  2890  4094 I AdrenoVK-0: Reconstruct Branch      : NOTHING
+07-27 12:42:59.729  2890  4094 I AdrenoVK-0: Build Config            : S P 16.1.2 AArch64
+07-27 12:42:59.729  2890  4094 I AdrenoVK-0: Driver Path             : /vendor/lib64/hw/vulkan.adreno.so
+07-27 12:42:59.729  2890  4094 I AdrenoVK-0: Driver Version          : 0762.24
+07-27 12:42:59.729  2890  4094 I AdrenoVK-0: PFP                     : 0x01520175
+07-27 12:42:59.729  2890  4094 I AdrenoVK-0: ME                      : 0x01520023
+07-27 12:42:59.729  2890  4094 I AdrenoVK-0: Application Name    : android framework
+07-27 12:42:59.729  2890  4094 I AdrenoVK-0: Application Version : 0x00000000
+07-27 12:42:59.729  2890  4094 I AdrenoVK-0: Engine Name         : android framework
+07-27 12:42:59.729  2890  4094 I AdrenoVK-0: Engine Version      : 0x00000000
+07-27 12:42:59.729  2890  4094 I AdrenoVK-0: Api Version         : 0x00401000
+07-27 12:42:59.731  2613  2645 V ShellRecents: [65721851] RecentsController.setTransition: id=android.os.BinderProxy@351c618
+07-27 12:42:59.731  2890  2890 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+07-27 12:42:59.731  2890  2890 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+07-27 12:42:59.733  9761  9761 I xsu     : sending cmd:chmod 750 /storage
+07-27 12:42:59.734  9761  9761 I xsu     : sending cmd end:chmod 750 /storage
+07-27 12:42:59.734  9761  9761 I xsu     : free cmd end
+07-27 12:42:59.734  9761  9761 I xsu     : xsu_recv cmd before
+07-27 12:42:59.734  9761  9761 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.734  9761  9761 I xsu_api : xsu_recv memset end
+07-27 12:42:59.734  2890  2890 D CompatibilityChangeReporter: Compat change id reported: 171228096; UID 10138; state: ENABLED
+07-27 12:42:59.734  2890  2890 D CompatibilityChangeReporter: Compat change id reported: 147798919; UID 10138; state: ENABLED
+07-27 12:42:59.734  2258  2258 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 12:42:59.734  2258  2258 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 12:42:59.734  2258  2258 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 12:42:59.735  8803  9765 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.735  8803  9765 I xsu_api : xsu_recv memset end
+07-27 12:42:59.735  8803  9765 I xsu_api : xsu_recv retry end
+07-27 12:42:59.735  8803  9765 I xsu_api : ret=4, version=200, type=0, payload_size=22
+07-27 12:42:59.735  8803  9765 I xsu_api : xsu_recv type and len
+07-27 12:42:59.735  8803  9765 I xsu_api : header.type=0, header.payload_size=22, xsu_header_t=4
+07-27 12:42:59.735  8803  9765 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.735  8803  9765 I xsud    : handle comming cmd:chmod 750 /storage
+07-27 12:42:59.736  2767  3262 I BtGatt.ScanManager: msg.what = 6
+07-27 12:42:59.736  2767  3262 D BtGatt.ScanManager: uid 10097 isForeground true scanMode 1
+07-27 12:42:59.736  2890  2890 D CompatibilityChangeReporter: Compat change id reported: 210923482; UID 10138; state: ENABLED
+07-27 12:42:59.737  2613  2613 I vol.VolumeDialogImpl: mDialog.dismiss() reason: volume_controller from: com.android.systemui.volume.VolumeDialogImpl$7.onDismissRequested:3
+07-27 12:42:59.737  2258  2258 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 12:42:59.737  2258  2258 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 12:42:59.737  2258  2258 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 12:42:59.740  2258  4657 D CompatibilityChangeReporter: Compat change id reported: 261072174; UID 10138; state: ENABLED
+07-27 12:42:59.740  1483  1483 I vendor.qti.hardware.servicetrackeraidl-service: bindService is called for service : com.android.launcher3/com.android.quickstep.TouchInteractionService and for client com.android.launcher3
+07-27 12:42:59.740  1483  1483 I vendor.qti.hardware.servicetrackeraidl-service: total connections for service : com.android.launcher3/com.android.quickstep.TouchInteractionServiceare :2
+07-27 12:42:59.740  1483  1483 I vendor.qti.hardware.servicetrackeraidl-service: total connections for client : com.android.launcher3are :1
+07-27 12:42:59.739  9766  9766 I chmod   : type=1400 audit(0.0:10839): avc:  denied  { getattr } for  path="/storage" dev="tmpfs" ino=12 scontext=u:r:xsud:s0 tcontext=u:object_r:mnt_user_file:s0 tclass=dir permissive=1
+07-27 12:42:59.739  9766  9766 I chmod   : type=1400 audit(0.0:10840): avc:  denied  { setattr } for  name="0" dev="tmpfs" ino=12 scontext=u:r:xsud:s0 tcontext=u:object_r:mnt_user_file:s0 tclass=dir permissive=1
+07-27 12:42:59.739  9766  9766 I chmod   : type=1400 audit(0.0:10841): avc:  denied  { fowner } for  capability=3  scontext=u:r:xsud:s0 tcontext=u:r:xsud:s0 tclass=capability permissive=1
+07-27 12:42:59.739  9766  9766 I chmod   : type=1400 audit(0.0:10842): avc:  denied  { fsetid } for  capability=4  scontext=u:r:xsud:s0 tcontext=u:r:xsud:s0 tclass=capability permissive=1
+07-27 12:42:59.743  9761  9761 I xsu_api : xsu_recv retry end
+07-27 12:42:59.743  9761  9761 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 12:42:59.743  9761  9761 I xsu_api : xsu_recv type and len
+07-27 12:42:59.743  9761  9761 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 12:42:59.743  9761  9761 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.743  9761  9761 I xsu     : xsu_recv cmd end
+07-27 12:42:59.743  9761  9761 I xsu     : end session!
+07-27 12:42:59.743  2890  2890 D CompatibilityChangeReporter: Compat change id reported: 237531167; UID 10138; state: DISABLED
+07-27 12:42:59.744  2890  2890 W OpenGLRenderer: Unknown dataspace 0
+07-27 12:42:59.745  2258  4655 W WindowManager: Failed looking up window session=Session{7aabd5a 2890:u0a10138} callers=com.android.server.wm.WindowManagerService.windowForClientLocked:6067 com.android.server.wm.Session.updateRequestedVisibleTypes:690 android.view.IWindowSession$Stub.onTransact:1034 
+07-27 12:42:59.745  2258  2680 D CompatibilityChangeReporter: Compat change id reported: 168419799; UID 10138; state: DISABLED
+07-27 12:42:59.745  2258  4655 D InputDispatcher: onFocusChangedLocked
+07-27 12:42:59.745  2258  2680 D CompatibilityChangeReporter: Compat change id reported: 273564678; UID 10138; state: DISABLED
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: Build configuration failed!
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: java.lang.IllegalArgumentException: invalid view: view=com.android.quickstep.fallback.FallbackRecentsView{88a703f I.ED..... ......ID 0,0-0,0 #7f09022a app:id/overview_panel}, attached=false, hasViewRoot=false, hasRenderer=false
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.internal.jank.InteractionJankMonitor$Configuration.validate(InteractionJankMonitor.java:1259)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.internal.jank.InteractionJankMonitor$Configuration.<init>(InteractionJankMonitor.java:1217)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.internal.jank.InteractionJankMonitor$Configuration.<init>(Unknown Source:0)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.internal.jank.InteractionJankMonitor$Configuration$Builder.build(InteractionJankMonitor.java:1197)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.internal.jank.InteractionJankMonitor.begin(InteractionJankMonitor.java:611)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.internal.jank.InteractionJankMonitor.begin(InteractionJankMonitor.java:596)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.systemui.shared.system.InteractionJankMonitorWrapper.begin(InteractionJankMonitorWrapper.java:92)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.quickstep.views.RecentsView.onPageBeginTransition(RecentsView.java:1380)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.launcher3.PagedView.pageBeginTransition(PagedView.java:460)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.launcher3.PagedView.determineScrollingStart(PagedView.java:1158)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.quickstep.views.RecentsView.determineScrollingStart(RecentsView.java:1541)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.launcher3.PagedView.determineScrollingStart(PagedView.java:1136)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.launcher3.PagedView.onTouchEvent(PagedView.java:1278)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.quickstep.views.RecentsView.lambda$getEventDispatcher$42(RecentsView.java:5573)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.quickstep.views.RecentsView.$r8$lambda$_c8uHy8i7jx1MD1tMcFv0JV_ynI(Unknown Source:0)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.quickstep.views.RecentsView$$ExternalSyntheticLambda43.accept(Unknown Source:4)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.quickstep.util.CachedEventDispatcher.dispatchEvent(CachedEventDispatcher.java:38)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.quickstep.inputconsumers.OtherActivityInputConsumer.onMotionEvent(OtherActivityInputConsumer.java:194)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.quickstep.TouchInteractionService.onInputEvent(TouchInteractionService.java:792)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.quickstep.TouchInteractionService.$r8$lambda$EjP2_DMcx7pOqN3_x1MHqAAhA_0(Unknown Source:0)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.quickstep.TouchInteractionService$$ExternalSyntheticLambda9.onInputEvent(Unknown Source:2)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.systemui.shared.system.InputChannelCompat$InputEventReceiver$1.onInputEvent(InputChannelCompat.java:74)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at android.view.InputEventReceiver.dispatchInputEvent(InputEventReceiver.java:267)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at android.view.InputEventReceiver.nativeConsumeBatchedInputEvents(Native Method)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at android.view.InputEventReceiver.consumeBatchedInputEvents(InputEventReceiver.java:247)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at android.view.BatchedInputEventReceiver.doConsumeBatchedInput(BatchedInputEventReceiver.java:84)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at android.view.BatchedInputEventReceiver$BatchedInputRunnable.run(BatchedInputEventReceiver.java:113)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at android.view.Choreographer$CallbackRecord.run(Choreographer.java:1350)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at android.view.Choreographer$CallbackRecord.run(Choreographer.java:1359)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at android.view.Choreographer.doCallbacks(Choreographer.java:963)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at android.view.Choreographer.doFrame(Choreographer.java:885)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at android.view.Choreographer$FrameDisplayEventReceiver.run(Choreographer.java:1333)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at android.os.Handler.handleCallback(Handler.java:958)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at android.os.Handler.dispatchMessage(Handler.java:99)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at android.os.Looper.loopOnce(Looper.java:205)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at android.os.Looper.loop(Looper.java:294)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at android.app.ActivityThread.main(ActivityThread.java:8223)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at java.lang.reflect.Method.invoke(Native Method)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:552)
+07-27 12:42:59.746  2890  2890 D InteractionJankMonitor: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:977)
+07-27 12:42:59.748  2258  2671 D CoreBackPreview: Window{a350567 u0 com.android.launcher3/com.android.quickstep.RecentsActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@ef2fcac, mPriority=0, mIsAnimationCallback=false}
+07-27 12:42:59.748  9774  9774 I xsu     : sending cmd:setenforce 0
+07-27 12:42:59.748  9774  9774 I xsu     : sending cmd end:setenforce 0
+07-27 12:42:59.748  9774  9774 I xsu     : free cmd end
+07-27 12:42:59.748  9774  9774 I xsu     : xsu_recv cmd before
+07-27 12:42:59.748  9774  9774 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.748  9774  9774 I xsu_api : xsu_recv memset end
+07-27 12:42:59.748  8803  9776 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.748  8803  9776 I xsu_api : xsu_recv memset end
+07-27 12:42:59.748  8803  9776 I xsu_api : xsu_recv retry end
+07-27 12:42:59.748  8803  9776 I xsu_api : ret=4, version=200, type=0, payload_size=16
+07-27 12:42:59.748  8803  9776 I xsu_api : xsu_recv type and len
+07-27 12:42:59.748  8803  9776 I xsu_api : header.type=0, header.payload_size=16, xsu_header_t=4
+07-27 12:42:59.748  8803  9776 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.748  8803  9776 I xsud    : handle comming cmd:setenforce 0
+07-27 12:42:59.750  1554  1668 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10138 => granted (121 us)
+07-27 12:42:59.750  1554  1668 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10138 pid=0
+07-27 12:42:59.750  1554  1668 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10138 => denied (96 us)
+07-27 12:42:59.750  1554  1668 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10138 pid=0
+07-27 12:42:59.750  1554  1668 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10138 => denied (111 us)
+07-27 12:42:59.751  2258  2258 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 12:42:59.751  2258  2258 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 12:42:59.751  2258  2258 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 12:42:59.751  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:42:59.751  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:42:59.752  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:42:59.752  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:42:59.752  2890  4094 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+07-27 12:42:59.752  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:42:59.752  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:42:59.752  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:42:59.752  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:42:59.753  2258  4655 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10138 => granted (14 us)
+07-27 12:42:59.753  2258  4655 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10138 pid=0
+07-27 12:42:59.753  2258  4655 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10138 => denied (14 us)
+07-27 12:42:59.753  2258  4655 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10138 pid=0
+07-27 12:42:59.753  2258  4655 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10138 => denied (8 us)
+07-27 12:42:59.753  2890  2890 D TouchInteractionService: Touch service connected: user=0
+07-27 12:42:59.755  2258  2258 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 12:42:59.755  2258  2258 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 12:42:59.755  2258  2258 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 12:42:59.755  2613  2645 V WindowManagerShell: onTransitionReady android.os.BinderProxy@351c618: {id=18 t=TO_FRONT f=0x80 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@b9af1e2} m=OPEN f=SHOW_WALLPAPER leash=Surface(name=Task=132)/@0xcc0c656 sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0},{WCT{android.window.IWindowContainerToken$Stub$Proxy@d780973} m=TO_BACK f=NONE leash=Surface(name=Task=131)/@0x706d6d7 sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0},{null m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{21f7507 token=android.os.Binder@75d3f46})/@0x4a92bc4 sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0}]}
+07-27 12:42:59.755  2613  2645 V WindowManagerShell: Playing animation for (#18)android.os.BinderProxy@351c618@0
+07-27 12:42:59.755  2613  2645 V WindowManagerShell:  try firstHandler com.android.wm.shell.recents.RecentsTransitionHandler@45524fc
+07-27 12:42:59.756  9774  9774 I xsu_api : xsu_recv retry end
+07-27 12:42:59.756  9774  9774 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 12:42:59.756  9774  9774 I xsu_api : xsu_recv type and len
+07-27 12:42:59.756  9774  9774 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 12:42:59.756  9774  9774 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.756  9774  9774 I xsu     : xsu_recv cmd end
+07-27 12:42:59.756  9774  9774 I xsu     : end session!
+07-27 12:42:59.756  2613  2645 V ShellRecents: [65721851] RecentsController.start
+07-27 12:42:59.757  2613  2645 V ShellRecents:   setting recents activity layer=6
+07-27 12:42:59.757  2613  2645 V ShellRecents:   adding pausing leaf taskId=131 at layer=8
+07-27 12:42:59.757  2613  2645 V ShellRecents: [65721851] RecentsController.start: calling onAnimationStart
+07-27 12:42:59.758  2613  2645 V WindowManagerShell:  animated by firstHandler
+07-27 12:42:59.759  2890  9788 D CompatibilityChangeReporter: Compat change id reported: 247079863; UID 10138; state: ENABLED
+07-27 12:42:59.759  9785  9785 I xsu     : sending cmd:cat '/sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq' 2>/dev/null
+07-27 12:42:59.760  9785  9785 I xsu     : sending cmd end:cat '/sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq' 2>/dev/null
+07-27 12:42:59.760  9785  9785 I xsu     : free cmd end
+07-27 12:42:59.760  9785  9785 I xsu     : xsu_recv cmd before
+07-27 12:42:59.760  9785  9785 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.760  9785  9785 I xsu_api : xsu_recv memset end
+07-27 12:42:59.760  8803  9789 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.760  8803  9789 I xsu_api : xsu_recv memset end
+07-27 12:42:59.760  8803  9789 I xsu_api : xsu_recv retry end
+07-27 12:42:59.760  8803  9789 I xsu_api : ret=4, version=200, type=0, payload_size=78
+07-27 12:42:59.760  8803  9789 I xsu_api : xsu_recv type and len
+07-27 12:42:59.760  8803  9789 I xsu_api : header.type=0, header.payload_size=78, xsu_header_t=4
+07-27 12:42:59.760  8803  9789 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.760  8803  9789 I xsud    : handle comming cmd:cat '/sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq' 2>/dev/null
+07-27 12:42:59.763  2258  2589 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:42:59.763  2890  2890 D TISBindHelper: TIS service connected
+07-27 12:42:59.763  2890  2890 D b/254119092: Set mActivity=com.android.quickstep.RecentsActivity@e168db0
+07-27 12:42:59.763  2890  2890 D b/254119092: mActivity and mContext agree taskbarIsPresent=false
+07-27 12:42:59.763  2890  4094 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+07-27 12:42:59.763  2258  4655 D InputDispatcher: onFocusChangedLocked
+07-27 12:42:59.763  2258  2313 V WindowManager: Unknown focus tokens, dropping reportFocusChanged
+07-27 12:42:59.763  2258  4657 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:42:59.764  2258  2310 I ActivityTaskManager: Displayed com.android.launcher3/com.android.quickstep.RecentsActivity for user 0: +36ms
+07-27 12:42:59.766  2258  2310 V WindowManager: Sent Transition #18 createdAt=07-27 12:42:59.716
+07-27 12:42:59.766  2258  2310 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [{PendingIntent: options=Bundle[{android.activity.splashScreenStyle=-1, android.activity.sourceInfo=android.app.ActivityOptions$SourceInfo@7b307ae, android.activity.transientLaunch=true}]}] errorCallbackToken=null taskFragmentOrganizer=null }
+07-27 12:42:59.766  2258  2310 V WindowManager:     info={id=18 t=TO_FRONT f=0x80 trk=0 r=[0@Point(0, 0)] c=[{WCT{RemoteToken{225794f Task{fcab59b #132 type=recents I=com.android.launcher3/com.android.quickstep.RecentsActivity}}} m=OPEN f=SHOW_WALLPAPER leash=Surface(name=Task=132)/@0x277962d sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0},{WCT{RemoteToken{799cf1f Task{565280d #131 type=standard A=10196:pl.ablogger.app}}} m=TO_BACK f=NONE leash=Surface(name=Task=131)/@0x8333579 sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0},{null m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{21f7507 token=android.os.Binder@75d3f46})/@0x9063544 sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0}]}
+07-27 12:42:59.768  2258  2258 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 12:42:59.768  2258  2258 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 12:42:59.768  2258  2258 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 12:42:59.769  2890  2890 D RemoteTargetGluer: appCount: 1 handleLength: 2
+07-27 12:42:59.769  2890  2890 D RemoteTargetGluer: resizing handles
+07-27 12:42:59.769  2890  2890 D RemoteTargetGluer: containsSplitTargets? false handleLength: 1 appsLength: 1
+07-27 12:42:59.769  2890  2890 D RemoteTargetGluer: appCount: 1 handleLength: 2
+07-27 12:42:59.769  2890  2890 D RemoteTargetGluer: resizing handles
+07-27 12:42:59.769  2890  2890 D RemoteTargetGluer: containsSplitTargets? false handleLength: 1 appsLength: 1
+07-27 12:42:59.770  2613  2645 V ShellRecents: [65721851] RecentsController.setInputConsumerEnabled: set focus to recents
+07-27 12:42:59.771  2258  2258 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 12:42:59.771  2258  2258 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 12:42:59.771  2258  2258 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 12:42:59.775  9785  9785 I xsu_api : xsu_recv retry end
+07-27 12:42:59.775  9785  9785 I xsu_api : ret=4, version=200, type=1, payload_size=12
+07-27 12:42:59.775  9785  9785 I xsu_api : xsu_recv type and len
+07-27 12:42:59.775  9785  9785 I xsu_api : header.type=1, header.payload_size=12, xsu_header_t=4
+07-27 12:42:59.775  9785  9785 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.775  9785  9785 I xsu     : xsu_recv cmd end
+07-27 12:42:59.775  9785  9785 I xsu     : xsu_recv cmd before
+07-27 12:42:59.775  9785  9785 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.775  9785  9785 I xsu_api : xsu_recv memset end
+07-27 12:42:59.775  9785  9785 I xsu_api : xsu_recv retry end
+07-27 12:42:59.775  9785  9785 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 12:42:59.775  9785  9785 I xsu_api : xsu_recv type and len
+07-27 12:42:59.775  9785  9785 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 12:42:59.775  9785  9785 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.775  9785  9785 I xsu     : xsu_recv cmd end
+07-27 12:42:59.775  9785  9785 I xsu     : end session!
+07-27 12:42:59.778  2890  4094 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+07-27 12:42:59.784  2258  2258 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-27 12:42:59.784  2258  2258 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-27 12:42:59.784  2258  2258 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-27 12:42:59.784  2258  2258 D InputDispatcher: resetMergeMotionEntryLocked
+07-27 12:42:59.785  2613  2681 V ShellRecents: [65721851] RecentsController.detachNavigationBarFromApp
+07-27 12:42:59.787  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 161252188; UID 10179; state: DISABLED
+07-27 12:42:59.787  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 265464455; UID 10179; state: DISABLED
+07-27 12:42:59.787  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 265452344; UID 10179; state: DISABLED
+07-27 12:42:59.787  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 266124927; UID 10179; state: DISABLED
+07-27 12:42:59.787  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 265451093; UID 10179; state: DISABLED
+07-27 12:42:59.788  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 265456536; UID 10179; state: DISABLED
+07-27 12:42:59.788  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 255940284; UID 10179; state: DISABLED
+07-27 12:42:59.788  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 236283604; UID 10179; state: DISABLED
+07-27 12:42:59.788  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 263959004; UID 10179; state: DISABLED
+07-27 12:42:59.788  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 264304459; UID 10179; state: DISABLED
+07-27 12:42:59.788  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 264301586; UID 10179; state: DISABLED
+07-27 12:42:59.788  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 254631730; UID 10179; state: DISABLED
+07-27 12:42:59.788  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 273509367; UID 10179; state: DISABLED
+07-27 12:42:59.788  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 263259275; UID 10179; state: DISABLED
+07-27 12:42:59.788  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 174042980; UID 10179; state: DISABLED
+07-27 12:42:59.788  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 174042936; UID 10179; state: DISABLED
+07-27 12:42:59.788  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 181136395; UID 10179; state: DISABLED
+07-27 12:42:59.789   777   777 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 12:42:59.789  2258  4655 W ActivityTaskManager: servicetracker HIDL not available
+07-27 12:42:59.789  2258  4655 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 12:42:59.789   777   777 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 12:42:59.789  2258  4655 W ActivityTaskManager: servicetracker HIDL not available
+07-27 12:42:59.789  2258  4655 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 12:42:59.789  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 184838306; UID 10179; state: DISABLED
+07-27 12:42:59.790  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 185004937; UID 10179; state: DISABLED
+07-27 12:42:59.790  2258  4655 D CompatibilityChangeReporter: Compat change id reported: 194480991; UID 10179; state: ENABLED
+07-27 12:42:59.793  2258  4655 D ActivityTrigger: ActivityTrigger activityPauseTrigger 
+07-27 12:42:59.793   777   777 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 12:42:59.793  2258  4655 W ActivityTaskManager: servicetracker HIDL not available
+07-27 12:42:59.793  2258  4655 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 12:42:59.794  2258  4655 D ActivityTrigger: ActivityTrigger activityPauseTrigger 
+07-27 12:42:59.795   777   777 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 12:42:59.795  1554  1554 I BpBinder: onLastStrongRef automatically unlinking death recipients: 
+07-27 12:42:59.795  2258  4655 W ActivityTaskManager: servicetracker HIDL not available
+07-27 12:42:59.795  2258  4655 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 12:42:59.796  2258  4655 I ActivityTaskManager: START u0 {act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000000 cmp=com.retrohrai.launcher/.MainActivity (has extras)} with LAUNCH_SINGLE_TASK from uid 10138 (BAL_ALLOW_VISIBLE_WINDOW) result code=2
+07-27 12:42:59.796  2613  2645 V WindowManagerShell: Transition requested: android.os.BinderProxy@eea6265 TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=129 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000100 cmp=com.retrohrai.launcher/.MainActivity } baseActivity=ComponentInfo{com.retrohrai.launcher/com.retrohrai.launcher.MainActivity} topActivity=ComponentInfo{com.retrohrai.launcher/com.retrohrai.launcher.MainActivity} origActivity=null realActivity=ComponentInfo{com.retrohrai.launcher/com.retrohrai.launcher.MainActivity} numActivities=1 lastActiveTime=120998 supportsMultiWindow=false resizeMode=0 isResizeable=false minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@2e4db3a} topActivityType=2 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{f1933eb com.retrohrai.launcher.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=false isVisibleRequested=false isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null }
+07-27 12:42:59.797   777   777 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 12:42:59.797  2258  2680 W ActivityTaskManager: servicetracker HIDL not available
+07-27 12:42:59.797  2258  2680 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 12:42:59.797  2258  2680 E Transition: Trying to add a ready-group twice: Display{#0 state=ON size=1920x1080 ROTATION_90}
+07-27 12:42:59.798  4059  4503 W InputReader: pauseServer
+07-27 12:42:59.798  1413  1466 I ANDR-PWR-OPT: PowerAppClassifier: getAppType() 59: checking app [com.retrohrai.launcher] is type 4
+07-27 12:42:59.799  1413  1466 I ANDR-PWR-OPT: PowerAppClassifier: getAppType() 59: checking app [com.android.launcher3] is type 0
+07-27 12:42:59.801  2767  3262 I BtGatt.ScanManager: msg.what = 6
+07-27 12:42:59.801  2767  3262 D BtGatt.ScanManager: uid 10097 isForeground true scanMode 1
+07-27 12:42:59.801  1413  1466 I ANDR-PWR-OPT: PowerAppClassifier: getAppType() 59: checking app [pl.ablogger.app] is type 1
+07-27 12:42:59.802  2890  4094 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+07-27 12:42:59.802   777   777 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 12:42:59.802  2258  4655 W ActivityTaskManager: servicetracker HIDL not available
+07-27 12:42:59.802  2258  4655 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 12:42:59.803   777   777 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 12:42:59.803  2258  4655 W ActivityTaskManager: servicetracker HIDL not available
+07-27 12:42:59.803  2258  4655 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 12:42:59.804  2258  4655 I DisplayRotation: rotationForOrientation: orientation=6, preferredRotation=1, sensorRotation=1, lastRotation=1
+07-27 12:42:59.804  2258  4655 I DisplayRotation: updateRotation: lastOrientation=6, oldRotation=1, newRotation=1
+07-27 12:42:59.804  1465  1465 E ANDR-PERF-LM: PrefAppsFeature: getData() 344: Could not get preferred apps, Prefered apps list is empty or device is low on memory.
+07-27 12:42:59.805  9795  9795 I xsu     : sending cmd:chmod 750 /storage
+07-27 12:42:59.805  9795  9795 I xsu     : sending cmd end:chmod 750 /storage
+07-27 12:42:59.806  8803  9798 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.806  8803  9798 I xsu_api : xsu_recv memset end
+07-27 12:42:59.806  9795  9795 I xsu     : free cmd end
+07-27 12:42:59.806  8803  9798 I xsu_api : xsu_recv retry end
+07-27 12:42:59.806  9795  9795 I xsu     : xsu_recv cmd before
+07-27 12:42:59.806  9795  9795 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.806  8803  9798 I xsu_api : ret=4, version=200, type=0, payload_size=22
+07-27 12:42:59.806  8803  9798 I xsu_api : xsu_recv type and len
+07-27 12:42:59.806  8803  9798 I xsu_api : header.type=0, header.payload_size=22, xsu_header_t=4
+07-27 12:42:59.806  8803  9798 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.806  9795  9795 I xsu_api : xsu_recv memset end
+07-27 12:42:59.806  8803  9798 I xsud    : handle comming cmd:chmod 750 /storage
+07-27 12:42:59.806  4079  4079 D DualScreenManager: setSecondScreenConnected: false
+07-27 12:42:59.806  2613  2645 D WindowManagerShell: onActivityRestartAttempt: ComponentInfo{com.retrohrai.launcher/com.retrohrai.launcher.MainActivity}
+07-27 12:42:59.806  1413  1466 I ANDR-PWR-OPT: PowerAppClassifier: getAppType() 59: checking app [com.retrohrai.launcher] is type 4
+07-27 12:42:59.806  4079  4079 D DualScreenManager: Reset second screen launch state: display disconnected
+07-27 12:42:59.806  4079  4079 D DualScreenManager: setGameActive: false
+07-27 12:42:59.815  9795  9795 I xsu_api : xsu_recv retry end
+07-27 12:42:59.815  9795  9795 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 12:42:59.815  9795  9795 I xsu_api : xsu_recv type and len
+07-27 12:42:59.815  9795  9795 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 12:42:59.815  9795  9795 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.815  9795  9795 I xsu     : xsu_recv cmd end
+07-27 12:42:59.815  9795  9795 I xsu     : end session!
+07-27 12:42:59.816  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:42:59.816  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:42:59.816  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:42:59.816  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:42:59.816  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:42:59.816  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:42:59.817  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:42:59.817  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:42:59.821  9801  9801 I xsu     : sending cmd:setenforce 0
+07-27 12:42:59.821  9801  9801 I xsu     : sending cmd end:setenforce 0
+07-27 12:42:59.821  4079  4435 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+07-27 12:42:59.821  9801  9801 I xsu     : free cmd end
+07-27 12:42:59.821  9801  9801 I xsu     : xsu_recv cmd before
+07-27 12:42:59.821  9801  9801 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.821  9801  9801 I xsu_api : xsu_recv memset end
+07-27 12:42:59.821  8803  9802 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.821  8803  9802 I xsu_api : xsu_recv memset end
+07-27 12:42:59.821  8803  9802 I xsu_api : xsu_recv retry end
+07-27 12:42:59.821  8803  9802 I xsu_api : ret=4, version=200, type=0, payload_size=16
+07-27 12:42:59.821  8803  9802 I xsu_api : xsu_recv type and len
+07-27 12:42:59.821  8803  9802 I xsu_api : header.type=0, header.payload_size=16, xsu_header_t=4
+07-27 12:42:59.821  8803  9802 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.821  8803  9802 I xsud    : handle comming cmd:setenforce 0
+07-27 12:42:59.832  9801  9801 I xsu_api : xsu_recv retry end
+07-27 12:42:59.832  9801  9801 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 12:42:59.832  9801  9801 I xsu_api : xsu_recv type and len
+07-27 12:42:59.832  9801  9801 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 12:42:59.832  9801  9801 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.832  9801  9801 I xsu     : xsu_recv cmd end
+07-27 12:42:59.832  9801  9801 I xsu     : end session!
+07-27 12:42:59.850  2258  2339 I DisplayBrightnessStrategySelector: Changing the DisplayBrightnessStrategy from InvalidBrightnessStrategy toOverrideBrightnessStrategy for display 0
+07-27 12:42:59.850  2613  2645 V WindowManagerShell: onTransitionReady android.os.BinderProxy@eea6265: {id=19 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@95523c7} m=TO_FRONT f=MOVE_TO_TOP leash=Surface(name=Task=1)/@0xe4ee548 sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0},{WCT{android.window.IWindowContainerToken$Stub$Proxy@d110df4} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=132)/@0xf23bfe1 sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0}]}
+07-27 12:42:59.851  2613  2645 V WindowManagerShell: Transition (#19)android.os.BinderProxy@eea6265@0 ready while (#18)android.os.BinderProxy@351c618@0 is still animating. Notify the animating transition in case they can be merged
+07-27 12:42:59.851  2613  2645 V ShellRecents: [65721851] RecentsController.merge
+07-27 12:42:59.851  4079  4435 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+07-27 12:42:59.851  2258  2339 V DisplayPowerController2[0]: Brightness [0.39215687] reason changing to: 'override', previous reason: 'manual'.
+07-27 12:42:59.851  2258  2339 I DisplayPowerController2[0]: BrightnessEvent: disp=0, physDisp=local:4630946852602928515, brt=0.39215687, initBrt=0.40623304, rcmdBrt=NaN, preBrt=NaN, lux=0.0, preLux=0.0, hbmMax=1.0, hbmMode=off, rbcStrength=50, thrmMax=1.0, powerFactor=1.0, wasShortTermModelActive=false, flags=, reason=override, autoBrightness=false, strategy=OverrideBrightnessStrategy
+07-27 12:42:59.852  2258  2313 D DisplayManagerService: Ignore redundant display event 0/4 to 10096/4866
+07-27 12:42:59.852  2258  2313 D DisplayManagerService: Ignore redundant display event 0/4 to 10195/6076
+07-27 12:42:59.855  2613  2645 V ShellRecents:   opening new leaf taskId=1
+07-27 12:42:59.855  2613  2645 V ShellRecents: [65721851] RecentsController.merge: calling onTasksAppeared
+07-27 12:42:59.856  2613  2645 V WindowManagerShell: Transition was merged: (#19)android.os.BinderProxy@eea6265@0 into (#18)android.os.BinderProxy@351c618@0
+07-27 12:42:59.858  2258  2310 V WindowManager: Sent Transition #19 createdAt=07-27 12:42:59.790 via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=129 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000100 cmp=com.retrohrai.launcher/.MainActivity } baseActivity=ComponentInfo{com.retrohrai.launcher/com.retrohrai.launcher.MainActivity} topActivity=ComponentInfo{com.retrohrai.launcher/com.retrohrai.launcher.MainActivity} origActivity=null realActivity=ComponentInfo{com.retrohrai.launcher/com.retrohrai.launcher.MainActivity} numActivities=1 lastActiveTime=120998 supportsMultiWindow=false resizeMode=0 isResizeable=false minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{283eb89 Task{35d186b #129 type=home A=10179:com.retrohrai.launcher}}} topActivityType=2 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{e4f8a55 com.retrohrai.launcher.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=false isVisibleRequested=false isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null }
+07-27 12:42:59.858  2258  2310 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+07-27 12:42:59.859  2258  2310 V WindowManager:     info={id=19 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{RemoteToken{8009bfb Task{bb94f38 #1 type=home}}} m=TO_FRONT f=MOVE_TO_TOP leash=Surface(name=Task=1)/@0x4122d8f sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0},{WCT{RemoteToken{225794f Task{fcab59b #132 type=recents I=com.android.launcher3/com.android.quickstep.RecentsActivity}}} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=132)/@0x277962d sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0}]}
+07-27 12:42:59.864  4079  4435 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+07-27 12:42:59.875  9805  9805 I xsu     : sending cmd:cat '/sys/class/kgsl/kgsl-3d0/max_pwrlevel' 2>/dev/null
+07-27 12:42:59.875  8803  9808 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.875  8803  9808 I xsu_api : xsu_recv memset end
+07-27 12:42:59.875  9805  9805 I xsu     : sending cmd end:cat '/sys/class/kgsl/kgsl-3d0/max_pwrlevel' 2>/dev/null
+07-27 12:42:59.876  8803  9808 I xsu_api : xsu_recv retry end
+07-27 12:42:59.876  8803  9808 I xsu_api : ret=4, version=200, type=0, payload_size=59
+07-27 12:42:59.876  8803  9808 I xsu_api : xsu_recv type and len
+07-27 12:42:59.876  8803  9808 I xsu_api : header.type=0, header.payload_size=59, xsu_header_t=4
+07-27 12:42:59.876  8803  9808 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.876  8803  9808 I xsud    : handle comming cmd:cat '/sys/class/kgsl/kgsl-3d0/max_pwrlevel' 2>/dev/null
+07-27 12:42:59.876  9805  9805 I xsu     : free cmd end
+07-27 12:42:59.876  9805  9805 I xsu     : xsu_recv cmd before
+07-27 12:42:59.876  9805  9805 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.876  9805  9805 I xsu_api : xsu_recv memset end
+07-27 12:42:59.881  4079  4435 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+07-27 12:42:59.900  9805  9805 I xsu_api : xsu_recv retry end
+07-27 12:42:59.900  9805  9805 I xsu_api : ret=4, version=200, type=1, payload_size=6
+07-27 12:42:59.900  9805  9805 I xsu_api : xsu_recv type and len
+07-27 12:42:59.900  9805  9805 I xsu_api : header.type=1, header.payload_size=6, xsu_header_t=4
+07-27 12:42:59.900  9805  9805 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.900  9805  9805 I xsu     : xsu_recv cmd end
+07-27 12:42:59.900  9805  9805 I xsu     : xsu_recv cmd before
+07-27 12:42:59.900  9805  9805 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.900  9805  9805 I xsu_api : xsu_recv memset end
+07-27 12:42:59.900  9805  9805 I xsu_api : xsu_recv retry end
+07-27 12:42:59.900  9805  9805 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 12:42:59.900  9805  9805 I xsu_api : xsu_recv type and len
+07-27 12:42:59.900  9805  9805 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 12:42:59.900  9805  9805 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.900  9805  9805 I xsu     : xsu_recv cmd end
+07-27 12:42:59.900  9805  9805 I xsu     : end session!
+07-27 12:42:59.907  2258  4655 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:42:59.908  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:42:59.908  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:42:59.965  9811  9811 I xsu     : sending cmd:cat '/sys/class/power_supply/battery/status' 2>/dev/null
+07-27 12:42:59.966  9811  9811 I xsu     : sending cmd end:cat '/sys/class/power_supply/battery/status' 2>/dev/null
+07-27 12:42:59.966  9811  9811 I xsu     : free cmd end
+07-27 12:42:59.966  9811  9811 I xsu     : xsu_recv cmd before
+07-27 12:42:59.966  9811  9811 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.966  8803  9814 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.966  9811  9811 I xsu_api : xsu_recv memset end
+07-27 12:42:59.966  8803  9814 I xsu_api : xsu_recv memset end
+07-27 12:42:59.966  8803  9814 I xsu_api : xsu_recv retry end
+07-27 12:42:59.966  8803  9814 I xsu_api : ret=4, version=200, type=0, payload_size=60
+07-27 12:42:59.966  8803  9814 I xsu_api : xsu_recv type and len
+07-27 12:42:59.966  8803  9814 I xsu_api : header.type=0, header.payload_size=60, xsu_header_t=4
+07-27 12:42:59.966  8803  9814 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.966  8803  9814 I xsud    : handle comming cmd:cat '/sys/class/power_supply/battery/status' 2>/dev/null
+07-27 12:42:59.980  9811  9811 I xsu_api : xsu_recv retry end
+07-27 12:42:59.980  9811  9811 I xsu_api : ret=4, version=200, type=1, payload_size=16
+07-27 12:42:59.980  9811  9811 I xsu_api : xsu_recv type and len
+07-27 12:42:59.980  9811  9811 I xsu_api : header.type=1, header.payload_size=16, xsu_header_t=4
+07-27 12:42:59.980  9811  9811 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.980  9811  9811 I xsu     : xsu_recv cmd end
+07-27 12:42:59.980  9811  9811 I xsu     : xsu_recv cmd before
+07-27 12:42:59.980  9811  9811 I xsu_api : xsu_recv memset enter
+07-27 12:42:59.980  9811  9811 I xsu_api : xsu_recv memset end
+07-27 12:42:59.980  9811  9811 I xsu_api : xsu_recv retry end
+07-27 12:42:59.980  9811  9811 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 12:42:59.980  9811  9811 I xsu_api : xsu_recv type and len
+07-27 12:42:59.980  9811  9811 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 12:42:59.980  9811  9811 I xsu_api : xsu_recv type and len end
+07-27 12:42:59.980  9811  9811 I xsu     : xsu_recv cmd end
+07-27 12:42:59.980  9811  9811 I xsu     : end session!
+07-27 12:43:00.000  2258  2470 V AlarmManager: set(android) : type=3 triggerAtTime=2026-07-27 12:44:00 win=0 maxElapsed=184578 interval=0 flags=0x9 callingUid=1000
+07-27 12:43:00.067  9817  9817 I xsu     : sending cmd:cat '/sys/devices/system/cpu/cpufreq/policy5/scaling_max_freq' 2>/dev/null
+07-27 12:43:00.067  9817  9817 I xsu     : sending cmd end:cat '/sys/devices/system/cpu/cpufreq/policy5/scaling_max_freq' 2>/dev/null
+07-27 12:43:00.068  9817  9817 I xsu     : free cmd end
+07-27 12:43:00.068  8803  9820 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.068  8803  9820 I xsu_api : xsu_recv memset end
+07-27 12:43:00.068  8803  9820 I xsu_api : xsu_recv retry end
+07-27 12:43:00.068  8803  9820 I xsu_api : ret=4, version=200, type=0, payload_size=78
+07-27 12:43:00.068  8803  9820 I xsu_api : xsu_recv type and len
+07-27 12:43:00.068  8803  9820 I xsu_api : header.type=0, header.payload_size=78, xsu_header_t=4
+07-27 12:43:00.068  8803  9820 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.068  8803  9820 I xsud    : handle comming cmd:cat '/sys/devices/system/cpu/cpufreq/policy5/scaling_max_freq' 2>/dev/null
+07-27 12:43:00.068  9817  9817 I xsu     : xsu_recv cmd before
+07-27 12:43:00.068  9817  9817 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.068  9817  9817 I xsu_api : xsu_recv memset end
+07-27 12:43:00.080  1352  3768 I vendor.qti.bluetooth@1.1-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+07-27 12:43:00.080  1352  3768 D vendor.qti.bluetooth@1.1-ibs_handler: SerialClockVote: vote for UART CLK ON
+07-27 12:43:00.080  1352  3768 D vendor.qti.bluetooth@1.1-wake_lock: Acquire wakelock is acquired 
+07-27 12:43:00.080  1352  3768 I vendor.qti.bluetooth@1.1-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+07-27 12:43:00.082  2767  3772 I bt_stack: [INFO:btm_ble_gap.cc(3263)] btm_ble_process_adv_pkt_cont Data Complete xx:xx:xx:xx:xx:xx
+07-27 12:43:00.082  9817  9817 I xsu_api : xsu_recv retry end
+07-27 12:43:00.082  9817  9817 I xsu_api : ret=4, version=200, type=1, payload_size=12
+07-27 12:43:00.082  9817  9817 I xsu_api : xsu_recv type and len
+07-27 12:43:00.082  9817  9817 I xsu_api : header.type=1, header.payload_size=12, xsu_header_t=4
+07-27 12:43:00.082  9817  9817 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.082  9817  9817 I xsu     : xsu_recv cmd end
+07-27 12:43:00.082  2767  3772 I bt_stack: [INFO:btm_ble_gap.cc(3263)] btm_ble_process_adv_pkt_cont Data Complete xx:xx:xx:xx:xx:xx
+07-27 12:43:00.082  2767  3772 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+07-27 12:43:00.082  9817  9817 I xsu     : xsu_recv cmd before
+07-27 12:43:00.082  9817  9817 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.082  9817  9817 I xsu_api : xsu_recv memset end
+07-27 12:43:00.082  9817  9817 I xsu_api : xsu_recv retry end
+07-27 12:43:00.082  9817  9817 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 12:43:00.082  9817  9817 I xsu_api : xsu_recv type and len
+07-27 12:43:00.082  9817  9817 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 12:43:00.082  9817  9817 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.082  9817  9817 I xsu     : xsu_recv cmd end
+07-27 12:43:00.082  9817  9817 I xsu     : end session!
+07-27 12:43:00.082  2767  3263 D BluetoothAdapterService: getIdentityAddress null retruning xx:xx:xx:xx:xx:xx
+07-27 12:43:00.083  3301  5963 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+07-27 12:43:00.121  1352  3768 I vendor.qti.bluetooth@1.1-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+07-27 12:43:00.121  1352  3768 D vendor.qti.bluetooth@1.1-ibs_handler: SerialClockVote: vote for UART CLK OFF
+07-27 12:43:00.169  9823  9823 I xsu     : sending cmd:settings get system fan_mode
+07-27 12:43:00.170  9823  9823 I xsu     : sending cmd end:settings get system fan_mode
+07-27 12:43:00.170  9823  9823 I xsu     : free cmd end
+07-27 12:43:00.170  8803  9826 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.170  8803  9826 I xsu_api : xsu_recv memset end
+07-27 12:43:00.170  8803  9826 I xsu_api : xsu_recv retry end
+07-27 12:43:00.170  9823  9823 I xsu     : xsu_recv cmd before
+07-27 12:43:00.170  9823  9823 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.170  9823  9823 I xsu_api : xsu_recv memset end
+07-27 12:43:00.170  8803  9826 I xsu_api : ret=4, version=200, type=0, payload_size=32
+07-27 12:43:00.170  8803  9826 I xsu_api : xsu_recv type and len
+07-27 12:43:00.170  8803  9826 I xsu_api : header.type=0, header.payload_size=32, xsu_header_t=4
+07-27 12:43:00.170  8803  9826 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.170  8803  9826 I xsud    : handle comming cmd:settings get system fan_mode
+07-27 12:43:00.194  9823  9823 I xsu_api : xsu_recv retry end
+07-27 12:43:00.194  9823  9823 I xsu_api : ret=4, version=200, type=1, payload_size=9
+07-27 12:43:00.194  9823  9823 I xsu_api : xsu_recv type and len
+07-27 12:43:00.194  9823  9823 I xsu_api : header.type=1, header.payload_size=9, xsu_header_t=4
+07-27 12:43:00.194  9823  9823 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.194  9823  9823 I xsu     : xsu_recv cmd end
+07-27 12:43:00.194  9823  9823 I xsu     : xsu_recv cmd before
+07-27 12:43:00.194  9823  9823 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.194  9823  9823 I xsu_api : xsu_recv memset end
+07-27 12:43:00.195  9823  9823 I xsu_api : xsu_recv retry end
+07-27 12:43:00.195  9823  9823 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 12:43:00.195  9823  9823 I xsu_api : xsu_recv type and len
+07-27 12:43:00.195  9823  9823 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 12:43:00.195  9823  9823 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.195  9823  9823 I xsu     : xsu_recv cmd end
+07-27 12:43:00.195  9823  9823 I xsu     : end session!
+07-27 12:43:00.248  3301  5264 I FontLog : (REDACTED) Received query %s, URI %s
+07-27 12:43:00.248  3301  5264 I FontLog : (REDACTED) Query [%s] resolved to %s
+07-27 12:43:00.249  3301  5264 I FontLog : (REDACTED) Fetch %s end status %s
+07-27 12:43:00.250  3301  5264 I FontLog : (REDACTED) Pulling font file for id = %d, cache size = %d
+07-27 12:43:00.251  3301  5264 I FontLog : (REDACTED) Pulling font file for id = %d, cache size = %d
+07-27 12:43:00.271  9832  9832 I xsu     : sending cmd:settings get system peak_refresh_rate
+07-27 12:43:00.271  9832  9832 I xsu     : sending cmd end:settings get system peak_refresh_rate
+07-27 12:43:00.271  9832  9832 I xsu     : free cmd end
+07-27 12:43:00.271  1352  3280 D vendor.qti.bluetooth@1.1-wake_lock: Release wakelock is released 
+07-27 12:43:00.271  8803  9835 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.271  9832  9832 I xsu     : xsu_recv cmd before
+07-27 12:43:00.271  8803  9835 I xsu_api : xsu_recv memset end
+07-27 12:43:00.271  9832  9832 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.271  9832  9832 I xsu_api : xsu_recv memset end
+07-27 12:43:00.271  8803  9835 I xsu_api : xsu_recv retry end
+07-27 12:43:00.271  8803  9835 I xsu_api : ret=4, version=200, type=0, payload_size=41
+07-27 12:43:00.271  8803  9835 I xsu_api : xsu_recv type and len
+07-27 12:43:00.271  8803  9835 I xsu_api : header.type=0, header.payload_size=41, xsu_header_t=4
+07-27 12:43:00.271  8803  9835 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.271  8803  9835 I xsud    : handle comming cmd:settings get system peak_refresh_rate
+07-27 12:43:00.297  9832  9832 I xsu_api : xsu_recv retry end
+07-27 12:43:00.297  9832  9832 I xsu_api : ret=4, version=200, type=1, payload_size=7
+07-27 12:43:00.297  9832  9832 I xsu_api : xsu_recv type and len
+07-27 12:43:00.297  9832  9832 I xsu_api : header.type=1, header.payload_size=7, xsu_header_t=4
+07-27 12:43:00.297  9832  9832 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.297  9832  9832 I xsu     : xsu_recv cmd end
+07-27 12:43:00.297  9832  9832 I xsu     : xsu_recv cmd before
+07-27 12:43:00.297  9832  9832 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.297  9832  9832 I xsu_api : xsu_recv memset end
+07-27 12:43:00.297  9832  9832 I xsu_api : xsu_recv retry end
+07-27 12:43:00.297  9832  9832 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 12:43:00.297  9832  9832 I xsu_api : xsu_recv type and len
+07-27 12:43:00.297  9832  9832 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 12:43:00.297  9832  9832 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.297  9832  9832 I xsu     : xsu_recv cmd end
+07-27 12:43:00.297  9832  9832 I xsu     : end session!
+07-27 12:43:00.369  1347  1674 E Diag_Lib: diag: Diag_LSM_Init: invoked for pid: 1347 with init_count: 0
+07-27 12:43:00.370  1347  1674 E Diag_Lib: diag:failed to connect to diag socket
+07-27 12:43:00.370  1347  1674 E Diag_Lib:  Diag_LSM_Init: Failed to open handle to diag driver, error = 111
+07-27 12:43:00.370  1347  1674 I ATS     : vendor/qcom/proprietary/args/acdb/ats/transports/diag/linux/actp/src/actp.c:actp_diag_init:105 Error[1]: Failed to initialize DIAG
+07-27 12:43:00.370  1347  1674 E ATS     : vendor/qcom/proprietary/args/acdb/ats/src/ats.c:ats_init:143 Error[1]: Failed to initialize Diag
+07-27 12:43:00.370  1347  1674 E ATS     : vendor/qcom/proprietary/args/acdb/ats/src/ats.c:ats_init:263 Error[1]: Failed to initialize ATS
+07-27 12:43:00.370  1347  1674 E AGM: API: ats_init_thread: 65 ats_init failed retry 119 err 1
+07-27 12:43:00.374  9840  9840 I xsu     : sending cmd:cat '/sys/class/power_supply/battery/current_now' 2>/dev/null
+07-27 12:43:00.374  9840  9840 I xsu     : sending cmd end:cat '/sys/class/power_supply/battery/current_now' 2>/dev/null
+07-27 12:43:00.374  9840  9840 I xsu     : free cmd end
+07-27 12:43:00.374  9840  9840 I xsu     : xsu_recv cmd before
+07-27 12:43:00.374  9840  9840 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.374  9840  9840 I xsu_api : xsu_recv memset end
+07-27 12:43:00.374  8803  9843 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.374  8803  9843 I xsu_api : xsu_recv memset end
+07-27 12:43:00.374  8803  9843 I xsu_api : xsu_recv retry end
+07-27 12:43:00.374  8803  9843 I xsu_api : ret=4, version=200, type=0, payload_size=65
+07-27 12:43:00.374  8803  9843 I xsu_api : xsu_recv type and len
+07-27 12:43:00.374  8803  9843 I xsu_api : header.type=0, header.payload_size=65, xsu_header_t=4
+07-27 12:43:00.375  8803  9843 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.375  8803  9843 I xsud    : handle comming cmd:cat '/sys/class/power_supply/battery/current_now' 2>/dev/null
+07-27 12:43:00.384  2258  4657 W InputManager: Input devices don't support segment Primitive{primitive=PRIMITIVE_LOW_TICK, scale=0.6, delay=0}
+07-27 12:43:00.384  2258  4657 W InputManager: Only oneshot and step waveforms are supported on input devices
+07-27 12:43:00.384  2258  2680 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.384  2258  4657 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.385  9840  9840 I xsu_api : xsu_recv retry end
+07-27 12:43:00.385  9840  9840 I xsu_api : ret=4, version=200, type=1, payload_size=12
+07-27 12:43:00.385  9840  9840 I xsu_api : xsu_recv type and len
+07-27 12:43:00.385  9840  9840 I xsu_api : header.type=1, header.payload_size=12, xsu_header_t=4
+07-27 12:43:00.385  9840  9840 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.385  9840  9840 I xsu     : xsu_recv cmd end
+07-27 12:43:00.385  9840  9840 I xsu     : xsu_recv cmd before
+07-27 12:43:00.385  9840  9840 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.385  9840  9840 I xsu_api : xsu_recv memset end
+07-27 12:43:00.385  9840  9840 I xsu_api : xsu_recv retry end
+07-27 12:43:00.386  9840  9840 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 12:43:00.386  9840  9840 I xsu_api : xsu_recv type and len
+07-27 12:43:00.386  9840  9840 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 12:43:00.386  9840  9840 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.386  9840  9840 I xsu     : xsu_recv cmd end
+07-27 12:43:00.386  9840  9840 I xsu     : end session!
+07-27 12:43:00.394  2258  2680 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.411  2258  4655 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.428  2258  4655 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.445  2258  4655 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.461  2258  4655 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.476  9846  9846 I xsu     : sending cmd:cat '/sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq' 2>/dev/null
+07-27 12:43:00.476  9846  9846 I xsu     : sending cmd end:cat '/sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq' 2>/dev/null
+07-27 12:43:00.476  9846  9846 I xsu     : free cmd end
+07-27 12:43:00.476  8803  9849 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.476  8803  9849 I xsu_api : xsu_recv memset end
+07-27 12:43:00.476  8803  9849 I xsu_api : xsu_recv retry end
+07-27 12:43:00.476  8803  9849 I xsu_api : ret=4, version=200, type=0, payload_size=78
+07-27 12:43:00.476  8803  9849 I xsu_api : xsu_recv type and len
+07-27 12:43:00.476  8803  9849 I xsu_api : header.type=0, header.payload_size=78, xsu_header_t=4
+07-27 12:43:00.476  8803  9849 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.476  8803  9849 I xsud    : handle comming cmd:cat '/sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq' 2>/dev/null
+07-27 12:43:00.476  9846  9846 I xsu     : xsu_recv cmd before
+07-27 12:43:00.476  9846  9846 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.476  9846  9846 I xsu_api : xsu_recv memset end
+07-27 12:43:00.478  2258  4657 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.487  9846  9846 I xsu_api : xsu_recv retry end
+07-27 12:43:00.487  9846  9846 I xsu_api : ret=4, version=200, type=1, payload_size=12
+07-27 12:43:00.487  9846  9846 I xsu_api : xsu_recv type and len
+07-27 12:43:00.487  9846  9846 I xsu_api : header.type=1, header.payload_size=12, xsu_header_t=4
+07-27 12:43:00.487  9846  9846 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.487  9846  9846 I xsu     : xsu_recv cmd end
+07-27 12:43:00.487  9846  9846 I xsu     : xsu_recv cmd before
+07-27 12:43:00.487  9846  9846 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.487  9846  9846 I xsu_api : xsu_recv memset end
+07-27 12:43:00.487  9846  9846 I xsu_api : xsu_recv retry end
+07-27 12:43:00.487  9846  9846 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 12:43:00.487  9846  9846 I xsu_api : xsu_recv type and len
+07-27 12:43:00.487  9846  9846 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 12:43:00.487  9846  9846 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.487  9846  9846 I xsu     : xsu_recv cmd end
+07-27 12:43:00.487  9846  9846 I xsu     : end session!
+07-27 12:43:00.494  2258  2680 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.511  2258  2680 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.529  2258  4655 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.545  2258  4657 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.561  2258  4657 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.578  2258  4655 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.581  9852  9852 I xsu     : sending cmd:chmod 666 /sys/devices/system/cpu/cpu2/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu2/online; chmod 666 /sys/devices/system/cpu/cpu3/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu3/online; chmod 666 /sys/devices/system/cpu/cpu4/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu4/online
+07-27 12:43:00.582  9852  9852 I xsu     : sending cmd end:chmod 666 /sys/devices/system/cpu/cpu2/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu2/online; chmod 666 /sys/devices/system/cpu/cpu3/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu3/online; chmod 666 /sys/devices/system/cpu/cpu4/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu4/online
+07-27 12:43:00.582  9852  9852 I xsu     : free cmd end
+07-27 12:43:00.582  9852  9852 I xsu     : xsu_recv cmd before
+07-27 12:43:00.582  9852  9852 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.582  9852  9852 I xsu_api : xsu_recv memset end
+07-27 12:43:00.582  8803  9855 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.582  8803  9855 I xsu_api : xsu_recv memset end
+07-27 12:43:00.582  8803  9855 I xsu_api : xsu_recv retry end
+07-27 12:43:00.582  8803  9855 I xsu_api : ret=4, version=200, type=0, payload_size=317
+07-27 12:43:00.582  8803  9855 I xsu_api : xsu_recv type and len
+07-27 12:43:00.582  8803  9855 I xsu_api : header.type=0, header.payload_size=317, xsu_header_t=4
+07-27 12:43:00.582  8803  9855 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.582  8803  9855 I xsud    : handle comming cmd:chmod 666 /sys/devices/system/cpu/cpu2/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu2/online; chmod 666 /sys/devices/system/cpu/cpu3/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu3/online; chmod 666 /sys/devices/system/cpu/cpu4/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu4/online
+07-27 12:43:00.595  2258  4655 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.611  2258  4655 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.616  9852  9852 I xsu_api : xsu_recv retry end
+07-27 12:43:00.616  9852  9852 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 12:43:00.616  9852  9852 I xsu_api : xsu_recv type and len
+07-27 12:43:00.616  9852  9852 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 12:43:00.616  9852  9852 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.616  9852  9852 I xsu     : xsu_recv cmd end
+07-27 12:43:00.617  9852  9852 I xsu     : end session!
+07-27 12:43:00.628  2258  4655 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.631  9259  9259 W HidlServiceManagement: Waited one second for vendor.qti.diaghal@1.0::Idiag/default
+07-27 12:43:00.632   777   777 I hwservicemanager: Since vendor.qti.diaghal@1.0::Idiag/default is not registered, trying to start it as a lazy HAL (if it's not configured to be a lazy HAL, it may be stuck starting or still starting).
+07-27 12:43:00.632  9259  9259 I HidlServiceManagement: getService: Trying again for vendor.qti.diaghal@1.0::Idiag/default...
+07-27 12:43:00.633   777  9860 W libc    : Unable to set property "ctl.interface_start" to "vendor.qti.diaghal@1.0::Idiag/default": error code: 0x20
+07-27 12:43:00.633   777  9860 I hwservicemanager: Tried to start vendor.qti.diaghal@1.0::Idiag/default as a lazy service, but was unable to. Usually this happens when a service is not installed, but if the service is intended to be used as a lazy service, then it may be configured incorrectly.
+07-27 12:43:00.645  2258  4655 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.662  2258  4655 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.678  2258  2589 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.683  9861  9861 I xsu     : sending cmd:cat '/sys/class/power_supply/battery/voltage_now' 2>/dev/null
+07-27 12:43:00.683  9861  9861 I xsu     : sending cmd end:cat '/sys/class/power_supply/battery/voltage_now' 2>/dev/null
+07-27 12:43:00.683  9861  9861 I xsu     : free cmd end
+07-27 12:43:00.683  9861  9861 I xsu     : xsu_recv cmd before
+07-27 12:43:00.684  8803  9864 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.684  8803  9864 I xsu_api : xsu_recv memset end
+07-27 12:43:00.684  8803  9864 I xsu_api : xsu_recv retry end
+07-27 12:43:00.684  8803  9864 I xsu_api : ret=4, version=200, type=0, payload_size=65
+07-27 12:43:00.684  8803  9864 I xsu_api : xsu_recv type and len
+07-27 12:43:00.684  9861  9861 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.684  8803  9864 I xsu_api : header.type=0, header.payload_size=65, xsu_header_t=4
+07-27 12:43:00.684  9861  9861 I xsu_api : xsu_recv memset end
+07-27 12:43:00.684  8803  9864 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.684  8803  9864 I xsud    : handle comming cmd:cat '/sys/class/power_supply/battery/voltage_now' 2>/dev/null
+07-27 12:43:00.694  2258  2589 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.705  9861  9861 I xsu_api : xsu_recv retry end
+07-27 12:43:00.705  9861  9861 I xsu_api : ret=4, version=200, type=1, payload_size=12
+07-27 12:43:00.705  9861  9861 I xsu_api : xsu_recv type and len
+07-27 12:43:00.705  9861  9861 I xsu_api : header.type=1, header.payload_size=12, xsu_header_t=4
+07-27 12:43:00.705  9861  9861 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.705  9861  9861 I xsu     : xsu_recv cmd end
+07-27 12:43:00.706  9861  9861 I xsu     : xsu_recv cmd before
+07-27 12:43:00.706  9861  9861 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.706  9861  9861 I xsu_api : xsu_recv memset end
+07-27 12:43:00.706  9861  9861 I xsu_api : xsu_recv retry end
+07-27 12:43:00.706  9861  9861 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 12:43:00.706  9861  9861 I xsu_api : xsu_recv type and len
+07-27 12:43:00.706  9861  9861 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 12:43:00.706  9861  9861 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.706  9861  9861 I xsu     : xsu_recv cmd end
+07-27 12:43:00.706  9861  9861 I xsu     : end session!
+07-27 12:43:00.711  2258  2589 W ActivityTaskManager: takeTaskSnapshot: taskId=128 not found or not visible
+07-27 12:43:00.712  2613  2681 V ShellRecents: [65721851] RecentsController.screenshotTask: taskId=131
+07-27 12:43:00.713  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:43:00.713  1449  1587 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-27 12:43:00.717  2613  2645 V ShellRecents: [65721851] RecentsController.finishInner: toHome=false userLeave=true willFinishToHome=true state=1
+07-27 12:43:00.717  2613  2645 V ShellRecents:   normal finish
+07-27 12:43:00.717  2613  2645 V ShellRecents: [65721851] RecentsController.cleanup
+07-27 12:43:00.717  2613  2645 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#18)android.os.BinderProxy@351c618@0
+07-27 12:43:00.718  2258  2310 V WindowManager: Finish Transition #18: created at 07-27 12:42:59.716 collect-started=0.157ms started=0.18ms ready=8.535ms sent=37.78ms finished=1001.33ms
+07-27 12:43:00.720   777   777 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 12:43:00.720  2258  2313 W ActivityTaskManager: servicetracker HIDL not available
+07-27 12:43:00.720  2258  2313 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 12:43:00.720   777   777 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 12:43:00.720  2258  2313 W ActivityTaskManager: servicetracker HIDL not available
+07-27 12:43:00.720  2258  2313 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 12:43:00.721  2258  2310 V WindowManager: Finish Transition #19: created at 07-27 12:42:59.790 collect-started=0.067ms request-sent=5.297ms started=8.017ms ready=14.191ms sent=58.661ms finished=930.519ms
+07-27 12:43:00.721  2784  4390 W DynamicDDSService: appName is not found in cache: pl.ablogger.app
+07-27 12:43:00.722  2613  2645 V WindowManagerShell: Track 0 became idle
+07-27 12:43:00.722   777   777 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 12:43:00.722  2613  2645 V WindowManagerShell: All active transition animations finished
+07-27 12:43:00.722  2258  2313 W ActivityTaskManager: servicetracker HIDL not available
+07-27 12:43:00.722  2258  2313 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 12:43:00.722   777   777 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 12:43:00.722  2258  2313 W ActivityTaskManager: servicetracker HIDL not available
+07-27 12:43:00.722  2258  2313 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 12:43:00.724  2784  2849 I DynamicDDSService: handleMessage(ACTIVITY_SUSPEND{appInfo=com.android.launcher3 isFullScreen=}true)
+07-27 12:43:00.724  2784  2849 W DynamicDDSService: mAppNames is empty, no need to send QMI
+07-27 12:43:00.727  2258  9051 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+07-27 12:43:00.732  2258  4657 D InputDispatcher: onFocusChangedLocked
+07-27 12:43:00.733  2258  2313 V WindowManager: Unknown focus tokens, dropping reportFocusChanged
+07-27 12:43:00.745  2258  2589 D InputDispatcher: onFocusChangedLocked
+07-27 12:43:00.746  2258  2589 I ImeTracker: com.retrohrai.launcher:40813442: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+07-27 12:43:00.746  2258  2589 I ImeTracker: com.retrohrai.launcher:40813442: onCancelled at PHASE_SERVER_SHOULD_HIDE
+07-27 12:43:00.746  4706  4706 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():2276 
+07-27 12:43:00.747  4706  4706 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1460 onStartInput(EditorInfo{EditorInfo{packageName=com.retrohrai.launcher, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+07-27 12:43:00.747  4706  4706 W LatinIMEBase: LatinIMEBase.updateInputViewCoverNavigation():322 Null input view, cannot update padding!
+07-27 12:43:00.747  4706  4934 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatusInternal():129 repeatCheckTimes = 0, locked = false
+07-27 12:43:00.747  4706  4934 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatusInternal():129 repeatCheckTimes = 1, locked = false
+07-27 12:43:00.747  2258  2589 W PackageConfigPersister: App-specific configuration not found for packageName: com.retrohrai.launcher and userId: 0
+07-27 12:43:00.750   777   777 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 12:43:00.751  2258  2680 W ActivityTaskManager: servicetracker HIDL not available
+07-27 12:43:00.751  2258  2680 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 12:43:00.751   777   777 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 12:43:00.751  2258  2680 W ActivityTaskManager: servicetracker HIDL not available
+07-27 12:43:00.751  2258  2680 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 12:43:00.753   777   777 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 12:43:00.753  2258  2680 W ActivityTaskManager: servicetracker HIDL not available
+07-27 12:43:00.753  2258  2680 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 12:43:00.753   777   777 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+07-27 12:43:00.753  2258  2680 W ActivityTaskManager: servicetracker HIDL not available
+07-27 12:43:00.754  2258  2680 E ActivityTaskManager: Unable to get servicetracker HAL instance
+07-27 12:43:00.785  9867  9867 I xsu     : sending cmd:cat '/sys/class/kgsl/kgsl-3d0/max_pwrlevel' 2>/dev/null
+07-27 12:43:00.786  9867  9867 I xsu     : sending cmd end:cat '/sys/class/kgsl/kgsl-3d0/max_pwrlevel' 2>/dev/null
+07-27 12:43:00.786  9867  9867 I xsu     : free cmd end
+07-27 12:43:00.786  9867  9867 I xsu     : xsu_recv cmd before
+07-27 12:43:00.786  9867  9867 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.786  9867  9867 I xsu_api : xsu_recv memset end
+07-27 12:43:00.786  8803  9870 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.786  8803  9870 I xsu_api : xsu_recv memset end
+07-27 12:43:00.786  8803  9870 I xsu_api : xsu_recv retry end
+07-27 12:43:00.786  8803  9870 I xsu_api : ret=4, version=200, type=0, payload_size=59
+07-27 12:43:00.786  8803  9870 I xsu_api : xsu_recv type and len
+07-27 12:43:00.786  8803  9870 I xsu_api : header.type=0, header.payload_size=59, xsu_header_t=4
+07-27 12:43:00.786  8803  9870 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.786  8803  9870 I xsud    : handle comming cmd:cat '/sys/class/kgsl/kgsl-3d0/max_pwrlevel' 2>/dev/null
+07-27 12:43:00.795  9872  9872 I cat     : type=1400 audit(0.0:11035): avc:  denied  { read } for  name="max_pwrlevel" dev="sysfs" ino=114959 scontext=u:r:xsud:s0 tcontext=u:object_r:vendor_sysfs_kgsl:s0 tclass=file permissive=1
+07-27 12:43:00.795  9872  9872 I cat     : type=1400 audit(0.0:11036): avc:  denied  { open } for  path="/sys/devices/platform/soc/3d00000.qcom,kgsl-3d0/kgsl/kgsl-3d0/max_pwrlevel" dev="sysfs" ino=114959 scontext=u:r:xsud:s0 tcontext=u:object_r:vendor_sysfs_kgsl:s0 tclass=file permissive=1
+07-27 12:43:00.799  9867  9867 I xsu_api : xsu_recv retry end
+07-27 12:43:00.799  9867  9867 I xsu_api : ret=4, version=200, type=1, payload_size=6
+07-27 12:43:00.799  9867  9867 I xsu_api : xsu_recv type and len
+07-27 12:43:00.799  9867  9867 I xsu_api : header.type=1, header.payload_size=6, xsu_header_t=4
+07-27 12:43:00.799  9867  9867 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.799  9867  9867 I xsu     : xsu_recv cmd end
+07-27 12:43:00.799  9867  9867 I xsu     : xsu_recv cmd before
+07-27 12:43:00.799  9867  9867 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.799  9867  9867 I xsu_api : xsu_recv memset end
+07-27 12:43:00.799  9867  9867 I xsu_api : xsu_recv retry end
+07-27 12:43:00.799  9867  9867 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 12:43:00.799  9867  9867 I xsu_api : xsu_recv type and len
+07-27 12:43:00.799  9867  9867 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 12:43:00.799  9867  9867 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.799  9867  9867 I xsu     : xsu_recv cmd end
+07-27 12:43:00.799  9867  9867 I xsu     : end session!
+07-27 12:43:00.831  9873  9873 I top     : type=1400 audit(0.0:11037): avc:  denied  { read } for  scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_usb_qti:s0 tclass=file permissive=1
+07-27 12:43:00.831  9873  9873 I top     : type=1400 audit(0.0:11038): avc:  denied  { read } for  scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_spu_qti:s0 tclass=file permissive=1
+07-27 12:43:00.831  9873  9873 I top     : type=1400 audit(0.0:11039): avc:  denied  { read } for  scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_qesdhal_default:s0 tclass=file permissive=1
+07-27 12:43:00.884  9874  9874 I xsu     : sending cmd:chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; echo 364800 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; echo 2265600 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; echo 3148800 > /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpu
+07-27 12:43:00.884  9874  9874 I xsu     : sending cmd end:chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; echo 364800 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; echo 2265600 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; echo 3148800 > /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; chmod 644 /sys/devices/system/cpu
+07-27 12:43:00.884  9874  9874 I xsu     : free cmd end
+07-27 12:43:00.884  9874  9874 I xsu     : xsu_recv cmd before
+07-27 12:43:00.884  9874  9874 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.884  9874  9874 I xsu_api : xsu_recv memset end
+07-27 12:43:00.884  8803  9877 I xsu_api : xsu_recv memset enter
+07-27 12:43:00.884  8803  9877 I xsu_api : xsu_recv memset end
+07-27 12:43:00.884  8803  9877 I xsu_api : xsu_recv retry end
+07-27 12:43:00.884  8803  9877 I xsu_api : ret=4, version=200, type=0, payload_size=1963
+07-27 12:43:00.884  8803  9877 I xsu_api : xsu_recv type and len
+07-27 12:43:00.884  8803  9877 I xsu_api : header.type=0, header.payload_size=1963, xsu_header_t=4
+07-27 12:43:00.884  8803  9877 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.884  8803 29811 I xsud    : handle comming cmd:chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; echo 364800 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; echo 2265600 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; echo 3148800 > /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; chmod 644 /sys/devices/system/
+07-27 12:43:00.994  9874  9874 I xsu_api : xsu_recv retry end
+07-27 12:43:00.994  9874  9874 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-27 12:43:00.994  9874  9874 I xsu_api : xsu_recv type and len
+07-27 12:43:00.994  9874  9874 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-27 12:43:00.994  9874  9874 I xsu_api : xsu_recv type and len end
+07-27 12:43:00.994  9874  9874 I xsu     : xsu_recv cmd end
+07-27 12:43:00.994  9874  9874 I xsu     : end session!
+--------- beginning of crash
+07-27 12:43:00.994  8803 29811 F libc    : stack corruption detected (-fstack-protector)
+07-27 12:43:00.994  8803 29811 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 9877 (xsud), pid 8803 (xsud)
+07-27 12:43:01.002  9893  9893 I crash_dump64: obtaining output fd from tombstoned, type: kDebuggerdTombstoneProto
+07-27 12:43:01.003  1098  1098 I tombstoned: received crash request for pid 9877
+07-27 12:43:01.003  9893  9893 I crash_dump64: performing dump of process 8803 (target tid = 9877)
+07-27 12:43:01.004  9893  9893 E DEBUG   : failed to read process info: failed to open /proc/8803: No such file or directory
+07-27 12:43:01.013  9893  9893 F DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+07-27 12:43:01.013  9893  9893 F DEBUG   : Build fingerprint: 'AYANEO/AYANEO_Pocket_FIT/PocketFIT:14/01.00_20251226_private_user/eng.scm.20251226.033130:user/release-keys'
+07-27 12:43:01.013  9893  9893 F DEBUG   : Revision: '0'
+07-27 12:43:01.013  9893  9893 F DEBUG   : ABI: 'arm64'
+07-27 12:43:01.013  9893  9893 F DEBUG   : Timestamp: 2026-07-27 12:43:01.004418705+0200
+07-27 12:43:01.013  9893  9893 F DEBUG   : Process uptime: 0s
+07-27 12:43:01.013  9893  9893 F DEBUG   : Cmdline: /product/bin/xsud --root_seclabel=u:r:su:s0
+07-27 12:43:01.013  9893  9893 F DEBUG   : pid: 8803, tid: 9877, name: xsud  >>> /product/bin/xsud <<<
+07-27 12:43:01.013  9893  9893 F DEBUG   : uid: 0
+07-27 12:43:01.013  9893  9893 F DEBUG   : tagged_addr_ctrl: 0000000000000001 (PR_TAGGED_ADDR_ENABLE)
+07-27 12:43:01.013  9893  9893 F DEBUG   : pac_enabled_keys: 000000000000000f (PR_PAC_APIAKEY, PR_PAC_APIBKEY, PR_PAC_APDAKEY, PR_PAC_APDBKEY)
+07-27 12:43:01.013  9893  9893 F DEBUG   : signal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+07-27 12:43:01.013  9893  9893 F DEBUG   : Abort message: 'stack corruption detected (-fstack-protector)'
+07-27 12:43:01.014  9893  9893 F DEBUG   :     x0  0000000000000000  x1  0000000000002695  x2  0000000000000006  x3  000000747699e730
+07-27 12:43:01.014  9893  9893 F DEBUG   :     x4  607372652c271f63  x5  607372652c271f63  x6  607372652c271f63  x7  7f7f7f7f7f7f7f7f
+07-27 12:43:01.014  9893  9893 F DEBUG   :     x8  00000000000000f0  x9  0000007767c6e1b8  x10 0000000000000001  x11 0000007767cb6924
+07-27 12:43:01.014  9893  9893 F DEBUG   :     x12 000000006a673634  x13 000000007fffffff  x14 000000000000f4d8  x15 0000000095f13712
+07-27 12:43:01.014  9893  9893 F DEBUG   :     x16 0000007767d1ed18  x17 0000007767cfa3b0  x18 0000007475b16000  x19 0000000000002263
+07-27 12:43:01.014  9893  9893 F DEBUG   :     x20 0000000000002695  x21 00000000ffffffff  x22 0000000000002263  x23 00000074769a0000
+07-27 12:43:01.014  9893  9893 F DEBUG   :     x24 000000747699fcb0  x25 000000747699fcb0  x26 000000747699fff8  x27 00000000000fc000
+07-27 12:43:01.014  9893  9893 F DEBUG   :     x28 00000000000fe000  x29 000000747699e7b0
+07-27 12:43:01.014  9893  9893 F DEBUG   :     lr  0000007767ca7624  sp  000000747699e710  pc  0000007767ca7650  pst 0000000000001000
+07-27 12:43:01.014  9893  9893 F DEBUG   : 4 total frames
+07-27 12:43:01.014  9893  9893 F DEBUG   : backtrace:
+07-27 12:43:01.014  9893  9893 F DEBUG   :       #00 pc 000000000005b650  /apex/com.android.runtime/lib64/bionic/libc.so (abort+168) (BuildId: 50118287324a156bc7be11d3d940c7be)
+07-27 12:43:01.014  9893  9893 F DEBUG   :       #01 pc 0000000000071d64  /apex/com.android.runtime/lib64/bionic/libc.so (__stack_chk_fail+24) (BuildId: 50118287324a156bc7be11d3d940c7be)
+07-27 12:43:01.014  9893  9893 F DEBUG   :       #02 pc 0000000000002f8c  /product/bin/xsud (xsu_conn_handler.cfi+856) (BuildId: cf12e64c40275bca4c064d86f58ec6f5)
+07-27 12:43:01.014  9893  9893 F DEBUG   :       #03 pc 2000006d6863203b  <unknown>
+07-27 12:43:01.015  2258  2629 W NativeCrashListener: Couldn't find ProcessRecord for pid 8803
+07-27 12:43:01.016  1098  1098 E tombstoned: Tombstone written to: tombstone_22

@@ -1,0 +1,3 @@
+timestamp,sample_idx,foreground_pkg,fps,frame_count,p0_freq,p0_governor,p2_freq,p2_governor,p5_freq,p5_governor,p7_freq,p7_governor,gpu_freq_hz,gpu_busy_pct,temp_cpu_max_c,temp_gpu_max_c,temp_skin_c,temp_battery_c,fan_signal,fan_signal_unit,battery_current_ma,battery_voltage_mv,pulse_installed,pulse_service_running
+1785148981826,0,com.retrohrai.launcher,40.0,55,2265600,performance,3148800,performance,2956800,performance,3302400,performance,231000000,16,60.8,49.6,44.8,39.0,2082,fan_rpm_state,-390939,8115097,true,true
+1785148988111,1,com.retrohrai.launcher,n/a (low_sample_count=0),0,902400,schedutil,3072000,schedutil,2438400,schedutil,480000,schedutil,231000000,14,59.3,49.3,45.1,39.0,0,fan_rpm_state,-407419,8111789,true,true
