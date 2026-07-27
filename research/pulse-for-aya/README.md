@@ -388,21 +388,44 @@ our own `RootExec.kt`. No caching, no persistent shell, no JNI shortcut
 which uses `com.kingtop.shellcmd.ShellCmd`'s JNI `hsInvokeJni` instead of
 IPC to `xsud` — not available to us on this Snapdragon device).
 
-**Implication**: sending `com_set_performance_scheduler`/`_cpu`/`_gpu`
-over AIDL very likely does NOT remove an `xsu` connection from the
-system — it just moves which UID (`com.kei.pulse` vs.
-`com.ayaneo.gamewindow`) opens it. This would directly explain today's
-null result below: the AIDL migration may never have reduced total `xsu`
-load at all, just re-attributed it. **Not yet confirmed live** — the
-decisive test is a `logcat` capture during a `sendScheduler`/
-`sendCpuFrequency` AIDL call, checking whether `com.ayaneo.gamewindow`'s
-own PID shows an `xsu`/`xsud` line at that moment (cross-check PIDs via
-`adb shell pidof com.ayaneo.gamewindow` / `pidof com.kei.pulse` against
-the `xsu`/`xsud` log lines' PID column). If confirmed, the whole
-"migrate more writes to AIDL to reduce `xsu` load" strategy needs to be
-abandoned for this device — it was never going to reduce the crash-prone
-broker's total connection count, only relabel it. GPU cap and any further
-`com_set_performance_cpu` work should wait on this result.
+**CONFIRMED live (2026-07-27), same day**: log
+`research/ab-logger/results/aidl_xsu_check.log`, captured via the existing
+debug-only `maybeRunSchedulerSendTest()` hook (marker
+`/sdcard/apl_test_aidl_scheduler.txt`). `sendScheduler("BALANCED")` fires
+at 15:32:17.317; **192-225ms later**, four separate, freshly-spawned `xsu`
+processes each run a BARE `echo schedutil > .../policyN/scaling_governor`
+(N = 0, 2, 5, 7 — one connection per policy, no `chmod` wrapping at all):
+
+```
+15:32:17.509  xsu: echo schedutil > .../policy0/scaling_governor
+15:32:17.522  xsu: echo schedutil > .../policy2/scaling_governor
+15:32:17.532  xsu: echo schedutil > .../policy5/scaling_governor
+15:32:17.542  xsu: echo schedutil > .../policy7/scaling_governor
+```
+
+This cannot be our own code: `maybeRunSchedulerSendTest()` only ever
+issues 3 `xsu` calls in this whole test (marker check, marker delete, one
+`cat .../policy0/scaling_governor` readback — logged 1.5s later at
+15:32:18.975, clearly separate) and `GovernorController` always wraps
+writes in `chmod 666; echo; chmod 644` combined into ONE call across all
+policies, never 4 separate bare-echo calls. The shape (bare echo, one
+policy per connection, zero chmod) is an exact match for
+`AyaDevicesUtil$applyCPUSchedulerMode$1.java`'s own code, confirming
+`com.ayaneo.gamewindow` genuinely opens its own fresh `xsu` connections in
+direct response to our AIDL send.
+
+**Conclusion, no longer just a hypothesis**: sending
+`com_set_performance_scheduler`/`_cpu`/`_gpu` over AIDL does NOT remove
+`xsu` load from the system — it relocates which process opens the
+connection (`com.kei.pulse` → `com.ayaneo.gamewindow`), and even ADDS a
+4-way fan-out (one `xsu` connection per cpufreq policy) where our own
+code would have used a single combined connection. **The "migrate more
+writes to AIDL to reduce `xsu` load" strategy is abandoned for this
+device** — it was never going to reduce the crash-prone broker's total
+connection count, and for the scheduler command specifically, the AIDL
+path may create MORE `xsu` connections than doing it ourselves would
+have. GPU cap and any further `com_set_performance_cpu` work should not
+be pursued for this reason.
 
 Also checked (2026-07-27) whether AYA has some hidden persistent-root-
 channel trick we're missing, per the user's alternative architecture

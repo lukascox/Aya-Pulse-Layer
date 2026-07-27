@@ -736,31 +736,47 @@ should reset: this is very unlikely to be the fix for the crash itself,
 consistent with `research/pulse-for-aya/README.md`'s "likely NOT
 independently fixable from this repo" conclusion from step 1.
 
-**Update (2026-07-27): likely explanation for why step 2 showed zero
-improvement — AYA's own AIDL receiver probably also shells out through
-`xsu`, so the migration may never have reduced total `xsu` load, just
-relocated which process opens the connection.** Traced the full
-decompiled call chain in `aya-gamewindows-teardown` for our device
-(`AR03`, the default branch — `PocketFIT` isn't one of the 16 named
-codenames in `AyaDevicesKt`'s selector): `com_set_performance_scheduler`/
-`_cpu`/`_gpu` all resolve to `AR03.b(str)` → `TcRootShell.a(str)` →
-`CmdUtilKt.e("xsu " + str)` → `Runtime.getRuntime().exec(...)` — a fresh
-process per call, same pattern as our own `RootExec.kt`. Full detail and
-file/line pointers: `research/pulse-for-aya/README.md`'s "Major finding"
-update, right before the step-2 on-device-result section.
+**Update (2026-07-27): CONFIRMED LIVE — AYA's own AIDL receiver shells
+out through `xsu` too, and for the scheduler command it uses MORE
+connections than our own code would have. Step 2's AIDL migration is
+confirmed not to help, and may be net-negative for connection count.**
+Traced the decompiled call chain first (`aya-gamewindows-teardown`,
+`AR03` branch — the default for any codename not in `AyaDevicesKt`'s
+16-entry list, which `PocketFIT` isn't):
+`com_set_performance_scheduler`/`_cpu`/`_gpu` all resolve to `AR03.b(str)`
+→ `TcRootShell.a(str)` → `CmdUtilKt.e("xsu " + str)` →
+`Runtime.getRuntime().exec(...)`. Then confirmed it live: log
+`research/ab-logger/results/aidl_xsu_check.log` (via the existing
+`maybeRunSchedulerSendTest()` debug hook) shows `sendScheduler(BALANCED)`
+at 15:32:17.317 followed 192-225ms later by **four separate, freshly-
+spawned `xsu` processes**, each a bare `echo schedutil > .../policyN/
+scaling_governor` (N=0,2,5,7) with no `chmod` wrapping — a shape that
+exactly matches `AyaDevicesUtil$applyCPUSchedulerMode$1.java`'s own code
+and cannot be attributed to our test (which only ever issues 3 unrelated
+`xsu` calls: marker check, marker delete, one readback 1.5s later). Full
+evidence and reasoning: `research/pulse-for-aya/README.md`'s "Major
+finding" update.
 
-**Not yet confirmed live** — needs a `logcat` capture during a
-`sendScheduler`/`sendCpuFrequency` AIDL call cross-checked against
-`com.ayaneo.gamewindow`'s own PID (test procedure handed to the user
-2026-07-27, evening session). If confirmed: **the whole "migrate more of
-pulse-for-aya's own writes to AIDL" strategy should be abandoned** as a
-crash mitigation for this device — it was never going to reduce `xsud`'s
-total connection count, only re-attribute it. This also answers the
-user's separate question about a persistent-root-connection architecture
-(daemon-style, one long-lived channel instead of per-call spawns): no
-evidence AYA does this either, on any SoC branch inspected (Qualcomm
-`TcRootShell`/`Runtime.exec` or MediaTek `KtRootShell`/JNI `ShellCmd` —
-both spawn fresh per call, neither caches/reuses a connection).
+**This is worse than neutral**: our own `GovernorController` combines all
+policies into ONE `xsu` connection (`chmod 666; echo; chmod 644` joined
+across policies); `gamewindow`'s AIDL handler opens FOUR separate
+connections for the same governor-set. So step 2's migration didn't just
+fail to reduce `xsu` load — for this specific write, it likely traded 1
+of our own connections for 4 of `gamewindow`'s. **This strategy
+(migrating more of `pulse-for-aya`'s writes to AIDL to reduce `xsu` load)
+is now abandoned for this device** — confirmed, not just suspected.
+Also answers the user's persistent-root-channel question: no evidence
+AYA has one either, on any SoC branch inspected (Qualcomm
+`TcRootShell`/`Runtime.exec`, MediaTek `KtRootShell`/JNI `ShellCmd` — both
+spawn fresh per call).
+
+**Open decision for the user**: given this, should step 2's governor
+migration (`ForegroundAppMonitorService.setAutoTdpGovernorBalanced()`) be
+reverted back to the plain `xsu` path? It's not proven actively harmful
+(today's crash-timing test showed no measurable difference either way),
+but it's confirmed to not help and may add connections at exactly the
+moment that matters — reverting would at least return to a known,
+single-connection baseline instead of an unproven 4-connection one.
 
 **Next session, open question**: is it worth migrating the GPU-cap write
 too (marginal further reduction, same ceiling), or should effort instead
