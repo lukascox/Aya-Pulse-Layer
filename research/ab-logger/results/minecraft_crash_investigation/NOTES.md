@@ -123,3 +123,15 @@ the original 2026-07-25 INCIDENT, plus a newly-found candidate trigger
 (repeated `echo 1 > /sys/class/power_supply/battery/online` from an
 unidentified source, not this repo's code, while the device was on the
 charger).
+
+## round8_2026-07-27_2122_no_crash_no_autotdp_tick/
+
+Different investigation than rounds 1-7 (those were about the `xsud`
+connection-burst crash; this one is a separate finding from the SAME
+session's log) -- pre-daemon build, clean ~2m49s Minecraft playthrough,
+no crash this time (one isolated `xsud` crash that didn't cascade to
+`system_server`). But zero `PulseAutoTdp` log lines the whole session and
+only one combined cap-write (the initial `release()`, not an ongoing
+tick) -- AutoTDP's own regulation loop appears to never actually run
+after the initial engage. Full analysis: STATUS.md's "AutoTDP's own tick
+loop appears to never actually run" entry, don't duplicate it here.

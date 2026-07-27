@@ -1,0 +1,24 @@
+# Trimmed from an 8.7M raw adb logcat capture (2026-07-27 night) -- only lines
+# relevant to the finding are kept. Full narrative: STATUS.md's new
+# 'AutoTDP's own tick loop appears to never actually run' entry.
+# Session: clean ~2m49s Minecraft playthrough on the pre-daemon build, no crash,
+# but the AutoTDP tick loop apparently never regulated clocks after the initial engage.
+
+## Game Mode ON, Minecraft process:
+22298:07-27 21:22:45.999  2266  2324 I ActivityManager: Start proc 10035:com.mojang.minecraftpe/u0a189 for next-top-activity {com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity}
+22362:07-27 21:22:46.017  2266  2310 V GameManagerService: Game power mode ON (process state was changed to foreground)
+
+## the ONE combined cap-write of the whole session (AutoTuneController.release(), not a tick):
+27920:07-27 21:22:53.215 10802 10802 I xsu     : sending cmd:chmod 666 /sys/devices/system/cpu/cpu2/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu2/online; chmod 666 /sys/devices/system/cpu/cpu3/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu3/online; chmod 666 /sys/devices/system/cpu/cpu4/online 2>/dev/null; echo 1 > /sys/devices/system/cpu/cpu4/online
+28211:07-27 21:22:53.419 10826 10826 I xsu     : sending cmd:chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; echo 364800 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; echo 2265600 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; echo 3148800 > /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 644 /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq; chmod 666 /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; echo 499200 > /sys/devices/system/cpu/cpufreq/policy5/scaling_min_freq; chmod 644 /sys/devices/system/cpu/cpu
+
+## crash check (one isolated xsud crash, did NOT cascade to system_server this time):
+2:01-01 11:33:33.673   830   830 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 830 (init), pid 830 (init)
+5:07-27 21:21:45.473  1345  1345 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 1345 (nvkeeper), pid 1345 (nvkeeper)
+5199:07-27 21:21:49.888  3372  3372 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 3372 (init), pid 3372 (init)
+5300:07-27 21:21:50.094  3368  3368 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 3368 (qcrosvm), pid 3368 (qcrosvm)
+28395:07-27 21:22:53.499  1588 29811 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 10829 (xsud), pid 1588 (xsud)
+28431:07-27 21:22:53.522 10849 10849 F DEBUG   :       #02 pc 0000000000002f8c  /product/bin/xsud (xsu_conn_handler.cfi+856) (BuildId: cf12e64c40275bca4c064d86f58ec6f5)
+
+## AutoTDP tick-decision log tag (should repeat every ~2s if working -- it never appears):
+(zero matches above confirms the finding)

@@ -6,6 +6,73 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## To investigate next session: AutoTDP's own tick loop appears to never actually run during real gameplay
+
+Raised by the user (2026-07-27 night) after a clean ~2m49s Minecraft
+session on the pre-daemon build (no crash this time — see the daemon/FIFO
+work above for why): the AYASpace FPS/frequency HUD showed **completely
+static CPU clocks the whole session**, 60fps "held rigidly." Checked the
+full `logcat` (`PulseDeamon_full.log`, since deleted/trimmed — see below)
+and found concrete evidence, not just an impression:
+
+- **Zero `PulseAutoTdp` log lines in the entire session.** This tag is
+  logged unconditionally (`AUTO_DEBUG = true` is a hardcoded const, not
+  behind `BuildConfig.DEBUG`) every time `stepAutoTdp()` runs — expected
+  roughly every ~2s (`autoTdpTick++ % 2`), so a clean 2m49s session should
+  show ~80+ lines. It showed none.
+- **Only ONE combined cap-write happened in the whole session** — a
+  `chmod 666; echo; chmod 644/644` sequence writing `scaling_min_freq`/
+  `scaling_max_freq` back to full-stock values (`2265600`/`3148800`/etc.,
+  matching `HARDWARE_PROFILE.md`'s stock table) on `policy0`/`policy2`/
+  `policy5`, plus one `cpu2/3/4 online=1` write — both fired within ~200ms
+  of each other right at engage time. This is `AutoTuneController.
+  release()`'s one-shot "reopen clocks to full, AutoTDP's starting point"
+  step, not an ongoing trim/raise decision. **No further writes occurred
+  for the remaining ~2m40s**, despite hundreds of telemetry `cat` reads
+  continuing steadily the whole time (confirms the poll loop itself is
+  alive, not crashed/frozen — something in it just never reaches the
+  point of calling `stepAutoTdp()`/logging its decision).
+- `stepAutoTdp()` is only called via `if (autoActive) stepAutoTdp(...)`
+  where `autoActive = autoTdpPackage != null`
+  (`ForegroundAppMonitorService.kt`); `autoTdpPackage` gets set inside
+  `startAutoTdp()` (confirmed to have run, given the one release-write
+  above) and would only be cleared by `stopAutoTdp()` — but no
+  restore-snapshot write (which `stopAutoTdp`'s cleanup would produce)
+  ever appeared either, arguing against a silent stop/re-bind flip. Not
+  yet root-caused past this point — the next step is reading the exact
+  surrounding code path (`buildOverlayStats`/the per-tick `try` block
+  around line ~780-857) to see what could skip `stepAutoTdp()` without
+  ever un-setting `autoTdpPackage` or throwing (no `PulseOverlay` error
+  log appeared either, so it's not a silently-caught exception in that
+  same `try` block, unless something upstream of it returns/skips early).
+
+**Important**: this is a separate, likely pre-existing functional bug in
+AutoTDP's own regulation loop, unrelated to tonight's `xsud`-crash
+mitigation work (daemon/FIFO/pre-engage-delay) — none of tonight's
+changes touch this code path. Quick live-check for next time (cheaper
+than pulling a full log): `adb logcat -v threadtime -s PulseAutoTdp:D
+PulseOverlay:E` while playing — if `PulseAutoTdp` lines don't appear
+every ~2s, this confirms it live.
+
+**Follow-up (2026-07-27, later same night), inconclusive**: user installed
+the post-daemon build and did a full real Minecraft session — reported
+*visually seeing CPU cluster values change on the AYASpace HUD this
+time*. But the filtered live check (`-s PulseAutoTdp:D PulseOverlay:E`)
+showed nothing in two short attempts, and a follow-up full-session
+capture (`minecraft_crash_investigation/round8_.../
+logcat2_inconclusive.log`) STILL shows zero `PulseAutoTdp`/`PulseDaemon`
+lines and zero `scaling_max_freq` writes — but that capture's CPU-freq
+read density was much sparser than earlier sessions (~10 reads total vs.
+hundreds), suggesting it likely didn't cover the whole play session (the
+two short filtered attempts right before it hint the capture discipline
+was inconsistent this round, not that the finding is resolved). Fan PWM
+values DID vary meaningfully in this capture, confirming some adaptive
+loop is alive — just not confirmed to be `stepAutoTdp()` specifically.
+**Not resolved either way** — next session should capture with `adb
+logcat -c` immediately followed by an unfiltered `adb logcat -v
+threadtime > file` left running for the ENTIRE session (game launch to
+game close), no gaps, to get an authoritative answer.
+
 ## To investigate next session: native FPS counter shows stale mode label + disappearing per-core frequencies
 
 Raised by the user (2026-07-27) ahead of a new test series: AYA's own FPS

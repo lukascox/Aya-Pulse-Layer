@@ -1,0 +1,48 @@
+# Trimmed from a 37812-line raw adb logcat capture (2026-07-27 night, post-daemon build).
+# Full narrative: STATUS.md's 'AutoTDP's own tick loop' entry, inconclusive-followup note.
+
+## Game Mode ON / Minecraft process:
+7310:07-27 21:41:29.705  2335  2396 I ActivityManager: Start proc 9011:com.mojang.minecraftpe/u0a189 for next-top-activity {com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity}
+7342:07-27 21:41:29.721  2335  2387 V GameManagerService: Game power mode ON (process state was changed to foreground)
+
+## PulseAutoTdp / PulseDaemon / PulseOverlay tags (zero matches -- the finding):
+
+## crash check:
+2:01-01 11:52:32.628   815   815 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 815 (init), pid 815 (init)
+5:07-27 21:40:44.465  1407  1407 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 1407 (nvkeeper), pid 1407 (nvkeeper)
+4146:07-27 21:40:48.898  3428  3428 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 3428 (init), pid 3428 (init)
+4235:07-27 21:40:49.109  3417  3417 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 3417 (qcrosvm), pid 3417 (qcrosvm)
+
+## command shape summary after Game Mode ON (fan varies = something adaptive is alive;
+## zero scaling_max_freq WRITE commands anywhere -- inconclusive whether this capture
+## covered the window where the user saw CPU cluster changes on the HUD):
+  14 echo 89 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+  12 cat '/sys/class/kgsl/kgsl-3d0/max_pwrlevel' 2>/dev/null
+  10 cat '/sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq' 2>/dev/null
+  10 cat '/sys/devices/system/cpu/cpufreq/policy5/scaling_max_freq' 2>/dev/null
+  10 cat '/sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq' 2>/dev/null
+  10 cat '/sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq' 2>/dev/null
+   4 echo 94 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+   4 echo 91 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+   4 echo 1 > /sys/class/power_supply/battery/online
+   3 echo 86 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+   3 cat '/sys/class/thermal/thermal_zone41/temp' 2>/dev/null
+   2 setenforce 0
+   2 chmod 750 /storage
+   2 cat '/sys/devices/system/cpu/cpufreq/policy7/scaling_cur_freq' 2>/dev/null
+   2 cat '/sys/devices/system/cpu/cpufreq/policy5/scaling_cur_freq' 2>/dev/null
+   2 cat '/sys/devices/system/cpu/cpufreq/policy2/scaling_cur_freq' 2>/dev/null
+   2 cat '/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq' 2>/dev/null
+   2 cat '/sys/class/thermal/thermal_zone10/temp' 2>/dev/null
+   2 cat '/sys/class/power_supply/battery/voltage_now' 2>/dev/null
+   2 cat '/sys/class/power_supply/battery/status' 2>/dev/null
+   2 cat '/sys/class/power_supply/battery/current_now' 2>/dev/null
+   2 cat '/sys/class/power_supply/battery/capacity' 2>/dev/null
+   2 cat '/sys/class/kgsl/kgsl-3d0/min_pwrlevel' 2>/dev/null
+   2 cat '/sys/class/kgsl/kgsl-3d0/gpuclk' 2>/dev/null
+   2 cat '/sys/class/kgsl/kgsl-3d0/gpu_busy_percentage' 2>/dev/null
+   1 echo 99 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+   1 echo 96 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+   1 echo 137 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+   1 echo 112 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+   1 echo 104 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
