@@ -364,6 +364,54 @@ fallback (aidlReady=...)"`) — added specifically so a `logcat` capture
 from the reproduction test can confirm which path actually ran at each
 foreground change, not just infer it from the crash timing alone.
 
+**Major finding (2026-07-27), from decompiled `aya-gamewindows-teardown`
+source: AYA's own AIDL receiver likely does NOT bypass `xsu` on this SoC
+either — it may just relocate which process opens the connection.**
+Traced the full call chain for our device family (`AyaDevicesKt`'s device
+selector falls through to the default `AR03` class for any codename not
+in its explicit list — `PocketFIT` isn't one of the 16 named ones, so
+`AR03` is the very likely branch in effect, not yet confirmed live):
+
+```
+AyaDevicesUtil$applyCPUFrequencies$1 / applyCPUSchedulerMode$1 / applyGPUFrequency$1
+  → AyaDevicesKt.f4814a.b(str)          ("echo ... > /sys/...")
+  → AR03.b(str)   (research/aya-gamewindows-teardown/.../ar03/AR03.java:583-586)
+  → TcRootShell.a(str)   (.../ar03/TcRootShell.java) → CmdUtilKt.e("xsu " + str)
+  → Runtime.getRuntime().exec(...)   (.../utils/shell/CmdUtilKt.java:128-155)
+```
+
+Confirmed this exact chain for all three commands we care about
+(scheduler, CPU freq, GPU freq) — every one ends in a fresh
+`Runtime.exec("xsu ...")` per call, same one-process-per-call pattern as
+our own `RootExec.kt`. No caching, no persistent shell, no JNI shortcut
+(that only exists on the unrelated MediaTek `AR01`/`KtRootShell` branch,
+which uses `com.kingtop.shellcmd.ShellCmd`'s JNI `hsInvokeJni` instead of
+IPC to `xsud` — not available to us on this Snapdragon device).
+
+**Implication**: sending `com_set_performance_scheduler`/`_cpu`/`_gpu`
+over AIDL very likely does NOT remove an `xsu` connection from the
+system — it just moves which UID (`com.kei.pulse` vs.
+`com.ayaneo.gamewindow`) opens it. This would directly explain today's
+null result below: the AIDL migration may never have reduced total `xsu`
+load at all, just re-attributed it. **Not yet confirmed live** — the
+decisive test is a `logcat` capture during a `sendScheduler`/
+`sendCpuFrequency` AIDL call, checking whether `com.ayaneo.gamewindow`'s
+own PID shows an `xsu`/`xsud` line at that moment (cross-check PIDs via
+`adb shell pidof com.ayaneo.gamewindow` / `pidof com.kei.pulse` against
+the `xsu`/`xsud` log lines' PID column). If confirmed, the whole
+"migrate more writes to AIDL to reduce `xsu` load" strategy needs to be
+abandoned for this device — it was never going to reduce the crash-prone
+broker's total connection count, only relabel it. GPU cap and any further
+`com_set_performance_cpu` work should wait on this result.
+
+Also checked (2026-07-27) whether AYA has some hidden persistent-root-
+channel trick we're missing, per the user's alternative architecture
+question — **no evidence of one anywhere in either teardown**. Even
+`TcRootShell`/`CmdUtilKt.e` (Qualcomm path) and `KtRootShell`/`ShellCmd`
+(MediaTek path) both spawn a fresh process/JNI call per invocation, no
+caching or reuse. AYA's own code doesn't solve this problem either — it
+just has a cheaper primitive on MediaTek hardware we don't have here.
+
 **On-device result (2026-07-27): AIDL path confirmed working, crash still
 happens on baseline timing — this migration alone does not help.** Real
 Minecraft-crash reproduction, host-side `adb logcat`, log filed to

@@ -736,6 +736,32 @@ should reset: this is very unlikely to be the fix for the crash itself,
 consistent with `research/pulse-for-aya/README.md`'s "likely NOT
 independently fixable from this repo" conclusion from step 1.
 
+**Update (2026-07-27): likely explanation for why step 2 showed zero
+improvement — AYA's own AIDL receiver probably also shells out through
+`xsu`, so the migration may never have reduced total `xsu` load, just
+relocated which process opens the connection.** Traced the full
+decompiled call chain in `aya-gamewindows-teardown` for our device
+(`AR03`, the default branch — `PocketFIT` isn't one of the 16 named
+codenames in `AyaDevicesKt`'s selector): `com_set_performance_scheduler`/
+`_cpu`/`_gpu` all resolve to `AR03.b(str)` → `TcRootShell.a(str)` →
+`CmdUtilKt.e("xsu " + str)` → `Runtime.getRuntime().exec(...)` — a fresh
+process per call, same pattern as our own `RootExec.kt`. Full detail and
+file/line pointers: `research/pulse-for-aya/README.md`'s "Major finding"
+update, right before the step-2 on-device-result section.
+
+**Not yet confirmed live** — needs a `logcat` capture during a
+`sendScheduler`/`sendCpuFrequency` AIDL call cross-checked against
+`com.ayaneo.gamewindow`'s own PID (test procedure handed to the user
+2026-07-27, evening session). If confirmed: **the whole "migrate more of
+pulse-for-aya's own writes to AIDL" strategy should be abandoned** as a
+crash mitigation for this device — it was never going to reduce `xsud`'s
+total connection count, only re-attribute it. This also answers the
+user's separate question about a persistent-root-connection architecture
+(daemon-style, one long-lived channel instead of per-call spawns): no
+evidence AYA does this either, on any SoC branch inspected (Qualcomm
+`TcRootShell`/`Runtime.exec` or MediaTek `KtRootShell`/JNI `ShellCmd` —
+both spawn fresh per call, neither caches/reuses a connection).
+
 **Next session, open question**: is it worth migrating the GPU-cap write
 too (marginal further reduction, same ceiling), or should effort instead
 go toward something that isn't about reducing `pulse-for-aya`'s own `xsu`
