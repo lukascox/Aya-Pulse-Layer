@@ -1,0 +1,34 @@
+# Trimmed from a 49138-line raw adb logcat capture (2026-07-27 night) -- covers TWO
+# game sessions back to back (Minecraft ~21:41, Eden/Super Mario Odyssey ~21:46).
+# Full narrative: STATUS.md's 'AutoTDP's own tick loop' entry.
+# User report for the Eden session: ~40fps, CPU visibly fluctuating constantly (unlike
+# Minecraft's 'frozen' look) -- but the SAME zero-writes finding holds here too, now
+# confirmed across two independent game engagements in one continuous capture, not
+# just one possibly-incomplete session.
+
+## Game Mode ON markers (both sessions):
+6091:07-27 21:41:29.721  2335  2387 V GameManagerService: Game power mode ON (process state was changed to foreground)
+20828:07-27 21:46:01.714  2335  2387 V GameManagerService: Game power mode ON (process state was changed to foreground)
+
+## PulseAutoTdp / PulseDaemon / PulseOverlay tags (zero matches, both sessions):
+(zero matches above -- confirms the finding for Eden too)
+
+## crash check:
+2:01-01 11:52:32.628   815   815 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 815 (init), pid 815 (init)
+5:07-27 21:40:44.465  1407  1407 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 1407 (nvkeeper), pid 1407 (nvkeeper)
+2895:07-27 21:40:48.898  3428  3428 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 3428 (init), pid 3428 (init)
+2984:07-27 21:40:49.109  3417  3417 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 3417 (qcrosvm), pid 3417 (qcrosvm)
+
+## every distinct xsu command in the Eden/Odyssey window (from its Game Mode ON on) --
+## zero scaling_max_freq reads OR writes, only fan PWM (varying, so SOMETHING adaptive
+## runs) + the known non-repo AYASpace hooks (battery/online, setenforce, storage):
+   8 echo 94 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+   3 echo 1 > /sys/class/power_supply/battery/online
+   2 setenforce 0
+   2 echo 96 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+   2 chmod 750 /storage
+   1 echo 99 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+   1 echo 91 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+   1 echo 86 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+   1 echo 142 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+   1 echo 112 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1

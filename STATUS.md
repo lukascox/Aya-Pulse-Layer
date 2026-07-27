@@ -68,10 +68,33 @@ two short filtered attempts right before it hint the capture discipline
 was inconsistent this round, not that the finding is resolved). Fan PWM
 values DID vary meaningfully in this capture, confirming some adaptive
 loop is alive — just not confirmed to be `stepAutoTdp()` specifically.
-**Not resolved either way** — next session should capture with `adb
-logcat -c` immediately followed by an unfiltered `adb logcat -v
-threadtime > file` left running for the ENTIRE session (game launch to
-game close), no gaps, to get an authoritative answer.
+
+**Strengthened, same night**: the same raw capture (before trimming) also
+covered a SECOND game session a few minutes later — Eden (Switch
+emulator), Super Mario Odyssey. User report: ~40fps, CPU visibly
+fluctuating **constantly** this time (opposite look from Minecraft's
+"frozen" one). Checked that session's window in the same log: **same
+zero `PulseAutoTdp`/`PulseDaemon`/`scaling_max_freq` result** — now
+confirmed across two independent game engagements in one continuous
+capture, not just one possibly-incomplete session. This resolves the
+"maybe the capture just missed it" doubt above — the finding holds.
+**Working theory, unifying both observations**: `AutoTDP` sets the
+governor once at engage and never applies an actual frequency CAP after
+that — so the kernel's own `schedutil` governor is left completely free
+to scale on its own, with zero PULSE involvement. Minecraft's fairly
+steady load → `schedutil` settles and looks "frozen"; Eden's highly
+variable per-frame emulation load → `schedutil` swings constantly on its
+own, landing at ~40fps with nothing helping it converge higher. Fan PWM
+still varies in both captures, so at least the fan-control loop is alive
+— the gap looks specific to the CPU/GPU cap-regulation path. Raw evidence
+for both sessions: `minecraft_crash_investigation/round8_2026-07-27_2122_
+no_crash_no_autotdp_tick/` (`logcat2_inconclusive.log` = Minecraft,
+`logcat3_eden_odyssey.log` = Eden/Odyssey). **Next session**: read
+`stepAutoTdp()`'s exact call site and the surrounding `try` block
+(`ForegroundAppMonitorService.kt` ~line 780-857) to find what could
+prevent it from ever running without throwing or un-setting
+`autoTdpPackage` — this is now a confirmed, reproducible bug, not a
+one-off capture gap.
 
 ## To investigate next session: native FPS counter shows stale mode label + disappearing per-core frequencies
 

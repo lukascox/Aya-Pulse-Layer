@@ -1,0 +1,11 @@
+# Trimmed from a 12827-line raw adb logcat capture (2026-07-27 night, adb logcat -c
+# then a clean full-session capture). Full narrative: STATUS.md's 'AutoTDP's own tick
+# loop' entry.
+#
+# INVALIDATED AS A TEST OF THAT QUESTION: zero 'com.kei.pulse' mentions anywhere in
+# this capture -- pulse-for-aya was not even running during this session, so the
+# absence of PulseAutoTdp/PulseDaemon here doesn't confirm or refute anything. Next
+# attempt: confirm the ForegroundAppMonitorService is actually started (and AutoTDP
+# enabled, per-app or global) before capturing.
+
+1477:07-27 21:51:19.066  2335  2387 V GameManagerService: Game power mode ON (process state was changed to foreground)
