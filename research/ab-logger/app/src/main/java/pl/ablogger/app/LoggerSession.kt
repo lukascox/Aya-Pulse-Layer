@@ -22,6 +22,7 @@ class LoggerSession(
     private val localCsvFile: File = File(filesDir, csvFileName)
 
     val sdcardCsvPath: String = "$SDCARD_LOG_DIR/$csvFileName"
+    val logcatSdcardPath: String = "$SDCARD_LOG_DIR/logcat_$startedAtMs.log"
 
     private var sampleIdx = 0
 
@@ -80,9 +81,42 @@ class LoggerSession(
 
     /** Copies the local CSV to /sdcard via the root shell (uid=0 can read our
      * app-private file), same mechanism every probe in this repo uses -- the app
-     * process itself never touches /sdcard through its own file APIs. */
+     * process itself never touches /sdcard through its own file APIs. Called after
+     * every sample (see [LoggerService]) rather than periodically, since a device
+     * reboot (the only recovery from a full UI crash, see STATUS.md's INCIDENT
+     * entries) skips both the periodic sync and the clean-stop final flush -- this
+     * keeps the staleness window at one sample interval instead of up to 10. */
     fun syncToSdcard() {
         XsuShell.exec("mkdir -p $SDCARD_LOG_DIR; cat '${localCsvFile.absolutePath}' > $sdcardCsvPath")
+    }
+
+    /**
+     * Starts a detached root `logcat` capture, redirected straight to `/sdcard` so it
+     * survives a full device reboot with nothing buffered in this app's process --
+     * unlike the CSV, there's no "final flush" step to miss. One `xsu` call: prefixes
+     * the file with the current boot-reason history (the cheapest way to tell, after
+     * the fact, whether the device actually rebooted mid-session -- every past
+     * INCIDENT in STATUS.md was diagnosed that way), clears the ring buffer so this
+     * session's file doesn't start with unrelated pre-session history, then
+     * backgrounds `logcat` with `&` so this call returns immediately instead of
+     * blocking for the rest of the session.
+     */
+    fun startCrashCapture() {
+        XsuShell.exec(
+            "mkdir -p $SDCARD_LOG_DIR; " +
+                "pkill -f 'logcat -v threadtime' 2>/dev/null; " +
+                "echo BOOT_REASON_AT_START=\$(getprop persist.sys.boot.reason.history) > '$logcatSdcardPath'; " +
+                "logcat -c; " +
+                "nohup logcat -v threadtime >> '$logcatSdcardPath' 2>&1 &",
+            timeoutSec = 8,
+        )
+    }
+
+    /** Best-effort, only reached on a clean "Stop log". If a crash/reboot happens
+     * instead, the capture file on /sdcard is already complete up to that moment --
+     * there's nothing to recover here, unlike the CSV path. */
+    fun stopCrashCapture() {
+        XsuShell.exec("pkill -f 'logcat -v threadtime' 2>/dev/null", timeoutSec = 4)
     }
 
     /** One statement per value, packed into safely-sized `xsu` calls by

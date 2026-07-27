@@ -101,6 +101,48 @@ change only makes the A/B test's CSV data complete (real fan RPM
 alongside CPU/GPU/FPS/temp/battery) — it doesn't add any new actuation or
 risk to the device.
 
+## Crash capture + crash-proof sync (2026-07-27)
+
+Added in response to the Minecraft-launch-instability investigation
+(`STATUS.md`): the only way to recover from a full UI/`system_server`
+crash on this device is a hard reboot, and the old sync behavior (CSV
+copied to `/sdcard` only every 10 samples or on a clean "Stop log") meant
+a crash-then-reboot could leave up to ~50s of the most recent data stuck
+in app-private storage, recoverable only via a manual root pull.
+
+**Three changes, all in `LoggerSession.kt`/`LoggerService.kt`:**
+
+1. **`syncToSdcard()` now runs after every sample**, not every 10 — the
+   underlying app-private CSV was never actually lost on a crash (it's
+   just a file, survives a reboot like any other), this just shrinks the
+   staleness window on the `/sdcard` copy from ~50s to one sample interval
+   (5s).
+2. **`LoggerSession.startCrashCapture()`**: one `xsu` call per session,
+   backgrounds a root `logcat -v threadtime` redirected straight to
+   `/sdcard/apl_ab_logs/logcat_<timestamp>.log` (`nohup ... &`, returns
+   immediately). Nothing buffered in this app's process, so it survives a
+   crash/reboot exactly like the CSV's underlying file does — no "final
+   flush" step to miss. Clears the ring buffer first (`logcat -c`) and
+   prefixes the file with `persist.sys.boot.reason.history` so it's
+   immediately visible whether the device actually rebooted mid-session
+   (every past INCIDENT in `STATUS.md` was diagnosed exactly that way).
+   `stopCrashCapture()` best-effort-kills it on a clean "Stop log";
+   otherwise it just keeps writing until the device goes down. To find
+   what crashed, grep the pulled file for the same signatures past
+   incidents used: `FATAL EXCEPTION`, `ANR in`, `Fatal signal`,
+   `BatteryService`, `BLASTSyncEngine`.
+3. **`LoggerService.recoverOrphanedSessions()`**: runs once whenever the
+   service process (re)starts (`onCreate()`, off the main thread) — scans
+   the app's private storage for any `session_*.csv` left over from an
+   earlier run that never got a chance to sync, and re-copies it to
+   `/sdcard` automatically. Safety net for the (now much smaller) gap
+   between "sample written" and "next sync call completes."
+
+Builds clean (`./gradlew assembleDebug`), **not yet verified on-device**
+this session — next real session is the first test of whether the crash
+capture actually survives a reboot and whether `pkill -f`/`nohup` behave
+as expected on this device's toybox shell.
+
 ## Status (2026-07-25)
 
 Builds clean, installs, launches. Smoke-tested on-device: a session was

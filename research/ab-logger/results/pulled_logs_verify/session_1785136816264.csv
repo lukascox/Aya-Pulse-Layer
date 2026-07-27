@@ -1,0 +1,7 @@
+timestamp,sample_idx,foreground_pkg,fps,frame_count,p0_freq,p0_governor,p2_freq,p2_governor,p5_freq,p5_governor,p7_freq,p7_governor,gpu_freq_hz,gpu_busy_pct,temp_cpu_max_c,temp_gpu_max_c,temp_skin_c,temp_battery_c,fan_signal,fan_signal_unit,battery_current_ma,battery_voltage_mv,pulse_installed,pulse_service_running
+1785136817235,0,com.retrohrai.launcher,43.7,44,2265600,performance,3148800,performance,2956800,performance,3302400,performance,231000000,19,73.3,60.2,53.1,32.0,3636,fan_rpm_state,726946,7854877,true,true
+1785136823287,1,com.mojang.minecraftpe,56.0,126,2265600,performance,3148800,performance,2956800,performance,3302400,performance,231000000,10,87.2,61.8,53.4,32.0,6181,fan_rpm_state,538343,7823542,true,true
+1785136829010,2,,n/a (no layer matched),0,?,?,?,?,?,?,?,?,?,n/a,n/a,n/a,n/a,n/a,?,fan_rpm_state,?,?,true,true
+1785136834966,3,com.mojang.minecraftpe,111.2,127,2265600,performance,3148800,performance,2956800,performance,3302400,performance,231000000,20,74.8,59.4,51.8,32.0,2668,fan_rpm_state,795612,7862273,true,true
+1785136841329,4,com.mojang.minecraftpe,120.0,126,2265600,performance,3148800,performance,2956800,performance,3302400,performance,231000000,27,93.8,68.4,53.0,32.0,2460,fan_rpm_state,60426,7761649,true,true
+1785136847386,5,com.mojang.minecraftpe,120.0,126,2265600,performance,3148800,performance,2956800,performance,3302400,performance,310000000,72,82.2,65.3,53.7,32.0,3900,fan_rpm_state,441295,7813032,true,true

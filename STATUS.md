@@ -53,6 +53,93 @@ would each point to a different one of the three above), and check whether
 observed — that's the most invasive of the three levers and the easiest to
 isolate first (retry with it off, everything else unchanged).
 
+**Update (2026-07-27), user-reported, not yet instrumented**: the failure
+is **non-deterministic and survives disabling PULSE app-side**. Sequence
+observed: PULSE running → Minecraft fails (red Mojang screen, bounces to
+home). Toggling `aggressivePark`/other options → still fails. **Turning
+PULSE off in its own settings AND disabling AutoTDP → still fails** — only
+a **full device reboot** clears it. After that reboot (PULSE confirmed
+running, `aggressivePark` + 120 FPS target + everything else enabled),
+Minecraft launched and looked stable — **until a ~5 minute session ended
+in a UI/`system_server`-style crash**, the same failure shape as the
+`system_server`/`BatteryService` incidents already in this file, requiring
+another reboot to recover.
+
+This changes the leading theory: since disabling PULSE at the app level
+doesn't fix it, whatever is actually broken is more likely a **stuck
+low-level state that outlives the app process** — e.g. a sysfs node PULSE
+locked `chmod 444` (or wrote a value to) that its own disable/revert path
+fails to fully restore, or a vendor perf/thermal daemon left in a bad
+state — rather than something PULSE's live control loop does moment-to-
+moment. Worth specifically checking next session: does toggling PULSE
+fully off actually restore every CPU/GPU node's permissions AND values to
+what they were before PULSE ever touched them, or does something stay
+`444`/stuck? `PerformanceCommandBuilder`'s reset path (`isReset` →
+`644`) is the first place to check for a gap.
+
+**Tooling response this session**: `ab-logger` extended with continuous
+root `logcat` capture (survives a reboot, since it writes straight to
+`/sdcard` instead of buffering in-process) and per-sample `/sdcard` sync
+(previously every 10 samples, so a crash-then-reboot could lose up to ~50s
+of the most recent data before this) — see `research/ab-logger/README.md`'s
+"Crash capture + crash-proof sync (2026-07-27)" section. Not yet
+verified on-device. Running `ab-logger` alongside the next Minecraft
+reproduction attempt should capture the actual crash signature directly,
+instead of relying on manual `adb logcat` timing like past incidents did —
+**but this is exactly the "PULSE + ab-logger during real gameplay"
+combination this file's hard rule already warns about** (see
+`CLAUDE.md`'s Hard rules and the INCIDENT entries below): only do this
+closely supervised, watching for the same early warning signs (`xsud`
+SIGABRT bursts, ANRs) that preceded past incidents, not as an unattended
+background session.
+
+**Update (2026-07-27), analysis of a real repro session** (6 CSVs pulled to
+`research/ab-logger/results/pulled_logs_verify/` — a `pulled_logs_verifywd/`
+copy alongside it is a byte-identical duplicate, likely an accidental
+double-pull, not new data). **Reframes the problem**: this data does NOT
+look like "Minecraft's launch path specifically fails" — it looks like
+**the device crashes repeatedly and quickly (within 12-30s) any time
+PULSE's live tuning is actually active (governor `walt`,
+`pulse_service_running=true`), regardless of which app is in the
+foreground**:
+
+| session (start time) | duration | foreground app(s) seen | pulse active? | ended how |
+|---|---|---|---|---|
+| `_550309` (09:15:51) | 108s, 19 samples, clean | `retrohrai.launcher` → `android.settings` → `com.kei.pulse` (UI only) | **No** — governor `performance` throughout, `pulse_service_running=false` | ran the full session, no truncation |
+| `_675652` (09:17:57) | 12s, 3 samples | `com.kei.pulse` → `retrohrai.launcher` | **Yes** — governor `walt`, `pulse_service_running=true` | **truncates mid-session**, no further rows |
+| `_744486` (09:19:05) | 25s, 5 samples | `retrohrai.launcher` → `com.mojang.minecraftpe` (2-frame blip) → `retrohrai.launcher` (governor `walt`, freqs collapsing to 480-1286 MHz, fan_signal drops to 0 on the last row) | **Yes** | **truncates mid-session** |
+| `_816264` (09:20:17) | 30s, 6 samples | `retrohrai.launcher` → `com.mojang.minecraftpe` (steady, FPS 111-120) | **Yes** | **truncates mid-session**, last row shows CPU temp spiking to **93.8°C** (vs. 45-90°C everywhere else in this data) two samples before the cutoff, with a battery-current reading that drops to a fraction of its neighboring rows on that same spike row |
+
+The gaps between sessions are also informative: `_550309`→`_675652` is only
+18s (looks like a deliberate manual stop/restart, e.g. to flip a PULSE
+setting), but `_675652`→`_744486` is 56s and `_744486`→`_816264` is 47s —
+both close to the ~25-30s auto-recovery window already documented for the
+`system_server` restart pattern in this file's INCIDENT #1, not a full
+manual power-cycle (those take longer). Working theory: this run hit the
+same *kind* of crash multiple times in a row, most consistent with a
+`system_server`-style crash-and-auto-restart rather than a hard reboot each
+time — separate from (or an earlier-stage version of) the harder crash
+requiring a full reboot described in the update above.
+
+**Caveat, important for next session**: none of these six pulls include a
+`logcat_*.log` file, meaning the device was very likely still running the
+**pre-crash-capture build** of `ab-logger` (the feature landed in this same
+session, after this data was gathered) — so the exact crash signature
+(`FATAL EXCEPTION` vs ANR vs something else) is still not confirmed from
+this run. Also odd, not yet explained: `pulse_installed` reads `false` for
+the entire first session (`_550309`) despite `com.kei.pulse` appearing as
+the foreground app in that same session, then reads `true` for every
+session after — either PULSE was genuinely reinstalled partway through
+this test run, or the on-device `ab-logger` build predates the
+`pulse_installed` package-visibility fix from the 2026-07-26 session
+(worth checking which `ab-logger` version is actually installed before
+trusting that column again).
+
+**Next session**: reinstall the latest `ab-logger` build (has the crash
+capture + per-sample sync from this session) before the next reproduction
+attempt — that should finally pin the exact crash signature and confirm
+whether it's tied to the 93.8°C thermal spike or something else entirely.
+
 ## ROOT CAUSE FOUND (2026-07-26): the empty-CSV bug is `xsud` segfaulting on long `xsu -c` commands
 
 Follow-up to INCIDENT #3 below. Root-caused live on-device, outside any

@@ -67,7 +67,8 @@ class MainActivity : AppCompatActivity() {
     private fun onStopTapped() {
         LoggerService.stop(this)
         setRunningUiState(false)
-        txtStatus.text = "Stopped. Last CSV: ${LoggerService.lastCsvPath ?: "(none)"}"
+        txtStatus.text = "Stopped. Last CSV: ${LoggerService.lastCsvPath ?: "(none)"}\n" +
+            "Last logcat: ${LoggerService.lastLogcatPath ?: "(none)"}"
     }
 
     private fun setRunningUiState(running: Boolean) {

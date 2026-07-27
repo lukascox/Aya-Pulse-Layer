@@ -39,6 +39,30 @@ class LoggerService : Service() {
             val channel = NotificationChannel(CHANNEL_ID, "AB Logger", NotificationManager.IMPORTANCE_LOW)
             getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         }
+        serviceScope.launch { recoverOrphanedSessions() }
+    }
+
+    /**
+     * Best-effort recovery net, run once whenever this service process (re)starts --
+     * including after the device reboots, the only way to recover from a full UI
+     * crash (see STATUS.md's INCIDENT entries). The CSV itself is never actually
+     * lost -- every sample is appended straight to an app-private file that survives
+     * a reboot like any other file -- but nothing exposes it outside private storage
+     * except [LoggerSession.syncToSdcard], which a crash-then-reboot skips entirely
+     * (no clean "Stop log" to trigger it). This re-syncs any `session_*.csv` still
+     * sitting in [filesDir] from an earlier run so a crashed session's data lands on
+     * /sdcard automatically, without a manual root pull. Runs on [serviceScope]
+     * (IO dispatcher), not inline in `onCreate()`, so a slow/blocked `xsu` call here
+     * can't stall the service's main-thread startup.
+     */
+    private fun recoverOrphanedSessions() {
+        val orphans = filesDir.listFiles { f -> f.name.startsWith("session_") && f.name.endsWith(".csv") }
+        if (orphans.isNullOrEmpty()) return
+        val cmd = buildString {
+            append("mkdir -p ${LoggerSession.SDCARD_LOG_DIR}; ")
+            orphans.forEach { f -> append("cat '${f.absolutePath}' > '${LoggerSession.SDCARD_LOG_DIR}/${f.name}'; ") }
+        }
+        XsuShell.exec(cmd, timeoutSec = 10)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -64,12 +88,16 @@ class LoggerService : Service() {
             val s = LoggerSession(zones, fanNode, filesDir, System.currentTimeMillis(), pulseInstalled, pulseServiceRunning)
             session = s
             lastCsvPath = s.sdcardCsvPath
+            lastLogcatPath = s.logcatSdcardPath
+            s.startCrashCapture()
 
             var idx = 0
             while (isActive) {
                 s.sampleOnce()
                 idx++
-                if (idx % 10 == 0) s.syncToSdcard()
+                // Synced every sample, not periodically -- see syncToSdcard()'s doc comment:
+                // a crash/reboot skips both the old periodic sync and the clean-stop flush.
+                s.syncToSdcard()
                 updateNotification("Logging... $idx samples")
                 delay(SESSION_INTERVAL_MS)
             }
@@ -128,6 +156,7 @@ class LoggerService : Service() {
         loopJob?.cancel()
         loopJob = null
         session?.syncToSdcard() // final flush so a stop right after a sample isn't lost
+        session?.stopCrashCapture()
         session = null
         isRunning = false
         stopForeground(STOP_FOREGROUND_REMOVE)
@@ -173,6 +202,9 @@ class LoggerService : Service() {
             private set
 
         @Volatile var lastCsvPath: String? = null
+            private set
+
+        @Volatile var lastLogcatPath: String? = null
             private set
 
         fun start(context: Context) {

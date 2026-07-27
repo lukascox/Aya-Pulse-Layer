@@ -1,0 +1,4 @@
+timestamp,sample_idx,foreground_pkg,fps,frame_count,p0_freq,p0_governor,p2_freq,p2_governor,p5_freq,p5_governor,p7_freq,p7_governor,gpu_freq_hz,gpu_busy_pct,temp_cpu_max_c,temp_gpu_max_c,temp_skin_c,temp_battery_c,fan_signal,fan_signal_unit,battery_current_ma,battery_voltage_mv,pulse_installed,pulse_service_running
+1785136677099,0,com.kei.pulse,30.0,9,1459200,walt,1286400,walt,2707200,walt,902400,walt,231000000,9,50.8,46.5,45.2,31.0,791,fan_rpm_state,1145353,7926696,true,true
+1785136682960,1,com.retrohrai.launcher,49.1,127,2265600,walt,3148800,walt,2956800,walt,3052800,walt,231000000,23,69.9,50.4,45.5,31.0,791,fan_rpm_state,604263,7848260,true,true
+1785136689263,2,com.retrohrai.launcher,32.4,127,1689600,walt,1286400,walt,1190400,walt,3302400,walt,231000000,14,67.1,48.5,45.9,31.0,645,fan_rpm_state,1136197,7915212,true,true
