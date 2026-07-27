@@ -125,6 +125,20 @@ but it means pulse's "Balanced" and AYASpace's own "Balanced" are
 deliberately-different-by-inheritance, not equivalent, on this hardware.
 Worth knowing when comparing behavior/telemetry between the two.
 
+**Update (2026-07-27): changed as a diagnostic step for the Minecraft-crash
+investigation.** Every crash reproduction in `STATUS.md`'s Minecraft thread
+so far happened with PULSE's governor at `walt` — never confirmed as the
+actual cause (still no `logcat` capture from a crash), but `walt` being a
+governor AYASpace itself never exercises on this SoC in any of its 5 modes
+makes it a reasonable first thing to rule out cheaply. `SystemTuning.kt`'s
+`OPTIONS.Balanced` narrowed from `["walt", "schedutil", "sched_pixel"]` to
+just `["schedutil"]` — matches AYASpace's own native Balanced-mode choice
+on this device exactly. `Performance`/`Power Save` unchanged (already
+matched AYASpace's `performance`/`powersave`). Builds clean, unit tests
+pass, **not yet verified on-device** — next Minecraft repro attempt should
+use this build and note whether the crash still happens with `schedutil`
+active instead of `walt`.
+
 **3. Disappearing per-core frequency readout — leading hypothesis: `aggressivePark`.**
 Ruled out `PerformanceCommandBuilder`'s `chmod` locking (`444`) as the
 cause — it only locks `scaling_max_freq`/`min_pwrlevel`, not

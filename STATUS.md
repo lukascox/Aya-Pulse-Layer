@@ -201,6 +201,17 @@ touching the app again — it'll tell us in one call whether backgrounding
 is salvageable at all on this `xsud`, before sinking more time into
 `startCrashCapture()` specifically.
 
+**Update (2026-07-27): `pulse-for-aya` rebuilt with `schedutil` instead of
+`walt` for Balanced/AutoTDP** — every crash repro so far ran with `walt`
+active (never confirmed as causal, but it's a governor AYASpace itself
+never uses on this SoC, cheapest single variable to rule out). See
+`research/pulse-for-aya/README.md`'s "Open question (2026-07-27)" section,
+point 2's update. **Next Minecraft repro should use this build** and note
+whether the crash still happens with `schedutil` — if it does, `walt`
+itself is cleared as a suspect and the search moves elsewhere (e.g.
+`aggressivePark`, the write/chmod cadence); if it doesn't, that's a strong
+signal without needing the still-unresolved `logcat` capture at all.
+
 ## ROOT CAUSE FOUND (2026-07-26): the empty-CSV bug is `xsud` segfaulting on long `xsu -c` commands
 
 Follow-up to INCIDENT #3 below. Root-caused live on-device, outside any

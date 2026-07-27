@@ -72,11 +72,19 @@ class GovernorController {
     }
 
     companion object {
-        // Each option lists candidate kernel governors in preference order. "walt" is the
-        // Odin 3 stock balanced scaler, so it maps to Balanced (schedutil as fallback).
+        // Each option lists candidate kernel governors in preference order. Upstream `pulse`
+        // (built for AYN Odin/RP6/Thor) listed Balanced as ["walt", "schedutil", "sched_pixel"] --
+        // "walt" is the Odin 3 stock balanced scaler there. On the AYANEO Pocket FIT (SG8350P)
+        // this fork actually targets, AYASpace's own Balanced mode uses "schedutil", NOT "walt" --
+        // "walt" is present in scaling_available_governors on this SoC but confirmed unused by any
+        // of AYASpace's 5 stock modes (diagnostics/docs/HARDWARE_PROFILE.md), a leftover from the
+        // base Qualcomm BSP that upstream's candidate order happened to prefer here purely because
+        // it's available, not because it's vendor-tested. Narrowed to the 3 governors this device's
+        // own firmware actually exercises (2026-07-27, investigating STATUS.md's Minecraft-crash
+        // thread -- an open hypothesis, not a confirmed fix).
         val OPTIONS = listOf(
             GovernorOption("Performance", listOf("performance")),
-            GovernorOption("Balanced", listOf("walt", "schedutil", "sched_pixel")),
+            GovernorOption("Balanced", listOf("schedutil")),
             GovernorOption("Power Save", listOf("powersave")),
         )
 
