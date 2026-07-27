@@ -52,3 +52,19 @@ discarded rather than duplicated here):
 **Headline result: the crash reproduces under `schedutil`, not just
 `walt`.** Rules out governor choice as the root cause — see STATUS.md for
 the revised theory and next steps.
+
+## round4_2026-07-27_1035_schedutil_logcat_capture/
+
+Host-side `adb logcat -v threadtime` capture (not `ab-logger`'s own
+in-app capture, which still doesn't produce a file — that's still
+unexplained, see STATUS.md) spanning a real crash reproduction.
+`minecraft_crash_20260727_103532.log` is a short (~17s) lead-in;
+`minecraft_crash_20260727_103555.log` is the real capture and contains
+the actual crash. **This is the first real crash signature this
+investigation has captured** — full analysis in STATUS.md, don't
+duplicate it here. Short version: same `BatteryService$Led` →
+`ILights.setLightState()` → uncaught exception → `system_server` crash as
+the original 2026-07-25 INCIDENT, plus a newly-found candidate trigger
+(repeated `echo 1 > /sys/class/power_supply/battery/online` from an
+unidentified source, not this repo's code, while the device was on the
+charger).

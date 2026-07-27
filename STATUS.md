@@ -24,7 +24,7 @@ list. Leading hypothesis for the disappearing core speeds
 already flagged below in the Minecraft investigation — worth checking both
 in the same session, may share one root cause.
 
-## To investigate next session: native Minecraft fails to launch while PULSE is running
+## Minecraft/PULSE crash — ROOT CAUSE CONFIRMED (2026-07-27), new trigger candidate found
 
 Observed on-device (2026-07-26): with `pulse-for-aya` active, native Android
 **Minecraft fails to launch**; after a reboot with PULSE off, it launches
@@ -249,6 +249,94 @@ most direct way to actually see what crashes instead of continuing to
 guess from CSV shape; (2) if logcat stays unreachable, next cheapest lever
 is testing with `aggressivePark` explicitly OFF (confirm/deny that
 specific suspect) while everything else stays as-is.
+
+**Update (2026-07-27): `t1.txt`/`t2.txt` diagnostic ran — backgrounding
+survives fine on this `xsud`.** Both files appeared exactly as expected
+(`t2.txt` present ~20s later), so the earlier "maybe `xsud` kills
+everything backgrounded on connection close" theory is **ruled out** —
+whatever's wrong with `ab-logger`'s own `startCrashCapture()` is a bug
+specific to that command, not a fundamental platform limitation. Not yet
+root-caused (still worth revisiting — try the exact `logcat -c; nohup
+logcat ... &` sequence by hand next, piece by piece, since the general
+mechanism now provably works). Lower priority now given what follows.
+
+**Update (2026-07-27): real crash captured via host-side `adb logcat`,
+bypassing `ab-logger`'s broken capture entirely — root cause confirmed.**
+Two files pulled to
+`research/ab-logger/results/minecraft_crash_investigation/round4_2026-07-27_1035_schedutil_logcat_capture/`
+(`minecraft_crash_20260727_103555.log` is the one with the actual crash).
+User-confirmed physical symptom matches every prior repro exactly: game
+freezes, boot logo, device unresponsive until forced restart.
+
+**The crash is confirmed to be the exact same failure as the original
+2026-07-25 INCIDENT, recurring** — not a new or different bug:
+`BatteryService$Led`'s charging-LED animation
+(`BatteryService.java:1276`, `updateLightsLocked`/`startAlphaAnimator`)
+calls `ILights.setLightState()`, the HAL returns
+`ServiceSpecificException` code `-13`, **uncaught**, which crashes
+`system_server` itself (`*** FATAL EXCEPTION IN SYSTEM PROCESS`,
+10:36:39.790). Android kills the crashed `system_server` (`Process:
+Sending signal. PID: 2262 SIG: 9`) and fully reinitializes it (the same
+`PackageWatchdog: ... INACTIVE -> PASSED` cascade for every system package,
+dozens of lines) — this reinit, not a true kernel-level reboot, is what
+presents to the user as the device slowing down / boot-logo-then-
+unresponsive. Four separate `xsud` `Fatal signal 6 (SIGABRT)` crashes
+(the already-documented per-connection-cleanup crash pattern) also fire in
+the ~58s leading up to the `system_server` crash, consistent with the
+existing "sustained `xsu` load contributes to timing pressure on this HAL
+call" theory.
+
+**New finding — a candidate trigger, from OUTSIDE this repo's code**: the
+device was **on the charger throughout this session**
+(`PowerUI: ... plugged: true`, confirmed repeatedly in the log, flipping
+to `plugged: false status unknown: true` only at the exact moment
+`system_server` dies — consistent with that being a symptom of the crash,
+not a separate event). Throughout the session, something **not part of
+`ab-logger` or `pulse-for-aya`** (confirmed by grepping both apps' source
+— no match) repeatedly runs `echo 1 > /sys/class/power_supply/battery/online`
+through the same shared `xsu`/`xsud` channel our apps use — 12 times over
+~64 seconds, in irregular bursts (not a steady poll interval), the last
+one just 6 seconds before the crash. Forcing `battery/online` would make
+`BatteryService` reprocess charging state, which is exactly the code path
+that walks into the crash site (`updateLightsLocked` → the charging-LED
+animation). **Source of this write is unidentified** — not this repo's
+code, so either a pre-existing vendor/ROM daemon or another installed app,
+both sharing the same system-wide `xsu` root channel. Ask the user: any
+known charging-control app or ROM behavior that would explain this?
+
+**This reframes the investigation**: `aggressivePark`, the specific
+governor, and PULSE's write cadence are all still plausible *contributing*
+load, but the actual crash site was never CPU/GPU-frequency code at all —
+it's `BatteryService`'s charging-LED animation, and the newly-found
+`battery/online` writes are a much more direct, specific match for
+"repeatedly re-triggers exactly the code path that crashes" than anything
+considered so far.
+
+**Next session, cheapest and most direct test**: reproduce with the device
+**unplugged from any charger** (battery power only) — if
+`battery/online`-forcing is only happening while charging (very likely,
+given the name), removing the charger should stop it from firing at all,
+which directly tests whether this is the trigger. No code change needed
+for this test. If the crash still happens unplugged, this candidate is
+ruled out and the `chmod`/write-cadence or `aggressivePark` theories move
+back to the top.
+
+**Update (2026-07-27): testing unplugged means no `adb logcat` fallback —
+`ab-logger`'s own `startCrashCapture()` rewritten.** Unplugging the USB
+cable to properly test "not charging" also kills the host-side `adb
+logcat` capture that got round 4's real signature, so `ab-logger`'s own
+in-app capture (which had produced zero output across two full rounds)
+needed fixing first. Root-caused via the `t1.txt`/`t2.txt` proof above:
+the original command backgrounded only its tail statement with `nohup ...
+&` (mirroring nothing that was ever actually tested); rewritten to
+background the whole `logcat -c; logcat -v threadtime >> file` sequence
+inside one `(...)  &` subshell instead, matching the diagnostic's proven
+shape exactly, and dropping `pkill`/`nohup` (neither confirmed present on
+this device, and the diagnostic proved `nohup` isn't needed here anyway).
+See `research/ab-logger/README.md`'s "Crash capture + crash-proof sync"
+section for the full before/after. Builds clean, **not yet verified
+on-device** — the next unplugged repro is the real test, and this time
+it's the only log source available if it doesn't work.
 
 ## ROOT CAUSE FOUND (2026-07-26): the empty-CSV bug is `xsud` segfaulting on long `xsu -c` commands
 

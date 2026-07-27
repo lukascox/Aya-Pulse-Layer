@@ -143,6 +143,23 @@ this session — next real session is the first test of whether the crash
 capture actually survives a reboot and whether `pkill -f`/`nohup` behave
 as expected on this device's toybox shell.
 
+**Update (2026-07-27): `startCrashCapture()` produced zero output across
+two full test rounds — rewritten.** Confirmed via a separate one-shot `xsu`
+diagnostic (`date > t1; (sleep 20; date > t2) &`, see `STATUS.md`) that
+backgrounding itself survives connection close fine on this device's
+`xsud` — so the original command's `pkill`/`nohup` (both unconfirmed on
+this toybox) and backgrounding only the tail statement (rather than the
+whole `logcat -c` + `logcat -v threadtime` sequence) were the suspects.
+Rewritten to mirror the proven-working shape exactly: both statements
+wrapped in one `(...)  &` subshell, `pkill`/`nohup` dropped from the
+start-side command entirely (kept only in `stopCrashCapture()`, where it's
+a plain foreground call with no backgrounding risk). Builds clean, **still
+not verified on-device** — next session's Minecraft repro is the real
+test, and it matters more than usual this time since it's being run
+unplugged from any cable (testing the `battery/online` hypothesis below),
+so `ab-logger`'s own capture is the only way to get a crash log at all —
+no `adb logcat` fallback without a cable attached.
+
 ## Status (2026-07-25)
 
 Builds clean, installs, launches. Smoke-tested on-device: a session was

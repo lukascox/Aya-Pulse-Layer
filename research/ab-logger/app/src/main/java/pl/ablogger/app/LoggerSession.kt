@@ -93,28 +93,41 @@ class LoggerSession(
     /**
      * Starts a detached root `logcat` capture, redirected straight to `/sdcard` so it
      * survives a full device reboot with nothing buffered in this app's process --
-     * unlike the CSV, there's no "final flush" step to miss. One `xsu` call: prefixes
-     * the file with the current boot-reason history (the cheapest way to tell, after
-     * the fact, whether the device actually rebooted mid-session -- every past
-     * INCIDENT in STATUS.md was diagnosed that way), clears the ring buffer so this
-     * session's file doesn't start with unrelated pre-session history, then
-     * backgrounds `logcat` with `&` so this call returns immediately instead of
-     * blocking for the rest of the session.
+     * unlike the CSV, there's no "final flush" step to miss. Writes the current
+     * boot-reason history first (the cheapest way to tell, after the fact, whether
+     * the device actually rebooted mid-session -- every past INCIDENT in STATUS.md
+     * was diagnosed that way) as its own foreground statement, so that line lands on
+     * /sdcard even if the backgrounded part below never gets going -- partial
+     * evidence beats none.
+     *
+     * 2026-07-27 rewrite: the original version (this same idea, but with `pkill`
+     * killing any stale capture first and `nohup cmd &` for the background part)
+     * produced zero output, ever, across two full test rounds. A separate one-shot
+     * diagnostic (`xsu -c "date > t1; (sleep 20; date > t2) &"`, see STATUS.md) proved
+     * backgrounding itself survives connection close fine on this device's `xsud` --
+     * so the bug was specific to that command shape, not the platform. This version
+     * mirrors the PROVEN-working shape exactly: everything backgrounded is wrapped in
+     * one `(...)  &` subshell, and both `pkill` and `nohup` are dropped (neither was
+     * ever confirmed to exist on this device's toybox, and the diagnostic proved
+     * `nohup` isn't even necessary here) -- if this still produces nothing, the next
+     * thing to suspect is `logcat`/`-v threadtime` itself, not the backgrounding.
      */
     fun startCrashCapture() {
         XsuShell.exec(
             "mkdir -p $SDCARD_LOG_DIR; " +
-                "pkill -f 'logcat -v threadtime' 2>/dev/null; " +
                 "echo BOOT_REASON_AT_START=\$(getprop persist.sys.boot.reason.history) > '$logcatSdcardPath'; " +
-                "logcat -c; " +
-                "nohup logcat -v threadtime >> '$logcatSdcardPath' 2>&1 &",
+                "(logcat -c; logcat -v threadtime >> '$logcatSdcardPath' 2>&1) &",
             timeoutSec = 8,
         )
     }
 
-    /** Best-effort, only reached on a clean "Stop log". If a crash/reboot happens
-     * instead, the capture file on /sdcard is already complete up to that moment --
-     * there's nothing to recover here, unlike the CSV path. */
+    /** Best-effort, only reached on a clean "Stop log" -- a plain foreground call, not
+     * backgrounded, so unlike the start-side command there's no risk in trying `pkill`
+     * here even though it's unconfirmed on this device's toybox (`2>/dev/null` eats a
+     * "not found" harmlessly either way). If a crash/reboot happens instead of a clean
+     * stop, the capture file on /sdcard is already complete up to that moment --
+     * nothing to recover here, unlike the CSV path; a leftover capture process just
+     * keeps appending to its own old (differently-named) file until reboot. */
     fun stopCrashCapture() {
         XsuShell.exec("pkill -f 'logcat -v threadtime' 2>/dev/null", timeoutSec = 4)
     }
