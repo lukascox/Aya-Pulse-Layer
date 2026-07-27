@@ -89,8 +89,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         verifyAyaAidlBindOnDebugBuild()
-        verifyDataLocalTmpAccessOnDebugBuild()
-        verifyFilesDirAccessOnDebugBuild()
         enableEdgeToEdge()
         maybeRequestQuickSettingsTileOnFirstRun()
         maybePromptBatteryExemption()
@@ -669,65 +667,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    /**
-     * Probe (2026-07-27, evening): can this app's own process -- a different SELinux domain/UID
-     * than the root daemon or an `adb shell` session -- actually open files somewhere a
-     * Kotlin<->daemon FIFO bridge could live? `research/pulse-for-aya/scripts/fifo-daemon-test.sh`
-     * already proved the shell-side FIFO plumbing works under `/data/local/tmp` -- but this app's
-     * own access there came back `EACCES` (confirmed on-device, 2026-07-27). `filesDir` (this
-     * app's private internal storage) is guaranteed reachable from Kotlin's side by Android's own
-     * design -- no need to test that half -- so this only needs to log the exact absolute path,
-     * which then gets checked from the OTHER side (the root daemon, manually via `adb`/`xsu`) to
-     * see whether root can also reach into it. Fully safe/reversible, same pattern as
-     * [verifyDataLocalTmpAccessOnDebugBuild] below -- runs automatically on every debug build
-     * launch, no marker gate needed.
-     */
-    private fun verifyFilesDirAccessOnDebugBuild() {
-        val debuggable = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
-        if (!debuggable) return
-        Thread {
-            val probe = java.io.File(filesDir, "apl_probe.txt")
-            val msg = try {
-                probe.writeText("pulse-probe")
-                val readBack = probe.readText()
-                probe.delete()
-                "OK path=${filesDir.absolutePath} wrote+read+deleted, content=$readBack"
-            } catch (e: Exception) {
-                "FAILED path=${filesDir.absolutePath}: ${e.javaClass.simpleName}: ${e.message}"
-            }
-            Log.d("FilesDirProbe", msg)
-            runOnUiThread { Toast.makeText(this, "filesDir: $msg", Toast.LENGTH_LONG).show() }
-        }.start()
-    }
-
-    /**
-     * Probe (2026-07-27, evening): can this app's own process -- a different SELinux domain/UID
-     * than the root daemon or an `adb shell` session -- actually open files under
-     * `/data/local/tmp`? `research/pulse-for-aya/scripts/fifo-daemon-test.sh` already proved the
-     * shell-side FIFO plumbing works there; this checks the OTHER end, the one open question
-     * before building the real Kotlin<->daemon bridge on named pipes. Fully safe/reversible --
-     * creates, reads, and deletes one tiny plain file, never touches device state, so (like
-     * [verifyAyaAidlBindOnDebugBuild]) it's safe to run automatically on every debug build
-     * launch, no marker gate needed. Toasts + logs the result (tag `DataLocalTmpProbe`).
-     */
-    private fun verifyDataLocalTmpAccessOnDebugBuild() {
-        val debuggable = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
-        if (!debuggable) return
-        Thread {
-            val probe = java.io.File("/data/local/tmp/apl_probe.txt")
-            val msg = try {
-                probe.writeText("pulse-probe")
-                val readBack = probe.readText()
-                probe.delete()
-                "OK wrote+read+deleted, content=$readBack"
-            } catch (e: Exception) {
-                "FAILED: ${e.javaClass.simpleName}: ${e.message}"
-            }
-            Log.d("DataLocalTmpProbe", msg)
-            runOnUiThread { Toast.makeText(this, "data/local/tmp: $msg", Toast.LENGTH_LONG).show() }
-        }.start()
     }
 
     /**
