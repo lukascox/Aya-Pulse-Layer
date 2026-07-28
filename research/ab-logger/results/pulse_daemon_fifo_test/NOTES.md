@@ -60,3 +60,7 @@ see STATUS.md's entry for the honest state and the concrete gap found (no
 daemon-vs-fallback logging on the READ side, unlike writes, so we can't
 yet tell whether telemetry reads were quietly falling back to `xsu`
 throughout this session).
+
+## round6_2026-07-28_2019_first_clean_session_post_selfkill_fix/
+
+First clean session after fixing `PulseDaemon.start()`'s self-kill `pkill` bug (see STATUS.md for the 2026-07-28 evening entries). `pulse_20260728_201948.log` spans 20:19:49–20:24:03 (~4m 14s) with real regulation throughout: 65 cap writes via daemon vs 3 xsu fallback, 60 telemetry reads via daemon vs 0 fallback, 9 TRIM/2 RAISE/12 HOLD actions. `cap_poll.log` confirms real sysfs movement on all five monitored fields (`p0_max`, `p2_max`, `p5_max`, `p7_max`, `gpu_max_pwrlevel`). `dmesg.log` zero crash-keyword hits (trimmed from 2974 to 68 lines). `logcat.log` 14 "hits" all pre-session (nvkeeper/qcrosvm crashes at 19:58, before 20:19:49 start — trimmed from 2640 to 461 lines, session-window only). Session end annotated "NO" only because user manually exited Minecraft (no in-app STOP sent), not a crash — confirms the daemon FIFO path is stable under real load.

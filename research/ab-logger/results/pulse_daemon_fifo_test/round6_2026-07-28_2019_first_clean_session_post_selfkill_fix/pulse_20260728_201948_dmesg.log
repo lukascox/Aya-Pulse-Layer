@@ -1,0 +1,68 @@
+# TRIMMED -- kernel ring-buffer routine noise, zero crash-keyword hits.
+# Original: 2974 lines, 0 crash-keyword hits (SIGSEGV/SIGABRT/panic/etc. — see SUMMARY.md),
+# routine kernel noise with nothing session-relevant found. Kept: first 30 lines,
+# last 30 lines as a reference sample.
+# ---
+[  855.388382] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 753 (/system/bin/hwservicemanager)
+[  855.809026] type=1400 audit(1785262331.600:36977): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:hal_power_default:s0 tclass=file permissive=1
+[  855.809111] type=1400 audit(1785262331.600:36978): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_qspmsvc:s0 tclass=file permissive=1
+[  855.810473] type=1400 audit(1785262331.600:36979): avc:  denied  { open } for  comm="top" path="/proc/1353/stat" dev="proc" ino=54955 scontext=u:r:system_app:s0 tcontext=u:r:hal_power_default:s0 tclass=file permissive=1
+[  855.811934] type=1400 audit(1785262331.600:36980): avc:  denied  { open } for  comm="top" path="/proc/3401/stat" dev="proc" ino=105627 scontext=u:r:system_app:s0 tcontext=u:r:vendor_qspmsvc:s0 tclass=file permissive=1
+[  856.063654] audit: audit_lost=34278 audit_rate_limit=5 audit_backlog_limit=64
+[  856.063662] audit: rate limit exceeded
+[  856.063786] type=1400 audit(1785262331.852:36981): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_identity_qti:s0 tclass=file permissive=1
+[  856.390199] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 753 (/system/bin/hwservicemanager)
+[  857.392587] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 753 (/system/bin/hwservicemanager)
+[  857.445770] type=1400 audit(1785262333.236:36991): avc:  denied  { read } for  comm="cat" name="max_pwrlevel" dev="sysfs" ino=126320 scontext=u:r:xsud:s0 tcontext=u:object_r:vendor_sysfs_kgsl:s0 tclass=file permissive=1
+[  857.446035] type=1400 audit(1785262333.236:36992): avc:  denied  { open } for  comm="cat" path="/sys/devices/platform/soc/3d00000.qcom,kgsl-3d0/kgsl/kgsl-3d0/max_pwrlevel" dev="sysfs" ino=126320 scontext=u:r:xsud:s0 tcontext=u:object_r:vendor_sysfs_kgsl:s0 tclass=file permissive=1
+[  857.828576] type=1400 audit(1785262333.620:36993): avc:  denied  { open } for  comm="DefaultDispatch" path="/proc/stat" dev="proc" ino=4026532011 scontext=u:r:untrusted_app:s0:c183,c256,c512,c768 tcontext=u:object_r:proc_stat:s0 tclass=file permissive=1 app=com.kei.pulse
+[  857.828786] type=1400 audit(1785262333.620:36994): avc:  denied  { getattr } for  comm="DefaultDispatch" path="/proc/stat" dev="proc" ino=4026532011 scontext=u:r:untrusted_app:s0:c183,c256,c512,c768 tcontext=u:object_r:proc_stat:s0 tclass=file permissive=1 app=com.kei.pulse
+[  857.871467] audit: audit_lost=34287 audit_rate_limit=5 audit_backlog_limit=64
+[  857.871473] audit: rate limit exceeded
+[  857.871843] type=1400 audit(1785262333.660:36995): avc:  denied  { read } for  comm="cat" name="gpuclk" dev="sysfs" ino=126313 scontext=u:r:xsud:s0 tcontext=u:object_r:vendor_sysfs_kgsl_gpuclk:s0 tclass=file permissive=1
+[  858.394054] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 753 (/system/bin/hwservicemanager)
+[  859.054552] audit: audit_lost=34298 audit_rate_limit=5 audit_backlog_limit=64
+[  859.054560] audit: rate limit exceeded
+[  859.394744] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 753 (/system/bin/hwservicemanager)
+[  860.064054] audit: audit_lost=34319 audit_rate_limit=5 audit_backlog_limit=64
+[  860.064062] audit: rate limit exceeded
+[  860.397340] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 753 (/system/bin/hwservicemanager)
+[  861.399172] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 753 (/system/bin/hwservicemanager)
+[  862.056599] type=1400 audit(1785262337.844:37052): avc:  denied  { getattr } for  comm="top" path="/proc/1488" dev="proc" ino=8898 scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_sensorscalibrate_qti_default:s0 tclass=dir permissive=1
+[  862.056980] type=1400 audit(1785262337.844:37053): avc:  denied  { search } for  comm="top" name="1488" dev="proc" ino=8898 scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_sensorscalibrate_qti_default:s0 tclass=dir permissive=1
+[  862.057095] type=1400 audit(1785262337.844:37054): avc:  denied  { getattr } for  comm="top" path="/proc/1808" dev="proc" ino=45639 scontext=u:r:system_app:s0 tcontext=u:r:vendor_tcmd:s0 tclass=dir permissive=1
+[  862.057183] type=1400 audit(1785262337.844:37055): avc:  denied  { search } for  comm="top" name="1808" dev="proc" ino=45639 scontext=u:r:system_app:s0 tcontext=u:r:vendor_tcmd:s0 tclass=dir permissive=1
+[  862.401555] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 753 (/system/bin/hwservicemanager)
+
+# ... 2914 lines of routine audit denials, control messages, kworker messages elided ...
+
+[ 1560.987120] audit: audit_lost=57041 audit_rate_limit=5 audit_backlog_limit=64
+[ 1560.987127] audit: rate limit exceeded
+[ 1561.097065] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 753 (/system/bin/hwservicemanager)
+[ 1562.097697] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 753 (/system/bin/hwservicemanager)
+[ 1562.764721] [kworke][0x702ac23d5][18:23:58.558592] kiwi_v2: [9311:I:PMO] pmo_core_psoc_send_host_wakeup_ind_to_fw: Host wakeup indication sent to fw
+[ 1562.774216] [soft_i][0x702aeebef][18:23:58.568087] kiwi_v2: [0:I:WMA] WLAN triggered wakeup: BPF_ALLOW (39), vdev: 0 (STA)
+[ 1562.774365] [soft_i][0x702aef735][18:23:58.568237] kiwi_v2: [0:I:WMA] wma_wake_event_packet: Wake event packet:
+[ 1563.100570] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 753 (/system/bin/hwservicemanager)
+[ 1563.393404] [kworke][0x7036452d9][18:23:59.187273] kiwi_v2: [9311:I:PMO] pmo_core_enable_wow_in_fw: drv wow is enabled
+[ 1564.102594] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 753 (/system/bin/hwservicemanager)
+[ 1564.282069] audit: audit_lost=57073 audit_rate_limit=5 audit_backlog_limit=64
+[ 1564.282074] audit: rate limit exceeded
+[ 1565.103263] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 753 (/system/bin/hwservicemanager)
+[ 1565.631006] type=1400 audit(1785263041.420:61926): avc:  denied  { search } for  comm="cat" name="battery" dev="sysfs" ino=141983 scontext=u:r:xsud:s0 tcontext=u:object_r:vendor_sysfs_battery_supply:s0 tclass=dir permissive=1
+[ 1565.906746] type=1400 audit(1785263041.696:61927): avc:  denied  { search } for  comm="sh" name="/" dev="fuse" ino=131 scontext=u:r:xsud:s0 tcontext=u:object_r:fuse:s0 tclass=dir permissive=1
+[ 1566.105803] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 753 (/system/bin/hwservicemanager)
+[ 1566.276339] type=1400 audit(1785263042.064:61928): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_keymint_spu_qti:s0 tclass=file permissive=1
+[ 1566.276688] type=1400 audit(1785263042.068:61929): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_trusteduilistener:s0 tclass=file permissive=1
+[ 1566.277313] type=1400 audit(1785263042.068:61930): avc:  denied  { open } for  comm="top" path="/proc/1047/stat" dev="proc" ino=54766 scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_keymint_spu_qti:s0 tclass=file permissive=1
+[ 1566.278617] audit: audit_lost=57082 audit_rate_limit=5 audit_backlog_limit=64
+[ 1566.278620] audit: rate limit exceeded
+[ 1567.105975] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 753 (/system/bin/hwservicemanager)
+[ 1567.262884] type=1400 audit(1785263043.052:61932): avc:  denied  { read } for  comm="Performance-Tim" name="pwm1" dev="sysfs" ino=105842 scontext=u:r:system_app:s0 tcontext=u:object_r:sysfs:s0 tclass=file permissive=1
+[ 1567.263301] type=1400 audit(1785263043.052:61933): avc:  denied  { open } for  comm="Performance-Tim" path="/sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1" dev="sysfs" ino=105842 scontext=u:r:system_app:s0 tcontext=u:object_r:sysfs:s0 tclass=file permissive=1
+[ 1567.263416] type=1400 audit(1785263043.052:61934): avc:  denied  { getattr } for  comm="Performance-Tim" path="/sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1" dev="sysfs" ino=105842 scontext=u:r:system_app:s0 tcontext=u:object_r:sysfs:s0 tclass=file permissive=1
+[ 1567.276458] type=1400 audit(1785263043.068:61935): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vndservicemanager:s0 tclass=file permissive=1
+[ 1567.276751] type=1400 audit(1785263043.068:61936): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:hal_vibrator_default:s0 tclass=file permissive=1
+[ 1567.531581] audit: audit_lost=57087 audit_rate_limit=5 audit_backlog_limit=64
+[ 1567.531586] audit: rate limit exceeded
+[ 1568.107874] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 753 (/system/bin/hwservicemanager)
