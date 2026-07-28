@@ -4,7 +4,10 @@
 Research repo for AYANEO Pocket FIT performance controls (root, AIDL, sysfs).
 Deliverable is a glue patch on the existing `pulse` app
 (`research/pulse-for-aya/`), not a rewrite.
-`STATUS.md` is the single living state doc — read it first, before anything else.
+`STATUS.md` is the single living state doc (open/active threads only) — read
+it first, before anything else. Resolved threads move to `STATUS_ARCHIVE.md`
+(same "living doc, update in place" rule) — read only if you need history
+beyond the pointer left in `STATUS.md`.
 
 ## Session scope (token discipline)
 - Work inside ONE `research/<project>/` at a time. Never scan sibling projects.
@@ -15,6 +18,14 @@ Deliverable is a glue patch on the existing `pulse` app
 - For any exploration beyond the current project, use the `scout` subagent.
 - For mechanical, fully-specified work (boilerplate, renames, test stubs,
   docstrings, format conversions), delegate to the `grunt` subagent.
+- After code changes are finalized (diff + commit message decided), delegate
+  the build-verify-commit-push cycle (`./gradlew compileDebugKotlin
+  testDebugUnitTest lintDebug`, then `git add/commit/push`) to the `grunt`
+  subagent — mechanical once the change itself is decided; keeps gradle/git
+  output out of the main session's context.
+- For grepping/trimming/reorganizing large raw log files once the exact
+  pattern or script is already decided, delegate execution to `grunt` too —
+  report back only the extracted facts, not the raw file contents.
 
 ## Commands
 No root-level build (`app/` is an unconfigured stub; no root `gradlew`).
