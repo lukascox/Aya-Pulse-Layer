@@ -135,14 +135,27 @@ class PulseDaemon(context: Context) {
         val logFile = File(logPath)
         val mtimeBeforeLaunch = if (logFile.exists()) logFile.lastModified() else -1L
         val launchResult = RootSupport.runRootCommandResult(
-            // Kill any orphaned daemon (or its detached logcat filter) from a previous session first -- a
-            // hard process kill, e.g. OOM, leaves one reading the same fixed FIFO_IN path forever
-            // (STATUS.md, 2026-07-28: once this daemon's rm -f + mkfifo recreates that path, an orphan's
-            // next read loop iteration re-opens the new inode too and silently competes for commands with
-            // the daemon Kotlin thinks it's talking to) -- and an orphaned logcat filter would otherwise
-            // pile up one more copy every restart, each writing its own now-abandoned file.
-            "pkill -f 'pulse_daemon.sh' 2>/dev/null; " +
-                "pkill -f 'logcat -v threadtime -s AndroidRuntime' 2>/dev/null; " +
+            // Kill any orphaned daemon from a previous session first -- a hard process kill (e.g. OOM) leaves
+            // one reading the same fixed FIFO_IN path forever (STATUS.md, 2026-07-28: once this daemon's
+            // rm -f + mkfifo recreates that path, an orphan's next read loop iteration re-opens the new inode
+            // too and silently competes for commands with the daemon Kotlin thinks it's talking to).
+            //
+            // STATUS.md, 2026-07-28 (SELF-KILL BUG, found + fixed): this used to be plain `pkill -f
+            // 'pulse_daemon.sh'` -- but `pkill -f` matches against the FULL command line of every process,
+            // and THIS ENTIRE launch command is itself passed as one `xsu -c "<this string>"` argument, which
+            // necessarily contains the literal text "pulse_daemon.sh" (to invoke the script by path) --
+            // meaning the invoking shell's OWN cmdline matched the pattern, and `pkill -f` killed its own
+            // parent (this exact shell) via SIGTERM before ever reaching `mkdir`/the `sh ... &` launch/the
+            // final `echo`. 100% reproducible (confirmed manually: `Terminated`, exit 143, on every single
+            // run), not a flaky race -- explains the whole `start()` launch logging showing "no exception,
+            // but unexpected stdout=null" every time since this pkill line was added. Fixed by explicitly
+            // excluding the current shell's own PID (`$$`) via `pgrep` + a filtered `kill`, instead of the
+            // self-matching `pkill -f`. Dropped the equivalent orphaned-logcat cleanup here (same self-kill
+            // trap would apply to it too) -- an orphaned logcat filter is harmless (writes to one abandoned
+            // file, no FIFO contention), not worth the extra ~170 chars this close to the ~800-char safe
+            // margin (`research/xsu-capability-probe/FINDINGS.md`'s bisection).
+            "mypid=\$\$; for p in \$(pgrep -f 'pulse_daemon.sh' 2>/dev/null); do " +
+                "[ \"\$p\" = \"\$mypid\" ] || kill \"\$p\" 2>/dev/null; done; " +
                 "mkdir -p /sdcard/apl_pulse_logs; " +
                 "sh '${scriptFile.absolutePath}' '$fifoInPath' '$logPath' '$sdcardLogPath' '$capPollLogPath' " +
                 "'$label' '$fifoOutPath' '$dmesgLogPath' '$logcatLogPath' > /dev/null 2>&1 < /dev/null & " +
