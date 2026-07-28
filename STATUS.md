@@ -6,6 +6,129 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## FIXED (2026-07-28, late evening): PulseDaemon.start() was self-killing on every launch — root cause of tonight's "empty /sdcard/apl_pulse_logs/" mystery
+
+Found and fixed the actual reason the daemon never started tonight (separate
+from the `com.qti.diagservices` phantom-killer thread below, which turned out
+to be real but NOT the cause of this specific symptom). Full trail:
+
+1. Added launch-outcome logging to `start()` (was completely silent before) —
+   showed `FAILED: no exception, but unexpected stdout=null` on every attempt,
+   100% reproducible, both before and after an app-process restart (ruling out
+   flakiness/system-stress as the cause).
+2. Added an independent local-file confirmation (daemon script overwrites its
+   own private-`filesDir` log as its first action) — also failed every time,
+   ruling out "xsud just drops the launch command's stdout" (a real,
+   documented risk, `xsu-capability-probe/FINDINGS.md`) as the explanation —
+   the script itself never ran, not just an output-capture artifact.
+3. Manually reproduced the exact launch command via interactive `xsu -c` —
+   got `Terminated` (exit 143 = SIGTERM), instantly, 100% reproducible.
+4. **Root cause**: `start()`'s orphan-cleanup used `pkill -f 'pulse_daemon.sh'`
+   — `pkill -f` matches every process's FULL command line, and the ENTIRE
+   launch command (including this pkill call itself) is passed as ONE
+   `xsu -c "<string>"` argument, which necessarily contains the literal text
+   "pulse_daemon.sh" (to invoke the script by path). The invoking shell's own
+   cmdline matched the pattern — `pkill -f` was killing its own parent (the
+   shell currently running this exact command) via SIGTERM, before ever
+   reaching `mkdir`/the `sh ... &` launch/the final echo marker. This pkill
+   line was added in `c22f2e6` (the "correctness fixes" commit) — round1-5
+   (this morning, working) predate it entirely, matching the regression
+   window exactly.
+
+**Fixed**: `pgrep -f 'pulse_daemon.sh'` + explicit exclusion of the current
+shell's own PID (`$$`) before killing, instead of self-matching `pkill -f`.
+Also dropped the equivalent orphaned-logcat `pkill` (same trap; an orphaned
+logcat filter is harmless to leave running, not worth the extra ~170 chars
+this close to the ~800-char `xsu -c` safe margin).
+
+Verified: `compileDebugKotlin testDebugUnitTest lintDebug` clean, fresh APK
+built (`BUILD_TIMESTAMP` 2026-07-28 20:18:16). **Not yet re-tested on-device
+after this specific fix** — next session's first job: confirm `start()` now
+logs `succeeded` and `/sdcard/apl_pulse_logs/` actually gets files.
+
+Side lessons worth keeping in mind for future shell-command work in this repo:
+- **`pkill -f`/`grep -f`-style full-command-line matching is dangerous inside
+  an `xsu -c "<the whole command>"` invocation** — the pattern almost always
+  also matches the invoking shell's own cmdline. Prefer `pgrep` + explicit
+  `$$`-exclusion whenever the kill target's name might appear in the launch
+  command's own text.
+- This device's `grep`/`pgrep` (toybox, not GNU) doesn't support `\|` as
+  alternation in a pattern — confirmed earlier tonight, cost real time before
+  being diagnosed (see the Phantom Process Killer entry below for the trail).
+
+## CONFIRMED (2026-07-28, evening): `com.qti.diagservices` ANR-loop drives Android's Phantom Process Killer to reap our `xsu` children, ~every 20s
+
+Testing the FIFO-migration build tonight: toggled AutoTune Games on, Minecraft
+profile set, game launched — `/sdcard/apl_pulse_logs/` stayed completely empty,
+no root `pulse_daemon.sh` process ever showed in `ps -A`. Diagnostic trail (all
+read-only, via the user's own interactive `adb shell`):
+
+- `xsu -c "id"` from the interactive shell works fine (`uid=0(root)`) — root
+  itself isn't broken.
+- `logcat -d | grep -i "a\|b\|c"` (OR-style pattern) returned nothing for
+  everything, which briefly looked like "no logcat at all" — turned out to be
+  a **grep gotcha, not a real absence**: this device's `grep` doesn't support
+  `\|` as alternation (toybox/busybox, not GNU). Single-term / `grep -E`
+  searches worked fine and had plenty of output (`logcat -d -b all` = 21045
+  lines). Worth remembering next session — don't trust an empty combined
+  `\|` grep on this device again.
+- Real `logcat -d` (correct syntax) showed `com.kei.pulse` alive and active
+  (up to 46% CPU), and several `avc: denied` lines for the app's own process
+  trying to reach `xsu`/the `xsud` socket — but every one has `permissive=1`,
+  meaning SELinux logged but did NOT enforce the denial. Not the blocker.
+- The real signal: `ActivityManager: Process PhantomProcessRecord
+  {...:4361:com.kei.pulse/u0a183} died` — Android's Phantom Process Killer
+  (Android 12+, reaps untracked child processes spawned via raw
+  `ProcessBuilder`/`Runtime.exec`, i.e. exactly how `RootExec`/`xsu` spawns
+  the daemon) killed a child of PULSE's own process, in the same window the
+  log directory stayed empty.
+- **This isn't new, just never flagged**: the exact same signature —
+  `PhantomProcessRecord {...xsu/u0a183} died`, six times, every ~20-21s on
+  the clock (10:34:54 → 10:36:35) — is already sitting in yesterday's
+  `research/ab-logger/results/minecraft_crash_investigation/round4_2026-07-27_1035_schedutil_logcat_capture/minecraft_crash_20260727_103555.log`,
+  each one immediately following an `ANR in com.qti.diagservices` (a vendor
+  Qualcomm diagnostics service, ANRing on a near-metronomic ~20s cycle,
+  clearly a chronic device condition unrelated to anything PULSE does).
+
+**Why this matters**: everything chased today (command length, call
+frequency, stale scripts) assumed the crash trigger was something *inside*
+PULSE's own root-shell usage. This raises a real alternative: a chronic,
+device-wide `com.qti.diagservices` ANR loop may be triggering Android's own
+process-management to reap "phantom" (untracked) child processes system-wide
+— including ours — as collateral, regardless of how carefully our own xsu
+calls are shaped. Would explain why fixes kept "working" briefly then the
+crash recurred anyway: the actual trigger was never fully in our control to
+begin with.
+
+**Follow-up capture confirmed it** — full ~10.5min `logcat -d` pull
+(`research/ab-logger/results/phantom_process_killer_investigation/
+round1_2026-07-28_1811_diagservices_anr_correlation/`, `NOTES.md` has the
+full writeup):
+
+- `com.qti.diagservices` (a persistent, freezer-exempt vendor service) ANRs,
+  gets killed, and auto-restarts in an infinite loop, **exactly every ~20s,
+  continuously for the whole session** (32 cycles, 18:11:12 → 18:21:35) —
+  fully independent of PULSE/AutoTDP/Minecraft; a pre-existing, chronic
+  device condition. Same signature already sat unnoticed in yesterday's
+  round4 crash logs (`minecraft_crash_investigation/round4.../
+  minecraft_crash_20260727_103555.log`, 6 occurrences, same cadence).
+- Every single Phantom Process Killer kill of a `com.kei.pulse`/`xsu` child
+  (21 kills total in this window; some sweeps instead/also caught
+  `com.ayaneo.gamewindow`'s periodic `top` spawns — confirms this sweep
+  isn't PULSE-specific, it hits every app's untracked children) lines up
+  **within <30ms** of one of `com.qti.diagservices`'s ANR timestamps —
+  checked by hand across the whole set, not a loose pattern-match. Same
+  ActivityManager cleanup pass triggers both.
+
+**Still open**: (a) whether the specific PID reaped is ever the long-lived
+`pulse_daemon.sh` shell itself, vs. only the short-lived `xsu` spawner
+(`phantom.log`'s process names show `xsu`/`com.kei.pulse`, never
+`sh`/`pulse_daemon.sh` by name — inconclusive either way), (b) whether
+disabling `com.qti.diagservices` (`pm disable-user`, reversible) stops the
+~20s sweep entirely — the cleanest test of whether this is really *the*
+trigger behind the whole day's (and yesterday's) crash investigation, or
+just an additional contributing factor.
+
 ## Added (2026-07-28): correlation logging — dmesg, filtered logcat, battery/online
 
 Gap identified: every crash so far has only ever shown "the log goes silent" —
