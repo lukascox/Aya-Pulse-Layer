@@ -885,6 +885,10 @@ class ForegroundAppMonitorService : Service() {
         if (msg != lastFanDecisionLog) {
             lastFanDecisionLog = msg
             android.util.Log.d("PulseFan", msg)
+            // STATUS.md, 2026-07-28: used to go to logcat ONLY -- fan activity was invisible in the pulled
+            // `/sdcard/apl_pulse_logs/pulse_*.log` files, so past sessions couldn't be checked for whether
+            // the (since-confirmed-dead-on-this-device) Custom fan loop was ever actually engaged.
+            pulseDaemon.log("PulseFan: $msg")
         }
     }
 
@@ -976,7 +980,7 @@ class ForegroundAppMonitorService : Service() {
             customFanSupported = isCustomFanSupported(),
             releaseLatched = fanReleasedToVendor,
             releaseMode = DeviceProfiles.forSoc(container.repository.socModel()).fanReleaseMode,
-            readLiveMode = { fanController.readMode() },
+            readLiveMode = { fanController.readMode(pulseDaemon) },
         )
         fanLog("arbiter=$action auto=$autoActive bound=$boundFan managed=${settings.managedFanMode} latched=$fanReleasedToVendor")
         when (action) {

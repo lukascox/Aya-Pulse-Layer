@@ -132,6 +132,15 @@ while true; do
       done
       echo "$out" > "$FIFO_OUT"
       ;;
+    "GETSETTING "*)
+      # Same one-round-trip idea as READ, but for a `Settings.System` key instead of a sysfs path --
+      # FanController.readMode()'s `settings get system fan_mode` is the first caller (STATUS.md,
+      # 2026-07-28: found firing every ~1s from the live discrete-fan-mode arbiter tick, never migrated
+      # off raw xsu when cap-writes/telemetry-reads were). Single key only, no `|`-batching like READ --
+      # add more verbs here the same way if another Settings-key reader shows up later.
+      key=${line#GETSETTING }
+      settings get system "$key" > "$FIFO_OUT" 2>/dev/null
+      ;;
     *)
       set -- $line
       path=$1

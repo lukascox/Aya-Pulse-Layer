@@ -1,5 +1,6 @@
 package com.kei.pulse.data
 
+import com.kei.pulse.root.PulseDaemon
 import com.kei.pulse.root.RootSupport
 
 /**
@@ -22,8 +23,19 @@ import com.kei.pulse.root.RootSupport
  */
 class FanController {
 
-    fun readMode(): Int? =
-        RootSupport.runRootCommand("settings get system fan_mode")?.trim()?.toIntOrNull()
+    /**
+     * `pulseDaemon` optional and defaults to `null` (raw `xsu`, the original behavior) so every existing
+     * call site keeps working unchanged. STATUS.md, 2026-07-28: this is the one live, unmigrated fan-related
+     * `xsu` call found on this device -- [ensureManualMode]/[setMode]/[customFanAvailable] are all stubbed
+     * no-ops here (class doc), and the 120ms PWM-duty reassert loop never runs since [customFanAvailable]
+     * is always false -- but the discrete `fan_mode` key IS read live, roughly once a second, from the fan
+     * arbiter's tick. Routes through the daemon's `GETSETTING` (zero `xsu` calls) when available, falling
+     * back to the original raw `xsu` read otherwise -- same all-or-nothing-per-call contract as
+     * [PulseDaemon.readBatch]'s callers.
+     */
+    fun readMode(pulseDaemon: PulseDaemon? = null): Int? =
+        (pulseDaemon?.readSetting("fan_mode") ?: RootSupport.runRootCommand("settings get system fan_mode"))
+            ?.trim()?.toIntOrNull()
 
     /** Stubbed no-op (see class doc) -- never touches `fan_mode` or the PWM duty node on this device. */
     fun ensureManualMode(reassertDuty: Int? = null): Boolean = false

@@ -106,6 +106,14 @@ class PulseDaemon(context: Context) {
      * doc for why a stale, protocol-mismatched script left over from an earlier `adb install -r` was a real,
      * silent-failure risk) -- and launches it via one `xsu` call. Safe to call repeatedly -- a no-op while
      * already running.
+     *
+     * Logs the launch outcome (STATUS.md, 2026-07-28: `start()` used to log NOTHING -- the one genuine blind
+     * spot left after a session where `/sdcard/apl_pulse_logs/` stayed completely empty and there was no way
+     * to tell "the launching `xsu` call itself failed" apart from "it launched fine but the script died a
+     * moment later"). The launch command appends `echo PULSE_DAEMON_LAUNCHED` -- that only prints once
+     * `pkill`/`mkdir`/the backgrounding `sh ... &` have all been accepted by the outer shell, so seeing it
+     * back confirms the OUTER `xsu` call succeeded; its absence means `xsu`/`RootExec` itself failed or timed
+     * out, before the daemon script ever got a chance to run.
      */
     fun start() {
         if (running) return
@@ -113,7 +121,7 @@ class PulseDaemon(context: Context) {
         scriptFile.writeBytes(scriptBytes)
         val scriptCrc = java.util.zip.CRC32().apply { update(scriptBytes) }.value
         val label = "$versionLabel script_crc32=${scriptCrc.toString(16)}"
-        RootSupport.runRootCommand(
+        val launchResult = RootSupport.runRootCommand(
             // Kill any orphaned daemon (or its detached logcat filter) from a previous session first -- a
             // hard process kill, e.g. OOM, leaves one reading the same fixed FIFO_IN path forever
             // (STATUS.md, 2026-07-28: once this daemon's rm -f + mkfifo recreates that path, an orphan's
@@ -124,7 +132,16 @@ class PulseDaemon(context: Context) {
                 "pkill -f 'logcat -v threadtime -s AndroidRuntime' 2>/dev/null; " +
                 "mkdir -p /sdcard/apl_pulse_logs; " +
                 "sh '${scriptFile.absolutePath}' '$fifoInPath' '$logPath' '$sdcardLogPath' '$capPollLogPath' " +
-                "'$label' '$fifoOutPath' '$dmesgLogPath' '$logcatLogPath' > /dev/null 2>&1 < /dev/null &",
+                "'$label' '$fifoOutPath' '$dmesgLogPath' '$logcatLogPath' > /dev/null 2>&1 < /dev/null & " +
+                "echo PULSE_DAEMON_LAUNCHED",
+        )
+        android.util.Log.d(
+            "PulseDaemon",
+            if (launchResult == "PULSE_DAEMON_LAUNCHED") {
+                "start() launch xsu call succeeded, $label"
+            } else {
+                "start() launch xsu call FAILED or timed out (result=$launchResult), $label"
+            },
         )
         running = true
     }
@@ -222,6 +239,34 @@ class PulseDaemon(context: Context) {
         android.util.Log.d("PulseDaemon", msg)
         log("PulseDaemon: $msg")
         return values
+    }
+
+    /**
+     * Reads one `Settings.System` key (e.g. `fan_mode`) through the daemon -- `settings get system <key>`,
+     * zero `xsu` calls -- instead of a fresh `xsu` invocation per read. First caller:
+     * `FanController.readMode()`, found (STATUS.md, 2026-07-28) firing every ~1s from the live discrete
+     * fan-mode arbiter tick, the one fan/RGB code path that turned out NOT to be already dead/self-gated on
+     * this device (unlike the 120ms PWM-duty loop and RGB's `available()` probe, both confirmed inert here).
+     * Same bounded-timeout-on-a-throwaway-thread pattern as [readBatch] -- see [setCap]'s doc for why a dead
+     * daemon must never block the caller. Returns `null` (never throws) on a dead/not-yet-started daemon or a
+     * timeout, so callers fall back to a direct `xsu` read exactly like [readBatch]'s callers do.
+     */
+    fun readSetting(key: String): String? {
+        if (!running) return null
+        val result = java.util.concurrent.atomic.AtomicReference<String?>(null)
+        val worker = Thread {
+            try {
+                FileOutputStream(fifoInPath).use { it.write(("GETSETTING $key\n").toByteArray()) }
+                val line = File(fifoOutPath).inputStream().bufferedReader().use { it.readLine() }
+                if (line != null) result.set(line)
+            } catch (e: Exception) {
+                // leave result null
+            }
+        }
+        worker.isDaemon = true
+        worker.start()
+        worker.join(READ_BATCH_TIMEOUT_MS)
+        return result.get()
     }
 
     /** Tells the daemon to exit, clean up its FIFO, and stop its background cap-poll loop. Safe to call even if
