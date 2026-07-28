@@ -72,6 +72,12 @@ while true; do
     STOP)
       [ -n "$POLL_PID" ] && kill "$POLL_PID" 2>/dev/null
       echo "stop $(date +%s)" >> "$LOG"
+      # Marks a CLEAN stop in both pulled files -- a log that just cuts off with no matching "session
+      # end" line means the process was killed/crashed instead of stopped normally (STATUS.md,
+      # 2026-07-28: needed this distinction after a suspected regression where the app's own log
+      # couldn't tell "PULSE stopped itself" apart from "something crashed it").
+      [ -n "$SDCARD_LOG" ] && echo "$(date '+%Y-%m-%d %H:%M:%S') === pulse_daemon session end (clean stop) ===" >> "$SDCARD_LOG"
+      [ -n "$CAP_POLL_LOG" ] && echo "$(date '+%Y-%m-%d %H:%M:%S') === cap_poll session end (clean stop) ===" >> "$CAP_POLL_LOG"
       break
       ;;
     "LOG "*)
