@@ -29,6 +29,7 @@ class PulseDaemon(context: Context) {
 
     private val scriptFile = File(context.filesDir, "pulse_daemon.sh")
     private val fifoInPath = File(context.filesDir, "pulse_fifo_in").absolutePath
+    private val fifoOutPath = File(context.filesDir, "pulse_fifo_out").absolutePath
     private val logPath = File(context.filesDir, "pulse_daemon.log").absolutePath
     private val assets = context.assets
 
@@ -88,7 +89,7 @@ class PulseDaemon(context: Context) {
         RootSupport.runRootCommand(
             "mkdir -p /sdcard/apl_pulse_logs; " +
                 "sh '${scriptFile.absolutePath}' '$fifoInPath' '$logPath' '$sdcardLogPath' '$capPollLogPath' " +
-                "'$versionLabel' > /dev/null 2>&1 < /dev/null &",
+                "'$versionLabel' '$fifoOutPath' > /dev/null 2>&1 < /dev/null &",
         )
         running = true
     }
@@ -136,6 +137,45 @@ class PulseDaemon(context: Context) {
         return sendLine("LOG " + message.replace('\n', ' '))
     }
 
+    /**
+     * Reads every path in [paths] in ONE round trip through the daemon (`cat` run by the already-root shell,
+     * zero `xsu` calls) instead of one `xsu` connection per path -- STATUS.md, 2026-07-28: `TelemetryReader`'s
+     * per-tick read used to open ~13-15 separate `xsu` connections every ~1s during real gameplay (far more
+     * than the cap writes [setCap] already covers), confirmed as the dominant contributor to this device's
+     * `xsud` crash. Returns `null` (never throws) on a dead/not-yet-started daemon, a write/read failure, or a
+     * response that doesn't match [paths] 1:1 -- callers should treat any of those as "batch failed" and fall
+     * back to the existing per-path `xsu` reads entirely (same all-or-nothing contract as [setCap]'s callers),
+     * not a partial mix. A successful result's elements line up positionally with [paths]; a path whose `cat`
+     * came back empty (e.g. the node doesn't exist) is `null` in that position, matching plain `cat()`'s own
+     * `null`-on-empty convention elsewhere in this codebase.
+     *
+     * Protocol: sends `"READ <path1> <path2> ...`" over the existing input FIFO, then reads ONE `|`-delimited
+     * response line back over a second, output-only FIFO ([fifoOutPath]) -- paths never contain `|` or spaces,
+     * but battery `status` values can ("Not charging"), so `|` (not a space) is the field delimiter. Same
+     * bounded-timeout-on-a-throwaway-thread pattern as [setCap]/[log] -- see [setCap]'s doc for why a dead
+     * daemon must never block the caller.
+     */
+    fun readBatch(paths: List<String>): List<String?>? {
+        if (!running || paths.isEmpty()) return null
+        val result = java.util.concurrent.atomic.AtomicReference<List<String?>?>(null)
+        val worker = Thread {
+            try {
+                FileOutputStream(fifoInPath).use { it.write(("READ " + paths.joinToString(" ") + "\n").toByteArray()) }
+                val line = File(fifoOutPath).inputStream().bufferedReader().use { it.readLine() }
+                if (line != null) {
+                    val values = line.split("|").map { it.ifEmpty { null } }
+                    if (values.size == paths.size) result.set(values)
+                }
+            } catch (e: Exception) {
+                // leave result null
+            }
+        }
+        worker.isDaemon = true
+        worker.start()
+        worker.join(READ_BATCH_TIMEOUT_MS)
+        return result.get()
+    }
+
     /** Tells the daemon to exit, clean up its FIFO, and stop its background cap-poll loop. Safe to call even if
      * never started. A hard process kill (no [stop] call reaching the daemon, e.g. OOM) leaves the cap-poll
      * loop running as an orphan alongside the FIFO reader -- the same pre-existing lifecycle gap [start]'s doc
@@ -175,5 +215,10 @@ class PulseDaemon(context: Context) {
         // Healthy round trips are sub-millisecond (fifo-daemon-test.sh); this is generous slack for
         // a live daemon while still cutting a dead one's stall down from "forever" to "unnoticeable."
         private const val SET_CAP_TIMEOUT_MS = 500L
+
+        // A batch read is a write + up to ~15 `cat`s + a write-back, all plain shell builtins already
+        // running as root -- still comfortably sub-millisecond in practice, but a bit more shell work
+        // than a single setCap(), so this gets a bit more slack than SET_CAP_TIMEOUT_MS.
+        private const val READ_BATCH_TIMEOUT_MS = 750L
     }
 }

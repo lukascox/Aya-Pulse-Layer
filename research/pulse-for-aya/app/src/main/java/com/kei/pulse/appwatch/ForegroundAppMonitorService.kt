@@ -823,7 +823,7 @@ class ForegroundAppMonitorService : Service() {
                 return
             }
             val policies = ensurePolicies()
-            val telemetry = telemetryReader.read(policies)
+            val telemetry = telemetryReader.read(policies, pulseDaemon)
             tickTelemetry = telemetry // share this one read with trackDrawForBoundApp() + updateRgb()
             // Drives the per-app draw gate: only count draw toward peak/avg while the device is actually
             // working, so idle/menu/paused time can't poison the battery-life estimate.
@@ -897,7 +897,7 @@ class ForegroundAppMonitorService : Service() {
      */
     private suspend fun runCustomFan(settings: AppSettings): Boolean {
         if (!isCustomFanSupported()) return false
-        val t = tickTelemetry ?: telemetryReader.read(ensurePolicies())
+        val t = tickTelemetry ?: telemetryReader.read(ensurePolicies(), pulseDaemon)
         fanCurveController.slewPerSecond = settings.fanResponseStep
         // Smooth the SoC temp (EMA) before targeting so ±1–2°C sensor noise doesn't wiggle the duty.
         val rawTemp = maxOf(t.cpuTempC ?: 0, t.gpuTempC ?: 0)
@@ -1202,12 +1202,12 @@ class ForegroundAppMonitorService : Service() {
                 )
                 RgbMode.BATTERY -> {
                     // Reuse tick()'s snapshot when it read this tick; else a direct read (RGB-only, no overlay/AutoTDP).
-                    val pct = (tickTelemetry ?: telemetryReader.read(ensurePolicies())).batteryPercent ?: 100
+                    val pct = (tickTelemetry ?: telemetryReader.read(ensurePolicies(), pulseDaemon)).batteryPercent ?: 100
                     val c = RgbController.batteryColor(pct)
                     rgbController.setColor(c.first, c.second, c.third)
                 }
                 RgbMode.HEAT -> {
-                    val t = tickTelemetry ?: telemetryReader.read(ensurePolicies())
+                    val t = tickTelemetry ?: telemetryReader.read(ensurePolicies(), pulseDaemon)
                     val c = RgbController.heatColor(maxOf(t.cpuTempC ?: 0, t.gpuTempC ?: 0))
                     rgbController.setColor(c.first, c.second, c.third)
                 }

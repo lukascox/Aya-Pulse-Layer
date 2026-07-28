@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # One-xsu-connection-per-session cap-write daemon. Launched ONCE via
-# `xsu -c "sh pulse_daemon.sh <fifo_in> <log> <sdcard_log> <cap_poll_log> <version_label> > /dev/null 2>&1 < /dev/null &"`
+# `xsu -c "sh pulse_daemon.sh <fifo_in> <log> <sdcard_log> <cap_poll_log> <version_label> <fifo_out> > /dev/null 2>&1 < /dev/null &"`
 # (research/pulse-for-aya/root/PulseDaemon.kt); everything after that is a plain
 # shell builtin already running as root -- zero further xsu/xsud connections.
 # Protocol on the input FIFO, one line per command:
@@ -9,6 +9,10 @@
 #     frequency caps, so the vendor perf daemon can't silently stomp them).
 #   "LOG <message>" -- append a timestamped line to $SDCARD_LOG (app-side diagnostic logging,
 #     independent of logcat -- see PulseDaemon.kt's `log()` doc).
+#   "READ <path1> <path2> ..." -- `cat` each path and write ONE `|`-delimited response line to
+#     $FIFO_OUT, in the same order (empty for a path that doesn't exist/fails) -- see
+#     PulseDaemon.kt's `readBatch()` doc. Added 2026-07-28 to replace TelemetryReader's ~13-15
+#     separate xsu connections per tick (the dominant xsud-crash contributor, STATUS.md) with one.
 #   "STOP" -- ends the daemon.
 #
 # Validated architecture: research/pulse-for-aya/scripts/daemon-persistence-test.sh
@@ -35,10 +39,14 @@ LOG=$2
 SDCARD_LOG=$3
 CAP_POLL_LOG=$4
 VERSION_LABEL=$5
+FIFO_OUT=$6
 
 rm -f "$FIFO_IN"
 mkfifo "$FIFO_IN"
 chmod 666 "$FIFO_IN"
+rm -f "$FIFO_OUT"
+mkfifo "$FIFO_OUT"
+chmod 666 "$FIFO_OUT"
 echo "start $(date +%s) pid=$$" > "$LOG"
 [ -n "$SDCARD_LOG" ] && echo "$(date '+%Y-%m-%d %H:%M:%S') === pulse_daemon session start === version=$VERSION_LABEL" > "$SDCARD_LOG"
 [ -n "$CAP_POLL_LOG" ] && echo "$(date '+%Y-%m-%d %H:%M:%S') === cap_poll session start === version=$VERSION_LABEL" > "$CAP_POLL_LOG"
@@ -83,6 +91,16 @@ while true; do
     "LOG "*)
       [ -n "$SDCARD_LOG" ] && echo "$(date '+%Y-%m-%d %H:%M:%S') ${line#LOG }" >> "$SDCARD_LOG"
       ;;
+    "READ "*)
+      set -- ${line#READ }
+      out=""
+      first=1
+      for p in "$@"; do
+        v=$(cat "$p" 2>/dev/null)
+        if [ "$first" = "1" ]; then out="$v"; first=0; else out="$out|$v"; fi
+      done
+      echo "$out" > "$FIFO_OUT"
+      ;;
     *)
       set -- $line
       path=$1
@@ -96,3 +114,4 @@ while true; do
 done
 
 rm -f "$FIFO_IN"
+rm -f "$FIFO_OUT"

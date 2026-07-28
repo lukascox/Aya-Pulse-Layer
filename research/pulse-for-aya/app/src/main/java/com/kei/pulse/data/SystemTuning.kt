@@ -329,30 +329,69 @@ class TelemetryReader {
         zonesResolved = true
     }
 
-    private fun readTemp(zone: String?): Int? {
-        val raw = zone?.let { cat("$it/temp") }?.toLongOrNull() ?: return null
-        val c = (if (raw > 1000) raw / 1000 else raw).toInt()
+    private fun parseTemp(raw: String?): Int? {
+        val v = raw?.toLongOrNull() ?: return null
+        val c = (if (v > 1000) v / 1000 else v).toInt()
         return c.takeIf { it in 1..150 }
     }
 
-    fun read(policies: List<CpuPolicyInfo>): TelemetrySnapshot {
-        val cpu = policies.filterNot { it.isGpu }.associate { policy ->
-            policy.id to ((cat("${policy.policyPath}/scaling_cur_freq")?.toIntOrNull() ?: 0) / 1000)
-        }.filterValues { it > 0 }
+    /**
+     * [pulseDaemon], if given, fetches every sysfs value below in ONE round trip through the daemon's
+     * `READ` verb instead of opening up to ~13-15 separate `xsu` connections every call -- confirmed the
+     * dominant contributor to this device's `xsud` crash during real gameplay (this ran every ~1s while
+     * the overlay/AutoTDP was active), STATUS.md 2026-07-28. Falls back to the original per-path `cat()`
+     * reads entirely if the daemon isn't running or the batch fails for any reason (same all-or-nothing
+     * contract [com.kei.pulse.data.AutoTuneController]'s cap writes already use) -- never a partial mix.
+     */
+    fun read(policies: List<CpuPolicyInfo>, pulseDaemon: com.kei.pulse.root.PulseDaemon? = null): TelemetrySnapshot {
+        resolveZones()
+
+        val cpuPolicies = policies.filterNot { it.isGpu }
+        val gpuPolicy = policies.firstOrNull { it.isGpu }
+        val gpuRoot = gpuPolicy?.policyPath
+
+        val cpuFreqPaths = cpuPolicies.map { "${it.policyPath}/scaling_cur_freq" }
+        val gpuClkPath = gpuRoot?.let { "$it/gpuclk" }
+        val gpuDevfreqPath = gpuRoot?.let { "$it/devfreq/cur_freq" }
+        val gpuMaxLevelPath = gpuRoot?.let { "$it/max_pwrlevel" }
+        val gpuMinLevelPath = gpuRoot?.let { "$it/min_pwrlevel" }
+        val gpuBusyPath = gpuRoot?.let { "$it/gpu_busy_percentage" }
+        val batteryCapacityPath = "/sys/class/power_supply/battery/capacity"
+        val batteryStatusPath = "/sys/class/power_supply/battery/status"
+        val batteryCurrentPath = "/sys/class/power_supply/battery/current_now"
+        val batteryVoltagePath = "/sys/class/power_supply/battery/voltage_now"
+        val cpuTempPath = cpuZone?.let { "$it/temp" }
+        val gpuTempZonePath = gpuZone?.let { "$it/temp" }
+        val gpuTempRootPath = gpuRoot?.let { "$it/temp" }
+
+        val allPaths = cpuFreqPaths + listOfNotNull(
+            gpuClkPath, gpuDevfreqPath, gpuMaxLevelPath, gpuMinLevelPath, gpuBusyPath,
+            batteryCapacityPath, batteryStatusPath, batteryCurrentPath, batteryVoltagePath,
+            cpuTempPath, gpuTempZonePath, gpuTempRootPath,
+        )
+        val batch = pulseDaemon?.readBatch(allPaths)
+        val batched: Map<String, String?>? =
+            if (batch != null && batch.size == allPaths.size) allPaths.zip(batch).toMap() else null
+        fun fetch(path: String?): String? {
+            if (path == null) return null
+            return if (batched != null) batched[path] else cat(path)
+        }
+
+        val cpu = cpuPolicies.mapIndexed { index, policy ->
+            policy.id to ((fetch(cpuFreqPaths[index])?.toIntOrNull() ?: 0) / 1000)
+        }.toMap().filterValues { it > 0 }
         val cpuLoad = readCpuLoad(policies, cpu)
         val ram = readRam()
 
-        val gpuPolicy = policies.firstOrNull { it.isGpu }
-        val gpuRoot = gpuPolicy?.policyPath
         val gpuMhz = gpuRoot?.let {
-            (cat("$it/gpuclk")?.toLongOrNull()?.takeIf { hz -> hz > 0L }
-                ?: cat("$it/devfreq/cur_freq")?.toLongOrNull())
+            (fetch(gpuClkPath)?.toLongOrNull()?.takeIf { hz -> hz > 0L }
+                ?: fetch(gpuDevfreqPath)?.toLongOrNull())
                 ?.let { hz -> (hz / 1_000_000L).toInt() }
         }
         // Read back the live pwrlevel bounds (fastest = 0). The ceiling MHz comes from mapping max_pwrlevel
         // through the GPU's ascending freq table — same mapping the writer uses. Diagnostic for Batch 4.
-        val gpuMaxLevel = gpuRoot?.let { cat("$it/max_pwrlevel")?.toIntOrNull() }
-        val gpuMinLevel = gpuRoot?.let { cat("$it/min_pwrlevel")?.toIntOrNull() }
+        val gpuMaxLevel = gpuRoot?.let { fetch(gpuMaxLevelPath)?.toIntOrNull() }
+        val gpuMinLevel = gpuRoot?.let { fetch(gpuMinLevelPath)?.toIntOrNull() }
         val gpuCeilingMhz = gpuPolicy?.supportedFrequencies
             ?.takeIf { it.isNotEmpty() }
             ?.let { freqs ->
@@ -360,8 +399,8 @@ class TelemetryReader {
                 val idx = (freqs.size - 1 - lvl).coerceIn(0, freqs.lastIndex)
                 freqs[idx] / 1000 // ascending kHz → MHz
             }
-        val gpuBusy = gpuRoot?.let { root ->
-            cat("$root/gpu_busy_percentage")?.let { Regex("(\\d+)").find(it)?.groupValues?.get(1)?.toIntOrNull() }
+        val gpuBusy = gpuRoot?.let {
+            fetch(gpuBusyPath)?.let { v -> Regex("(\\d+)").find(v)?.groupValues?.get(1)?.toIntOrNull() }
         }
         // kgsl busy% is relative to the current (often idle-downclocked) frequency, so it reads
         // absurdly high at idle. Weight it by clock to show utilisation of full GPU capacity.
@@ -371,21 +410,20 @@ class TelemetryReader {
         } else {
             gpuBusy
         }
-        val battery = cat("/sys/class/power_supply/battery/capacity")?.toIntOrNull()
+        val battery = fetch(batteryCapacityPath)?.toIntOrNull()
         // Unknown/missing status defaults to discharging so behaviour matches pre-status builds.
-        val status = cat("/sys/class/power_supply/battery/status")
+        val status = fetch(batteryStatusPath)
         val isDischarging = status == null || status.equals("Discharging", ignoreCase = true)
 
-        val currentUa = cat("/sys/class/power_supply/battery/current_now")?.toLongOrNull()
+        val currentUa = fetch(batteryCurrentPath)?.toLongOrNull()
         val drawMa = currentUa?.let { (kotlin.math.abs(it) / 1000L).toInt() }?.takeIf { it > 0 }
-        val voltageUv = cat("/sys/class/power_supply/battery/voltage_now")?.toLongOrNull()
+        val voltageUv = fetch(batteryVoltagePath)?.toLongOrNull()
         val drawW = if (currentUa != null && voltageUv != null && voltageUv > 0) {
             (kotlin.math.abs(currentUa) / 1_000_000.0 * (voltageUv / 1_000_000.0)).toFloat().takeIf { it > 0f }
         } else {
             null
         }
 
-        resolveZones()
         return TelemetrySnapshot(
             cpuClocksMhz = cpu,
             cpuLoadPercent = cpuLoad.overall,
@@ -398,8 +436,8 @@ class TelemetryReader {
             gpuBusyPercent = gpuBusy,
             gpuLoadPercent = gpuLoad,
             batteryPercent = battery,
-            cpuTempC = readTemp(cpuZone),
-            gpuTempC = readTemp(gpuZone) ?: readTemp(gpuRoot),
+            cpuTempC = parseTemp(fetch(cpuTempPath)),
+            gpuTempC = parseTemp(fetch(gpuTempZonePath)) ?: parseTemp(fetch(gpuTempRootPath)),
             batteryDrawMa = drawMa,
             batteryDrawW = drawW,
             isDischarging = isDischarging,
