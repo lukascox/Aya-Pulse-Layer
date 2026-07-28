@@ -26,6 +26,15 @@ beyond the pointer left in `STATUS.md`.
 - For grepping/trimming/reorganizing large raw log files once the exact
   pattern or script is already decided, delegate execution to `grunt` too —
   report back only the extracted facts, not the raw file contents.
+- PULSE session logs (`pulse_<timestamp>[.log|_cap_poll.log|_dmesg.log|
+  _logcat.log]`, pulled from `/sdcard/apl_pulse_logs/`) are grouped/trimmed/
+  summarized by `research/pulse-for-aya/scripts/analyze-pulse-logs.py`
+  (no model involved, deterministic) — it's a step in the user's own pull
+  procedure (`adb pull ... ./pulled/ && analyze-pulse-logs.py ./pulled/`),
+  producing a `SUMMARY.md` alongside the raw files. Read that `SUMMARY.md`
+  first; only open a raw log file when the summary flags something (a
+  crash-keyword hit, a missing clean-stop marker, an interesting session)
+  worth a closer look.
 
 ## Commands
 No root-level build (`app/` is an unconfigured stub; no root `gradlew`).
