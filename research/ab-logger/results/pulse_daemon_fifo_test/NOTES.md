@@ -30,3 +30,17 @@ place. Led to finding `TelemetryReader`'s ~13-15 xsu connections per call
 (never migrated) as the real dominant contributor, now fixed via
 `PulseDaemon.readBatch()`. The four short `pulse_1052xx/1054xx/1056xx/1057xx`
 sessions are the crash-loop aftermath (each dies almost immediately).
+
+## round4_2026-07-28_1233_retroarch_crash_before_engage/
+
+First test on the build with `TelemetryReader` also migrated (version line
+confirms `built 2026-07-28 11:47:25`). User reported RetroArch showing the
+same frozen-CPU-freq-then-crash symptom as Minecraft. **Inconclusive for
+the telemetry fix specifically**: all four daemon sessions (12:33-12:38)
+show `autoActive` never going true and `lastForeground` never showing
+RetroArch's package at all — the crash-restart loop here happens before
+PULSE's foreground monitor ever tracks the emulator, same shape as
+round2's "needs a reboot after install" issue, not evidence either way for
+whether the telemetry-read migration prevents the `xsud` crash during
+actual regulation. Still need a session where AutoTDP visibly engages on
+the patched build to test that.

@@ -6,6 +6,23 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## Inconclusive test (2026-07-28): RetroArch crash on the telemetry-migrated build — didn't reach AutoTDP either
+
+First on-device test of the `TelemetryReader.readBatch()` migration (build
+`2026-07-28 11:47:25`, confirmed via the version line). User reported RetroArch
+showing the same frozen-CPU-freq-then-UI-crash symptom as Minecraft, despite a
+60fps cap configured. Pulled 4 daemon sessions
+(`research/ab-logger/results/pulse_daemon_fifo_test/round4_2026-07-28_1233_retroarch_crash_before_engage/`):
+same shape as round2 — `autoActive` never goes true, `lastForeground` never
+shows RetroArch's package at all, each session crash-restarts within ~1-2
+minutes. **This doesn't test what it needs to**: the crash is happening before
+PULSE's foreground monitor ever tracks the emulator, so it can't confirm or
+rule out whether the telemetry fix helps once regulation is actually running —
+looks like the same already-documented "app needs a reboot after fresh
+install/relaunch" issue rather than the `xsud` regulation-loop crash. Next
+useful test needs a session where AutoTDP visibly engages (an `AUTOTDP-SESSION`
+line appears) before judging this fix.
+
 ## New real culprit found (2026-07-28): `TelemetryReader` was the dominant xsu-connection source all along, not AutoTDP's cap writes — migrated to the FIFO too
 
 Follow-up session, same day as the entry below. User reported the crash recurring
