@@ -32,6 +32,13 @@ class PulseDaemon(context: Context) {
     private val assets = context.assets
 
     /**
+     * One shared timestamp for this daemon launch, used to name BOTH session files below so they're trivially
+     * pairable after a pull (same `<timestamp>` in both names).
+     */
+    private val sessionTimestamp =
+        java.text.SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.US).format(java.util.Date())
+
+    /**
      * One human-readable session log per daemon launch, under `/sdcard` (not this app's own `filesDir`) so it
      * can be pulled directly (`adb pull`, no root/`run-as` needed) even if the device crashes before a host
      * `logcat` capture can be taken -- logcat itself has proven unreliable under real gameplay load (its
@@ -40,8 +47,17 @@ class PulseDaemon(context: Context) {
      * connections -- unlike the app's own sandboxed process, which per this repo's own established finding
      * (`MainActivity.kt`'s AIDL probes) can't reliably reach `/sdcard` directly under scoped storage.
      */
-    private val sdcardLogPath = "/sdcard/apl_pulse_logs/pulse_" +
-        java.text.SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.US).format(java.util.Date()) + ".log"
+    private val sdcardLogPath = "/sdcard/apl_pulse_logs/pulse_$sessionTimestamp.log"
+
+    /**
+     * Ground-truth sysfs cap/cur poll (same fields `scripts/poll-cpufreq.sh` reads by hand from a host), now
+     * collected automatically by a background loop inside the daemon script itself for the whole session --
+     * see `pulse_daemon.sh`'s header comment (STATUS.md, 2026-07-28) for why this still has real cross-check
+     * value despite running inside the app's own daemon: it's a direct sysfs read, not a read of
+     * `AutoTuneController`'s internal state, so it still answers "did the value actually land on the device"
+     * independent of the app's own decision-making code.
+     */
+    private val capPollLogPath = "/sdcard/apl_pulse_logs/pulse_${sessionTimestamp}_cap_poll.log"
 
     @Volatile private var running = false
 
@@ -58,7 +74,8 @@ class PulseDaemon(context: Context) {
         }
         RootSupport.runRootCommand(
             "mkdir -p /sdcard/apl_pulse_logs; " +
-                "sh '${scriptFile.absolutePath}' '$fifoInPath' '$logPath' '$sdcardLogPath' > /dev/null 2>&1 < /dev/null &",
+                "sh '${scriptFile.absolutePath}' '$fifoInPath' '$logPath' '$sdcardLogPath' '$capPollLogPath' " +
+                "> /dev/null 2>&1 < /dev/null &",
         )
         running = true
     }
@@ -106,7 +123,11 @@ class PulseDaemon(context: Context) {
         return sendLine("LOG " + message.replace('\n', ' '))
     }
 
-    /** Tells the daemon to exit and clean up its FIFO. Safe to call even if never started. */
+    /** Tells the daemon to exit, clean up its FIFO, and stop its background cap-poll loop. Safe to call even if
+     * never started. A hard process kill (no [stop] call reaching the daemon, e.g. OOM) leaves the cap-poll
+     * loop running as an orphan alongside the FIFO reader -- the same pre-existing lifecycle gap [start]'s doc
+     * already covers for the daemon itself, not a new one; harmless (near-zero CPU, a slowly-growing but
+     * bounded-rate file) until the next reboot. */
     fun stop() {
         if (!running) return
         try {
