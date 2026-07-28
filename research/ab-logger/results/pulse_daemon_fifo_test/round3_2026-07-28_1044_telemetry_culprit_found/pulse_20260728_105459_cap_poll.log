@@ -1,0 +1,16 @@
+2026-07-28 10:55:00 === cap_poll session start === version=1.19.6 (303) built 2026-07-28 10:41:06
+2026-07-28 10:55:00 p0_cur=787200 p0_max=787200 p2_cur=3148800 p2_max=3148800 p5_cur=2956800 p5_max=2956800 p7_cur=3052800 p7_max=3052800 gov=schedutil gpu_cur=231000000 gpu_min_pwrlevel=13 gpu_max_pwrlevel=0
+2026-07-28 10:55:01 p0_cur=672000 p0_max=787200 p2_cur=3148800 p2_max=3148800 p5_cur=1824000 p5_max=2956800 p7_cur=480000 p7_max=3052800 gov=schedutil gpu_cur=231000000 gpu_min_pwrlevel=13 gpu_max_pwrlevel=0
+2026-07-28 10:55:03 p0_cur=672000 p0_max=787200 p2_cur=3148800 p2_max=3148800 p5_cur=499200 p5_max=2956800 p7_cur=3052800 p7_max=3052800 gov=schedutil gpu_cur=231000000 gpu_min_pwrlevel=13 gpu_max_pwrlevel=0
+2026-07-28 10:55:04 p0_cur=787200 p0_max=787200 p2_cur=3148800 p2_max=3148800 p5_cur=1708800 p5_max=2956800 p7_cur=480000 p7_max=3052800 gov=schedutil gpu_cur=231000000 gpu_min_pwrlevel=13 gpu_max_pwrlevel=0
+2026-07-28 10:55:05 p0_cur=787200 p0_max=787200 p2_cur=3148800 p2_max=3148800 p5_cur=2956800 p5_max=2956800 p7_cur=3052800 p7_max=3052800 gov=schedutil gpu_cur=231000000 gpu_min_pwrlevel=13 gpu_max_pwrlevel=0
+2026-07-28 10:55:06 p0_cur=787200 p0_max=787200 p2_cur=3148800 p2_max=3148800 p5_cur=614400 p5_max=2956800 p7_cur=3052800 p7_max=3052800 gov=schedutil gpu_cur=231000000 gpu_min_pwrlevel=13 gpu_max_pwrlevel=0
+2026-07-28 10:55:07 p0_cur=787200 p0_max=787200 p2_cur=3148800 p2_max=3148800 p5_cur=2956800 p5_max=2956800 p7_cur=3052800 p7_max=3052800 gov=schedutil gpu_cur=500000000 gpu_min_pwrlevel=13 gpu_max_pwrlevel=0
+2026-07-28 10:55:08 p0_cur=787200 p0_max=787200 p2_cur=3148800 p2_max=3148800 p5_cur=2956800 p5_max=2956800 p7_cur=3052800 p7_max=3052800 gov=schedutil gpu_cur=422000000 gpu_min_pwrlevel=13 gpu_max_pwrlevel=0
+2026-07-28 10:55:09 p0_cur=672000 p0_max=787200 p2_cur=3148800 p2_max=3148800 p5_cur=499200 p5_max=2956800 p7_cur=3052800 p7_max=3052800 gov=schedutil gpu_cur=500000000 gpu_min_pwrlevel=13 gpu_max_pwrlevel=0
+2026-07-28 10:55:10 p0_cur=787200 p0_max=787200 p2_cur=2515200 p2_max=3148800 p5_cur=499200 p5_max=2956800 p7_cur=3052800 p7_max=3052800 gov=schedutil gpu_cur=500000000 gpu_min_pwrlevel=13 gpu_max_pwrlevel=0
+2026-07-28 10:55:11 p0_cur=787200 p0_max=787200 p2_cur=3014400 p2_max=3148800 p5_cur=960000 p5_max=2956800 p7_cur=480000 p7_max=3052800 gov=schedutil gpu_cur=500000000 gpu_min_pwrlevel=13 gpu_max_pwrlevel=0
+2026-07-28 10:55:12 p0_cur=787200 p0_max=787200 p2_cur=1824000 p2_max=3148800 p5_cur=2956800 p5_max=2956800 p7_cur=3052800 p7_max=3052800 gov=schedutil gpu_cur=500000000 gpu_min_pwrlevel=13 gpu_max_pwrlevel=0
+2026-07-28 10:55:14 p0_cur=787200 p0_max=787200 p2_cur=2515200 p2_max=3148800 p5_cur=614400 p5_max=2956800 p7_cur=480000 p7_max=3052800 gov=schedutil gpu_cur=629000000 gpu_min_pwrlevel=13 gpu_max_pwrlevel=0
+2026-07-28 10:55:15 p0_cur=672000 p0_max=787200 p2_cur=2899200 p2_max=3148800 p5_cur=614400 p5_max=2956800 p7_cur=480000 p7_max=3052800 gov=schedutil gpu_cur=500000000 gpu_min_pwrlevel=13 gpu_max_pwrlevel=0
+2026-07-28 10:55:16 p0_cur=787200 p0_max=787200 p2_cur=2572800 p2_max=3148800 p5_cur=499200 p5_max=2956800 p7_cur=3052800 p7_max=3052800 gov=schedutil gpu_cur=500000000 gpu_min_pwrlevel=13 gpu_max_pwrlevel=0
