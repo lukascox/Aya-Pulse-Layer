@@ -19,6 +19,22 @@ object RootSupport {
         }
     }
 
+    /**
+     * Same call as [runRootCommand], but returns the full [Result] instead of collapsing it to `String?` via
+     * `getOrNull()` -- that collapse makes "the `xsu` process threw/timed out" and "it ran fine but printed
+     * nothing" indistinguishable. STATUS.md, 2026-07-28: `PulseDaemon.start()`'s launch call started failing
+     * with `result=null` and no way to tell which case it was -- `run-as com.kei.pulse xsu -c "id"` proved
+     * root itself, and even the app's own UID/SELinux context via `run-as`, both work instantly, so the
+     * failure has to be something specific to how the call happens from inside the app's own live process
+     * (e.g. a `PATH` difference between a Zygote-forked app process and a `run-as`-spawned shell) -- only the
+     * real exception message (or confirmed timeout) can settle that, not another `null`.
+     */
+    fun runRootCommandResult(command: String): Result<String?> {
+        return pServerLock.withLock {
+            RootExec().executeAsRoot(command)
+        }
+    }
+
     // apl glue patch (2026-07-25): upstream wrote the script to a world-readable/-executable file
     // because the stock PServer service ran it as root from a DIFFERENT uid and had to read it off
     // disk. This was simplified to pass scriptContents directly as xsu's "-c" argument -- correct

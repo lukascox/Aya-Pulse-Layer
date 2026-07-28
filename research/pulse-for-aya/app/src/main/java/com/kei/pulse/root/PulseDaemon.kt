@@ -114,6 +114,14 @@ class PulseDaemon(context: Context) {
      * `pkill`/`mkdir`/the backgrounding `sh ... &` have all been accepted by the outer shell, so seeing it
      * back confirms the OUTER `xsu` call succeeded; its absence means `xsu`/`RootExec` itself failed or timed
      * out, before the daemon script ever got a chance to run.
+     *
+     * Uses [RootSupport.runRootCommandResult] (not the plain [RootSupport.runRootCommand]) specifically so
+     * the log line can show the REAL exception/timeout reason instead of a bare `null` -- a first pass at
+     * this logging (STATUS.md, 2026-07-28) only had `result=null` to show, and that turned out to be
+     * genuinely ambiguous: `run-as com.kei.pulse xsu -c "id"` proved root, and even the app's own UID/SELinux
+     * context via `run-as`, both work instantly, so whatever's failing here is specific to how the call
+     * happens from inside the app's own live (Zygote-forked) process -- only the actual exception message
+     * (e.g. a `PATH` resolution failure vs a real 8s timeout) can narrow that down further.
      */
     fun start() {
         if (running) return
@@ -121,7 +129,7 @@ class PulseDaemon(context: Context) {
         scriptFile.writeBytes(scriptBytes)
         val scriptCrc = java.util.zip.CRC32().apply { update(scriptBytes) }.value
         val label = "$versionLabel script_crc32=${scriptCrc.toString(16)}"
-        val launchResult = RootSupport.runRootCommand(
+        val launchResult = RootSupport.runRootCommandResult(
             // Kill any orphaned daemon (or its detached logcat filter) from a previous session first -- a
             // hard process kill, e.g. OOM, leaves one reading the same fixed FIFO_IN path forever
             // (STATUS.md, 2026-07-28: once this daemon's rm -f + mkfifo recreates that path, an orphan's
@@ -135,12 +143,15 @@ class PulseDaemon(context: Context) {
                 "'$label' '$fifoOutPath' '$dmesgLogPath' '$logcatLogPath' > /dev/null 2>&1 < /dev/null & " +
                 "echo PULSE_DAEMON_LAUNCHED",
         )
+        val launchValue = launchResult.getOrNull()
         android.util.Log.d(
             "PulseDaemon",
-            if (launchResult == "PULSE_DAEMON_LAUNCHED") {
+            if (launchValue == "PULSE_DAEMON_LAUNCHED") {
                 "start() launch xsu call succeeded, $label"
             } else {
-                "start() launch xsu call FAILED or timed out (result=$launchResult), $label"
+                val reason = launchResult.exceptionOrNull()?.let { "${it.javaClass.simpleName}: ${it.message}" }
+                    ?: "no exception, but unexpected stdout=$launchValue"
+                "start() launch xsu call FAILED: $reason, $label"
             },
         )
         running = true
