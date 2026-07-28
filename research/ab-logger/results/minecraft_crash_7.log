@@ -1,0 +1,233 @@
+# TRIMMED 2026-07-28 -- original was 15890 lines / 2.0M.
+# Full narrative analysis of this capture is in STATUS.md (search for this file's name).
+# Kept: FATAL EXCEPTION/SIGABRT crash backtraces, BatteryService$Led/battery-online lines,
+# real PulseAutoTdp tick lines, PulseDaemon lines, service-start/relaunch markers, each with
+# +/- context. Everything else (routine binder/window-manager/PackageWatchdog reinit
+# cascade/xsu-protocol chatter) was cut -- it added no evidence beyond what's already in
+# STATUS.md.
+# ---
+1---------- beginning of crash
+2:01-01 23:09:22.605   820   820 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 820 (init), pid 820 (init)
+3-01-01 23:09:22.626   820   820 F libc    : crash_dump helper failed to exec, or was killed
+4-07-28 08:57:32.768  1342  1342 F libc    : stack corruption detected (-fstack-protector)
+5:07-28 08:57:32.769  1342  1342 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 1342 (nvkeeper), pid 1342 (nvkeeper)
+6-07-28 08:57:32.786  1359  1359 F DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+7-07-28 08:57:32.786  1359  1359 F DEBUG   : Build fingerprint: 'AYANEO/AYANEO_Pocket_FIT/PocketFIT:14/01.00_20251226_private_user/eng.scm.20251226.033130:user/release-keys'
+8-07-28 08:57:32.786  1359  1359 F DEBUG   : Revision: '0'
+--
+14-07-28 08:57:32.786  1359  1359 F DEBUG   : uid: 1000
+15-07-28 08:57:32.786  1359  1359 F DEBUG   : tagged_addr_ctrl: 0000000000000001 (PR_TAGGED_ADDR_ENABLE)
+16-07-28 08:57:32.786  1359  1359 F DEBUG   : pac_enabled_keys: 000000000000000f (PR_PAC_APIAKEY, PR_PAC_APIBKEY, PR_PAC_APDAKEY, PR_PAC_APDBKEY)
+17:07-28 08:57:32.786  1359  1359 F DEBUG   : signal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+18-07-28 08:57:32.786  1359  1359 F DEBUG   : Abort message: 'stack corruption detected (-fstack-protector)'
+19-07-28 08:57:32.786  1359  1359 F DEBUG   :     x0  0000000000000000  x1  000000000000053e  x2  0000000000000006  x3  0000007fcc4ccae0
+20-07-28 08:57:32.786  1359  1359 F DEBUG   :     x4  607372652c271f63  x5  607372652c271f63  x6  607372652c271f63  x7  7f7f7f7f7f7f7f7f
+--
+31-07-28 08:57:32.786  1359  1359 F DEBUG   :       #01 pc 0000000000071d64  /apex/com.android.runtime/lib64/bionic/libc.so (__stack_chk_fail+24) (BuildId: 50118287324a156bc7be11d3d940c7be)
+32-07-28 08:57:32.786  1359  1359 F DEBUG   :       #02 pc 00000000000016e8  /vendor/bin/nvkeeper (main+228) (BuildId: 964f4cbbcda0caf53de13699a5907bf2)
+33-07-28 08:57:32.786  1359  1359 F DEBUG   :       #03 pc 0000000000053e48  /apex/com.android.runtime/lib64/bionic/libc.so (__libc_init+108) (BuildId: 50118287324a156bc7be11d3d940c7be)
+34:07-28 08:57:37.228  3345  3345 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 3345 (init), pid 3345 (init)
+35-07-28 08:57:37.243  3345  3345 F libc    : crash_dump helper failed to exec, or was killed
+36:07-28 08:57:37.457  3336  3336 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 3336 (qcrosvm), pid 3336 (qcrosvm)
+37-07-28 08:57:37.477  3565  3565 F DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+38-07-28 08:57:37.477  3565  3565 F DEBUG   : Build fingerprint: 'AYANEO/AYANEO_Pocket_FIT/PocketFIT:14/01.00_20251226_private_user/eng.scm.20251226.033130:user/release-keys'
+39-07-28 08:57:37.477  3565  3565 F DEBUG   : Revision: '0'
+--
+45-07-28 08:57:37.477  3565  3565 F DEBUG   : uid: 0
+46-07-28 08:57:37.477  3565  3565 F DEBUG   : tagged_addr_ctrl: 0000000000000001 (PR_TAGGED_ADDR_ENABLE)
+47-07-28 08:57:37.477  3565  3565 F DEBUG   : pac_enabled_keys: 000000000000000f (PR_PAC_APIAKEY, PR_PAC_APIBKEY, PR_PAC_APDAKEY, PR_PAC_APDBKEY)
+48:07-28 08:57:37.477  3565  3565 F DEBUG   : signal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+49-07-28 08:57:37.477  3565  3565 F DEBUG   : Abort message: 'Error: set fw name ioctl failed with error Os { code: 9, kind: Uncategorized, message: "Bad file descriptor" }'
+50-07-28 08:57:37.477  3565  3565 F DEBUG   :     x0  0000000000000000  x1  0000000000000d08  x2  0000000000000006  x3  0000007fe38dd0f0
+51-07-28 08:57:37.477  3565  3565 F DEBUG   :     x4  1f63646b6860651f  x5  1f63646b6860651f  x6  1f63646b6860651f  x7  7f7f7f7f7f7f7f7f
+--
+106-07-28 08:59:30.516  2262  4011 E Transition: Trying to add a ready-group twice: Display{#0 state=ON size=1920x1080 ROTATION_90}
+107-07-28 08:59:30.516  2262  4011 I ActivityTaskManager: START u0 {act=android.content.pm.action.REQUEST_PERMISSIONS pkg=com.google.android.permissioncontroller cmp=com.google.android.permissioncontroller/com.android.permissioncontroller.permission.ui.GrantPermissionsActivity (has extras)} with LAUNCH_MULTIPLE from uid 10189 (BAL_ALLOW_VISIBLE_WINDOW) result code=0
+108-07-28 08:59:30.516  2262  4011 D CompatibilityChangeReporter: Compat change id reported: 161145287; UID 10189; state: ENABLED
+109:07-28 08:59:30.517  2602  2634 V WindowManagerShell: Transition requested: android.os.BinderProxy@45460d3 TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=9 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10010000 pkg=com.mojang.minecraftpe cmp=com.mojang.minecraftpe/.MainActivity } baseActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} topActivity=ComponentInfo{com.google.android.permissioncontroller/com.android.permissioncontroller.permission.ui.GrantPermissionsActivity} origActivity=null realActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} numActivities=2 lastActiveTime=125648 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@39fb410} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{83cbb09 com.android.permissioncontroller.permission.ui.GrantPermissionsActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true isVisibleRequested=true isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null }
+110-07-28 08:59:30.525  2262  4148 D TextToSpeechManagerPerUserService: Trying to start connection to TTS engine: com.google.android.tts
+111-07-28 08:59:30.526  2262  2262 D ActivityManager: sync unfroze 6167 com.google.android.tts for 6
+112-07-28 08:59:30.645  2262  4925 W WindowManager: Failed looking up window session=Session{bc6cba3 9174:u0a10189} callers=com.android.server.wm.WindowManagerService.windowForClientLocked:6067 com.android.server.wm.Session.updateRequestedVisibleTypes:690 android.view.IWindowSession$Stub.onTransact:1034 
+--
+157-07-28 08:59:30.820  2602  2634 V WindowManagerShell:  animated by com.android.wm.shell.transition.DefaultTransitionHandler@a2af38f
+158-07-28 08:59:30.820  2602  2634 V WindowManagerShell: Track 0 became idle
+159-07-28 08:59:30.820  2602  2634 V WindowManagerShell: All active transition animations finished
+160:07-28 08:59:30.823  2262  2301 V WindowManager: Sent Transition #11 createdAt=07-28 08:59:30.513 via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=9 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10010000 pkg=com.mojang.minecraftpe cmp=com.mojang.minecraftpe/.MainActivity } baseActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} topActivity=ComponentInfo{com.google.android.permissioncontroller/com.android.permissioncontroller.permission.ui.GrantPermissionsActivity} origActivity=null realActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} numActivities=2 lastActiveTime=125648 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{554905a Task{8703f95 #9 type=standard A=10189:com.mojang.minecraftpe}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{586a1ab com.android.permissioncontroller.permission.ui.GrantPermissionsActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true isVisibleRequested=true isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null }
+161-07-28 08:59:30.823  2262  2301 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+162-07-28 08:59:30.823  2262  2301 V WindowManager:     info={id=11 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{null m=OPEN f=TRANSLUCENT|FILLS_TASK|IS_BEHIND_STARTING_WINDOW leash=Surface(name=ActivityRecord{1e2322f u0 com.google.android.permissioncontroller/com.android.permissioncontroller.permission.ui.GrantPermissionsActivity)/@0x8828aee sb=Rect(0, 0 - 0, 0) eb=Rect(0, 0 - 1920, 1080) d=-1->0 r=-1->1:-1}]}
+163-07-28 08:59:30.823  2262  2301 V WindowManager: Finish Transition #11: created at 07-28 08:59:30.513 collect-started=0.021ms request-sent=2.709ms started=4.852ms ready=235.506ms sent=303.438ms finished=306.48ms
+--
+281-07-28 08:59:35.761  1072  1092 E keystore2:     0: system/security/keystore2/src/security_level.rs:620: While generating Key without explicit attestation key.
+282-07-28 08:59:35.761  1072  1092 E keystore2:     1: Error::Km(r#ROLLBACK_RESISTANCE_UNAVAILABLE)
+283-07-28 08:59:35.999  1582 29811 F libc    : stack corruption detected (-fstack-protector)
+284:07-28 08:59:35.999  1582 29811 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 9971 (xsud), pid 1582 (xsud)
+285-07-28 08:59:36.030  9992  9992 F DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+286-07-28 08:59:36.030  9992  9992 F DEBUG   : Build fingerprint: 'AYANEO/AYANEO_Pocket_FIT/PocketFIT:14/01.00_20251226_private_user/eng.scm.20251226.033130:user/release-keys'
+287-07-28 08:59:36.030  9992  9992 F DEBUG   : Revision: '0'
+--
+293-07-28 08:59:36.030  9992  9992 F DEBUG   : uid: 0
+294-07-28 08:59:36.030  9992  9992 F DEBUG   : tagged_addr_ctrl: 0000000000000001 (PR_TAGGED_ADDR_ENABLE)
+295-07-28 08:59:36.030  9992  9992 F DEBUG   : pac_enabled_keys: 000000000000000f (PR_PAC_APIAKEY, PR_PAC_APIBKEY, PR_PAC_APDAKEY, PR_PAC_APDBKEY)
+296:07-28 08:59:36.030  9992  9992 F DEBUG   : signal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+297-07-28 08:59:36.030  9992  9992 F DEBUG   : Abort message: 'stack corruption detected (-fstack-protector)'
+298-07-28 08:59:36.030  9992  9992 F DEBUG   :     x0  0000000000000000  x1  00000000000026f3  x2  0000000000000006  x3  0000007721186730
+299-07-28 08:59:36.030  9992  9992 F DEBUG   :     x4  607372652c271f63  x5  607372652c271f63  x6  607372652c271f63  x7  7f7f7f7f7f7f7f7f
+--
+549-07-28 09:00:13.336  2602  3243 D PowerUI : can't show warning due to - plugged: true status unknown: false
+550-07-28 09:00:13.346  2602  3265 D PowerUI : can't show warning due to - plugged: true status unknown: false
+551-07-28 09:00:13.486  9995 29537 F libc    : stack corruption detected (-fstack-protector)
+552:07-28 09:00:13.486  9995 29537 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 12852 (xsud), pid 9995 (xsud)
+553-07-28 09:00:13.508 12876 12876 F DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+554-07-28 09:00:13.508 12876 12876 F DEBUG   : Build fingerprint: 'AYANEO/AYANEO_Pocket_FIT/PocketFIT:14/01.00_20251226_private_user/eng.scm.20251226.033130:user/release-keys'
+555-07-28 09:00:13.508 12876 12876 F DEBUG   : Revision: '0'
+--
+561-07-28 09:00:13.508 12876 12876 F DEBUG   : uid: 0
+562-07-28 09:00:13.508 12876 12876 F DEBUG   : tagged_addr_ctrl: 0000000000000001 (PR_TAGGED_ADDR_ENABLE)
+563-07-28 09:00:13.508 12876 12876 F DEBUG   : pac_enabled_keys: 000000000000000f (PR_PAC_APIAKEY, PR_PAC_APIBKEY, PR_PAC_APDAKEY, PR_PAC_APDBKEY)
+564:07-28 09:00:13.508 12876 12876 F DEBUG   : signal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+565-07-28 09:00:13.508 12876 12876 F DEBUG   : Abort message: 'stack corruption detected (-fstack-protector)'
+566-07-28 09:00:13.508 12876 12876 F DEBUG   :     x0  0000000000000000  x1  0000000000003234  x2  0000000000000006  x3  0000006d459b1730
+567-07-28 09:00:13.508 12876 12876 F DEBUG   :     x4  607372652c271f63  x5  607372652c271f63  x6  607372652c271f63  x7  7f7f7f7f7f7f7f7f
+--
+648-07-28 09:00:18.339  2262  2311 I ActivityManager: Start proc 13229:com.qti.diagservices/1000 for restart com.qti.diagservices
+649-07-28 09:00:18.369  2262  4913 I ActivityManager: Flag disabled. Ignoring finishAttachApplication from uid: 1000. pid: 13229
+650-07-28 09:00:18.824  2262  2746 V AlarmManager: set(PendingIntent{72a9f32: PendingIntentRecord{c533483 com.google.android.gms/com.google.android.gms.container startService}}) : type=3 triggerAtTime=2036-07-25 09:00:18 win=3600000 maxElapsed=315363773955 interval=0 flags=0x0 callingUid=10097
+651:07-28 09:00:19.463  2262  2262 E AndroidRuntime: *** FATAL EXCEPTION IN SYSTEM PROCESS: main
+652-07-28 09:00:19.463  2262  2262 E AndroidRuntime: android.os.ServiceSpecificException:  (code -13)
+653-07-28 09:00:19.463  2262  2262 E AndroidRuntime: 	at android.os.Parcel.createExceptionOrNull(Parcel.java:3071)
+654-07-28 09:00:19.463  2262  2262 E AndroidRuntime: 	at android.os.Parcel.createException(Parcel.java:3041)
+--
+658-07-28 09:00:19.463  2262  2262 E AndroidRuntime: 	at com.android.server.lights.LightsService$LightImpl.setLightUnchecked(LightsService.java:403)
+659-07-28 09:00:19.463  2262  2262 E AndroidRuntime: 	at com.android.server.lights.LightsService$LightImpl.setLightLocked(LightsService.java:387)
+660-07-28 09:00:19.463  2262  2262 E AndroidRuntime: 	at com.android.server.lights.LightsService$LightImpl.setColor(LightsService.java:306)
+661:07-28 09:00:19.463  2262  2262 E AndroidRuntime: 	at com.android.server.BatteryService$Led$1.onAnimationUpdate(BatteryService.java:1276)
+662-07-28 09:00:19.463  2262  2262 E AndroidRuntime: 	at android.animation.Animator$AnimatorCaller.lambda$static$4(Animator.java:858)
+663-07-28 09:00:19.463  2262  2262 E AndroidRuntime: 	at android.animation.Animator$AnimatorCaller$$ExternalSyntheticLambda6.call(Unknown Source:4)
+664-07-28 09:00:19.463  2262  2262 E AndroidRuntime: 	at android.animation.Animator.callOnList(Animator.java:669)
+--
+667-07-28 09:00:19.463  2262  2262 E AndroidRuntime: 	at android.animation.ValueAnimator.setCurrentPlayTime(ValueAnimator.java:734)
+668-07-28 09:00:19.463  2262  2262 E AndroidRuntime: 	at android.animation.ValueAnimator.start(ValueAnimator.java:1154)
+669-07-28 09:00:19.463  2262  2262 E AndroidRuntime: 	at android.animation.ValueAnimator.start(ValueAnimator.java:1173)
+670:07-28 09:00:19.463  2262  2262 E AndroidRuntime: 	at com.android.server.BatteryService$Led.startAlphaAnimator(BatteryService.java:1318)
+671:07-28 09:00:19.463  2262  2262 E AndroidRuntime: 	at com.android.server.BatteryService$Led.updateLightsLocked(BatteryService.java:1297)
+672-07-28 09:00:19.463  2262  2262 E AndroidRuntime: 	at com.android.server.BatteryService$9.run(BatteryService.java:700)
+673-07-28 09:00:19.463  2262  2262 E AndroidRuntime: 	at android.os.Handler.handleCallback(Handler.java:958)
+674-07-28 09:00:19.463  2262  2262 E AndroidRuntime: 	at android.os.Handler.dispatchMessage(Handler.java:99)
+--
+681-07-28 09:00:19.463  2262  2262 E AndroidRuntime: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:955)
+682-07-28 09:00:19.469  2602  3842 D PowerUI : can't show warning due to - plugged: false status unknown: true
+683-07-28 09:00:19.469  2262  2262 I DropBoxManagerService: add tag=system_server_crash isTagEnabled=true flags=0x2
+684:07-28 09:00:19.543  4225  4225 E AndroidRuntime: FATAL EXCEPTION: main
+685-07-28 09:00:19.543  4225  4225 E AndroidRuntime: Process: com.adups.fota, PID: 4225
+686-07-28 09:00:19.543  4225  4225 E AndroidRuntime: DeadSystemException: The system died; earlier logs will point to the root cause
+687-07-28 09:00:19.545  1868  2440 E storaged: package_native::getNamesForUids failed: 
+688-07-28 09:00:19.572   903   933 D vold    : Aborting fuse connection entry /sys/fs/fuse/connections/131/abort
+689-07-28 09:00:19.572   903   933 W vold    : Skip fsync /sys/fs/fuse/connections/131/abort on a file system does not support synchronization: Invalid argument
+690:07-28 09:00:19.585  1403  1403 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 1403 (binder:1403_2), pid 1403 (binder:1403_2)
+691-07-28 09:00:19.757 13391 13391 F DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+692-07-28 09:00:19.757 13391 13391 F DEBUG   : Build fingerprint: 'AYANEO/AYANEO_Pocket_FIT/PocketFIT:14/01.00_20251226_private_user/eng.scm.20251226.033130:user/release-keys'
+693-07-28 09:00:19.757 13391 13391 F DEBUG   : Revision: '0'
+--
+699-07-28 09:00:19.757 13391 13391 F DEBUG   : uid: 1047
+700-07-28 09:00:19.757 13391 13391 F DEBUG   : tagged_addr_ctrl: 0000000000000001 (PR_TAGGED_ADDR_ENABLE)
+701-07-28 09:00:19.757 13391 13391 F DEBUG   : pac_enabled_keys: 000000000000000f (PR_PAC_APIAKEY, PR_PAC_APIBKEY, PR_PAC_APDAKEY, PR_PAC_APDBKEY)
+702:07-28 09:00:19.757 13391 13391 F DEBUG   : signal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+703-07-28 09:00:19.757 13391 13391 F DEBUG   :     x0  0000000000000000  x1  000000000000057b  x2  0000000000000006  x3  0000007fdcb660a0
+704-07-28 09:00:19.757 13391 13391 F DEBUG   :     x4  64626d6471646564  x5  64626d6471646564  x6  64626d6471646564  x7  7f7f7f7f7f7f7f7f
+705-07-28 09:00:19.757 13391 13391 F DEBUG   :     x8  00000000000000f0  x9  0000007c21c331b8  x10 0000000000000001  x11 0000007c21c7b924
+--
+5658-07-28 09:00:23.645 13568 13623 D CompatibilityChangeReporter: Compat change id reported: 143937733; UID 10097; state: ENABLED
+5659-07-28 09:00:23.645 13568 14213 D CompatibilityChangeReporter: Compat change id reported: 319212206; UID 10074; state: DISABLED
+5660-07-28 09:00:23.646 13568 14213 D CompatibilityChangeReporter: Compat change id reported: 161145287; UID 10074; state: ENABLED
+5661:07-28 09:00:23.648 14495 14495 F libc    : Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 14495 (init), pid 14495 (init)
+5662-07-28 09:00:23.648   903   903 D vold    : Finished restorecon of /data/misc_ce/0
+5663-07-28 09:00:23.648   903   903 D vold    : /system/bin/vold_prepare_subdirs
+5664-07-28 09:00:23.648   903   903 D vold    :     prepare
+--
+5689-07-28 09:00:23.673 14511 14511 F DEBUG   : uid: 0
+5690-07-28 09:00:23.673 14511 14511 F DEBUG   : tagged_addr_ctrl: 0000000000000001 (PR_TAGGED_ADDR_ENABLE)
+5691-07-28 09:00:23.673 14511 14511 F DEBUG   : pac_enabled_keys: 000000000000000f (PR_PAC_APIAKEY, PR_PAC_APIBKEY, PR_PAC_APDAKEY, PR_PAC_APDBKEY)
+5692:07-28 09:00:23.673 14511 14511 F DEBUG   : signal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+5693-07-28 09:00:23.673 14511 14511 F DEBUG   :     x0  0000000000000000  x1  000000000000389f  x2  0000000000000006  x3  0000007fc9a662c0
+5694-07-28 09:00:23.673 14511 14511 F DEBUG   :     x4  000000000000000a  x5  000000000000000a  x6  000000000000000a  x7  7f7f7f7f7f7f7f7f
+5695-07-28 09:00:23.673 14511 14511 F DEBUG   :     x8  00000000000000f0  x9  0000007fa72781b8  x10 0000000000000001  x11 0000007fa72c0924
+--
+6755-07-28 09:00:24.356 13568 13812 D CompatibilityChangeReporter: Compat change id reported: 226439802; UID 10104; state: ENABLED
+6756-07-28 09:00:24.356 13568 13812 V AlarmManager: set(PendingIntent{3b34487: PendingIntentRecord{99f7fb4 com.adups.fota broadcastIntent}}) : type=0 triggerAtTime=2026-07-29 09:00:24 win=0 maxElapsed=86579488 interval=0 flags=0x5 callingUid=10104
+6757-07-28 09:00:24.357 13568 14088 D CompatibilityChangeReporter: Compat change id reported: 271850009; UID 10104; state: ENABLED
+6758:07-28 09:00:24.359 14739 15132 E AndroidRuntime: FATAL EXCEPTION: AsyncTask #1
+6759-07-28 09:00:24.359 14739 15132 E AndroidRuntime: Process: com.adups.fota, PID: 14739
+6760-07-28 09:00:24.359 14739 15132 E AndroidRuntime: java.lang.RuntimeException: An error occurred while executing doInBackground()
+6761-07-28 09:00:24.359 14739 15132 E AndroidRuntime: 	at android.os.AsyncTask$4.done(AsyncTask.java:415)
+--
+6902-07-28 09:00:24.705 13568 13582 I ActivityManager: Flag disabled. Ignoring finishAttachApplication from uid: 1000. pid: 15542
+6903-07-28 09:00:24.708 13568 13582 V AlarmManager: set(PendingIntent{9c9765f: PendingIntentRecord{95288ac com.android.providers.calendar broadcastIntent}}) : type=2 triggerAtTime=2026-07-28 14:57:24 win=16200000 maxElapsed=37800000 interval=21600000 flags=0x0 callingUid=10048
+6904-07-28 09:00:24.715 13568 13811 I DynamicSystemService: isInstalled(): false
+6905:07-28 09:00:24.718 13568 13582 I ActivityManager: Background started FGS: Allowed [callingPackage: com.kei.pulse; callingUid: 10183; uidState: RCVR; uidBFSL: n/a; intent: Intent { cmp=com.kei.pulse/.appwatch.ForegroundAppMonitorService }; code:SYSTEM_ALLOW_LISTED; tempAllowListReason:<,reasonCode:SYSTEM_ALLOW_LISTED,duration:9223372036854775807,callingUid:-1>; targetSdkVersion:34; callerTargetSdkVersion:34; startForegroundCount:0; bindFromPackage:null: isBindService:false]
+6906-07-28 09:00:24.722 13568 13622 I ActivityManager: com.android.vending is exempt from freezer
+6907-07-28 09:00:24.722 13568 13622 D CompatibilityChangeReporter: Compat change id reported: 135634846; UID 10096; state: DISABLED
+6908-07-28 09:00:24.722 13568 13622 D CompatibilityChangeReporter: Compat change id reported: 177438394; UID 10096; state: DISABLED
+--
+6914-07-28 09:00:24.730 13568 13811 V AlarmManager: set(PendingIntent{875cba: PendingIntentRecord{9bf576b com.android.providers.calendar broadcastIntent}}) : type=2 triggerAtTime=2026-07-28 09:00:29 win=0 maxElapsed=184862 interval=0 flags=0x21 callingUid=10048
+6915-07-28 09:00:24.730 13568 13623 I ActivityManager: Start proc 15708:com.android.vending/u0a96 for broadcast {com.android.vending/com.google.android.finsky.boothandler.BootCompletedReceiver}
+6916-07-28 09:00:24.733 13568 13582 D CompatibilityChangeReporter: Compat change id reported: 170668199; UID 10183; state: ENABLED
+6917:07-28 09:00:24.733 13568 13582 W ActivityManager: Foreground service started from background can not have location/camera/microphone access: service com.kei.pulse/.appwatch.ForegroundAppMonitorService
+6918-07-28 09:00:24.737 13568 14707 V AlarmManager: change alarm ELAPSED_REALTIME_WAKEUP to ELAPSED_REALTIME,com.google.android.gms
+6919-07-28 09:00:24.737 13568 14707 V AlarmManager: set(PendingIntent{a01903f: PendingIntentRecord{c57cd0c com.google.android.gms/com.google.android.gms.tapandpay startService}}) : type=3 triggerAtTime=2036-07-25 09:00:24 win=3600000 maxElapsed=315363779869 interval=0 flags=0x0 callingUid=10097
+6920-07-28 09:00:24.744 13568 14090 D CompatibilityChangeReporter: Compat change id reported: 143231523; UID 10048; state: DISABLED
+--
+10305-07-28 09:00:26.853 14893 17252 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.pool-ids.values
+10306-07-28 09:00:26.853  1390  1565 I ANDR-PWR-OPT: PowerHelper: getNodeData() 196: FPS0.000000 FRAMECOUNT0
+10307-07-28 09:00:26.853  1390  1565 I ANDR-PWR-OPT: PowerHelper: getFps() 168: Returned fps value: 0.000000
+10308:07-28 09:00:26.853 15001 15653 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+10309-07-28 09:00:26.854 14893 17252 I CCodecConfig: query failed after returning 8 values (BAD_INDEX)
+10310-07-28 09:00:26.854 14893 17252 D CCodecConfig: c2 config diff is Dict {
+10311-07-28 09:00:26.854 14893 17252 D CCodecConfig:   c2::u32 coded.bitrate.value = 64000
+--
+10500-07-28 09:00:27.835  1437  1437 E vendor.qti.lights: Tri Leds device doesn't exist
+10501-07-28 09:00:27.853  1390  1565 I ANDR-PWR-OPT: PowerHelper: getNodeData() 196: FPS0.000000 FRAMECOUNT0
+10502-07-28 09:00:27.853  1390  1565 I ANDR-PWR-OPT: PowerHelper: getFps() 168: Returned fps value: 0.000000
+10503:07-28 09:00:27.889 15001 15653 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+10504-07-28 09:00:27.904 13568 13928 D BufferPoolAccessor2.0: bufferpool2 0xb4000071bac75b38 : 0(0 size) total buffers - 0(0 size) used buffers - 2/7 (recycle/alloc) - 5/24 (fetch/transfer)
+10505-07-28 09:00:27.904 13568 13928 D BufferPoolAccessor2.0: bufferpool2 0xb4000071bac6f328 : 0(0 size) total buffers - 0(0 size) used buffers - 2/7 (recycle/alloc) - 5/26 (fetch/transfer)
+10506-07-28 09:00:27.904 13568 13928 D BufferPoolAccessor2.0: bufferpool2 0xb4000071bac940d8 : 0(0 size) total buffers - 0(0 size) used buffers - 2/7 (recycle/alloc) - 10/34 (fetch/transfer)
+--
+10773-07-28 09:00:28.911  1072 13841 W keystore2: system/security/keystore2/src/watchdog.rs:124 - and all 1 records below.
+10774-07-28 09:00:28.911  1072 13841 W keystore2: system/security/keystore2/src/watchdog.rs:164 - ThreadId(19) Calling get_rkpd_attestation_key() Pending: 2.501532238s Overdue 2.001532499s
+10775-07-28 09:00:28.911  1072 13841 W keystore2: system/security/keystore2/src/watchdog.rs:175 - ### Keystore Watchdog report - END ###
+10776:07-28 09:00:28.911 15001 15519 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+10777-07-28 09:00:28.922 14661 14683 I MediaProvider: Observed non-standard /storage/emulated/0/Retrohrai/media/.nomedia
+10778-07-28 09:00:28.924   789   789 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+10779-07-28 09:00:28.925 13568 14090 W ActivityTaskManager: servicetracker HIDL not available
+--
+11110-07-28 09:00:29.911  1072 13841 W keystore2: system/security/keystore2/src/watchdog.rs:124 - and all 1 records below.
+11111-07-28 09:00:29.911  1072 13841 W keystore2: system/security/keystore2/src/watchdog.rs:164 - ThreadId(19) Calling get_rkpd_attestation_key() Pending: 3.501730103s Overdue 3.001730363s
+11112-07-28 09:00:29.911  1072 13841 W keystore2: system/security/keystore2/src/watchdog.rs:175 - ### Keystore Watchdog report - END ###
+11113:07-28 09:00:29.925 15001 15518 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+11114-07-28 09:00:29.973 15001 17361 D ProfileInstaller: Installing profile for com.kei.pulse
+11115-07-28 09:00:29.995 15753 15918 D BufferPoolAccessor2.0: bufferpool2 0xb4000071bac25a18 : 0(0 size) total buffers - 0(0 size) used buffers - 0/5 (recycle/alloc) - 4/38 (fetch/transfer)
+11116-07-28 09:00:29.995 15753 15918 D BufferPoolAccessor2.0: evictor expired: 1, evicted: 1
+--
+11251-07-28 09:00:30.920  1450  1450 I vendor.qti.hardware.servicetrackeraidl-service: size of client connections for client: com.google.android.gmsafter removal is 18
+11252-07-28 09:00:30.920  1437  1437 E vendor.qti.lights: Tri Leds device doesn't exist
+11253-07-28 09:00:30.936 14661 15112 I MediaProvider: Observed non-standard /storage/emulated/0/Retrohrai/media/.nomedia
+11254:07-28 09:00:30.952 15001 15517 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+11255-07-28 09:00:30.952 14661 15112 I MediaProvider: Observed non-standard /storage/emulated/0/Retrohrai/media/.nomedia
+11256-07-28 09:00:30.953  1450  1450 I vendor.qti.hardware.servicetrackeraidl-service: unbindService is called for service : com.google.android.gms/.chimera.PersistentApiService and for client com.google.android.inputmethod.latin
+11257-07-28 09:00:30.953  1450  1450 I vendor.qti.hardware.servicetrackeraidl-service: size of service connections for service: com.google.android.gms/.chimera.PersistentApiServiceafter removal is 27
+--
+11837-07-28 09:00:31.974  1424  1847 W SDM     : HWPeripheralDRM::SetPanelBrightness: Failed to open node = /sys/class/backlight/panel0-backlight/brightness, error = Permission denied 
+11838-07-28 09:00:31.974  1424  1847 W SDM     : executeSetDisplayBrightness: error: Unsupported
+11839-07-28 09:00:31.974  1574  1574 W HwcComposer: command 'DisplayCommand{display: 0, layers: [], colorTransformMatrix: (null), brightness: DisplayBrightness{brightness: 0.211692, brightnessNits: -1.000000}, clientTarget: (null), virtualDisplayOutputBuffer: (null), expectedPresentTime: (null), validateDisplay: false, acceptDisplayChanges: false, presentDisplay: false, presentOrValidateDisplay: false}' generated error 8
+11840:07-28 09:00:31.976 15001 15676 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+11841-07-28 09:00:31.982  1424  1847 W SDM     : HWPeripheralDRM::SetPanelBrightness: Failed to open node = /sys/class/backlight/panel0-backlight/brightness, error = Permission denied 
+11842-07-28 09:00:31.982  1424  1847 W SDM     : executeSetDisplayBrightness: error: Unsupported
+11843-07-28 09:00:31.982  1574  1574 W HwcComposer: command 'DisplayCommand{display: 0, layers: [], colorTransformMatrix: (null), brightness: DisplayBrightness{brightness: 0.205545, brightnessNits: -1.000000}, clientTarget: (null), virtualDisplayOutputBuffer: (null), expectedPresentTime: (null), validateDisplay: false, acceptDisplayChanges: false, presentDisplay: false, presentOrValidateDisplay: false}' generated error 8
+--
+12113-07-28 09:00:32.853  1390  1565 I ANDR-PWR-OPT: PowerHelper: getFps() 168: Returned fps value: 4.900000
+12114-07-28 09:00:32.864 14661 15764 I MediaProvider: Observed non-standard /storage/emulated/0/Retrohrai/media/.nomedia
+12115-07-28 09:00:32.883 14661 15764 I MediaProvider: Observed non-standard /storage/emulated/0/Retrohrai/media/.nomedia
+12116:07-28 09:00:32.996 15001 15519 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+12117-07-28 09:00:33.005 14661 15764 I MediaProvider: Observed non-standard /storage/emulated/0/Retrohrai/media/.nomedia
+12118-07-28 09:00:33.011  1437  1437 E vendor.qti.lights: Tri Leds device doesn't exist
+12119-07-28 09:00:33.028 14661 15764 I MediaProvider: Observed non-standard /storage/emulated/0/Retrohrai/media/.nomedia

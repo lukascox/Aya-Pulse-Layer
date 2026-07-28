@@ -1,0 +1,221 @@
+# TRIMMED 2026-07-28 -- original was 3270 lines / 324K.
+# Full narrative analysis of this capture is in STATUS.md (search for this file's name).
+# Kept: FATAL EXCEPTION/SIGABRT crash backtraces, BatteryService$Led/battery-online lines,
+# real PulseAutoTdp tick lines, PulseDaemon lines, service-start/relaunch markers, each with
+# +/- context. Everything else (routine binder/window-manager/PackageWatchdog reinit
+# cascade/xsu-protocol chatter) was cut -- it added no evidence beyond what's already in
+# STATUS.md.
+# ---
+15-07-27 23:48:32.430 26532 26532 I xsu_api : xsu_recv type and len end
+16-07-27 23:48:32.430 26532 26532 I xsu     : xsu_recv cmd end
+17-07-27 23:48:32.430 26532 26532 I xsu     : end session!
+18:07-27 23:48:32.487 12890 12943 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+19-07-27 23:48:32.520 26541 26541 I xsu     : sending cmd:cat '/sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq' 2>/dev/null
+20-07-27 23:48:32.520 26541 26541 I xsu     : sending cmd end:cat '/sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq' 2>/dev/null
+21-07-27 23:48:32.520 26541 26541 I xsu     : free cmd end
+--
+231-07-27 23:48:33.235 25806 25806 I HidlServiceManagement: getService: Trying again for vendor.qti.diaghal@1.0::Idiag/default...
+232-07-27 23:48:33.236   782 26584 W libc    : Unable to set property "ctl.interface_start" to "vendor.qti.diaghal@1.0::Idiag/default": error code: 0x20
+233-07-27 23:48:33.236   782 26584 I hwservicemanager: Tried to start vendor.qti.diaghal@1.0::Idiag/default as a lazy service, but was unable to. Usually this happens when a service is not installed, but if the service is intended to be used as a lazy service, then it may be configured incorrectly.
+234:07-27 23:48:33.507 12890 13046 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+235-07-27 23:48:33.736 26585 26585 I xsu     : sending cmd:cat '/sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq' 2>/dev/null
+236-07-27 23:48:33.736 26585 26585 I xsu     : sending cmd end:cat '/sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq' 2>/dev/null
+237-07-27 23:48:33.736 26585 26585 I xsu     : free cmd end
+--
+484-07-27 23:48:34.479 26629 26629 I xsu_api : xsu_recv type and len end
+485-07-27 23:48:34.479 26629 26629 I xsu     : xsu_recv cmd end
+486-07-27 23:48:34.479 26629 26629 I xsu     : end session!
+487:07-27 23:48:34.527 12890 13045 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+488-07-27 23:48:34.560 26635 26635 I xsu     : sending cmd:cat '/sys/devices/system/cpu/cpufreq/policy7/scaling_cur_freq' 2>/dev/null
+489-07-27 23:48:34.560 26635 26635 I xsu     : sending cmd end:cat '/sys/devices/system/cpu/cpufreq/policy7/scaling_cur_freq' 2>/dev/null
+490-07-27 23:48:34.560 26635 26635 I xsu     : free cmd end
+--
+622-07-27 23:48:34.776   782   782 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+623-07-27 23:48:34.776  2275  2562 W ActivityTaskManager: servicetracker HIDL not available
+624-07-27 23:48:34.776  2275  2562 E ActivityTaskManager: Unable to get servicetracker HAL instance
+625:07-27 23:48:34.777  2275  2562 I ActivityTaskManager: START u0 {act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10010000 pkg=com.mojang.minecraftpe cmp=com.mojang.minecraftpe/.MainActivity} with LAUNCH_SINGLE_TASK from uid 10179 (BAL_ALLOW_ALLOWLISTED_COMPONENT) result code=0
+626:07-27 23:48:34.778  2622  2656 V WindowManagerShell: Transition requested: android.os.BinderProxy@3667a15 TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=28 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10010000 pkg=com.mojang.minecraftpe cmp=com.mojang.minecraftpe/.MainActivity } baseActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} topActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} origActivity=null realActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} numActivities=1 lastActiveTime=3399392 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@d12912a} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{99ecb1b com.mojang.minecraftpe.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null }
+627-07-27 23:48:34.778  4339  7857 W InputReader: pauseServer
+628-07-27 23:48:34.778  2275  2325 D CompatibilityChangeReporter: Compat change id reported: 135634846; UID 10189; state: DISABLED
+629-07-27 23:48:34.778  2275  2325 D CompatibilityChangeReporter: Compat change id reported: 177438394; UID 10189; state: DISABLED
+--
+693-07-27 23:48:34.792  2622  2656 V WindowManagerShell:  try handler com.android.wm.shell.pip.PipTransition@28c237b
+694-07-27 23:48:34.792  2622  2656 V WindowManagerShell:  try handler com.android.wm.shell.splitscreen.StageCoordinator@49cc598
+695-07-27 23:48:34.792  2622  2656 V WindowManagerShell:  try handler com.android.wm.shell.transition.RemoteTransitionHandler@684a1f1
+696:07-27 23:48:34.792  2275  2322 V WindowManager: Sent Transition #68 createdAt=07-27 23:48:34.770 via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=28 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10010000 pkg=com.mojang.minecraftpe cmp=com.mojang.minecraftpe/.MainActivity } baseActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} topActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} origActivity=null realActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} numActivities=1 lastActiveTime=3399392 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{65220a3 Task{4da70 #28 type=standard A=10189:com.mojang.minecraftpe}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{7fbbfa0 com.mojang.minecraftpe.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null }
+697-07-27 23:48:34.792  2622  2656 V WindowManagerShell: Transition doesn't have explicit remote, search filters for match for {id=68 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@89b1285} m=OPEN f=NO_ANIMATION leash=Surface(name=Task=28)/@0xd06dce sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0},{WCT{android.window.IWindowContainerToken$Stub$Proxy@18998da} m=TO_BACK f=NONE leash=Surface(name=Task=1)/@0x587b4ef sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0}]}
+698-07-27 23:48:34.792  2275  2322 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+699-07-27 23:48:34.792  2622  2656 V WindowManagerShell:  Delegate animation for #68 to null
+--
+971-07-27 23:48:35.182 26659 26730 I Minecraft: android_main starting. internalDataPath is '/data/user/0/com.mojang.minecraftpe/files', externalDataPath is '/storage/emulated/0/Android/data/com.mojang.minecraftpe/files'
+972-07-27 23:48:35.183 26659 26730 E MCPE    : *** setCachedDeviceId(a76b9d6c45724eb9899fab0033919833)
+973-07-27 23:48:35.183 26659 26730 I Bedrock : Breakpad config: directory is: /data/user/0/com.mojang.minecraftpe/crash, sessionid is: bb539d35-8654-49f7-9317-6c6181f3a809
+974:07-27 23:48:35.184 26659 26730 E XNNPACK : failed to parse the list of possible processors in /sys/devices/system/cpu/possible
+975:07-27 23:48:35.184 26659 26730 E XNNPACK : failed to parse the list of present processors in /sys/devices/system/cpu/present
+976:07-27 23:48:35.184 26659 26730 E XNNPACK : failed to parse both lists of possible and present processors
+977-07-27 23:48:35.184 26724 26724 I xsu_api : xsu_recv retry end
+978-07-27 23:48:35.184 26724 26724 I xsu_api : ret=4, version=200, type=1, payload_size=12
+979-07-27 23:48:35.184 26724 26724 I xsu_api : xsu_recv type and len
+--
+998-07-27 23:48:35.185  1524  1524 I vendor.qti.hardware.servicetrackeraidl-service: total connections for client : com.mojang.minecraftpeare :3
+999-07-27 23:48:35.186 26659 26730 I Minecraft: NO LOG FILE! - AppPlatform_android::setStorageDirectory - using AppData dir - CurrentFileStoragePath is now '/data/user/0/com.mojang.minecraftpe'
+1000-07-27 23:48:35.186 26659 26730 I Minecraft: 
+1001:07-27 23:48:35.186 26659 26730 F XNNPACK : cpuinfo_get_packages_count called before cpuinfo is initialized
+1002-07-27 23:48:35.186 26659 26730 W Bedrock : Breakpad _filterCallback called
+1003-07-27 23:48:35.194 26659 26730 W Bedrock : Breakpad _dumpCallback called, dump path: /data/user/0/com.mojang.minecraftpe/crash/bb539d35-8654-49f7-9317-6c6181f3a809.dmp
+1004---------- beginning of crash
+1005:07-27 23:48:35.194 26659 26730 F libc    : Fatal signal 6 (SIGABRT), code -6 (SI_TKILL) in tid 26730 (Thread-5), pid 26659 (ang.minecraftpe)
+1006-07-27 23:48:35.198 26734 26734 I top     : type=1400 audit(0.0:76581): avc:  denied  { read } for  name="pid_max" dev="proc" ino=846008 scontext=u:r:system_app:s0 tcontext=u:object_r:proc_pid_max:s0 tclass=file permissive=1
+1007-07-27 23:48:35.198 26734 26734 I top     : type=1400 audit(0.0:76582): avc:  denied  { open } for  path="/proc/sys/kernel/pid_max" dev="proc" ino=846008 scontext=u:r:system_app:s0 tcontext=u:object_r:proc_pid_max:s0 tclass=file permissive=1
+1008-07-27 23:48:35.198 26734 26734 I top     : type=1400 audit(0.0:76583): avc:  denied  { read } for  scontext=u:r:system_app:s0 tcontext=u:r:servicemanager:s0 tclass=file permissive=1
+--
+1059-07-27 23:48:35.296 26737 26737 F DEBUG   : uid: 10189
+1060-07-27 23:48:35.296 26737 26737 F DEBUG   : tagged_addr_ctrl: 0000000000000001 (PR_TAGGED_ADDR_ENABLE)
+1061-07-27 23:48:35.296 26737 26737 F DEBUG   : pac_enabled_keys: 000000000000000f (PR_PAC_APIAKEY, PR_PAC_APIBKEY, PR_PAC_APDAKEY, PR_PAC_APDBKEY)
+1062:07-27 23:48:35.296 26737 26737 F DEBUG   : signal 6 (SIGABRT), code -6 (SI_TKILL), fault addr --------
+1063:07-27 23:48:35.296 26737 26737 F DEBUG   : Abort message: 'cpuinfo_get_packages_count called before cpuinfo is initialized'
+1064-07-27 23:48:35.296 26737 26737 F DEBUG   :     x0  0000000000000000  x1  000000000000686a  x2  0000000000000006  x3  0000006c396ee1c0
+1065-07-27 23:48:35.296 26737 26737 F DEBUG   :     x4  646b6b60621f736d  x5  646b6b60621f736d  x6  646b6b60621f736d  x7  7f7f7f7f7f7f7f7f
+1066-07-27 23:48:35.296 26737 26737 F DEBUG   :     x8  00000000000000f0  x9  000000705a0331b8  x10 0000000000000001  x11 000000705a07b924
+--
+1074-07-27 23:48:35.296 26737 26737 F DEBUG   : backtrace:
+1075-07-27 23:48:35.296 26737 26737 F DEBUG   :       #00 pc 000000000005b650  /apex/com.android.runtime/lib64/bionic/libc.so (abort+168) (BuildId: 50118287324a156bc7be11d3d940c7be)
+1076-07-27 23:48:35.296 26737 26737 F DEBUG   :       #01 pc 0000000007b6748c  /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libminecraftpe.so (BuildId: 2e318db12824cadb2618754ab7c82fa96fb30659)
+1077:07-27 23:48:35.296 26737 26737 F DEBUG   :       #02 pc 0000000007b6774c  /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libminecraftpe.so (cpuinfo_get_packages_count+40) (BuildId: 2e318db12824cadb2618754ab7c82fa96fb30659)
+1078-07-27 23:48:35.296 26737 26737 F DEBUG   :       #03 pc 0000000008534fa8  /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libminecraftpe.so (BuildId: 2e318db12824cadb2618754ab7c82fa96fb30659)
+1079-07-27 23:48:35.296 26737 26737 F DEBUG   :       #04 pc 0000000008527c64  /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libminecraftpe.so (BuildId: 2e318db12824cadb2618754ab7c82fa96fb30659)
+1080-07-27 23:48:35.296 26737 26737 F DEBUG   :       #05 pc 0000000007c181e0  /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libminecraftpe.so (BuildId: 2e318db12824cadb2618754ab7c82fa96fb30659)
+1081-07-27 23:48:35.296 26737 26737 F DEBUG   :       #06 pc 00000000000c3644  /apex/com.android.runtime/lib64/bionic/libc.so (__pthread_start(void*)+208) (BuildId: 50118287324a156bc7be11d3d940c7be)
+1082-07-27 23:48:35.296 26737 26737 F DEBUG   :       #07 pc 000000000005cfa4  /apex/com.android.runtime/lib64/bionic/libc.so (__start_thread+68) (BuildId: 50118287324a156bc7be11d3d940c7be)
+1083-07-27 23:48:35.304  2275 26748 I DropBoxManagerService: add tag=data_app_native_crash isTagEnabled=true flags=0x2
+1084:07-27 23:48:35.304  2275 26747 W ActivityTaskManager:   Force finishing activity com.mojang.minecraftpe/.MainActivity
+1085-07-27 23:48:35.304  2622  2656 V WindowManagerShell: Transition requested: android.os.BinderProxy@e303683 TransitionRequestInfo { type = CLOSE, triggerTask = null, remoteTransition = null, displayChange = null }
+1086-07-27 23:48:35.305  2275 26747 D ActivityTrigger: ActivityTrigger activityPauseTrigger 
+1087-07-27 23:48:35.306   782   782 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+--
+1148-07-27 23:48:35.326  2275  2323 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@e333ac0
+1149-07-27 23:48:35.326  2275  2323 D CoreBackPreview: Window{87dbeaf u0 Application Error: com.mojang.minecraftpe}: Setting back callback null
+1150-07-27 23:48:35.326  1524  1524 I vendor.qti.hardware.servicetrackeraidl-service: killProcess is called for pid : 26659
+1151:07-27 23:48:35.326  2275 26747 W ActivityTaskManager:   Force finishing activity com.mojang.minecraftpe/.MainActivity
+1152-07-27 23:48:35.326  1524  1524 I vendor.qti.hardware.servicetrackeraidl-service: process with pid 26659 is client
+1153-07-27 23:48:35.326  1524  1524 I vendor.qti.hardware.servicetrackeraidl-service: size of service connections for service: com.android.vending/com.google.android.finsky.services.LicensingServiceafter removal is 0
+1154-07-27 23:48:35.326  1524  1524 I vendor.qti.hardware.servicetrackeraidl-service: size of service connections for service: com.google.android.gms/.gcm.PushMessagingRegistrarProxyafter removal is 0
+--
+1305-07-27 23:48:35.487 26766 26766 I xsu_api : xsu_recv type and len end
+1306-07-27 23:48:35.487 26766 26766 I xsu     : xsu_recv cmd end
+1307-07-27 23:48:35.487 26766 26766 I xsu     : end session!
+1308:07-27 23:48:35.532 12890 13043 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+1309-07-27 23:48:35.579 26772 26772 I xsu     : sending cmd:cat '/sys/class/kgsl/kgsl-3d0/max_pwrlevel' 2>/dev/null
+1310-07-27 23:48:35.579 26772 26772 I xsu     : sending cmd end:cat '/sys/class/kgsl/kgsl-3d0/max_pwrlevel' 2>/dev/null
+1311-07-27 23:48:35.579 26772 26772 I xsu     : free cmd end
+--
+1398-07-27 23:48:35.791 26784 26784 I xsu_api : xsu_recv type and len end
+1399-07-27 23:48:35.791 26784 26784 I xsu     : xsu_recv cmd end
+1400-07-27 23:48:35.791 26784 26784 I xsu     : end session!
+1401:07-27 23:48:35.805  2275  2325 W ActivityTaskManager: Activity top resumed state loss timeout for ActivityRecord{dd6a4b3 u0 com.mojang.minecraftpe/.MainActivity t28 f} isExiting}
+1402-07-27 23:48:35.811  2275  4042 V AlarmManager: set(PendingIntent{778e381: PendingIntentRecord{a905c26 com.google.android.gms/com.google.android.gms.container startService}}) : type=3 triggerAtTime=2036-07-24 23:48:35 win=3600000 maxElapsed=315367000426 interval=0 flags=0x0 callingUid=10097
+1403-07-27 23:48:35.818  1524  1524 I vendor.qti.hardware.servicetrackeraidl-service: bindService is called for service : com.google.android.gms/.chimera.PersistentDirectBootAwareApiService and for client com.google.android.gms.persistent
+1404-07-27 23:48:35.818  1524  1524 I vendor.qti.hardware.servicetrackeraidl-service: total connections for service : com.google.android.gms/.chimera.PersistentDirectBootAwareApiServiceare :10
+--
+1630-07-27 23:48:36.497 26831 26831 I xsu_api : xsu_recv type and len end
+1631-07-27 23:48:36.497 26831 26831 I xsu     : xsu_recv cmd end
+1632-07-27 23:48:36.497 26831 26831 I xsu     : end session!
+1633:07-27 23:48:36.537 12890 12942 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+1634-07-27 23:48:36.590 26837 26837 I xsu     : sending cmd:cat '/sys/class/kgsl/kgsl-3d0/max_pwrlevel' 2>/dev/null
+1635-07-27 23:48:36.590 26837 26837 I xsu     : sending cmd end:cat '/sys/class/kgsl/kgsl-3d0/max_pwrlevel' 2>/dev/null
+1636-07-27 23:48:36.590 26837 26837 I xsu     : free cmd end
+--
+1829-07-27 23:48:37.241 25806 25806 I HidlServiceManagement: getService: Trying again for vendor.qti.diaghal@1.0::Idiag/default...
+1830-07-27 23:48:37.242   782 26877 W libc    : Unable to set property "ctl.interface_start" to "vendor.qti.diaghal@1.0::Idiag/default": error code: 0x20
+1831-07-27 23:48:37.242   782 26877 I hwservicemanager: Tried to start vendor.qti.diaghal@1.0::Idiag/default as a lazy service, but was unable to. Usually this happens when a service is not installed, but if the service is intended to be used as a lazy service, then it may be configured incorrectly.
+1832:07-27 23:48:37.565 12890 12942 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+1833-07-27 23:48:37.582  2275  2275 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+1834-07-27 23:48:37.582  2275  2275 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+1835-07-27 23:48:37.582  2275  2275 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+--
+1900-07-27 23:48:37.664   782   782 I hwservicemanager: getTransport: Cannot find entry vendor.qti.hardware.servicetracker@1.2::IServicetracker/default in either framework or device VINTF manifest.
+1901-07-27 23:48:37.664  2275  5521 W ActivityTaskManager: servicetracker HIDL not available
+1902-07-27 23:48:37.664  2275  5521 E ActivityTaskManager: Unable to get servicetracker HAL instance
+1903:07-27 23:48:37.665  2622  2656 V WindowManagerShell: Transition requested: android.os.BinderProxy@49a2b66 TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=29 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10010000 pkg=com.mojang.minecraftpe cmp=com.mojang.minecraftpe/.MainActivity } baseActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} topActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} origActivity=null realActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} numActivities=1 lastActiveTime=3402279 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@5c1bea7} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{7bf3f54 com.mojang.minecraftpe.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null }
+1904-07-27 23:48:37.665  1461  1506 I ANDR-PWR-OPT: PowerAppClassifier: getAppType() 59: checking app [com.mojang.minecraftpe] is type 2
+1905:07-27 23:48:37.665  2275  5521 I ActivityTaskManager: START u0 {act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10010000 pkg=com.mojang.minecraftpe cmp=com.mojang.minecraftpe/.MainActivity} with LAUNCH_SINGLE_TASK from uid 10179 (BAL_ALLOW_ALLOWLISTED_COMPONENT) result code=0
+1906-07-27 23:48:37.665  1461  1506 I QLM-Client-Lib: qlm_client_init: Initialized client poweropt-service
+1907-07-27 23:48:37.665  1461  1506 I ANDR-PWR-OPT: PowerAppClassifier: getAppType() 59: checking app [com.retrohrai.launcher] is type 4
+1908-07-27 23:48:37.666  2275  4042 W WindowManager: Failed looking up window session=Session{5e0eb81 2622:u0a10132} callers=com.android.server.wm.WindowManagerService.windowForClientLocked:6067 com.android.server.wm.Session.updateRequestedVisibleTypes:690 android.view.IWindowSession$Stub.onTransact:1034 
+--
+1955-07-27 23:48:37.682  1513  1559 E ANDR-PERF-OPTSHANDLER: ANDR-PERF-OPTSHANDLER: modify_sysfsnode() 1095: Failed to read /sys/devices/system/cpu/cpufreq/policy5/walt/adaptive_low_freq
+1956-07-27 23:48:37.682  1513  1559 E ANDR-PERF-RESOURCEQS: ANDR-PERF-RESOURCEQS: AddAndApply() 167: Failed to apply optimization [2, 2]
+1957-07-27 23:48:37.682  1513  1559 E ANDR-PERF-RESOURCEQS: ANDR-PERF-RESOURCEQS: AddAndApply() 131: Resource value ffffffff is not supported
+1958:07-27 23:48:37.683  2275  2322 V WindowManager: Sent Transition #70 createdAt=07-27 23:48:37.658 via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=29 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10010000 pkg=com.mojang.minecraftpe cmp=com.mojang.minecraftpe/.MainActivity } baseActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} topActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} origActivity=null realActivity=ComponentInfo{com.mojang.minecraftpe/com.mojang.minecraftpe.MainActivity} numActivities=1 lastActiveTime=3402279 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{de52f3f Task{2d967dc #29 type=standard A=10189:com.mojang.minecraftpe}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{8b4800c com.mojang.minecraftpe.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null }
+1959-07-27 23:48:37.683  2275  2322 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+1960-07-27 23:48:37.683  2275  2322 V WindowManager:     info={id=70 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{RemoteToken{de52f3f Task{2d967dc #29 type=standard A=10189:com.mojang.minecraftpe}}} m=OPEN f=NO_ANIMATION leash=Surface(name=Task=29)/@0xa8a5099 sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0},{WCT{RemoteToken{8cff527 Task{4f4c499 #1 type=home}}} m=TO_BACK f=NONE leash=Surface(name=Task=1)/@0x51ec9eb sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0}]}
+1961-07-27 23:48:37.684  2622  2656 V WindowManagerShell: onTransitionReady android.os.BinderProxy@49a2b66: {id=70 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@e7a3a16} m=OPEN f=NO_ANIMATION leash=Surface(name=Task=29)/@0xac692bb sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0},{WCT{android.window.IWindowContainerToken$Stub$Proxy@ac19f97} m=TO_BACK f=NONE leash=Surface(name=Task=1)/@0xee3a3d8 sb=Rect(0, 0 - 1920, 1080) eb=Rect(0, 0 - 1920, 1080) d=0}]}
+--
+2224-07-27 23:48:38.062 26882 26948 I Minecraft: android_main starting. internalDataPath is '/data/user/0/com.mojang.minecraftpe/files', externalDataPath is '/storage/emulated/0/Android/data/com.mojang.minecraftpe/files'
+2225-07-27 23:48:38.063 26882 26948 E MCPE    : *** setCachedDeviceId(a76b9d6c45724eb9899fab0033919833)
+2226-07-27 23:48:38.063 26882 26948 I Bedrock : Breakpad config: directory is: /data/user/0/com.mojang.minecraftpe/crash, sessionid is: 4e51f5d0-35cf-48e9-8088-425be78debdd
+2227:07-27 23:48:38.064 26882 26948 E XNNPACK : failed to parse the list of possible processors in /sys/devices/system/cpu/possible
+2228:07-27 23:48:38.064 26882 26948 E XNNPACK : failed to parse the list of present processors in /sys/devices/system/cpu/present
+2229:07-27 23:48:38.064 26882 26948 E XNNPACK : failed to parse both lists of possible and present processors
+2230-07-27 23:48:38.064 26882 26924 W ServiceBindIntentUtils: Dynamic lookup for intent failed for action: com.google.android.gms.games.internal.connect.service.START
+2231-07-27 23:48:38.065 26882 26948 I System.out: getwidth: 1920
+2232-07-27 23:48:38.065 26882 26948 I System.out: getheight: 1024
+--
+2235-07-27 23:48:38.065  1524  1524 I vendor.qti.hardware.servicetrackeraidl-service: total connections for client : com.mojang.minecraftpeare :3
+2236-07-27 23:48:38.066 26882 26948 I Minecraft: NO LOG FILE! - AppPlatform_android::setStorageDirectory - using AppData dir - CurrentFileStoragePath is now '/data/user/0/com.mojang.minecraftpe'
+2237-07-27 23:48:38.066 26882 26948 I Minecraft: 
+2238:07-27 23:48:38.066 26882 26948 F XNNPACK : cpuinfo_get_packages_count called before cpuinfo is initialized
+2239-07-27 23:48:38.066 26882 26948 W Bedrock : Breakpad _filterCallback called
+2240-07-27 23:48:38.076 26882 26948 W Bedrock : Breakpad _dumpCallback called, dump path: /data/user/0/com.mojang.minecraftpe/crash/4e51f5d0-35cf-48e9-8088-425be78debdd.dmp
+2241:07-27 23:48:38.076 26882 26948 F libc    : Fatal signal 6 (SIGABRT), code -6 (SI_TKILL) in tid 26948 (Thread-5), pid 26882 (ang.minecraftpe)
+2242-07-27 23:48:38.096 26955 26955 I crash_dump64: obtaining output fd from tombstoned, type: kDebuggerdTombstoneProto
+2243-07-27 23:48:38.097  1120  1120 I tombstoned: received crash request for pid 26948
+2244-07-27 23:48:38.097 26955 26955 I crash_dump64: performing dump of process 26882 (target tid = 26948)
+--
+2285-07-27 23:48:38.176 26955 26955 F DEBUG   : uid: 10189
+2286-07-27 23:48:38.176 26955 26955 F DEBUG   : tagged_addr_ctrl: 0000000000000001 (PR_TAGGED_ADDR_ENABLE)
+2287-07-27 23:48:38.176 26955 26955 F DEBUG   : pac_enabled_keys: 000000000000000f (PR_PAC_APIAKEY, PR_PAC_APIBKEY, PR_PAC_APDAKEY, PR_PAC_APDBKEY)
+2288:07-27 23:48:38.176 26955 26955 F DEBUG   : signal 6 (SIGABRT), code -6 (SI_TKILL), fault addr --------
+2289:07-27 23:48:38.176 26955 26955 F DEBUG   : Abort message: 'cpuinfo_get_packages_count called before cpuinfo is initialized'
+2290-07-27 23:48:38.176 26955 26955 F DEBUG   :     x0  0000000000000000  x1  0000000000006944  x2  0000000000000006  x3  0000006c350b51c0
+2291-07-27 23:48:38.176 26955 26955 F DEBUG   :     x4  646b6b60621f736d  x5  646b6b60621f736d  x6  646b6b60621f736d  x7  7f7f7f7f7f7f7f7f
+2292-07-27 23:48:38.176 26955 26955 F DEBUG   :     x8  00000000000000f0  x9  000000705a0331b8  x10 0000000000000001  x11 000000705a07b924
+--
+2300-07-27 23:48:38.176 26955 26955 F DEBUG   : backtrace:
+2301-07-27 23:48:38.176 26955 26955 F DEBUG   :       #00 pc 000000000005b650  /apex/com.android.runtime/lib64/bionic/libc.so (abort+168) (BuildId: 50118287324a156bc7be11d3d940c7be)
+2302-07-27 23:48:38.176 26955 26955 F DEBUG   :       #01 pc 0000000007b6748c  /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libminecraftpe.so (BuildId: 2e318db12824cadb2618754ab7c82fa96fb30659)
+2303:07-27 23:48:38.176 26955 26955 F DEBUG   :       #02 pc 0000000007b6774c  /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libminecraftpe.so (cpuinfo_get_packages_count+40) (BuildId: 2e318db12824cadb2618754ab7c82fa96fb30659)
+2304-07-27 23:48:38.176 26955 26955 F DEBUG   :       #03 pc 0000000008534fa8  /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libminecraftpe.so (BuildId: 2e318db12824cadb2618754ab7c82fa96fb30659)
+2305-07-27 23:48:38.176 26955 26955 F DEBUG   :       #04 pc 0000000008527c64  /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libminecraftpe.so (BuildId: 2e318db12824cadb2618754ab7c82fa96fb30659)
+2306-07-27 23:48:38.176 26955 26955 F DEBUG   :       #05 pc 0000000007c181e0  /data/app/~~z5Bj86RJXOYVREFKwyAGgQ==/com.mojang.minecraftpe-mr-yYT0p4xN8ZszWmPlwrg==/lib/arm64/libminecraftpe.so (BuildId: 2e318db12824cadb2618754ab7c82fa96fb30659)
+2307-07-27 23:48:38.176 26955 26955 F DEBUG   :       #06 pc 00000000000c3644  /apex/com.android.runtime/lib64/bionic/libc.so (__pthread_start(void*)+208) (BuildId: 50118287324a156bc7be11d3d940c7be)
+2308-07-27 23:48:38.176 26955 26955 F DEBUG   :       #07 pc 000000000005cfa4  /apex/com.android.runtime/lib64/bionic/libc.so (__start_thread+68) (BuildId: 50118287324a156bc7be11d3d940c7be)
+2309-07-27 23:48:38.184  2275 26965 I DropBoxManagerService: add tag=data_app_native_crash isTagEnabled=true flags=0x2
+2310:07-27 23:48:38.184  2275 26964 W ActivityTaskManager:   Force finishing activity com.mojang.minecraftpe/.MainActivity
+2311-07-27 23:48:38.184  2622  2656 V WindowManagerShell: Transition requested: android.os.BinderProxy@27675ee TransitionRequestInfo { type = CLOSE, triggerTask = null, remoteTransition = null, displayChange = null }
+2312-07-27 23:48:38.185  2275 26964 D ActivityTrigger: ActivityTrigger activityPauseTrigger 
+2313-07-27 23:48:38.185  1120  1120 E tombstoned: Tombstone written to: tombstone_18
+--
+2577-07-27 23:48:38.553 26994 26994 I xsu_api : xsu_recv type and len end
+2578-07-27 23:48:38.553 26994 26994 I xsu     : xsu_recv cmd end
+2579-07-27 23:48:38.553 26994 26994 I xsu     : end session!
+2580:07-27 23:48:38.569 12890 13045 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+2581-07-27 23:48:38.646 27000 27000 I xsu     : sending cmd:cat '/sys/class/kgsl/kgsl-3d0/gpuclk' 2>/dev/null
+2582-07-27 23:48:38.646 27000 27000 I xsu     : sending cmd end:cat '/sys/class/kgsl/kgsl-3d0/gpuclk' 2>/dev/null
+2583-07-27 23:48:38.646 27000 27000 I xsu     : free cmd end
+--
+2610-07-27 23:48:38.653 27000 27000 I xsu     : end session!
+2611-07-27 23:48:38.677  4385  4385 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@4fe4e58
+2612-07-27 23:48:38.677  2275  2679 D CoreBackPreview: Window{87bc4d5 u0 com.retrohrai.launcher/com.retrohrai.launcher.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@4eb8ef6, mPriority=-1, mIsAnimationCallback=false}
+2613:07-27 23:48:38.684  2275  2325 W ActivityTaskManager: Activity top resumed state loss timeout for ActivityRecord{490944f u0 com.mojang.minecraftpe/.MainActivity t29 f} isExiting}
+2614-07-27 23:48:38.692  3346 27006 I DropBoxUtil: (REDACTED) Reading dropbox entry with tag %s and timestamp %d
+2615-07-27 23:48:38.693  1524  1524 I vendor.qti.hardware.servicetrackeraidl-service: destroyService is called for service : com.google.android.gms/.stats.service.DropBoxEntryAddedService
+2616-07-27 23:48:38.731  2622  2656 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#71)android.os.BinderProxy@27675ee@0
+--
+3014-07-27 23:48:39.562 27079 27079 I xsu_api : xsu_recv type and len end
+3015-07-27 23:48:39.562 27079 27079 I xsu     : xsu_recv cmd end
+3016-07-27 23:48:39.562 27079 27079 I xsu     : end session!
+3017:07-27 23:48:39.574 12890 12949 D PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+3018-07-27 23:48:39.656 27085 27085 I xsu     : sending cmd:cat '/sys/class/power_supply/battery/status' 2>/dev/null
+3019-07-27 23:48:39.656 27085 27085 I xsu     : sending cmd end:cat '/sys/class/power_supply/battery/status' 2>/dev/null
+3020-07-27 23:48:39.656 27085 27085 I xsu     : free cmd end

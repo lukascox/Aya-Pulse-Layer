@@ -6,6 +6,84 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## RETRACTED (2026-07-28): AutoTDP regulation is NOT confirmed working — prior "DEFINITIVELY CONFIRMED" ground-truth claim doesn't hold up
+
+The entry below ("Ground-truth re-verification, independent of logcat entirely")
+claimed `poll-cpufreq.sh` proved genuine load-adaptive regulation, citing
+`cap_poll5.log`'s converged cap combination and "in one longer session the cap
+itself visibly moved over real time (policy2: `3148800→1286400→1612800→
+1708800→1612800`)". Re-checked directly against the raw logs this session —
+**that sequence never occurs within one continuous capture.** Every single
+`cap_poll*.log` file (1 through 8, both with-pulse and no-pulse variants) is
+**100% flat for its own entire duration** — the differing values the prior
+write-up cited only appear when comparing *different* capture files (separate
+sessions, different times/game state), not a live regulation trace. That's a
+materially weaker form of evidence than "visibly moved over real time" implies.
+
+**Confirmed with a direct no-pulse baseline**: `cap_poll6_no_pulse.log` and
+`cap_poll7_no_pulse.log` (`pulse-for-aya` fully uninstalled) sit flat at
+`787200/3148800/2956800/3052800` — **identical** to what `cap_poll4`/`cap_poll5`
+(supposedly "pulse active, genuinely regulating") showed. Strong evidence these
+numbers are just this device's own stock/boot-default `scaling_max_freq`
+ceiling, not AutoTDP's output at all.
+
+**Two follow-up attempts to catch real regulation both ended in the same
+recurring crash before enough data accumulated**: `cap_poll7_with_pulse.log`
+(started 08:59:18) and `cap_poll8_with_pulse.log` (started ~09:03) each show
+`adb shell` starting to return **empty fields mid-capture** — the device going
+unresponsive, not "no change." `minecraft_crash_7.log`/`minecraft_crash_8.log`
+(host `adb logcat`, pulled same session) confirm both are the **same
+already-root-caused crash** documented further down this file: `xsud` SIGABRT
+pileup → `BatteryService$Led` → `*** FATAL EXCEPTION IN SYSTEM PROCESS`
+(`crash_7`: 09:00:19.463; `crash_8`: 09:04:42.583) → full `system_server`
+reinit. **This is on the build with last session's `PulseDaemon` FIFO fix** —
+confirms that fix alone doesn't prevent the crash, which tracks: it only
+migrated the one-shot governor-engage call at `startAutoTdp()`; `AutoTuneController`'s
+own per-tick CPU/GPU cap writes — the actual regulation loop, and per the prior
+session's own theory the dominant contributor to `xsu` connection volume —
+still go through plain `xsu`, unchanged.
+
+**One genuine positive data point, `minecraft_crash_8.log:5767`, 09:04:36.292
+(6s before that session's crash)**: a real (non-`TICK-SKIP`) `PulseAutoTdp`
+tick line — `tgt=120 fps=120.0 jank=0 tail=8ms act=TRIM ... caps%[0:100,2:95,
+5:100,7:100,-100:100] curMHz[0:1689,2:1497,5:2131,7:480] gpu=310 gcap=1050[0/13]
+lrn=0` — the first time in this entire investigation `stepAutoTdp()` has been
+caught actually computing a trim (policy2 cap → 95%). Single sample, crash
+followed 6s later, so not yet confirmed to repeat or to actually land as a
+written `scaling_max_freq` change — promising, not conclusive.
+
+**Revised conclusion**: downgrade "DEFINITIVELY CONFIRMED...real, live,
+load-adaptive regulation" to **NOT CONFIRMED**. Honest current state: no
+continuous capture has ever shown `scaling_max_freq` move within one session;
+the one real regulation-tick log line found is real but unrepeated; every
+real-gameplay attempt so far has been cut short by the recurring crash before
+more evidence could accumulate. The two threads are now coupled — can't verify
+regulation without a session surviving long enough, and surviving long enough
+needs the `AutoTuneController` cap-write migration below.
+
+**New INCIDENT note**: this session hit the crash twice (`cap_poll7`,
+`cap_poll8`) while running `pulse-for-aya` + `ab-logger`'s poll script together
+during real Minecraft gameplay — reinforces `CLAUDE.md`'s existing hard rule
+against doing this unsupervised; do not leave a session like this running
+unattended.
+
+**Next steps, in order**: (1) migrate `AutoTuneController`'s own CPU/GPU cap
+writes to the `PulseDaemon` FIFO too, not just the governor engage — should
+cut `xsu` volume enough to let a real session survive past the crash window;
+(2) add in-app file-based logging to `/sdcard` (timestamped per session) so a
+session's real tick-by-tick behavior is captured directly from the app even if
+the device crashes before host `logcat` can be pulled or `adb` reconnects.
+
+**Supplementary, same session**: `minecraft_reboot_repro.log` (2026-07-27
+23:48, host logcat) captured Minecraft's own launch crash directly — `Fatal
+signal 6 (SIGABRT)` in `ang.minecraftpe`'s own `Thread-5` (code `-6 SI_TKILL`),
+twice in a row across an automatic relaunch. Consistent with the existing
+cpuinfo/XNNPACK-crashes-mid-hotplug theory (a *different* failure shape than
+the `BatteryService$Led` crash above — this one is Minecraft's own process
+aborting, not `system_server`), but the capture starts after the install
+moment, so it doesn't confirm or deny the boot-receiver hypothesis
+specifically — still open.
+
 ## RESOLVED (2026-07-27, later session): AutoTDP's own tick loop — root cause found and fixed
 
 Raised by the user (2026-07-27 night) after a clean ~2m49s Minecraft
