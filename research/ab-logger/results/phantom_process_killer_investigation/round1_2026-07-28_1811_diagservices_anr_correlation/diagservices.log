@@ -1,0 +1,34 @@
+# TRIMMED -- com.qti.diagservices ANR-restart-loop, chronic device condition (NOT caused by PULSE).
+# Original capture: 346 lines, 32 ANR cycles, every ~20s, continuous for the whole
+# ~10.5min session (18:11:12 -> 18:21:35), unrelated to whether PULSE/AutoTDP was even engaged.
+# Every cycle is byte-identical except timestamp/pid: Timeout -> ANR -> Kill -> died (persistent,
+# exempt from freezer) -> Scheduling restart -> Start proc. Kept: first full cycle, last full cycle
+# (incl. the restarted process's own init noise), elided the 30 identical middle cycles.
+# Cross-reference: phantom.log in this same folder -- every com.kei.pulse/xsu phantom-process kill
+# lines up within <30ms of one of these ANR timestamps (see NOTES.md).
+# ---
+07-28 18:11:12.232  2287  2343 W ActivityManager: Timeout executing service: ServiceRecord{f71275f u0 com.qti.diagservices/.QTIDiagServices}
+07-28 18:11:12.290  2287 10884 E ActivityManager: ANR in com.qti.diagservices
+07-28 18:11:12.290  2287 10884 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 18:11:12.291  2287 10884 I ActivityManager: Killing 9781:com.qti.diagservices/1000 (adj -800): bg anr
+07-28 18:11:12.292  2287 10884 D ActivityManager: Completed ANR of com.qti.diagservices in 55ms, latency 3ms
+07-28 18:11:12.302  2287  2687 I ActivityManager: Process com.qti.diagservices (pid 9781) has died: pers PER 
+07-28 18:11:12.304  2287  2687 W ActivityManager: Scheduling restart of crashed service com.qti.diagservices/.QTIDiagServices in 0ms for persistent
+07-28 18:11:12.306  2287  2687 W ActivityManager: Re-adding persistent process ProcessRecord{b2c92be 9781:com.qti.diagservices/1000}
+07-28 18:11:12.307  2287  2687 I ActivityManager: com.qti.diagservices is exempt from freezer
+07-28 18:11:12.320  2287  2344 I ActivityManager: Start proc 10895:com.qti.diagservices/1000 for restart com.qti.diagservices
+
+# ... 30 more identical ANR-restart cycles elided, all ~20s apart, see full timestamp
+# list this file was originally trimmed from (grep -n 'ANR in com.qti.diagservices' on the raw pull) ...
+
+07-28 18:21:35.655  2287  4596 I ActivityManager: Process com.qti.diagservices (pid 15921) has died: pers PER 
+07-28 18:21:35.656  2287  4596 W ActivityManager: Scheduling restart of crashed service com.qti.diagservices/.QTIDiagServices in 0ms for persistent
+07-28 18:21:35.656  2287  4596 W ActivityManager: Re-adding persistent process ProcessRecord{b2c92be 15921:com.qti.diagservices/1000}
+07-28 18:21:35.657  2287  4596 I ActivityManager: com.qti.diagservices is exempt from freezer
+07-28 18:21:35.668  2287  2344 I ActivityManager: Start proc 17059:com.qti.diagservices/1000 for restart com.qti.diagservices
+07-28 18:21:35.679 17059 17059 I ti.diagservices: Using CollectorTypeCMC GC.
+07-28 18:21:35.696 17059 17059 D nativeloader: Configuring clns-shared-4 for other apk /system_ext/app/QTIDiagServices/QTIDiagServices.apk. target_sdk_version=34, uses_libraries=, library_path=/system_ext/app/QTIDiagServices/lib/arm64:/system_ext/app/QTIDiagServices/QTIDiagServices.apk!/lib/arm64-v8a:/system/lib64:/system_ext/lib64, permitted_path=/data:/mnt/expand:/data/user/0/com.qti.diagservices:/system_ext/app/QTIDiagServices:/system/lib64:/system_ext/lib64
+07-28 18:21:35.703 17059 17059 V GraphicsEnvironment: ANGLE GameManagerService for com.qti.diagservices: false
+07-28 18:21:35.703 17059 17059 V GraphicsEnvironment: com.qti.diagservices is not listed in per-application setting
+07-28 18:21:35.708 17059 17059 D nativeloader: Load /system_ext/lib64/libDiagService.so using class loader ns clns-shared-4 (caller=/system_ext/app/QTIDiagServices/QTIDiagServices.apk): ok
+07-28 18:21:35.708 17059 17059 E ti.diagservices: diag: Diag_LSM_Init: invoked for pid: 17059 with init_count: 0

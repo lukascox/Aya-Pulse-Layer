@@ -1,0 +1,29 @@
+# Every Android Phantom Process Killer kill during one ~10.5min PULSE+Minecraft session (18:11-18:22),
+# `logcat -d | grep -i PhantomProcessRecord`. Two parent processes show up:
+#   10x parent 4361 = com.kei.pulse -- our own xsu-spawned children getting reaped.
+#   11x parent 4147 = com.ayaneo.gamewindow -- spawns `top` periodically, also reaped;
+#     confirms this isn't PULSE-specific, the killer sweeps ALL apps' untracked children.
+# Cross-reference diagservices.log in this same folder: every one of the com.kei.pulse/xsu kills
+# above lines up within <30ms of a `com.qti.diagservices` ANR-restart cycle -- see NOTES.md.
+# ---
+07-28 18:11:12.303  2287  2354 I ActivityManager: Process PhantomProcessRecord {b09be87 10886:4361:xsu/u0a183} died
+07-28 18:11:12.420  2287  2354 I ActivityManager: Process PhantomProcessRecord {d96e09e 10875:4147:top/1000} died
+07-28 18:11:32.393  2287  2354 I ActivityManager: Process PhantomProcessRecord {770747b 12087:4147:top/1000} died
+07-28 18:11:52.516  2287  2354 I ActivityManager: Process PhantomProcessRecord {3fef22f 13254:4361:xsu/u0a183} died
+07-28 18:12:32.716  2287  2354 I ActivityManager: Process PhantomProcessRecord {e665da6 15550:4361:xsu/u0a183} died
+07-28 18:13:12.938  2287  2354 I ActivityManager: Process PhantomProcessRecord {f0dd63e 17845:4361:com.kei.pulse/u0a183} died
+07-28 18:13:33.295  2287  2354 I ActivityManager: Process PhantomProcessRecord {8054b9e 18987:4147:top/1000} died
+07-28 18:13:53.292  2287  2354 I ActivityManager: Process PhantomProcessRecord {a933b67 20112:4147:top/1000} died
+07-28 18:14:13.258  2287  2354 I ActivityManager: Process PhantomProcessRecord {6d2b344 21247:4147:top/1000} died
+07-28 18:15:33.649  2287  2354 I ActivityManager: Process PhantomProcessRecord {81d64e1 25838:4361:xsu/u0a183} died
+07-28 18:16:34.142  2287  2354 I ActivityManager: Process PhantomProcessRecord {fa2c605 29236:4147:top/1000} died
+07-28 18:16:54.131  2287  2354 I ActivityManager: Process PhantomProcessRecord {53e6898 30360:4147:top/1000} died
+07-28 18:17:14.159  2287  2354 I ActivityManager: Process PhantomProcessRecord {28901e3 31470:4361:xsu/u0a183} died
+07-28 18:18:14.474  2287  2354 I ActivityManager: Process PhantomProcessRecord {8916c1e 4343:4361:xsu/u0a183} died
+07-28 18:19:15.011  2287  2354 I ActivityManager: Process PhantomProcessRecord {bf8a789 9059:4147:top/1000} died
+07-28 18:19:34.963  2287  2354 I ActivityManager: Process PhantomProcessRecord {20f0516 10196:4361:xsu/u0a183} died
+07-28 18:19:34.993  2287  2354 I ActivityManager: Process PhantomProcessRecord {8f60e97 10180:4147:top/1000} died
+07-28 18:20:15.188  2287  2354 I ActivityManager: Process PhantomProcessRecord {2c0e15a 12526:4361:xsu/u0a183} died
+07-28 18:20:55.388  2287  2354 I ActivityManager: Process PhantomProcessRecord {100c3d4 14794:4361:xsu/u0a183} died
+07-28 18:21:35.887  2287  2354 I ActivityManager: Process PhantomProcessRecord {ac34dad 17053:4147:top/1000} died
+07-28 18:21:55.883  2287  2354 I ActivityManager: Process PhantomProcessRecord {54391d5 18137:4147:top/1000} died
