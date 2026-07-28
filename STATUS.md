@@ -6,6 +6,55 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## New real culprit found (2026-07-28): `TelemetryReader` was the dominant xsu-connection source all along, not AutoTDP's cap writes — migrated to the FIFO too
+
+Follow-up session, same day as the entry below. User reported the crash recurring
+(Minecraft freeze + frozen fps-counter clocks) on the FIFO-migrated build. Pulled
+`/sdcard/apl_pulse_logs/` (5 sessions, `pulse_20260728_104418.log` is the useful
+one): confirmed the version stamp (`built 2026-07-28 10:41:06`) matched the actual
+FIFO-patched build, ruling out "wrong build installed." Real gameplay happened —
+AutoTDP engaged 10:50:25 (governor + release both via daemon, zero xsu fallback),
+held for ~60s (fps 36-51 vs. a 60 target, jank-heavy but stable), a SECOND fresh
+engage fired at 10:51:34 (governor+release again, via daemon) — then the file just
+stops. Next session starts ~54s later, from empty. That ~54-70s "crash after a
+fresh engage" window is the exact signature of the already-documented
+`xsud`/`BatteryService$Led` crash — recurring despite the cap-write migration.
+
+**Root cause of the recurrence**: `TelemetryReader.read()` (`SystemTuning.kt`) was
+never migrated — only the CAP WRITES were. It opens ~13-15 separate `xsu`
+connections per call (one per CPU policy's `scaling_cur_freq`, GPU clock +
+min/max_pwrlevel + busy%, 4 battery fields, 2 temp zones), and fires every ~1s
+whenever the overlay or AutoTDP is active — over a 60-70s window that's
+**800-1000+ `xsu` connections**, dwarfing anything the cap-write path ever
+contributed (at most 2-3 writes per ~2s tick, and zero additional connections
+since the earlier migration). This was flagged as unmigrated future work back in
+the original daemon/FIFO investigation (2026-07-27: "`TelemetryReader`/`FpsReader`
+... have no AIDL shortcut -- they'd need to move into the daemon-script pattern
+too, same as the writes") but never actually done until now — almost certainly the
+real dominant contributor to this crash all along, with the cap-write migration
+fixing a real but comparatively minor piece of it.
+
+**Fix implemented**: extended `PulseDaemon`'s FIFO protocol with a `READ
+<path1> <path2> ...` verb — the daemon `cat`s every path and writes ONE
+`|`-delimited response line back over a new second, output-only FIFO
+(`pulse_fifo_out`), so `TelemetryReader.read()` now does ONE round trip through
+the already-root daemon instead of ~13-15 `xsu` connections. Falls back entirely
+to the old per-path `cat()`/`xsu` reads if the daemon isn't running or the batch
+response doesn't line up 1:1 with the request — same all-or-nothing contract the
+cap-write fallback already uses. `PulseDaemon.readBatch(paths): List<String?>?`;
+wired through all 4 `telemetryReader.read()` call sites in
+`ForegroundAppMonitorService.kt`. Builds clean, unit tests pass, lint clean.
+**Not yet verified on-device** — this is the next real test.
+
+**Also added this session, after the same regression report**: `BuildConfig.BUILD_TIMESTAMP`
+(stamped fresh by Gradle every build) shown as a toast on every app launch and as
+the first line of both `/sdcard` session log files (passed as a launch argument,
+not sent over the FIFO, so no startup race) — added specifically so "is this
+really the patched build" can be ruled out before chasing a phantom regression
+again. Also marks a clean daemon `STOP` in both log files, so a log that just cuts
+off (no matching "session end" line) unambiguously means the process was
+killed/crashed, not stopped normally.
+
 ## CONFIRMED (2026-07-28, first-test-after-FIFO-migration session): AutoTDP genuinely regulates — first solid continuous evidence, zero xsu fallback, no crash
 
 Following the retraction below, `AutoTuneController`'s own per-tick CPU/GPU
