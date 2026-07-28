@@ -129,6 +129,11 @@ class PulseDaemon(context: Context) {
         scriptFile.writeBytes(scriptBytes)
         val scriptCrc = java.util.zip.CRC32().apply { update(scriptBytes) }.value
         val label = "$versionLabel script_crc32=${scriptCrc.toString(16)}"
+        // Baseline BEFORE launching -- the script overwrites $LOG (`>`, not `>>`) as its very first action,
+        // so comparing mtimes after the fact tells a genuinely fresh write apart from a stale leftover file
+        // from an earlier session (plain existence isn't enough to prove THIS launch reached the script).
+        val logFile = File(logPath)
+        val mtimeBeforeLaunch = if (logFile.exists()) logFile.lastModified() else -1L
         val launchResult = RootSupport.runRootCommandResult(
             // Kill any orphaned daemon (or its detached logcat filter) from a previous session first -- a
             // hard process kill, e.g. OOM, leaves one reading the same fixed FIFO_IN path forever
@@ -154,6 +159,26 @@ class PulseDaemon(context: Context) {
                 "start() launch xsu call FAILED: $reason, $label"
             },
         )
+        // Independent confirmation that doesn't depend on the launch xsu call's own stdout, which
+        // xsu-capability-probe/FINDINGS.md already documented as sometimes silently dropped by `xsud` even
+        // on a command that otherwise completes cleanly (no timeout, no exception) -- STATUS.md, 2026-07-28:
+        // confirmed happening on THIS exact launch command, not just a theoretical risk. $logFile lives in
+        // this app's own private filesDir, so the app can read what the root daemon wrote there directly,
+        // zero extra `xsu` calls -- same "root writes, app reads the same filesDir" mechanism the FIFO
+        // pipes themselves already rely on.
+        Thread {
+            Thread.sleep(700)
+            val confirmed = logFile.exists() && logFile.lastModified() > mtimeBeforeLaunch
+            android.util.Log.d(
+                "PulseDaemon",
+                if (confirmed) {
+                    "daemon script confirmed alive via local $logPath (independent of launch xsu stdout)"
+                } else {
+                    "daemon script NOT confirmed via local $logPath 700ms after launch -- " +
+                        "either the script never ran, or it ran but this check itself raced it"
+                },
+            )
+        }.apply { isDaemon = true }.start()
         running = true
     }
 
