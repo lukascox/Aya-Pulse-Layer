@@ -6,6 +6,41 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## VERIFIED ON-DEVICE (2026-07-28, late evening): self-kill fix confirmed — daemon fully functional again
+
+First real post-fix test (build `20:18:16`, Minecraft, ~4.5min session
+20:19:49→20:24:03): `analyze-pulse-logs.py`'s summary —
+
+- AutoTDP engaged: YES. Cap writes: **65 via daemon, 3 via xsu fallback**
+  (previously 0 via daemon most of tonight). Telemetry reads: **60 via
+  daemon, 0 fallback** — zero raw `xsu` reads the entire session.
+  Regulation: 9 TRIM, 2 RAISE, 12 HOLD — real decisions, not just idle.
+- `cap_poll` confirms real sysfs changes landed (p0/p2/p5/p7_max,
+  gpu_max_pwrlevel all changed within-session — ground truth matches).
+- `dmesg`: 0 crash-keyword hits during the session.
+- `logcat`: 14 crash-keyword hits, but all pre-date session start by 20+
+  minutes (timestamps `01-02` and `19:58:03` vs session start `20:19:49`,
+  unrelated processes `nvkeeper`/`qcrosvm`/`init`) — the filtered logcat
+  replays matching lines already in the ring buffer before attaching, not
+  new events; confirmed noise, not a crash in this session.
+- `clean session end: NO` — user manually exited the game/app rather than
+  using an in-app stop, not a crash (confirmed directly).
+
+**This is the first fully clean FIFO-daemon session since the investigation
+began.** The self-kill `pkill` bug (below) was very likely also a
+contributor to earlier "crash" reports beyond just tonight's silent-log
+symptom — if the daemon intermittently failed to (re)start during real
+play (e.g. after any app-process restart mid-session, which happens
+naturally under memory pressure/game transitions), every write/read for the
+rest of that session would fall back to the old high-frequency raw-`xsu`
+pattern, which is exactly the pattern independently identified as the
+dominant crash contributor earlier in this investigation. Not proven
+retroactively, but a plausible unifying explanation worth keeping in mind.
+
+**Next step**: longer, real gameplay sessions (not just a short manual
+smoke test) to see whether the original crash still recurs now that the
+daemon reliably starts and stays on the FIFO path.
+
 ## FIXED (2026-07-28, late evening): PulseDaemon.start() was self-killing on every launch — root cause of tonight's "empty /sdcard/apl_pulse_logs/" mystery
 
 Found and fixed the actual reason the daemon never started tonight (separate
