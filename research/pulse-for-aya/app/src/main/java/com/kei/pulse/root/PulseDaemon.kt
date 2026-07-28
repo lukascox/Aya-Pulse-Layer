@@ -1,6 +1,7 @@
 package com.kei.pulse.root
 
 import android.content.Context
+import com.kei.pulse.BuildConfig
 import java.io.File
 import java.io.FileOutputStream
 
@@ -59,6 +60,18 @@ class PulseDaemon(context: Context) {
      */
     private val capPollLogPath = "/sdcard/apl_pulse_logs/pulse_${sessionTimestamp}_cap_poll.log"
 
+    /**
+     * Written as the very first line of [sdcardLogPath] (passed straight to the launch command, not sent
+     * over the FIFO after the fact, so there's no race with the daemon script not being ready yet) -- lets
+     * every pulled log answer "which build produced this" on its own, without cross-referencing a separate
+     * version check. `versionName`/`versionCode` follow upstream's own scheme and aren't bumped for this
+     * fork's patches; `BUILD_TIMESTAMP` (stamped fresh by Gradle every build, see `app/build.gradle.kts`) is
+     * what actually tells two builds of the same `versionName` apart (STATUS.md, 2026-07-28 -- added after a
+     * suspected regression turned out to need "is this really the patched build" ruled out first).
+     */
+    private val versionLabel =
+        "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) built ${BuildConfig.BUILD_TIMESTAMP}"
+
     @Volatile private var running = false
 
     /**
@@ -75,7 +88,7 @@ class PulseDaemon(context: Context) {
         RootSupport.runRootCommand(
             "mkdir -p /sdcard/apl_pulse_logs; " +
                 "sh '${scriptFile.absolutePath}' '$fifoInPath' '$logPath' '$sdcardLogPath' '$capPollLogPath' " +
-                "> /dev/null 2>&1 < /dev/null &",
+                "'$versionLabel' > /dev/null 2>&1 < /dev/null &",
         )
         running = true
     }

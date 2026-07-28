@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # One-xsu-connection-per-session cap-write daemon. Launched ONCE via
-# `xsu -c "sh pulse_daemon.sh <fifo_in> <log> <sdcard_log> <cap_poll_log> > /dev/null 2>&1 < /dev/null &"`
+# `xsu -c "sh pulse_daemon.sh <fifo_in> <log> <sdcard_log> <cap_poll_log> <version_label> > /dev/null 2>&1 < /dev/null &"`
 # (research/pulse-for-aya/root/PulseDaemon.kt); everything after that is a plain
 # shell builtin already running as root -- zero further xsu/xsud connections.
 # Protocol on the input FIFO, one line per command:
@@ -23,17 +23,25 @@
 # raw sysfs directly (not through the app's own telemetry/decision code), so it stays a real
 # cross-check of "did the value actually land on the device" independent of AutoTuneController's
 # own internal state -- just no longer independent of this daemon script itself.
+#
+# STATUS.md, 2026-07-28: both log files now open with a version line ($VERSION_LABEL, built from
+# BuildConfig.VERSION_NAME/VERSION_CODE/BUILD_TIMESTAMP in PulseDaemon.kt) -- passed straight in as
+# a launch argument, not sent over the FIFO afterwards, so there's no startup race with the reader
+# not being ready yet. Added after a suspected regression turned out to need "is this actually the
+# patched build" ruled out first -- now every pulled log answers that on its own.
 
 FIFO_IN=$1
 LOG=$2
 SDCARD_LOG=$3
 CAP_POLL_LOG=$4
+VERSION_LABEL=$5
 
 rm -f "$FIFO_IN"
 mkfifo "$FIFO_IN"
 chmod 666 "$FIFO_IN"
 echo "start $(date +%s) pid=$$" > "$LOG"
-[ -n "$SDCARD_LOG" ] && echo "$(date '+%Y-%m-%d %H:%M:%S') === pulse_daemon session start ===" > "$SDCARD_LOG"
+[ -n "$SDCARD_LOG" ] && echo "$(date '+%Y-%m-%d %H:%M:%S') === pulse_daemon session start === version=$VERSION_LABEL" > "$SDCARD_LOG"
+[ -n "$CAP_POLL_LOG" ] && echo "$(date '+%Y-%m-%d %H:%M:%S') === cap_poll session start === version=$VERSION_LABEL" > "$CAP_POLL_LOG"
 
 POLL_PID=""
 if [ -n "$CAP_POLL_LOG" ]; then

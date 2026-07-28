@@ -88,6 +88,17 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Visual build check on every launch: versionName/versionCode follow upstream's own scheme and
+        // aren't bumped for this fork's own patches, so BUILD_TIMESTAMP (stamped fresh by Gradle every
+        // build, see app/build.gradle.kts) is what actually tells two builds of the same versionName
+        // apart -- added after a suspected regression turned out to need "is this really the patched
+        // build" ruled out first (STATUS.md, 2026-07-28). The same label is also the first line of every
+        // /sdcard session log (PulseDaemon.kt), so a pulled log is self-identifying too.
+        Toast.makeText(
+            applicationContext,
+            "PULSE ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) built ${BuildConfig.BUILD_TIMESTAMP}",
+            Toast.LENGTH_LONG,
+        ).show()
         verifyAyaAidlBindOnDebugBuild()
         enableEdgeToEdge()
         maybeRequestQuickSettingsTileOnFirstRun()

@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Properties
 
 plugins {
@@ -37,6 +39,17 @@ android {
         targetSdk = 34
         versionCode = 303
         versionName = "1.19.6"
+
+        // Stamped fresh on every build (unlike versionName/versionCode, which follow upstream's own
+        // scheme and aren't bumped for this fork's own patches) -- lets a pulled /sdcard session log
+        // or an on-launch toast answer "is this actually the build with patch X" without guessing,
+        // instead of relying on remembering to bump a version number by hand (STATUS.md, 2026-07-28,
+        // after a suspected regression turned out to need this check first).
+        buildConfigField(
+            "String",
+            "BUILD_TIMESTAMP",
+            "\"${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())}\"",
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -98,6 +111,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     packaging {
         resources {
