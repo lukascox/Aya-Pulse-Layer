@@ -6,6 +6,60 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## PAUSED HERE (2026-07-28, user's request) — the crash still isn't solved; read this first before resuming
+
+User is out of patience with this thread after repeated regressions across a
+full day of iteration (governor-write FIFO → cap-write FIFO → telemetry-read
+FIFO, each fixing something real but the crash recurring every time). Explicitly
+asked to stop chasing it for now. Honest state below — don't reopen this without
+reading it, and don't restart by guessing; the next concrete step is already
+identified.
+
+**What we actually have, most recent test**
+(`research/ab-logger/results/pulse_daemon_fifo_test/round5_2026-07-28_1245_minecraft_crash_after_write_fallback/`,
+build `2026-07-28 11:47:25` — cap writes AND telemetry reads both migrated to
+the `PulseDaemon` FIFO by this point): a real Minecraft session engaged AutoTDP
+cleanly, ran a genuine TRIM sequence under heavy load (120fps target, temps up
+to 83°C CPU / 73°C GPU, several domains capped simultaneously, confirmed
+independently by the paired `poll-cpufreq.sh` ground-truth file) — then, at
+12:47:07, the **first-ever "cap write via xsu fallback"** line appears (every
+prior write in this session, and in every successful session before it, went
+"via daemon"), and the log stops one second later. This is consistent with the
+already-documented `xsud`/`BatteryService$Led` crash signature, still
+happening, on the build with both migrations in place.
+
+**What's genuinely fixed vs. still open**:
+- Cap-write and telemetry-read `xsu` connection volume are both real,
+  confirmed reductions (zero fallback for the whole HOLD/TRIM run until the
+  very end) — these were not wasted effort.
+- The crash itself is NOT solved. Something still eventually breaks the
+  daemon's FIFO round-trip (that's what the "xsu fallback" line means: a
+  `setCap`/`readBatch` call timed out or failed) shortly before the
+  system-level crash. Whether the daemon dying is the cause or a downstream
+  symptom of the same event that kills `system_server` is not yet known.
+
+**Concrete gap found, worth closing FIRST whenever this resumes**: unlike
+[`dispatch()`](../research/pulse-for-aya/app/src/main/java/com/kei/pulse/data/AutoTuneController.kt)'s
+write-path logging ("cap write via daemon"/"via xsu fallback"),
+`PulseDaemon.readBatch()` has NO success/failure logging at all. We cannot
+currently tell, from any pulled log, whether `TelemetryReader`'s reads were
+actually going through the daemon for the whole session or silently falling
+back to per-path `xsu` calls the entire time — which would mean the telemetry
+migration (round3/round4 above) never actually engaged during the crash
+sessions, and we'd be no better off than before it. **Add the same
+via-daemon/via-fallback logging to the read path before drawing any more
+conclusions about whether that migration helped.**
+
+**Also unresolved, lower priority**: two of round2/round4/round5's sessions
+never got AutoTDP to engage at all (crash-loop before foreground tracking) —
+that's the separate, older "app needs a reboot after install/relaunch" thread,
+still not root-caused either.
+
+**Do NOT** start another migration/rewrite round on the first resume session —
+start by adding read-path logging (small, safe, no architecture change) and
+getting ONE more real crash capture with it in place, so we can finally see
+whether reads or writes (or neither) are failing right before the crash.
+
 ## Inconclusive test (2026-07-28): RetroArch crash on the telemetry-migrated build — didn't reach AutoTDP either
 
 First on-device test of the `TelemetryReader.readBatch()` migration (build

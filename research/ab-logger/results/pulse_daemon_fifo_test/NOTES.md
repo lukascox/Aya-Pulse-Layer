@@ -44,3 +44,19 @@ round2's "needs a reboot after install" issue, not evidence either way for
 whether the telemetry-read migration prevents the `xsud` crash during
 actual regulation. Still need a session where AutoTDP visibly engages on
 the patched build to test that.
+
+## round5_2026-07-28_1245_minecraft_crash_after_write_fallback/
+
+The session that finally got a real regulation run on the fully-patched
+build. `pulse_20260728_124555.log`: engage 12:46:25, HOLD, then a real TRIM
+sequence under heavy load (Minecraft 120fps target, temps up to 83°C
+CPU/73°C GPU, multiple domains capped at once) with rapid successive
+writes — all "via daemon" until 12:47:07, where the **first-ever "cap
+write via xsu fallback"** appears, then the file stops. The paired
+`_cap_poll.log` (independent sysfs poll) confirms real cap movement
+(`p7_max`, `p2_max`, `gpu_max_pwrlevel` all move) up through 12:47:06, one
+second before the crash. Investigation paused here at the user's request —
+see STATUS.md's entry for the honest state and the concrete gap found (no
+daemon-vs-fallback logging on the READ side, unlike writes, so we can't
+yet tell whether telemetry reads were quietly falling back to `xsu`
+throughout this session).

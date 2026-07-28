@@ -1,0 +1,13 @@
+# TRIMMED 2026-07-28 -- original was 19 lines / 3396B.
+# Full narrative analysis of this capture is in STATUS.md (search for this file's name).
+# Kept: every distinct line; runs of 3+ consecutive identical lines (idle TICK-SKIP, only the
+# timestamp differs) collapsed to first + elision count + last.
+# ---
+2026-07-28 12:45:07 === pulse_daemon session start === version=1.19.6 (303) built 2026-07-28 11:47:25
+2026-07-28 12:45:09 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-07-28 12:45:10 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+# ... 8 more identical lines elided (same content, only timestamp differs) ...
+2026-07-28 12:45:19 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-07-28 12:45:20 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+# ... 5 more identical lines elided (same content, only timestamp differs) ...
+2026-07-28 12:45:26 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
