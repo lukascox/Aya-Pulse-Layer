@@ -68,7 +68,13 @@ class PulseDaemon(context: Context) {
      * version check. `versionName`/`versionCode` follow upstream's own scheme and aren't bumped for this
      * fork's patches; `BUILD_TIMESTAMP` (stamped fresh by Gradle every build, see `app/build.gradle.kts`) is
      * what actually tells two builds of the same `versionName` apart (STATUS.md, 2026-07-28 -- added after a
-     * suspected regression turned out to need "is this really the patched build" ruled out first).
+     * suspected regression turned out to need "is this really the patched build" ruled out first). Also
+     * includes a CRC32 of the script asset [start] is ABOUT to write -- this is the one piece the APK's own
+     * version can't vouch for: [start] used to copy the asset into `filesDir` only `if (!scriptFile.exists())`,
+     * so `adb install -r` (which does NOT clear `filesDir`) could leave a stale script from days earlier
+     * silently running forever, with the Kotlin side never able to tell (STATUS.md, 2026-07-28 -- the daemon
+     * protocol changed 5 times that session alone). [start] now always overwrites, so this hash should always
+     * match the asset in the APK that logged it -- if it ever doesn't, that itself is the bug to chase.
      */
     private val versionLabel =
         "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) built ${BuildConfig.BUILD_TIMESTAMP}"
@@ -76,20 +82,26 @@ class PulseDaemon(context: Context) {
     @Volatile private var running = false
 
     /**
-     * Copies the daemon script from assets (first run / if missing) and launches it via one
-     * `xsu` call. Safe to call repeatedly -- a no-op while already running.
+     * Copies the daemon script from assets -- ALWAYS, overwriting any previous copy (see [versionLabel]'s
+     * doc for why a stale, protocol-mismatched script left over from an earlier `adb install -r` was a real,
+     * silent-failure risk) -- and launches it via one `xsu` call. Safe to call repeatedly -- a no-op while
+     * already running.
      */
     fun start() {
         if (running) return
-        if (!scriptFile.exists()) {
-            assets.open(ASSET_NAME).use { input ->
-                scriptFile.outputStream().use { output -> input.copyTo(output) }
-            }
-        }
+        val scriptBytes = assets.open(ASSET_NAME).use { it.readBytes() }
+        scriptFile.writeBytes(scriptBytes)
+        val scriptCrc = java.util.zip.CRC32().apply { update(scriptBytes) }.value
+        val label = "$versionLabel script_crc32=${scriptCrc.toString(16)}"
         RootSupport.runRootCommand(
-            "mkdir -p /sdcard/apl_pulse_logs; " +
+            // Kill any orphaned daemon from a previous session first (a hard process kill, e.g. OOM, leaves
+            // one reading the same fixed FIFO_IN path forever -- STATUS.md, 2026-07-28: once this daemon's
+            // rm -f + mkfifo recreates that path, an orphan's next read loop iteration re-opens the new
+            // inode too and silently competes for commands with the daemon Kotlin thinks it's talking to).
+            "pkill -f 'pulse_daemon.sh' 2>/dev/null; " +
+                "mkdir -p /sdcard/apl_pulse_logs; " +
                 "sh '${scriptFile.absolutePath}' '$fifoInPath' '$logPath' '$sdcardLogPath' '$capPollLogPath' " +
-                "'$versionLabel' '$fifoOutPath' > /dev/null 2>&1 < /dev/null &",
+                "'$label' '$fifoOutPath' > /dev/null 2>&1 < /dev/null &",
         )
         running = true
     }
@@ -173,7 +185,20 @@ class PulseDaemon(context: Context) {
         worker.isDaemon = true
         worker.start()
         worker.join(READ_BATCH_TIMEOUT_MS)
-        return result.get()
+        val values = result.get()
+        // STATUS.md, 2026-07-28: dispatch()'s write path already logs "via daemon"/"via xsu fallback";
+        // this read path had NO equivalent, so no pulled log could ever confirm whether TelemetryReader's
+        // reads were actually going through the daemon or silently falling back the whole session -- a
+        // real blind spot, since a stale on-device daemon script (see [start]'s doc) would make every
+        // readBatch() call fail exactly like this, indistinguishable from "working but slow" without this.
+        val msg = if (values != null) {
+            "telemetry read via daemon (${paths.size} path(s))"
+        } else {
+            "telemetry read via xsu fallback (${paths.size} path(s))"
+        }
+        android.util.Log.d("PulseDaemon", msg)
+        log("PulseDaemon: $msg")
+        return values
     }
 
     /** Tells the daemon to exit, clean up its FIFO, and stop its background cap-poll loop. Safe to call even if

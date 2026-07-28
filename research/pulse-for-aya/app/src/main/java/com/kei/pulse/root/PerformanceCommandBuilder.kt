@@ -46,8 +46,13 @@ class PerformanceCommandBuilder {
         return writes
     }
 
-    /** Same writes as [buildApplyWrites], flattened into one `xsu`-runnable shell script (the fallback path when
-     * no [com.kei.pulse.root.PulseDaemon] is available or a daemon write fails). */
+    /** Same writes as [buildApplyWrites], flattened into one `xsu`-runnable shell script. Only used by
+     * [buildApplyScript] now (kept for that + test compatibility) -- the live xsu-fallback path
+     * ([com.kei.pulse.data.AutoTuneController]'s `dispatch()`) uses [statementsFor] instead so it can chunk
+     * under the length this device's `xsud` crashes past (STATUS.md, 2026-07-28; the confirmed threshold is
+     * `research/xsu-capability-probe/FINDINGS.md`'s bisection: safe under ~800 chars, a fuzzy failure band
+     * ~1000-1200, consistently fails above that -- a single combined script for even a modest write batch
+     * (7-10 nodes) lands well inside that failing range). */
     fun scriptFor(writes: List<CapWrite>): String = buildString {
         appendLine("#!/system/bin/sh")
         writes.forEach { w ->
@@ -55,6 +60,14 @@ class PerformanceCommandBuilder {
             appendLine("echo ${w.value} > ${w.path}")
             appendLine("chmod ${w.mode} ${w.path}")
         }
+    }
+
+    /** One semicolon-joinable statement per write (`chmod 666 X; echo V > X; chmod M X`) -- the unit
+     * [statementsFor]'s caller chunks by, so a single write's unlock/echo/relock triple never gets split
+     * across two separate `xsu` calls (which could leave a node stuck mid-unlock if the first call's
+     * connection is the one that fails). */
+    fun statementsFor(writes: List<CapWrite>): List<String> = writes.map { w ->
+        "chmod 666 ${w.path}; echo ${w.value} > ${w.path}; chmod ${w.mode} ${w.path}"
     }
 
     fun buildApplyScript(

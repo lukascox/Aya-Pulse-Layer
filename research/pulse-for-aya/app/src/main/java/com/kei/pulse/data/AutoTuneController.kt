@@ -1183,12 +1183,20 @@ class AutoTuneController(
 
         /**
          * Send [writes] through [pulseDaemon] (zero `xsu` calls per write -- the daemon is already root and
-         * already running) if given, falling back to the existing single-connection `xsu` script otherwise or
-         * if any individual pipe write fails -- same all-or-nothing fallback contract as
+         * already running) if given, falling back to a length-CHUNKED `xsu` script otherwise or if any
+         * individual pipe write fails -- same all-or-nothing fallback contract as
          * `ForegroundAppMonitorService.setAutoTdpGovernorBalanced`'s governor-engage migration, extended to
          * AutoTDP's own per-tick CPU/GPU cap writes (STATUS.md, 2026-07-28: these, not the one-shot governor
          * engage, are the dominant contributor to the `xsu`/`xsud` connection volume behind the recurring
          * Minecraft crash).
+         *
+         * The fallback is chunked (not one combined `-c` argument) because it fires exactly when the device
+         * is already under stress (the daemon just failed/timed out) -- the worst possible moment to send a
+         * single long command into a channel this device's own `xsud` crashes on past ~1000-1200 characters
+         * (`research/xsu-capability-probe/FINDINGS.md`'s bisection; safe margin ~800). A combined script for
+         * even a modest write batch (7-10 nodes × 3 statements each) lands well inside that failing range --
+         * `research/ab-logger`'s `XsuShell.execChunked` already established this exact chunk-under-~700-chars
+         * pattern for its own combined-read incident; this mirrors it for the write-fallback path.
          */
         private fun dispatch(writes: List<CapWrite>, pulseDaemon: PulseDaemon?) {
             if (writes.isEmpty()) return
@@ -1197,20 +1205,37 @@ class AutoTuneController(
                 pulseDaemon.log("PulseDaemon: cap write via daemon (${writes.size} node(s))")
                 return
             }
+            val statements = PerformanceCommandBuilder().statementsFor(writes)
+            val totalChars = statements.sumOf { it.length }
             if (pulseDaemon != null) {
-                android.util.Log.d("PulseDaemon", "cap write via xsu fallback")
-                pulseDaemon.log("PulseDaemon: cap write via xsu fallback")
+                val msg = "cap write via xsu fallback (${writes.size} node(s), ~$totalChars chars, chunked)"
+                android.util.Log.d("PulseDaemon", msg)
+                pulseDaemon.log("PulseDaemon: $msg")
             }
-            runScript(PerformanceCommandBuilder().scriptFor(writes))
+            runScriptChunked(statements)
         }
 
-        private fun runScript(script: String) {
-            val cmd = script.lineSequence()
-                .map { it.trim() }
-                .filter { it.isNotEmpty() && !it.startsWith("#") }
-                .joinToString("; ")
-            if (cmd.isNotEmpty()) RootSupport.runRootCommand(cmd)
+        /** Groups [statements] into `xsu -c` calls that each stay under [FALLBACK_CHUNK_MAX_CHARS] -- never
+         * splits a single statement (one write's unlock/echo/relock triple) across two calls, so a mid-batch
+         * connection failure can't leave a node stuck half-unlocked. */
+        private fun runScriptChunked(statements: List<String>) {
+            val chunks = mutableListOf<String>()
+            val current = StringBuilder()
+            for (stmt in statements) {
+                if (current.isNotEmpty() && current.length + stmt.length + 2 > FALLBACK_CHUNK_MAX_CHARS) {
+                    chunks += current.toString()
+                    current.clear()
+                }
+                if (current.isNotEmpty()) current.append("; ")
+                current.append(stmt)
+            }
+            if (current.isNotEmpty()) chunks += current.toString()
+            chunks.forEach { RootSupport.runRootCommand(it) }
         }
+
+        // Matches research/ab-logger's XsuShell.execChunked default -- comfortably under the ~800-char
+        // safe margin research/xsu-capability-probe/FINDINGS.md's bisection established.
+        private const val FALLBACK_CHUNK_MAX_CHARS = 700
 
         /** Offline (`online=false`) or online the given CPU cores via their `cpuN/online` node. */
         fun setCoresOnlineToDevice(cores: List<Int>, online: Boolean, pulseDaemon: PulseDaemon? = null) {

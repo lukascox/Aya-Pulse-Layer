@@ -21,14 +21,28 @@ object RootSupport {
 
     // apl glue patch (2026-07-25): upstream wrote the script to a world-readable/-executable file
     // because the stock PServer service ran it as root from a DIFFERENT uid and had to read it off
-    // disk. xsu takes the command text directly as its "-c" argument (same mechanism this project's
-    // own probes use for multi-line scripts), so that file-based indirection -- and the world-
-    // readable exposure that came with it -- is no longer needed at all.
+    // disk. This was simplified to pass scriptContents directly as xsu's "-c" argument -- correct
+    // for short commands, but WRONG for anything long: this device's xsud crashes (SIGSEGV, or
+    // silently drops output) once a single `-c` argument crosses roughly 1000-1200 characters, a
+    // fuzzy race-like threshold with a safe margin around ~800 (research/xsu-capability-probe/
+    // FINDINGS.md's on-device bisection). FpsReader's TimeStats-reduction script alone is 874
+    // characters and fires every ~1-2s during real gameplay -- squarely in that danger band, and
+    // never audited against this finding until STATUS.md's 2026-07-28 investigation. Reverted
+    // (2026-07-28) to writing the script to this app's own private filesDir (root can already read
+    // there fine -- the same mechanism PulseDaemon.kt's own script uses) and running it via a short
+    // `sh '<path>'` command instead, WITHOUT reintroducing the world-readable exposure the original
+    // upstream approach had (filesDir is private to this app + root, nothing else).
     fun runGeneratedScript(
         context: Context,
         scriptName: String,
         scriptContents: String,
     ): String? {
-        return runRootCommand(scriptContents)
+        val file = java.io.File(context.filesDir, scriptName)
+        return try {
+            file.writeText(scriptContents)
+            runRootCommand("sh '${file.absolutePath}'")
+        } catch (e: Exception) {
+            null
+        }
     }
 }

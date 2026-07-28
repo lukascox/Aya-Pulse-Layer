@@ -6,6 +6,73 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## RESUMED (2026-07-28): real correctness bugs found and fixed — untested on-device
+
+Follow-up to the PAUSED entry below, same day. A second, independent review
+(different session) re-read this whole file plus the actual code and raw
+round1-round5 logs and surfaced several concrete bugs the running narrative had
+missed. Each claim below was independently re-verified against the code/data
+before acting on it — this isn't taken on faith.
+
+1. **Stale on-device daemon script (verified in code, but user reports it
+   doesn't apply here)**: `PulseDaemon.start()` only copied `pulse_daemon.sh`
+   from assets `if (!scriptFile.exists())` — and `adb install -r` does NOT
+   clear `filesDir`, so a script copied once could silently keep running
+   unpatched through 5 later protocol changes (`cafb98c`→`293b9d6`→`12ea8e2`→
+   `55268d6`→`2d59fc4`→`35c0c51`, each adding an argument). `BUILD_TIMESTAMP`
+   couldn't have caught this — it proves the APK is fresh, not the script,
+   since the version label is passed as a Kotlin-side launch argument. **User
+   confirmed their workflow always fully uninstalls before reinstalling**,
+   which does clear `filesDir` — so this specific risk likely didn't cause
+   today's crashes, but the bug is real or the next person's workflow, and the
+   fix is essentially free, so applied anyway (see below).
+2. **`FpsReader`'s TimeStats-reduction script is 874 characters, sent whole as
+   `xsu -c`'s argument, every ~1-2s during real gameplay** — independently
+   measured, matches the report exactly. `research/xsu-capability-probe/FINDINGS.md`
+   (read directly, not from memory) confirmed via on-device bisection: safe
+   under ~800 chars, a fuzzy failure band ~1000-1200, consistently fails above
+   that. 874 sits close enough to the danger band, sustained over the entire
+   session, to be a real suspect that was never audited — `RootSupport.kt`'s
+   own 2026-07-25 simplification (inlining scripts instead of writing them to a
+   file first) predates and is unrelated to that finding, so nobody had
+   connected the two until now.
+3. **The `dispatch()` xsu-fallback path sends the WHOLE write batch as one
+   combined command** — for a 7-10 node batch (governor engage / release),
+   that's comfortably in the "consistently fails" range by the same bisection.
+   Confirmed this fires exactly under stress (the daemon already failed/timed
+   out) — a plausible amplifying feedback loop, not just a coincidence: load →
+   daemon slow → timeout → fallback → long command → crash.
+4. **`readBatch()` had zero success/failure logging** — already flagged as the
+   open gap in the PAUSED entry below; means round3-5's "telemetry migration"
+   could have been silently no-op'ing back to per-path `xsu` calls the entire
+   time and nothing would show it.
+5. **Orphaned daemon processes can compete for the same fixed FIFO path** —
+   the daemon's read loop re-resolves `$FIFO_IN` by path every iteration, so
+   after a crash, a hard-killed orphan reopens the SAME path once a new daemon
+   `rm -f`s + `mkfifo`s it, and silently competes for commands.
+
+**Fixed, all cheap correctness fixes, no architecture change**:
+- `PulseDaemon.start()` now always overwrites the script from assets (no more
+  `if (!exists())`), `pkill -f pulse_daemon.sh` first to clear orphans, and
+  logs a CRC32 of the exact script bytes it just wrote alongside the existing
+  version label — every pulled log now proves which script was actually running.
+- `RootSupport.runGeneratedScript()` now writes `scriptContents` to this app's
+  own `filesDir` and runs it via a short `sh '<path>'` command instead of
+  inlining the whole script as `xsu -c`'s argument — fixes `FpsReader` and the
+  other two callers (`qa_combo_producer.sh`, `apply-frequencies.sh`) at once.
+  `filesDir` stays private to this app + root, so this does NOT reintroduce
+  the world-readable exposure the original upstream file-based approach had.
+- `AutoTuneController`'s xsu-fallback path now chunks under ~700 chars
+  (matching `research/ab-logger`'s already-established `XsuShell.execChunked`
+  pattern for the same underlying finding) instead of sending one combined
+  command, and logs the node count + character count so a future log can show
+  exactly how big a fallback command was.
+- `PulseDaemon.readBatch()` now logs "via daemon"/"via xsu fallback" the same
+  way the write path already does.
+
+Verified: `compileDebugKotlin`, `testDebugUnitTest`, `lintDebug` all clean.
+**Not yet tested on-device** — next session's first job.
+
 ## PAUSED HERE (2026-07-28, user's request) — the crash still isn't solved; read this first before resuming
 
 User is out of patience with this thread after repeated regressions across a
