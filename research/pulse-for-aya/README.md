@@ -478,20 +478,18 @@ frontend/launcher). Raw evidence:
 `research/ab-logger/results/per_app_profile_test/round1_2026-07-28_2028_.../`
 and `round2_2026-07-28_2035_.../`.
 
-**1. Foreground-detection anomaly, unresolved — logged `com.miHoYo.Yuanshen`
-(Genshin Impact) as bound/foreground for ~68s, user says they never launched
-it.** `ForegroundAppMonitorService.currentForegroundPackage()` reads a real
-`UsageEvents.ACTIVITY_RESUMED` from a 10s window
-(`EVENT_WINDOW_MS = 10_000L`, line ~2085) — too short for this to be a stale/
-replayed event from hours earlier being misread as "latest". Something on
-the device genuinely resumed that activity at 20:37:45. Candidates not yet
-checked: (a) Genshin actually installed and something (notification tap,
-background service) silently resumed it without the user opening it, (b)
-Eden's own activity/task for this specific game momentarily surfaces under a
-borrowed/wrong package identity (would be unusual, not confirmed). **Next
-cheap check**: `adb shell pm list packages | grep -i miho` to confirm
-whether Genshin is even installed; if not, the mechanism has to be something
-else entirely and is a real bug worth chasing.
+**1. RESOLVED — `com.miHoYo.Yuanshen` in the log was actually Eden, not
+Genshin Impact.** Confirmed on-device: `dumpsys package com.miHoYo.Yuanshen`
+showed `versionName=1f6734c` (a git-commit-hash style version, not a real
+Genshin release number), `installerPackageName=com.google.android.
+packageinstaller` (sideloaded, not Play Store), and the version string
+matched exactly what Android's own Settings > Apps shows for the user's
+installed Eden build. Eden (Switch emulator) ships under the
+`com.miHoYo.Yuanshen` `applicationId` — plausibly deliberate camouflage,
+a known pattern among post-Yuzu-lawsuit Switch emulator distributions
+avoiding an easily-filterable package name. Not a PULSE bug: foreground
+detection was correct the whole time, just reporting Eden's real (borrowed)
+package identity. No further action needed.
 
 **2. Custom tier has no per-app slider editor — confirmed, not a missing
 UI hookup.** `PerAppScreen.kt`'s binding dialog lists `PowerTier.CUSTOM` as a

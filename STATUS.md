@@ -13,11 +13,13 @@ Minecraft, `retrohrai` frontend), post self-kill-fix. Full detail + code
 references: `research/pulse-for-aya/README.md`'s "Per-app profile testing
 session" section. Summary:
 
-1. **Open, needs a device check**: log shows `com.miHoYo.Yuanshen` (Genshin)
-   bound/foreground for ~68s — user says they never launched it, and the
-   foreground-detection code's 10s event window rules out a stale-replay
-   explanation. Next cheap step: confirm on-device whether Genshin is even
-   installed.
+1. **RESOLVED**: `com.miHoYo.Yuanshen` in the log was Eden (Switch emulator),
+   not Genshin Impact — Eden's build uses that `applicationId` (likely
+   deliberate camouflage, common post-Yuzu-lawsuit). Confirmed via
+   `dumpsys package` (`versionName=1f6734c`, a git-hash, matches Eden's
+   Settings > Apps entry exactly; sideloaded, not Play Store). Not a PULSE
+   bug — foreground detection was correct throughout. Full trail in
+   `pulse-for-aya/README.md`.
 2. Custom tier per-app binding shares ONE global slider set (no per-app
    custom frequency curves) — confirmed by reading the code, a real
    limitation not a bug.
