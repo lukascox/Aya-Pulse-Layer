@@ -6,6 +6,38 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## Added (2026-07-28): correlation logging — dmesg, filtered logcat, battery/online
+
+Gap identified: every crash so far has only ever shown "the log goes silent" —
+nothing captured *why*. Three additions to `pulse_daemon.sh`/`PulseDaemon.kt`,
+all through the existing daemon (zero extra `xsu` connections):
+
+- **`dmesg -c`**, polled every ~1s in the same loop as `cap_poll`, to a new
+  `pulse_<ts>_dmesg.log`. `research/xsu-capability-probe/FINDINGS.md` already
+  proved `dmesg` catches `xsud`'s own SIGSEGV/SIGABRT directly — the kernel
+  ring buffer survives even when the crashing process doesn't. Never captured
+  during a real PULSE crash before.
+- **A filtered `logcat`** (`AndroidRuntime:E libc:F DEBUG:F ActivityManager:E
+  BatteryService:E`, everything else silenced), spawned once as a fully
+  detached process — same "survives the daemon/app dying" property the daemon
+  itself already has, to a new `pulse_<ts>_logcat.log`. Narrow enough to not
+  itself trigger the 256 KiB ring-buffer overflow a full `logcat` hits under
+  `xsu`'s own chatty protocol logging.
+- **`battery/online`** added to the existing `cap_poll` line — the
+  still-unidentified process seen writing that value right before a crash
+  (2026-07-27 investigation, see `STATUS_ARCHIVE.md`) has never been checked
+  against a PULSE-side crash directly; now it's in the same timestamped file
+  as everything else, so a future pulled log can just be grepped for it.
+
+Orphan handling: the logcat filter process is killed on clean `STOP` and
+`pkill`'d (alongside the existing `pulse_daemon.sh` orphan-kill) at the start
+of every new session, so restarts don't accumulate copies.
+
+Verified: `compileDebugKotlin`, `testDebugUnitTest`, `lintDebug` all clean,
+fresh APK built (`BUILD_TIMESTAMP` 2026-07-28 16:38:07). **Not yet tested
+on-device** — next real crash capture should finally show dmesg/logcat lines
+alongside the existing PULSE-side log instead of just silence.
+
 ## RESUMED (2026-07-28): real correctness bugs found and fixed — untested on-device
 
 Follow-up to the PAUSED entry below, same day. A second, independent review

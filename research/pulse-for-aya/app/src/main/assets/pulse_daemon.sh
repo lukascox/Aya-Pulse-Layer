@@ -1,6 +1,7 @@
 #!/system/bin/sh
 # One-xsu-connection-per-session cap-write daemon. Launched ONCE via
-# `xsu -c "sh pulse_daemon.sh <fifo_in> <log> <sdcard_log> <cap_poll_log> <version_label> <fifo_out> > /dev/null 2>&1 < /dev/null &"`
+# `xsu -c "sh pulse_daemon.sh <fifo_in> <log> <sdcard_log> <cap_poll_log> <version_label> <fifo_out>
+#   <dmesg_log> <logcat_log> > /dev/null 2>&1 < /dev/null &"`
 # (research/pulse-for-aya/root/PulseDaemon.kt); everything after that is a plain
 # shell builtin already running as root -- zero further xsu/xsud connections.
 # Protocol on the input FIFO, one line per command:
@@ -33,6 +34,17 @@
 # a launch argument, not sent over the FIFO afterwards, so there's no startup race with the reader
 # not being ready yet. Added after a suspected regression turned out to need "is this actually the
 # patched build" ruled out first -- now every pulled log answers that on its own.
+#
+# STATUS.md, 2026-07-28 (correlation gap): none of the above ever captured what the rest of the
+# DEVICE was doing right before a crash -- xsu-capability-probe/FINDINGS.md already proved `dmesg`
+# catches `xsud`'s own SIGSEGV/SIGABRT directly (kernel ring buffer survives a userspace crash), and
+# a filtered `logcat` for just the known crash tags avoids the ring-buffer-overflow problem a full
+# `logcat` has under xsu's own chatty protocol logging. Both added below: `dmesg -c` polled in the
+# same loop as cap_poll (cheap, clears after each read so nothing duplicates), and one filtered
+# `logcat` spawned ONCE as a fully detached process (same "survives xsud dying" property as this
+# daemon itself) instead of polled. `cap_poll` also now reads `battery/online` -- the still-
+# unidentified process seen writing that value right before a crash in the 2026-07-27 investigation
+# (see STATUS_ARCHIVE.md) was never checked against a PULSE-side crash before.
 
 FIFO_IN=$1
 LOG=$2
@@ -40,6 +52,8 @@ SDCARD_LOG=$3
 CAP_POLL_LOG=$4
 VERSION_LABEL=$5
 FIFO_OUT=$6
+DMESG_LOG=$7
+LOGCAT_LOG=$8
 
 rm -f "$FIFO_IN"
 mkfifo "$FIFO_IN"
@@ -50,6 +64,18 @@ chmod 666 "$FIFO_OUT"
 echo "start $(date +%s) pid=$$" > "$LOG"
 [ -n "$SDCARD_LOG" ] && echo "$(date '+%Y-%m-%d %H:%M:%S') === pulse_daemon session start === version=$VERSION_LABEL" > "$SDCARD_LOG"
 [ -n "$CAP_POLL_LOG" ] && echo "$(date '+%Y-%m-%d %H:%M:%S') === cap_poll session start === version=$VERSION_LABEL" > "$CAP_POLL_LOG"
+
+# Detached, filtered logcat -- only the tags known to matter for this crash's signature (AndroidRuntime's
+# FATAL EXCEPTION, libc's Fatal signal, DEBUG's crash backtrace, ActivityManager/BatteryService errors).
+# *:S silences everything else, so xsu's own chatty protocol logging can't overflow the ring buffer
+# ahead of these. Backgrounded with redirected stdio (same "close immediately, keep running" pattern
+# validated for this daemon itself) so it survives independently even if THIS script's process dies.
+LOGCAT_PID=""
+if [ -n "$LOGCAT_LOG" ]; then
+  logcat -v threadtime -s AndroidRuntime:E libc:F DEBUG:F ActivityManager:E BatteryService:E '*:S' \
+    > "$LOGCAT_LOG" 2>&1 < /dev/null &
+  LOGCAT_PID=$!
+fi
 
 POLL_PID=""
 if [ -n "$CAP_POLL_LOG" ]; then
@@ -67,7 +93,11 @@ if [ -n "$CAP_POLL_LOG" ]; then
       [ -z "$gpu" ] && gpu=$(cat $GPU/devfreq/cur_freq 2>/dev/null)
       gpu_min=$(cat $GPU/min_pwrlevel 2>/dev/null)
       gpu_max=$(cat $GPU/max_pwrlevel 2>/dev/null)
-      echo "$(date '+%Y-%m-%d %H:%M:%S') p0_cur=$p0c p0_max=$p0m p2_cur=$p2c p2_max=$p2m p5_cur=$p5c p5_max=$p5m p7_cur=$p7c p7_max=$p7m gov=$gov gpu_cur=$gpu gpu_min_pwrlevel=$gpu_min gpu_max_pwrlevel=$gpu_max" >> "$CAP_POLL_LOG"
+      batt_online=$(cat /sys/class/power_supply/battery/online 2>/dev/null)
+      echo "$(date '+%Y-%m-%d %H:%M:%S') p0_cur=$p0c p0_max=$p0m p2_cur=$p2c p2_max=$p2m p5_cur=$p5c p5_max=$p5m p7_cur=$p7c p7_max=$p7m gov=$gov gpu_cur=$gpu gpu_min_pwrlevel=$gpu_min gpu_max_pwrlevel=$gpu_max batt_online=$batt_online" >> "$CAP_POLL_LOG"
+      if [ -n "$DMESG_LOG" ]; then
+        dmesg -c >> "$DMESG_LOG" 2>/dev/null
+      fi
       sleep 1
     done
   ) &
@@ -79,6 +109,7 @@ while true; do
   case "$line" in
     STOP)
       [ -n "$POLL_PID" ] && kill "$POLL_PID" 2>/dev/null
+      [ -n "$LOGCAT_PID" ] && kill "$LOGCAT_PID" 2>/dev/null
       echo "stop $(date +%s)" >> "$LOG"
       # Marks a CLEAN stop in both pulled files -- a log that just cuts off with no matching "session
       # end" line means the process was killed/crashed instead of stopped normally (STATUS.md,

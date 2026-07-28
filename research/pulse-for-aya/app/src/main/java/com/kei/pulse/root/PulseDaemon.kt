@@ -62,6 +62,26 @@ class PulseDaemon(context: Context) {
     private val capPollLogPath = "/sdcard/apl_pulse_logs/pulse_${sessionTimestamp}_cap_poll.log"
 
     /**
+     * Kernel ring-buffer dump, polled (`dmesg -c`, clears after each read) in the same background loop as
+     * [capPollLogPath] -- this is what finally lets a pulled log answer "did `xsud` itself segfault/abort"
+     * directly: `research/xsu-capability-probe/FINDINGS.md` already proved `dmesg` catches that signal even
+     * when the crashing process is long gone, since the kernel ring buffer doesn't depend on any userspace
+     * process surviving (STATUS.md, 2026-07-28 -- added because nothing before this ever captured *why* a
+     * crash happened, only that the log went silent).
+     */
+    private val dmesgLogPath = "/sdcard/apl_pulse_logs/pulse_${sessionTimestamp}_dmesg.log"
+
+    /**
+     * Filtered `logcat` (only the tags this crash's known signature needs: `AndroidRuntime`'s FATAL
+     * EXCEPTION, `libc`'s Fatal signal, `DEBUG`'s backtrace, `ActivityManager`/`BatteryService` errors),
+     * spawned ONCE by the daemon script as a fully detached process -- narrow enough that it can't itself
+     * overflow the 256 KiB ring buffer the way a full `logcat` does under `xsu`'s own chatty protocol
+     * logging (STATUS.md, 2026-07-27), and survives independently even if this daemon or the app dies
+     * (same backgrounding pattern already validated for the daemon itself).
+     */
+    private val logcatLogPath = "/sdcard/apl_pulse_logs/pulse_${sessionTimestamp}_logcat.log"
+
+    /**
      * Written as the very first line of [sdcardLogPath] (passed straight to the launch command, not sent
      * over the FIFO after the fact, so there's no race with the daemon script not being ready yet) -- lets
      * every pulled log answer "which build produced this" on its own, without cross-referencing a separate
@@ -94,14 +114,17 @@ class PulseDaemon(context: Context) {
         val scriptCrc = java.util.zip.CRC32().apply { update(scriptBytes) }.value
         val label = "$versionLabel script_crc32=${scriptCrc.toString(16)}"
         RootSupport.runRootCommand(
-            // Kill any orphaned daemon from a previous session first (a hard process kill, e.g. OOM, leaves
-            // one reading the same fixed FIFO_IN path forever -- STATUS.md, 2026-07-28: once this daemon's
-            // rm -f + mkfifo recreates that path, an orphan's next read loop iteration re-opens the new
-            // inode too and silently competes for commands with the daemon Kotlin thinks it's talking to).
+            // Kill any orphaned daemon (or its detached logcat filter) from a previous session first -- a
+            // hard process kill, e.g. OOM, leaves one reading the same fixed FIFO_IN path forever
+            // (STATUS.md, 2026-07-28: once this daemon's rm -f + mkfifo recreates that path, an orphan's
+            // next read loop iteration re-opens the new inode too and silently competes for commands with
+            // the daemon Kotlin thinks it's talking to) -- and an orphaned logcat filter would otherwise
+            // pile up one more copy every restart, each writing its own now-abandoned file.
             "pkill -f 'pulse_daemon.sh' 2>/dev/null; " +
+                "pkill -f 'logcat -v threadtime -s AndroidRuntime' 2>/dev/null; " +
                 "mkdir -p /sdcard/apl_pulse_logs; " +
                 "sh '${scriptFile.absolutePath}' '$fifoInPath' '$logPath' '$sdcardLogPath' '$capPollLogPath' " +
-                "'$label' '$fifoOutPath' > /dev/null 2>&1 < /dev/null &",
+                "'$label' '$fifoOutPath' '$dmesgLogPath' '$logcatLogPath' > /dev/null 2>&1 < /dev/null &",
         )
         running = true
     }
