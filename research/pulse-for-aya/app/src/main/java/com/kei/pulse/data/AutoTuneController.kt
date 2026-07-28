@@ -2,7 +2,9 @@ package com.kei.pulse.data
 
 import com.kei.pulse.model.AutoTdpBias
 import com.kei.pulse.model.CpuPolicyInfo
+import com.kei.pulse.root.CapWrite
 import com.kei.pulse.root.PerformanceCommandBuilder
+import com.kei.pulse.root.PulseDaemon
 import com.kei.pulse.root.RootSupport
 import kotlin.math.abs
 
@@ -1092,15 +1094,16 @@ class AutoTuneController(
          * deliberately left alone: writing it wakes the HAL and stomps the perf cap back up (the regression
          * we fixed). Net: prime drops AND perf keeps biting.
          */
-        fun applyCapsToDevice(policies: List<CpuPolicyInfo>, caps: Map<Int, Int>) {
+        fun applyCapsToDevice(policies: List<CpuPolicyInfo>, caps: Map<Int, Int>, pulseDaemon: PulseDaemon? = null) {
             if (policies.isEmpty()) return
-            runScript(
-                PerformanceCommandBuilder().buildApplyScript(
+            dispatch(
+                PerformanceCommandBuilder().buildApplyWrites(
                     policies,
                     capFreqs(policies, caps),
                     isReset = false,
                     lowerMinPolicyIds = setOfNotNull(primePolicyId(policies)),
                 ),
+                pulseDaemon,
             )
         }
 
@@ -1111,15 +1114,16 @@ class AutoTuneController(
          * set so the prime is identified correctly; only ids present in [freqs] are written, so an uncapped
          * cluster (incl. an uncapped prime, whose min we then never touch) is left completely alone.
          */
-        fun applyFreqsToDevice(policies: List<CpuPolicyInfo>, freqs: Map<Int, Int>) {
+        fun applyFreqsToDevice(policies: List<CpuPolicyInfo>, freqs: Map<Int, Int>, pulseDaemon: PulseDaemon? = null) {
             if (policies.isEmpty() || freqs.isEmpty()) return
-            runScript(
-                PerformanceCommandBuilder().buildApplyScript(
+            dispatch(
+                PerformanceCommandBuilder().buildApplyWrites(
                     policies,
                     freqs,
                     isReset = false,
                     lowerMinPolicyIds = setOfNotNull(primePolicyId(policies)),
                 ),
+                pulseDaemon,
             )
         }
 
@@ -1130,7 +1134,7 @@ class AutoTuneController(
          * PARKED: the per-tick prime re-assert is skipped when parked, and the vendor then stomps perf's
          * `scaling_max` back to full → the CPU runs free → heat → loud fan. Only writes clusters capped < 100%.
          */
-        fun applyNonPrimeCpuCaps(policies: List<CpuPolicyInfo>, caps: Map<Int, Int>) {
+        fun applyNonPrimeCpuCaps(policies: List<CpuPolicyInfo>, caps: Map<Int, Int>, pulseDaemon: PulseDaemon? = null) {
             if (policies.isEmpty()) return
             val primeId = primePolicyId(policies)
             val freqs = policies
@@ -1141,10 +1145,11 @@ class AutoTuneController(
                     p.id to (p.supportedFrequencies.minByOrNull { abs(it - target) } ?: p.selectableMaxFreq)
                 }
             if (freqs.isEmpty()) return
-            runScript(
-                PerformanceCommandBuilder().buildApplyScript(
+            dispatch(
+                PerformanceCommandBuilder().buildApplyWrites(
                     policies, freqs, isReset = false, lowerMinPolicyIds = emptySet(),
                 ),
+                pulseDaemon,
             )
         }
 
@@ -1153,14 +1158,15 @@ class AutoTuneController(
          * Rewriting *every* CPU `scaling_min` writable (`644`) clears any stale read-only min lock and hands
          * min control back to the HAL.
          */
-        fun releaseCapsToDevice(policies: List<CpuPolicyInfo>) {
+        fun releaseCapsToDevice(policies: List<CpuPolicyInfo>, pulseDaemon: PulseDaemon? = null) {
             if (policies.isEmpty()) return
             val full = policies.associate { it.id to it.selectableMaxFreq }
             val allCpuIds = policies.filterNot { it.isGpu }.map { it.id }.toSet()
-            runScript(
-                PerformanceCommandBuilder().buildApplyScript(
+            dispatch(
+                PerformanceCommandBuilder().buildApplyWrites(
                     policies, full, isReset = true, lowerMinPolicyIds = allCpuIds,
                 ),
+                pulseDaemon,
             )
         }
 
@@ -1175,6 +1181,29 @@ class AutoTuneController(
                 p.id to (p.supportedFrequencies.minByOrNull { abs(it - target) } ?: p.selectableMaxFreq)
             }
 
+        /**
+         * Send [writes] through [pulseDaemon] (zero `xsu` calls per write -- the daemon is already root and
+         * already running) if given, falling back to the existing single-connection `xsu` script otherwise or
+         * if any individual pipe write fails -- same all-or-nothing fallback contract as
+         * `ForegroundAppMonitorService.setAutoTdpGovernorBalanced`'s governor-engage migration, extended to
+         * AutoTDP's own per-tick CPU/GPU cap writes (STATUS.md, 2026-07-28: these, not the one-shot governor
+         * engage, are the dominant contributor to the `xsu`/`xsud` connection volume behind the recurring
+         * Minecraft crash).
+         */
+        private fun dispatch(writes: List<CapWrite>, pulseDaemon: PulseDaemon?) {
+            if (writes.isEmpty()) return
+            if (pulseDaemon != null && writes.all { pulseDaemon.setCap(it.path, it.mode, it.value.toString()) }) {
+                android.util.Log.d("PulseDaemon", "cap write via daemon (${writes.size} node(s))")
+                pulseDaemon.log("PulseDaemon: cap write via daemon (${writes.size} node(s))")
+                return
+            }
+            if (pulseDaemon != null) {
+                android.util.Log.d("PulseDaemon", "cap write via xsu fallback")
+                pulseDaemon.log("PulseDaemon: cap write via xsu fallback")
+            }
+            runScript(PerformanceCommandBuilder().scriptFor(writes))
+        }
+
         private fun runScript(script: String) {
             val cmd = script.lineSequence()
                 .map { it.trim() }
@@ -1184,14 +1213,11 @@ class AutoTuneController(
         }
 
         /** Offline (`online=false`) or online the given CPU cores via their `cpuN/online` node. */
-        fun setCoresOnlineToDevice(cores: List<Int>, online: Boolean) {
+        fun setCoresOnlineToDevice(cores: List<Int>, online: Boolean, pulseDaemon: PulseDaemon? = null) {
             if (cores.isEmpty()) return
-            val v = if (online) 1 else 0
-            val cmd = cores.joinToString("; ") {
-                val path = "/sys/devices/system/cpu/cpu$it/online"
-                "chmod 666 $path 2>/dev/null; echo $v > $path"
-            }
-            RootSupport.runRootCommand(cmd)
+            val v = (if (online) 1 else 0).toLong()
+            val writes = cores.map { CapWrite("/sys/devices/system/cpu/cpu$it/online", "666", v) }
+            dispatch(writes, pulseDaemon)
         }
     }
 }

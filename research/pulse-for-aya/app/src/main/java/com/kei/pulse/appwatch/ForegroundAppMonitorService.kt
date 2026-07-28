@@ -565,7 +565,15 @@ class ForegroundAppMonitorService : Service() {
     private var overlayForeground: String? = null
 
     // ── AutoTDP: dynamic CPU→GPU clock trimming that holds the game's refresh-rate FPS ──
-    private val autoTune = AutoTuneController()
+    // Routes writeCaps/releaseCaps/setCoresOnline through pulseDaemon (falls back to xsu internally if the
+    // daemon isn't running or a write fails) -- extends the governor-engage FIFO migration
+    // (setAutoTdpGovernorBalanced) to AutoTDP's own per-tick regulation writes, its dominant xsu-connection
+    // source (STATUS.md, 2026-07-28).
+    private val autoTune = AutoTuneController(
+        writeCaps = { policies, caps -> AutoTuneController.applyCapsToDevice(policies, caps, pulseDaemon) },
+        releaseCaps = { policies -> AutoTuneController.releaseCapsToDevice(policies, pulseDaemon) },
+        setCoresOnline = { cores, online -> AutoTuneController.setCoresOnlineToDevice(cores, online, pulseDaemon) },
+    )
     private var autoTdpPackage: String? = null
     private var autoTdpTick = 0
     private var autoTdpLogTick = 0
@@ -802,7 +810,7 @@ class ForegroundAppMonitorService : Service() {
                 // DIAG (AutoTDP tick-loop investigation, STATUS.md): confirm directly whether autoActive is
                 // really false when this early-return fires, instead of inferring it from indirect evidence
                 // (RGB/fan telemetry reads happen independently of this path and can't prove autoActive=true).
-                android.util.Log.d(
+                logPulse(
                     "PulseAutoTdp",
                     "TICK-SKIP overlayShouldShow=$overlayShouldShow autoActive=$autoActive " +
                         "quickAccessShouldShow=$quickAccessShouldShow autoTdpPackage=$autoTdpPackage " +
@@ -1165,14 +1173,14 @@ class ForegroundAppMonitorService : Service() {
         val freqs = boundReassertFreqs
         if (freqs.isEmpty()) return
         if (boundReassertTick++ % 2 != 0) return
-        AutoTuneController.applyFreqsToDevice(ensurePolicies(), freqs)
+        AutoTuneController.applyFreqsToDevice(ensurePolicies(), freqs, pulseDaemon)
     }
 
     /** Stop holding a binding's caps and hand its locks (incl. the prime `scaling_min`) back to stock (`644`). */
     private suspend fun clearBoundReassert() {
         if (boundReassertFreqs.isEmpty()) return
         boundReassertFreqs = emptyMap()
-        AutoTuneController.releaseCapsToDevice(ensurePolicies())
+        AutoTuneController.releaseCapsToDevice(ensurePolicies(), pulseDaemon)
     }
 
     /**
@@ -1449,10 +1457,10 @@ class ForegroundAppMonitorService : Service() {
         val sentAll = chosen != null && cpu.isNotEmpty() &&
             cpu.all { p -> pulseDaemon.setCap("${p.policyPath}/scaling_governor", "644", chosen) }
         if (sentAll) {
-            android.util.Log.d("PulseDaemon", "engage governor via daemon ($chosen)")
+            logPulse("PulseDaemon", "engage governor via daemon ($chosen)")
             return
         }
-        android.util.Log.d("PulseDaemon", "engage governor via xsu fallback")
+        logPulse("PulseDaemon", "engage governor via xsu fallback")
         governorController.setGovernor(policies, option)
     }
 
@@ -1567,20 +1575,20 @@ class ForegroundAppMonitorService : Service() {
         if (!autoTune.isPrimeParked) {
             val prime = policies.filterNot { it.isGpu }.maxByOrNull { it.selectableMaxFreq }
             if (prime != null && (autoTune.caps[prime.id] ?: 100) < 100) {
-                AutoTuneController.applyCapsToDevice(listOf(prime), autoTune.caps)
+                AutoTuneController.applyCapsToDevice(listOf(prime), autoTune.caps, pulseDaemon)
             }
         }
         // Hold the perf/non-prime CPU caps EVERY tick — including while the prime is PARKED (the block above is
         // skipped then). Otherwise the vendor stomps perf's scaling_max back to full and the CPU runs free in
         // GPU-bound/parked scenes (the 72-76°C heat → loud fan). This writes only the non-prime maps and never
         // their scaling_min, so it can't wake the HAL into stomping the perf cap.
-        AutoTuneController.applyNonPrimeCpuCaps(policies, autoTune.caps)
+        AutoTuneController.applyNonPrimeCpuCaps(policies, autoTune.caps, pulseDaemon)
         // The SAME daemon reverts the GPU's max_pwrlevel to 0 (uncapped) — proven during media by
         // gcap=1100[0/13] while we cap to 40% (min_pwrlevel=13 holds, only the ceiling is stomped). Re-assert
         // the GPU ceiling every tick too so the cap bites; verify via gcap=<ceil>[<max>/..] tracking our cap.
         policies.firstOrNull { it.isGpu }?.let { gpu ->
             if ((autoTune.caps[gpu.id] ?: 100) < 100) {
-                AutoTuneController.applyCapsToDevice(listOf(gpu), autoTune.caps)
+                AutoTuneController.applyCapsToDevice(listOf(gpu), autoTune.caps, pulseDaemon)
             }
         }
         if (AUTO_DEBUG && autoTdpTick == 20) probePerflockNodes(policies) // one-shot, mid-game
@@ -1632,6 +1640,22 @@ class ForegroundAppMonitorService : Service() {
      * really biting (vs. the loop thinking it trimmed while the hardware ignored the write). `adb logcat
      * -s PulseAutoTdp`.
      */
+    /**
+     * Mirrors an app-side diagnostic line to logcat AND, via [pulseDaemon], to this session's `/sdcard` log
+     * file. logcat alone has proven unreliable as the primary record of what PULSE is actually doing during
+     * real gameplay -- its 256 KiB ring buffer overflows under `xsu`'s own chatty protocol logging under load
+     * (STATUS.md, 2026-07-27's AutoTDP-tick-loop investigation), and a capture is only ever available if
+     * someone pulls it *before* the next crash/reboot. The `/sdcard` copy survives both: it's flushed line by
+     * line by the daemon (already root, already running, zero extra `xsu` connections) and lives outside this
+     * app's own process, so it's there to inspect even after a crash. Gated on [AUTO_DEBUG] like every other
+     * diagnostic line in this class; best-effort if the daemon isn't running (see [PulseDaemon.log]).
+     */
+    private fun logPulse(tag: String, msg: String) {
+        if (!AUTO_DEBUG) return
+        android.util.Log.d(tag, msg)
+        pulseDaemon.log("$tag: $msg")
+    }
+
     private fun logAutoTdp(
         policies: List<CpuPolicyInfo>,
         telemetry: TelemetrySnapshot,
@@ -1649,7 +1673,7 @@ class ForegroundAppMonitorService : Service() {
             val polStr = policies.joinToString(";") { p ->
                 "${p.id}:${p.selectableMaxFreq}:${p.cpuIds.joinToString(",")}"
             }
-            android.util.Log.d(
+            logPulse(
                 "PulseAutoTdp",
                 "AUTOTDP-SESSION tgt=${autoTune.targetFps} bias=${autoTune.bias} " +
                     "wattCap=${if (autoTune.wattCapAndSettleEnabled) 1 else 0} policies=$polStr",
@@ -1671,7 +1695,7 @@ class ForegroundAppMonitorService : Service() {
         } else {
             ""
         }
-        android.util.Log.d(
+        logPulse(
             "PulseAutoTdp",
             "tgt=${autoTune.targetFps} fps=${fps?.fps?.let { String.format(java.util.Locale.US, "%.1f", it) } ?: "-"} " +
                 "jank=${fps?.jankFrames ?: 0} tail=${fps?.worstFrameTimeMs?.let { String.format(java.util.Locale.US, "%.0f", it) } ?: "-"}ms " +

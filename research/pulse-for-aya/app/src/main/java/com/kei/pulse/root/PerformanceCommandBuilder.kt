@@ -2,6 +2,10 @@ package com.kei.pulse.root
 
 import com.kei.pulse.model.CpuPolicyInfo
 
+/** One sysfs node write: unlock (666) -> echo [value] -> lock ([mode]) -- the unit [PulseDaemon.setCap] and the
+ * xsu fallback script both perform, so a caller can build the list once and dispatch it either way. */
+data class CapWrite(val path: String, val mode: String, val value: Long)
+
 class PerformanceCommandBuilder {
 
     /**
@@ -14,19 +18,19 @@ class PerformanceCommandBuilder {
      *   drops (prime can be capped) while the perf cluster's min is left alone (its cap keeps biting). On
      *   reset, pass every CPU id (writable `644`) to hand min control back to the HAL and clear stale locks.
      */
-    fun buildApplyScript(
+    fun buildApplyWrites(
         policies: List<CpuPolicyInfo>,
         selectedValues: Map<Int, Int>,
         isReset: Boolean,
         lowerMinPolicyIds: Set<Int> = emptySet(),
-    ): String {
-        val lines = mutableListOf<String>()
+    ): List<CapWrite> {
+        val writes = mutableListOf<CapWrite>()
         val targetMode = if (isReset) "644" else "444"
 
         policies.forEach { policy ->
             val value = selectedValues[policy.id] ?: return@forEach
             if (policy.isGpu) {
-                appendGpuLevel(lines, policy, value)
+                appendGpuLevel(writes, policy, value)
             } else {
                 // Never echo a non-positive frequency to a CPU freq node — the kernel rejects it / the result
                 // is undefined. A 0/negative value here means malformed detection (or a reset/uninstall edge);
@@ -34,17 +38,31 @@ class PerformanceCommandBuilder {
                 if (value <= 0) return@forEach
                 if (policy.id in lowerMinPolicyIds) {
                     val floor = policy.supportedFrequencies.minOrNull() ?: policy.minFreq
-                    if (floor > 0) write(lines, "${policy.policyPath}/scaling_min_freq", floor.toLong(), targetMode)
+                    if (floor > 0) writes += CapWrite("${policy.policyPath}/scaling_min_freq", targetMode, floor.toLong())
                 }
-                write(lines, policy.scalingMaxPath, value.toLong(), targetMode)
+                writes += CapWrite(policy.scalingMaxPath, targetMode, value.toLong())
             }
         }
+        return writes
+    }
 
-        return buildString {
-            appendLine("#!/system/bin/sh")
-            lines.forEach(::appendLine)
+    /** Same writes as [buildApplyWrites], flattened into one `xsu`-runnable shell script (the fallback path when
+     * no [com.kei.pulse.root.PulseDaemon] is available or a daemon write fails). */
+    fun scriptFor(writes: List<CapWrite>): String = buildString {
+        appendLine("#!/system/bin/sh")
+        writes.forEach { w ->
+            appendLine("chmod 666 ${w.path}")
+            appendLine("echo ${w.value} > ${w.path}")
+            appendLine("chmod ${w.mode} ${w.path}")
         }
     }
+
+    fun buildApplyScript(
+        policies: List<CpuPolicyInfo>,
+        selectedValues: Map<Int, Int>,
+        isReset: Boolean,
+        lowerMinPolicyIds: Set<Int> = emptySet(),
+    ): String = scriptFor(buildApplyWrites(policies, selectedValues, isReset, lowerMinPolicyIds))
 
     /**
      * Adreno is capped by power-level INDEX (fastest = 0). The kernel clamps `max_pwrlevel`
@@ -54,7 +72,7 @@ class PerformanceCommandBuilder {
      * level first (full downscale headroom), then set the ceiling.
      */
     private fun appendGpuLevel(
-        lines: MutableList<String>,
+        writes: MutableList<CapWrite>,
         policy: CpuPolicyInfo,
         valueKHz: Int,
     ) {
@@ -66,14 +84,8 @@ class PerformanceCommandBuilder {
         // lets the vendor performance daemon stomp min_pwrlevel back up and floor the GPU
         // mid-range (~900MHz). Locking min=slowest / max=ceiling keeps it free to idle down
         // and scale up to its cap.
-        write(lines, minPath, slowestLevel.toLong(), "444")
-        write(lines, policy.scalingMaxPath, maxLevel.toLong(), "444")
-    }
-
-    private fun write(lines: MutableList<String>, path: String, value: Long, mode: String) {
-        lines += "chmod 666 $path"
-        lines += "echo $value > $path"
-        lines += "chmod $mode $path"
+        writes += CapWrite(minPath, "444", slowestLevel.toLong())
+        writes += CapWrite(policy.scalingMaxPath, "444", maxLevel.toLong())
     }
 
     /** ascending kHz table -> power level (fastest = 0). */

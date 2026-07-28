@@ -31,6 +31,18 @@ class PulseDaemon(context: Context) {
     private val logPath = File(context.filesDir, "pulse_daemon.log").absolutePath
     private val assets = context.assets
 
+    /**
+     * One human-readable session log per daemon launch, under `/sdcard` (not this app's own `filesDir`) so it
+     * can be pulled directly (`adb pull`, no root/`run-as` needed) even if the device crashes before a host
+     * `logcat` capture can be taken -- logcat itself has proven unreliable under real gameplay load (its
+     * 256 KiB ring buffer overflows under `xsu`'s own chatty protocol logging, STATUS.md 2026-07-27). Written
+     * by the SAME already-root daemon process via the existing FIFO ([log]), so this adds zero further `xsu`
+     * connections -- unlike the app's own sandboxed process, which per this repo's own established finding
+     * (`MainActivity.kt`'s AIDL probes) can't reliably reach `/sdcard` directly under scoped storage.
+     */
+    private val sdcardLogPath = "/sdcard/apl_pulse_logs/pulse_" +
+        java.text.SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.US).format(java.util.Date()) + ".log"
+
     @Volatile private var running = false
 
     /**
@@ -45,7 +57,8 @@ class PulseDaemon(context: Context) {
             }
         }
         RootSupport.runRootCommand(
-            "sh '${scriptFile.absolutePath}' '$fifoInPath' '$logPath' > /dev/null 2>&1 < /dev/null &",
+            "mkdir -p /sdcard/apl_pulse_logs; " +
+                "sh '${scriptFile.absolutePath}' '$fifoInPath' '$logPath' '$sdcardLogPath' > /dev/null 2>&1 < /dev/null &",
         )
         running = true
     }
@@ -77,19 +90,20 @@ class PulseDaemon(context: Context) {
      */
     fun setCap(path: String, mode: String, value: String): Boolean {
         if (!running) return false
-        val succeeded = java.util.concurrent.atomic.AtomicBoolean(false)
-        val writer = Thread {
-            try {
-                FileOutputStream(fifoInPath).use { it.write("$path $mode $value\n".toByteArray()) }
-                succeeded.set(true)
-            } catch (e: Exception) {
-                // leave succeeded = false
-            }
-        }
-        writer.isDaemon = true
-        writer.start()
-        writer.join(SET_CAP_TIMEOUT_MS)
-        return succeeded.get()
+        return sendLine("$path $mode $value")
+    }
+
+    /**
+     * Appends one line (timestamped by the daemon script) to this session's `/sdcard` log file --
+     * same zero-`xsu`, bounded-timeout FIFO write as [setCap], just a different protocol verb
+     * (`"LOG <message>"` instead of a sysfs write). `message` must not contain a newline (any found
+     * are replaced with a space, so one call always produces exactly one log line). Returns `false`
+     * (never throws) on a dead/not-yet-started daemon -- callers should treat this as best-effort:
+     * this is a diagnostic aid, not a control-path write, so there's no xsu fallback to drop back to.
+     */
+    fun log(message: String): Boolean {
+        if (!running) return false
+        return sendLine("LOG " + message.replace('\n', ' '))
     }
 
     /** Tells the daemon to exit and clean up its FIFO. Safe to call even if never started. */
@@ -101,6 +115,24 @@ class PulseDaemon(context: Context) {
             // daemon already gone -- fine, nothing left to signal
         }
         running = false
+    }
+
+    /** Shared bounded-timeout FIFO line write backing [setCap] and [log] -- see [setCap]'s doc for why the
+     * timeout/daemon-thread pattern is required (a dead daemon must never block the caller). */
+    private fun sendLine(line: String): Boolean {
+        val succeeded = java.util.concurrent.atomic.AtomicBoolean(false)
+        val writer = Thread {
+            try {
+                FileOutputStream(fifoInPath).use { it.write("$line\n".toByteArray()) }
+                succeeded.set(true)
+            } catch (e: Exception) {
+                // leave succeeded = false
+            }
+        }
+        writer.isDaemon = true
+        writer.start()
+        writer.join(SET_CAP_TIMEOUT_MS)
+        return succeeded.get()
     }
 
     companion object {
