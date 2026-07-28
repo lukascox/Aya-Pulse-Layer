@@ -470,6 +470,87 @@ write next), but this specific mitigation goal — stopping the crash by
 reducing our own footprint — is not confirmed to work and shouldn't be
 assumed to, going forward.
 
+## Per-app profile testing session (2026-07-28, night) — four findings
+
+User exercised the per-app binding feature for real: RetroArch (GBA), Mario
+Odyssey on Eden (Switch emulation), Minecraft, and `retrohrai` (the
+frontend/launcher). Raw evidence:
+`research/ab-logger/results/per_app_profile_test/round1_2026-07-28_2028_.../`
+and `round2_2026-07-28_2035_.../`.
+
+**1. Foreground-detection anomaly, unresolved — logged `com.miHoYo.Yuanshen`
+(Genshin Impact) as bound/foreground for ~68s, user says they never launched
+it.** `ForegroundAppMonitorService.currentForegroundPackage()` reads a real
+`UsageEvents.ACTIVITY_RESUMED` from a 10s window
+(`EVENT_WINDOW_MS = 10_000L`, line ~2085) — too short for this to be a stale/
+replayed event from hours earlier being misread as "latest". Something on
+the device genuinely resumed that activity at 20:37:45. Candidates not yet
+checked: (a) Genshin actually installed and something (notification tap,
+background service) silently resumed it without the user opening it, (b)
+Eden's own activity/task for this specific game momentarily surfaces under a
+borrowed/wrong package identity (would be unusual, not confirmed). **Next
+cheap check**: `adb shell pm list packages | grep -i miho` to confirm
+whether Genshin is even installed; if not, the mechanism has to be something
+else entirely and is a real bug worth chasing.
+
+**2. Custom tier has no per-app slider editor — confirmed, not a missing
+UI hookup.** `PerAppScreen.kt`'s binding dialog lists `PowerTier.CUSTOM` as a
+selectable chip (line ~349), but `PowerTier.CUSTOM`'s `cpuFactor`/
+`gpuFactor` are unused placeholders (`PowerTier.kt`) — applying "Custom"
+per-app actually calls `PerformanceRepository.restoreCustomValues()`, which
+re-applies whatever the **one global** Custom frequency map was last saved
+(`profileStorage.customValues`), edited only via the sliders on the main
+Tuner screen (`TunerScreen.kt`, gated on `activeTier == PowerTier.CUSTOM`).
+So today, every app bound to "Custom" shares the same single manual
+frequency curve — there's no way to give two different games their own
+distinct Custom setup. Real limitation, not a bug; worth deciding whether
+per-app Custom maps are worth building before relying on this for more than
+one game.
+
+**3. Power Saving tier unstable in RetroArch (Super Wario Land 4, ~55-60fps
+instead of locked 60).** `PowerTier.POWER_SAVING` (`cpuFactor=0.55`,
+`gpuFactor=0.45`, see `PowerTier.kt`) is deliberately the most restrictive
+tier — this looks like expected trade-off behavior (some real GBA titles are
+light but not zero-cost to emulate at 0.55x clock ceiling) rather than a
+bug. Noted for future tuning if Power Saving needs to stay usable for
+emulation, not just idle/menu use.
+
+**4. AutoTDP regulates Minecraft correctly but loses the target on Eden —
+extends the still-open Eden thread in `STATUS.md`.** User confirms AAA/Max
+(static, no AutoTDP) runs the same Eden/Mario session "super smoothly" —
+useful data point: it's specifically the *AutoTDP loop* that mishandles
+this workload, not the SoC/hardware. In the captured log
+(`round1.../pulse_20260728_202800.log`), a ~90s AutoTDP stretch pinned
+`fps≈30` against `tgt=90` despite continuous `RAISE` decisions pushing caps
+toward 100% — target never reached. Can't yet tell if this is Eden being
+genuinely GPU/emulation-bound (AutoTDP correctly maxed out and still
+couldn't hit 90) or a **package-attribution gap**: the regulation log line
+(`ForegroundAppMonitorService.kt:1682`, the `tgt=...` telemetry line) never
+prints which package it's regulating — only the separate `TICK-SKIP`/
+`AUTOTDP-SESSION` lines show `boundPackage`, and those go silent for the
+whole time AutoTDP is actively running. **Cheap fix, do first**: add the
+bound package name to every `tgt=` line, so the next Eden session shows
+definitively whether AutoTDP stayed attached to Eden the whole time or drifted.
+
+**5. AAA/Max ran ~2min at max CPU clock, hit ~70°C, fan never ramped —
+expected, not a red flag.** `PowerTier.MAX` pairs `cpuFactor=1.0` with the
+real `performance` cpufreq governor (`SystemTuning.kt` `OPTIONS`,
+`GovernorOption("Performance", listOf("performance"))`) — this pins cores at
+their max allowed frequency continuously, it does not itself decide how hot
+the SoC gets. Actual power draw still tracks real switching activity
+(workload), not just the frequency ceiling — a lightly-threaded 2D title
+sitting at max clock on 1-2 active cores draws far less than the same clock
+ceiling under full multi-core load, so 70°C sustained for a light game is
+unsurprising and well under typical Snapdragon throttle thresholds.
+Separately: PULSE's own fan control is a confirmed no-op on this device
+(`customFanAvailable(): Boolean = false`, `pulse-glue-assessment/
+FINDINGS.md`) — whatever the fan does (or doesn't do) is entirely the
+vendor firmware's own curve, uninfluenced by which PULSE tier is active.
+**Caveat**: this isn't a thermal guarantee for heavier titles — `performance`
+never backs off preemptively, so a sustained CPU/GPU-bound 3D game at
+AAA/Max would rely purely on the SoC's own hardware throttling, not
+anything PULSE-side, to avoid overheating.
+
 ## Not yet exercised / open
 
 - AutoTDP's actual write path (CPU/GPU frequency actuation) — needs Usage

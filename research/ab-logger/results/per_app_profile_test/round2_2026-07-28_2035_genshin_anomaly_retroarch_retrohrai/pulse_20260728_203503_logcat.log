@@ -1,0 +1,1101 @@
+# TRIMMED -- pre-session logcat-buffer replay, confirmed irrelevant to this session.
+# Original: 1838 lines spanning 01-02 10:09 to 07-28 20:45:25, with timestamps
+# predating session start (2026-07-28 20:35:03) by hours (01-02) or minutes.
+# All "crash-keyword hits" (nvkeeper/qcrosvm crashes at 20:27:28-20:27:33, well before
+# session start) are pre-session buffer replay. Kept: session-window lines only
+# (2026-07-28 20:35:03 through 20:45:37, ~10min 34s), discarding pre-session replay.
+# See SUMMARY.md for full context.
+# ---
+07-28 20:35:01.693  2281 28841 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:35:01.693  2281 28841 E ActivityManager: PID: 28000
+07-28 20:35:01.693  2281 28841 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:35:01.693  2281 28841 E ActivityManager: ErrorId: bc8ba886-d7f5-4786-aca0-9543e2750861
+07-28 20:35:01.693  2281 28841 E ActivityManager: Frozen: false
+07-28 20:35:01.693  2281 28841 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:35:01.693  2281 28841 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:35:01.693  2281 28841 E ActivityManager: some avg10=0.50 avg60=0.24 avg300=0.10 total=1156589
+07-28 20:35:01.693  2281 28841 E ActivityManager: full avg10=0.45 avg60=0.19 avg300=0.07 total=809213
+07-28 20:35:01.693  2281 28841 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:35:01.693  2281 28841 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:35:01.693  2281 28841 E ActivityManager: some avg10=18.31 avg60=14.39 avg300=11.01 total=64524674
+07-28 20:35:01.693  2281 28841 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:35:01.693  2281 28841 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:35:01.693  2281 28841 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:35:01.693  2281 28841 E ActivityManager: some avg10=0.27 avg60=0.21 avg300=0.16 total=2323911
+07-28 20:35:01.693  2281 28841 E ActivityManager: full avg10=0.04 avg60=0.04 avg300=0.04 total=1061041
+07-28 20:35:01.693  2281 28841 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:35:01.693  2281 28841 E ActivityManager: 
+07-28 20:35:01.693  2281 28841 E ActivityManager: CPU usage from 20111ms to 0ms ago (2026-07-28 20:34:41.512 to 2026-07-28 20:35:01.624) with 99% awake:
+07-28 20:35:01.693  2281 28841 E ActivityManager:   128% 25963/com.miHoYo.Yuanshen: 86% user + 41% kernel / faults: 214950 minor
+07-28 20:35:01.693  2281 28841 E ActivityManager:   20% 1583/surfaceflinger: 11% user + 8.8% kernel / faults: 5 minor
+07-28 20:35:01.693  2281 28841 E ActivityManager:   15% 1490/vendor.qti.hardware.display.composer-service: 9.1% user + 5.9% kernel / faults: 103 minor
+07-28 20:35:01.693  2281 28841 E ActivityManager:   10% 1358/android.hardware.audio.service_64: 2.8% user + 7.6% kernel
+07-28 20:35:01.693  2281 28841 E ActivityManager:   9.9% 4282/com.ayaneo.gamewindow: 3.7% user + 6.2% kernel / faults: 1629 minor
+07-28 20:35:01.693  2281 28841 E ActivityManager:   7.8% 1571/audioserver: 3.1% user + 4.6% kernel
+07-28 20:35:01.693  2281 28841 E ActivityManager:   6.5% 2281/system_server: 3.2% user + 3.2% kernel / faults: 975 minor 7 major
+07-28 20:35:01.693  2281 28841 E ActivityManager:   4.2% 922/crtc_commit:198: 0% user + 4.2% kernel
+07-28 20:35:01.693  2281 28841 E ActivityManager:   3% 890/kgsl_hwsched: 0% user + 3% kernel
+07-28 20:35:01.693  2281 28841 E ActivityManager:   3% 924/crtc_commit:263: 0% user + 3% kernel
+07-28 20:35:01.693  2281 28841 E ActivityManager: 37% TOTAL: 18% user + 15% kernel + 0% iowait + 3.6% irq + 0.3% softirq
+07-28 20:35:01.693  2281 28841 E ActivityManager: CPU usage from 454274ms to 454274ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:35:01.693  2281 28841 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:35:21.788  2281 29620 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:35:21.788  2281 29620 E ActivityManager: PID: 28849
+07-28 20:35:21.788  2281 29620 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:35:21.788  2281 29620 E ActivityManager: ErrorId: c510e78e-e431-456d-9c66-d44e9b44c50c
+07-28 20:35:21.788  2281 29620 E ActivityManager: Frozen: false
+07-28 20:35:21.788  2281 29620 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:35:21.788  2281 29620 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:35:21.788  2281 29620 E ActivityManager: some avg10=0.06 avg60=0.17 avg300=0.09 total=1185104
+07-28 20:35:21.788  2281 29620 E ActivityManager: full avg10=0.06 avg60=0.13 avg300=0.07 total=830939
+07-28 20:35:21.788  2281 29620 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:35:21.788  2281 29620 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:35:21.788  2281 29620 E ActivityManager: some avg10=17.21 avg60=15.20 avg300=11.43 total=68070841
+07-28 20:35:21.788  2281 29620 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:35:21.788  2281 29620 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:35:21.788  2281 29620 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:35:21.788  2281 29620 E ActivityManager: some avg10=0.03 avg60=0.14 avg300=0.15 total=2371740
+07-28 20:35:21.788  2281 29620 E ActivityManager: full avg10=0.00 avg60=0.03 avg300=0.03 total=1093196
+07-28 20:35:21.788  2281 29620 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:35:21.788  2281 29620 E ActivityManager: 
+07-28 20:35:21.788  2281 29620 E ActivityManager: CPU usage from 7393ms to -1ms ago (2026-07-28 20:35:14.365 to 2026-07-28 20:35:21.759) with 99% awake:
+07-28 20:35:21.788  2281 29620 E ActivityManager:   207% 25963/com.miHoYo.Yuanshen: 158% user + 48% kernel / faults: 2228 minor
+07-28 20:35:21.788  2281 29620 E ActivityManager:   22% 1583/surfaceflinger: 12% user + 9.3% kernel
+07-28 20:35:21.788  2281 29620 E ActivityManager:   16% 2281/system_server: 8.1% user + 8.8% kernel / faults: 230 minor
+07-28 20:35:21.788  2281 29620 E ActivityManager:   15% 1490/vendor.qti.hardware.display.composer-service: 9.7% user + 5.2% kernel / faults: 40 minor
+07-28 20:35:21.788  2281 29620 E ActivityManager:   9.2% 4282/com.ayaneo.gamewindow: 2.9% user + 6.2% kernel / faults: 263 minor
+07-28 20:35:21.788  2281 29620 E ActivityManager:   8.5% 1358/android.hardware.audio.service_64: 2.3% user + 6.2% kernel
+07-28 20:35:21.788  2281 29620 E ActivityManager:   6.9% 1571/audioserver: 2.8% user + 4% kernel
+07-28 20:35:21.788  2281 29620 E ActivityManager:   5.9% 28893/com.kei.pulse: 5% user + 0.9% kernel / faults: 433 minor
+07-28 20:35:21.788  2281 29620 E ActivityManager:   3.7% 922/crtc_commit:198: 0% user + 3.7% kernel
+07-28 20:35:21.788  2281 29620 E ActivityManager:   3.1% 924/crtc_commit:263: 0% user + 3.1% kernel
+07-28 20:35:21.788  2281 29620 E ActivityManager: 46% TOTAL: 27% user + 14% kernel + 3.8% irq + 0.5% softirq
+07-28 20:35:21.788  2281 29620 E ActivityManager: CPU usage from 474409ms to 474409ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:35:21.788  2281 29620 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:35:31.777  2281 29619 E ActivityManager: Aborted stack trace dump (current primary pid=28849); deadline exceeded.
+07-28 20:35:39.419  2281  4044 E ActivityManager: Sending non-protected broadcast com.ayaneo.gamelauncher.player.PAUSE_GAME from system 4282:com.ayaneo.gamewindow/1000 pkg com.ayaneo.gamewindow
+07-28 20:35:39.419  2281  4044 E ActivityManager: java.lang.Throwable
+07-28 20:35:39.419  2281  4044 E ActivityManager: 	at com.android.server.am.ActivityManagerService.checkBroadcastFromSystem(ActivityManagerService.java:14436)
+07-28 20:35:39.419  2281  4044 E ActivityManager: 	at com.android.server.am.ActivityManagerService.broadcastIntentLockedTraced(ActivityManagerService.java:15261)
+07-28 20:35:39.419  2281  4044 E ActivityManager: 	at com.android.server.am.ActivityManagerService.broadcastIntentLocked(ActivityManagerService.java:14500)
+07-28 20:35:39.419  2281  4044 E ActivityManager: 	at com.android.server.am.ActivityManagerService.broadcastIntentWithFeature(ActivityManagerService.java:15466)
+07-28 20:35:39.419  2281  4044 E ActivityManager: 	at android.app.IActivityManager$Stub.onTransact(IActivityManager.java:2653)
+07-28 20:35:39.419  2281  4044 E ActivityManager: 	at com.android.server.am.ActivityManagerService.onTransact(ActivityManagerService.java:2743)
+07-28 20:35:39.419  2281  4044 E ActivityManager: 	at android.os.Binder.execTransactInternal(Binder.java:1339)
+07-28 20:35:39.419  2281  4044 E ActivityManager: 	at android.os.Binder.execTransact(Binder.java:1275)
+07-28 20:35:41.883  2281 29988 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:35:41.883  2281 29988 E ActivityManager: PID: 29623
+07-28 20:35:41.883  2281 29988 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:35:41.883  2281 29988 E ActivityManager: ErrorId: 4ce08a99-01a1-411d-8cfc-36e2545b0467
+07-28 20:35:41.883  2281 29988 E ActivityManager: Frozen: false
+07-28 20:35:41.883  2281 29988 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:35:41.883  2281 29988 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:35:41.883  2281 29988 E ActivityManager: some avg10=0.00 avg60=0.12 avg300=0.08 total=1186505
+07-28 20:35:41.883  2281 29988 E ActivityManager: full avg10=0.00 avg60=0.09 avg300=0.06 total=832014
+07-28 20:35:41.883  2281 29988 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:35:41.883  2281 29988 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:35:41.883  2281 29988 E ActivityManager: some avg10=16.39 avg60=15.51 avg300=11.75 total=71467693
+07-28 20:35:41.883  2281 29988 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:35:41.883  2281 29988 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:35:41.883  2281 29988 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:35:41.883  2281 29988 E ActivityManager: some avg10=0.00 avg60=0.10 avg300=0.13 total=2380905
+07-28 20:35:41.883  2281 29988 E ActivityManager: full avg10=0.00 avg60=0.02 avg300=0.03 total=1096088
+07-28 20:35:41.883  2281 29988 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:35:41.883  2281 29988 E ActivityManager: 
+07-28 20:35:41.883  2281 29988 E ActivityManager: CPU usage from 20096ms to 0ms ago (2026-07-28 20:35:21.759 to 2026-07-28 20:35:41.856):
+07-28 20:35:41.883  2281 29988 E ActivityManager:   207% 25963/com.miHoYo.Yuanshen: 157% user + 50% kernel / faults: 4446 minor
+07-28 20:35:41.883  2281 29988 E ActivityManager:   22% 1583/surfaceflinger: 13% user + 8.9% kernel / faults: 14 minor
+07-28 20:35:41.883  2281 29988 E ActivityManager:   16% 1490/vendor.qti.hardware.display.composer-service: 10% user + 5.6% kernel / faults: 99 minor
+07-28 20:35:41.883  2281 29988 E ActivityManager:   15% 2281/system_server: 6.9% user + 8% kernel / faults: 529 minor 4 major
+07-28 20:35:41.883  2281 29988 E ActivityManager:   9.8% 4282/com.ayaneo.gamewindow: 3.6% user + 6.1% kernel / faults: 2485 minor 27 major
+07-28 20:35:41.883  2281 29988 E ActivityManager:   8.5% 1358/android.hardware.audio.service_64: 2.2% user + 6.2% kernel
+07-28 20:35:41.883  2281 29988 E ActivityManager:   6.7% 1571/audioserver: 2.7% user + 3.9% kernel
+07-28 20:35:41.883  2281 29988 E ActivityManager:   6.3% 28893/com.kei.pulse: 4.9% user + 1.3% kernel / faults: 2345 minor
+07-28 20:35:41.883  2281 29988 E ActivityManager:   4% 922/crtc_commit:198: 0% user + 4% kernel
+07-28 20:35:41.883  2281 29988 E ActivityManager:   3% 924/crtc_commit:263: 0% user + 3% kernel
+07-28 20:35:41.883  2281 29988 E ActivityManager: 47% TOTAL: 27% user + 15% kernel + 0% iowait + 3.7% irq + 0.4% softirq
+07-28 20:35:41.883  2281 29988 E ActivityManager: CPU usage from 494506ms to 494506ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:35:41.883  2281 29988 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:35:43.691  2281  4042 E ActivityManager: Sending non-protected broadcast com.ayaneo.gamelauncher.player.RESUME_GAME from system 4282:com.ayaneo.gamewindow/1000 pkg com.ayaneo.gamewindow
+07-28 20:35:43.691  2281  4042 E ActivityManager: java.lang.Throwable
+07-28 20:35:43.691  2281  4042 E ActivityManager: 	at com.android.server.am.ActivityManagerService.checkBroadcastFromSystem(ActivityManagerService.java:14436)
+07-28 20:35:43.691  2281  4042 E ActivityManager: 	at com.android.server.am.ActivityManagerService.broadcastIntentLockedTraced(ActivityManagerService.java:15261)
+07-28 20:35:43.691  2281  4042 E ActivityManager: 	at com.android.server.am.ActivityManagerService.broadcastIntentLocked(ActivityManagerService.java:14500)
+07-28 20:35:43.691  2281  4042 E ActivityManager: 	at com.android.server.am.ActivityManagerService.broadcastIntentWithFeature(ActivityManagerService.java:15466)
+07-28 20:35:43.691  2281  4042 E ActivityManager: 	at android.app.IActivityManager$Stub.onTransact(IActivityManager.java:2653)
+07-28 20:35:43.691  2281  4042 E ActivityManager: 	at com.android.server.am.ActivityManagerService.onTransact(ActivityManagerService.java:2743)
+07-28 20:35:43.691  2281  4042 E ActivityManager: 	at android.os.Binder.execTransactInternal(Binder.java:1339)
+07-28 20:35:43.691  2281  4042 E ActivityManager: 	at android.os.Binder.execTransact(Binder.java:1275)
+07-28 20:35:51.876  2281 29987 E ActivityManager: Aborted stack trace dump (current primary pid=29623); deadline exceeded.
+07-28 20:36:02.037  2281 30361 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:36:02.037  2281 30361 E ActivityManager: PID: 29990
+07-28 20:36:02.037  2281 30361 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:36:02.037  2281 30361 E ActivityManager: ErrorId: 18e7e08c-ae4e-445b-85fc-67b088711c82
+07-28 20:36:02.037  2281 30361 E ActivityManager: Frozen: false
+07-28 20:36:02.037  2281 30361 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:36:02.037  2281 30361 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:36:02.037  2281 30361 E ActivityManager: some avg10=0.00 avg60=0.08 avg300=0.07 total=1188312
+07-28 20:36:02.037  2281 30361 E ActivityManager: full avg10=0.00 avg60=0.06 avg300=0.06 total=833558
+07-28 20:36:02.037  2281 30361 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:36:02.037  2281 30361 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:36:02.037  2281 30361 E ActivityManager: some avg10=17.35 avg60=16.09 avg300=12.14 total=75069635
+07-28 20:36:02.037  2281 30361 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:36:02.037  2281 30361 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:36:02.037  2281 30361 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:36:02.037  2281 30361 E ActivityManager: some avg10=0.00 avg60=0.07 avg300=0.12 total=2386467
+07-28 20:36:02.037  2281 30361 E ActivityManager: full avg10=0.00 avg60=0.01 avg300=0.02 total=1098220
+07-28 20:36:02.037  2281 30361 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:36:02.037  2281 30361 E ActivityManager: 
+07-28 20:36:02.037  2281 30361 E ActivityManager: CPU usage from 20118ms to -1ms ago (2026-07-28 20:35:41.856 to 2026-07-28 20:36:01.974):
+07-28 20:36:02.037  2281 30361 E ActivityManager:   210% 25963/com.miHoYo.Yuanshen: 155% user + 54% kernel / faults: 2609 minor
+07-28 20:36:02.037  2281 30361 E ActivityManager:   24% 1583/surfaceflinger: 13% user + 10% kernel / faults: 4 minor 8 major
+07-28 20:36:02.037  2281 30361 E ActivityManager:   17% 2281/system_server: 8.8% user + 8.2% kernel / faults: 532 minor
+07-28 20:36:02.037  2281 30361 E ActivityManager:   16% 1490/vendor.qti.hardware.display.composer-service: 10% user + 5.9% kernel / faults: 112 minor
+07-28 20:36:02.037  2281 30361 E ActivityManager:   10% 4282/com.ayaneo.gamewindow: 3.1% user + 7.2% kernel / faults: 2359 minor 5 major
+07-28 20:36:02.037  2281 30361 E ActivityManager:   9.2% 1358/android.hardware.audio.service_64: 2.5% user + 6.7% kernel
+07-28 20:36:02.037  2281 30361 E ActivityManager:   7.2% 1571/audioserver: 2.9% user + 4.2% kernel
+07-28 20:36:02.037  2281 30361 E ActivityManager:   5.5% 28893/com.kei.pulse: 4.4% user + 1% kernel / faults: 1362 minor
+07-28 20:36:02.037  2281 30361 E ActivityManager:   4.2% 922/crtc_commit:198: 0% user + 4.2% kernel
+07-28 20:36:02.037  2281 30361 E ActivityManager:   3.2% 924/crtc_commit:263: 0% user + 3.2% kernel
+07-28 20:36:02.037  2281 30361 E ActivityManager: 49% TOTAL: 28% user + 17% kernel + 0% iowait + 4.1% irq + 0.5% softirq
+07-28 20:36:02.037  2281 30361 E ActivityManager: CPU usage from 514624ms to 514624ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:36:02.037  2281 30361 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:36:22.161  2281 30734 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:36:22.161  2281 30734 E ActivityManager: PID: 30363
+07-28 20:36:22.161  2281 30734 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:36:22.161  2281 30734 E ActivityManager: ErrorId: 7d3a673b-013e-4d6f-b6e4-994531972ace
+07-28 20:36:22.161  2281 30734 E ActivityManager: Frozen: false
+07-28 20:36:22.161  2281 30734 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:36:22.161  2281 30734 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:36:22.161  2281 30734 E ActivityManager: some avg10=0.00 avg60=0.05 avg300=0.06 total=1188312
+07-28 20:36:22.161  2281 30734 E ActivityManager: full avg10=0.00 avg60=0.04 avg300=0.05 total=833558
+07-28 20:36:22.161  2281 30734 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:36:22.161  2281 30734 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:36:22.161  2281 30734 E ActivityManager: some avg10=16.19 avg60=16.09 avg300=12.40 total=78415267
+07-28 20:36:22.161  2281 30734 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:36:22.161  2281 30734 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:36:22.161  2281 30734 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:36:22.161  2281 30734 E ActivityManager: some avg10=0.00 avg60=0.05 avg300=0.11 total=2387137
+07-28 20:36:22.161  2281 30734 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.02 total=1098342
+07-28 20:36:22.161  2281 30734 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:36:22.161  2281 30734 E ActivityManager: 
+07-28 20:36:22.161  2281 30734 E ActivityManager: CPU usage from 20147ms to -1ms ago (2026-07-28 20:36:01.974 to 2026-07-28 20:36:22.122):
+07-28 20:36:22.161  2281 30734 E ActivityManager:   205% 25963/com.miHoYo.Yuanshen: 154% user + 51% kernel / faults: 2068 minor
+07-28 20:36:22.161  2281 30734 E ActivityManager:   23% 1583/surfaceflinger: 13% user + 9.2% kernel / faults: 66 minor 1 major
+07-28 20:36:22.161  2281 30734 E ActivityManager:   16% 1490/vendor.qti.hardware.display.composer-service: 10% user + 5.8% kernel / faults: 116 minor
+07-28 20:36:22.161  2281 30734 E ActivityManager:   13% 2281/system_server: 5.7% user + 7.6% kernel / faults: 498 minor
+07-28 20:36:22.161  2281 30734 E ActivityManager:   9.5% 4282/com.ayaneo.gamewindow: 3.7% user + 5.7% kernel / faults: 989 minor
+07-28 20:36:22.161  2281 30734 E ActivityManager:   9% 1358/android.hardware.audio.service_64: 2.4% user + 6.6% kernel
+07-28 20:36:22.161  2281 30734 E ActivityManager:   7.1% 1571/audioserver: 2.9% user + 4.2% kernel
+07-28 20:36:22.161  2281 30734 E ActivityManager:   4.9% 28893/com.kei.pulse: 3.7% user + 1.1% kernel / faults: 917 minor
+07-28 20:36:22.161  2281 30734 E ActivityManager:   4.1% 922/crtc_commit:198: 0% user + 4.1% kernel
+07-28 20:36:22.161  2281 30734 E ActivityManager:   3.1% 924/crtc_commit:263: 0% user + 3.1% kernel
+07-28 20:36:22.161  2281 30734 E ActivityManager: 46% TOTAL: 27% user + 15% kernel + 3.9% irq + 0.4% softirq
+07-28 20:36:22.161  2281 30734 E ActivityManager: CPU usage from 534772ms to 534772ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:36:22.161  2281 30734 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:36:32.140  2281 30733 E ActivityManager: Aborted stack trace dump (current primary pid=30363); deadline exceeded.
+07-28 20:36:42.258  2281 31607 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:36:42.258  2281 31607 E ActivityManager: PID: 30736
+07-28 20:36:42.258  2281 31607 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:36:42.258  2281 31607 E ActivityManager: ErrorId: fc4dacc6-d25a-4809-88af-aceb9d59fe10
+07-28 20:36:42.258  2281 31607 E ActivityManager: Frozen: false
+07-28 20:36:42.258  2281 31607 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:36:42.258  2281 31607 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:36:42.258  2281 31607 E ActivityManager: some avg10=0.00 avg60=0.04 avg300=0.06 total=1200183
+07-28 20:36:42.258  2281 31607 E ActivityManager: full avg10=0.00 avg60=0.03 avg300=0.05 total=841082
+07-28 20:36:42.258  2281 31607 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:36:42.258  2281 31607 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:36:42.258  2281 31607 E ActivityManager: some avg10=14.07 avg60=15.75 avg300=12.58 total=81480250
+07-28 20:36:42.258  2281 31607 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:36:42.258  2281 31607 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:36:42.258  2281 31607 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:36:42.258  2281 31607 E ActivityManager: some avg10=0.24 avg60=0.09 avg300=0.12 total=2453395
+07-28 20:36:42.258  2281 31607 E ActivityManager: full avg10=0.12 avg60=0.03 avg300=0.02 total=1136843
+07-28 20:36:42.258  2281 31607 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:36:42.258  2281 31607 E ActivityManager: 
+07-28 20:36:42.258  2281 31607 E ActivityManager: CPU usage from 20112ms to 0ms ago (2026-07-28 20:36:22.122 to 2026-07-28 20:36:42.235) with 99% awake:
+07-28 20:36:42.258  2281 31607 E ActivityManager:   120% 25963/com.miHoYo.Yuanshen: 88% user + 32% kernel / faults: 32975 minor 1 major
+07-28 20:36:42.258  2281 31607 E ActivityManager:   26% 1583/surfaceflinger: 15% user + 11% kernel / faults: 91 minor 1 major
+07-28 20:36:42.258  2281 31607 E ActivityManager:   16% 1490/vendor.qti.hardware.display.composer-service: 10% user + 5.9% kernel / faults: 137 minor 1 major
+07-28 20:36:42.258  2281 31607 E ActivityManager:   15% 28893/com.kei.pulse: 12% user + 2.8% kernel / faults: 16624 minor 2 major
+07-28 20:36:42.258  2281 31607 E ActivityManager:   10% 2281/system_server: 5.6% user + 5% kernel / faults: 4519 minor 97 major
+07-28 20:36:42.258  2281 31607 E ActivityManager:   9.3% 4138/com.google.android.providers.media.module: 4.4% user + 4.9% kernel / faults: 43205 minor 774 major
+07-28 20:36:42.258  2281 31607 E ActivityManager:   8.8% 4282/com.ayaneo.gamewindow: 3.5% user + 5.2% kernel / faults: 2415 minor 4 major
+07-28 20:36:42.258  2281 31607 E ActivityManager:   1% 4631/com.android.externalstorage: 0.3% user + 0.6% kernel / faults: 1736 minor 140 major
+07-28 20:36:42.258  2281 31607 E ActivityManager:   5.9% 1358/android.hardware.audio.service_64: 1.5% user + 4.3% kernel / faults: 1 major
+07-28 20:36:42.258  2281 31607 E ActivityManager:   5.3% 922/crtc_commit:198: 0% user + 5.3% kernel
+07-28 20:36:42.258  2281 31607 E ActivityManager: 41% TOTAL: 22% user + 15% kernel + 0.1% iowait + 3.3% irq + 0.3% softirq
+07-28 20:36:42.258  2281 31607 E ActivityManager: CPU usage from 554885ms to 554885ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:36:42.258  2281 31607 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:36:52.258  2281 31606 E ActivityManager: Aborted stack trace dump (current primary pid=30736); deadline exceeded.
+07-28 20:37:02.328  2281 32502 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:37:02.328  2281 32502 E ActivityManager: PID: 31609
+07-28 20:37:02.328  2281 32502 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:37:02.328  2281 32502 E ActivityManager: ErrorId: a9fe1999-5b33-4e96-bc7b-0ccc4047be4c
+07-28 20:37:02.328  2281 32502 E ActivityManager: Frozen: false
+07-28 20:37:02.328  2281 32502 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:37:02.328  2281 32502 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:37:02.328  2281 32502 E ActivityManager: some avg10=0.00 avg60=0.02 avg300=0.05 total=1200193
+07-28 20:37:02.328  2281 32502 E ActivityManager: full avg10=0.00 avg60=0.02 avg300=0.04 total=841092
+07-28 20:37:02.328  2281 32502 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:37:02.328  2281 32502 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:37:02.328  2281 32502 E ActivityManager: some avg10=8.05 avg60=13.55 avg300=12.29 total=83085239
+07-28 20:37:02.328  2281 32502 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:37:02.328  2281 32502 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:37:02.328  2281 32502 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:37:02.328  2281 32502 E ActivityManager: some avg10=0.03 avg60=0.06 avg300=0.11 total=2469926
+07-28 20:37:02.328  2281 32502 E ActivityManager: full avg10=0.01 avg60=0.02 avg300=0.02 total=1148654
+07-28 20:37:02.328  2281 32502 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:37:02.328  2281 32502 E ActivityManager: 
+07-28 20:37:02.328  2281 32502 E ActivityManager: CPU usage from 20069ms to -1ms ago (2026-07-28 20:36:42.235 to 2026-07-28 20:37:02.304):
+07-28 20:37:02.328  2281 32502 E ActivityManager:   69% 28893/com.kei.pulse: 55% user + 13% kernel / faults: 28321 minor 3 major
+07-28 20:37:02.328  2281 32502 E ActivityManager:   15% 1583/surfaceflinger: 7.8% user + 7.3% kernel / faults: 4 minor
+07-28 20:37:02.328  2281 32502 E ActivityManager:   11% 4138/com.google.android.providers.media.module: 4.7% user + 6.9% kernel / faults: 82823 minor 288 major
+07-28 20:37:02.328  2281 32502 E ActivityManager:   11% 30981/com.retrohrai.launcher: 9.7% user + 1.6% kernel / faults: 1530 minor
+07-28 20:37:02.328  2281 32502 E ActivityManager:   10% 2281/system_server: 3.7% user + 6.2% kernel / faults: 374 minor
+07-28 20:37:02.328  2281 32502 E ActivityManager:   9% 4282/com.ayaneo.gamewindow: 3.2% user + 5.7% kernel / faults: 379 minor
+07-28 20:37:02.328  2281 32502 E ActivityManager:   6.7% 1490/vendor.qti.hardware.display.composer-service: 4.3% user + 2.3% kernel / faults: 116 minor
+07-28 20:37:02.328  2281 32502 E ActivityManager:   3.4% 4631/com.android.externalstorage: 1% user + 2.4% kernel / faults: 7 minor
+07-28 20:37:02.328  2281 32502 E ActivityManager:   2.6% 922/crtc_commit:198: 0% user + 2.6% kernel
+07-28 20:37:02.328  2281 32502 E ActivityManager:   1.8% 568/logd: 0.3% user + 1.4% kernel / faults: 153 minor 1 major
+07-28 20:37:02.328  2281 32502 E ActivityManager: 24% TOTAL: 12% user + 9.6% kernel + 0% iowait + 1.7% irq + 0.3% softirq
+07-28 20:37:02.328  2281 32502 E ActivityManager: CPU usage from 574954ms to 574954ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:37:02.328  2281 32502 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:37:12.319  2281 32501 E ActivityManager: Aborted stack trace dump (current primary pid=31609); deadline exceeded.
+07-28 20:37:22.409  2281   448 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:37:22.409  2281   448 E ActivityManager: PID: 32504
+07-28 20:37:22.409  2281   448 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:37:22.409  2281   448 E ActivityManager: ErrorId: e1c2116f-2532-4adf-9d7c-daddc82c529e
+07-28 20:37:22.409  2281   448 E ActivityManager: Frozen: false
+07-28 20:37:22.409  2281   448 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:37:22.409  2281   448 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:37:22.409  2281   448 E ActivityManager: some avg10=0.00 avg60=0.01 avg300=0.05 total=1200267
+07-28 20:37:22.409  2281   448 E ActivityManager: full avg10=0.00 avg60=0.01 avg300=0.04 total=841160
+07-28 20:37:22.409  2281   448 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:37:22.409  2281   448 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:37:22.409  2281   448 E ActivityManager: some avg10=6.42 avg60=11.47 avg300=11.88 total=84477610
+07-28 20:37:22.409  2281   448 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:37:22.409  2281   448 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:37:22.409  2281   448 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:37:22.409  2281   448 E ActivityManager: some avg10=0.00 avg60=0.04 avg300=0.10 total=2472147
+07-28 20:37:22.409  2281   448 E ActivityManager: full avg10=0.00 avg60=0.01 avg300=0.01 total=1150212
+07-28 20:37:22.409  2281   448 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:37:22.409  2281   448 E ActivityManager: 
+07-28 20:37:22.409  2281   448 E ActivityManager: CPU usage from 20086ms to -1ms ago (2026-07-28 20:37:02.304 to 2026-07-28 20:37:22.391) with 99% awake:
+07-28 20:37:22.409  2281   448 E ActivityManager:   69% 28893/com.kei.pulse: 56% user + 13% kernel / faults: 7477 minor
+07-28 20:37:22.409  2281   448 E ActivityManager:   20% 1583/surfaceflinger: 11% user + 8.9% kernel / faults: 25 minor
+07-28 20:37:22.409  2281   448 E ActivityManager:   11% 30981/com.retrohrai.launcher: 9.4% user + 2.1% kernel / faults: 2270 minor
+07-28 20:37:22.409  2281   448 E ActivityManager:   10% 4282/com.ayaneo.gamewindow: 3.9% user + 6.2% kernel / faults: 1287 minor 2 major
+07-28 20:37:22.409  2281   448 E ActivityManager:   9.2% 1490/vendor.qti.hardware.display.composer-service: 5.8% user + 3.3% kernel / faults: 100 minor
+07-28 20:37:22.409  2281   448 E ActivityManager:   6.6% 2281/system_server: 3.1% user + 3.5% kernel / faults: 68 minor
+07-28 20:37:22.409  2281   448 E ActivityManager:   3.6% 922/crtc_commit:198: 0% user + 3.6% kernel
+07-28 20:37:22.409  2281   448 E ActivityManager:   1.5% 28954/sh: 0% user + 1.5% kernel / faults: 10470 minor
+07-28 20:37:22.409  2281   448 E ActivityManager:   1.4% 14/rcu_preempt: 0% user + 1.4% kernel
+07-28 20:37:22.409  2281   448 E ActivityManager:   1.1% 15/rcuog/0: 0% user + 1.1% kernel
+07-28 20:37:22.409  2281   448 E ActivityManager: 21% TOTAL: 11% user + 7.5% kernel + 1.8% irq + 0.3% softirq
+07-28 20:37:22.409  2281   448 E ActivityManager: CPU usage from 595041ms to 595041ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:37:22.409  2281   448 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:37:32.409  2281   447 E ActivityManager: Aborted stack trace dump (current primary pid=32504); deadline exceeded.
+07-28 20:37:42.462  2281  3276 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:37:42.462  2281  3276 E ActivityManager: PID: 450
+07-28 20:37:42.462  2281  3276 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:37:42.462  2281  3276 E ActivityManager: ErrorId: 19c5829d-b128-46ff-b733-73e0823afcba
+07-28 20:37:42.462  2281  3276 E ActivityManager: Frozen: false
+07-28 20:37:42.462  2281  3276 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:37:42.462  2281  3276 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:37:42.462  2281  3276 E ActivityManager: some avg10=0.36 avg60=0.07 avg300=0.06 total=1269434
+07-28 20:37:42.462  2281  3276 E ActivityManager: full avg10=0.36 avg60=0.07 avg300=0.05 total=899129
+07-28 20:37:42.462  2281  3276 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:37:42.462  2281  3276 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:37:42.462  2281  3276 E ActivityManager: some avg10=15.39 avg60=12.07 avg300=11.96 total=87445972
+07-28 20:37:42.462  2281  3276 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:37:42.462  2281  3276 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:37:42.462  2281  3276 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:37:42.462  2281  3276 E ActivityManager: some avg10=0.00 avg60=0.03 avg300=0.09 total=2506915
+07-28 20:37:42.462  2281  3276 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.01 total=1170917
+07-28 20:37:42.462  2281  3276 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:37:42.462  2281  3276 E ActivityManager: 
+07-28 20:37:42.462  2281  3276 E ActivityManager: CPU usage from 20054ms to 2576ms ago (2026-07-28 20:37:22.391 to 2026-07-28 20:37:39.869):
+07-28 20:37:42.462  2281  3276 E ActivityManager:   57% 25963/com.miHoYo.Yuanshen: 50% user + 7.5% kernel / faults: 712534 minor 25179 major
+07-28 20:37:42.462  2281  3276 E ActivityManager:   48% 30981/com.retrohrai.launcher: 40% user + 7.8% kernel / faults: 103832 minor 2 major
+07-28 20:37:42.462  2281  3276 E ActivityManager:   24% 28893/com.kei.pulse: 19% user + 5.4% kernel / faults: 9867 minor
+07-28 20:37:42.462  2281  3276 E ActivityManager:   21% 1583/surfaceflinger: 11% user + 10% kernel / faults: 67 minor
+07-28 20:37:42.462  2281  3276 E ActivityManager:   11% 2281/system_server: 6.7% user + 5% kernel / faults: 5356 minor
+07-28 20:37:42.462  2281  3276 E ActivityManager:   9.6% 1490/vendor.qti.hardware.display.composer-service: 6.4% user + 3.1% kernel / faults: 79 minor
+07-28 20:37:42.462  2281  3276 E ActivityManager:   8.3% 4282/com.ayaneo.gamewindow: 3.3% user + 5% kernel / faults: 463 minor 1 major
+07-28 20:37:42.462  2281  3276 E ActivityManager:   8% 568/logd: 1.3% user + 6.6% kernel / faults: 1218 minor
+07-28 20:37:42.462  2281  3276 E ActivityManager:   3.7% 922/crtc_commit:198: 0% user + 3.7% kernel
+07-28 20:37:42.462  2281  3276 E ActivityManager:   3.1% 4138/com.google.android.providers.media.module: 1.2% user + 1.8% kernel / faults: 14027 minor 43 major
+07-28 20:37:42.462  2281  3276 E ActivityManager: 42% TOTAL: 27% user + 13% kernel + 0% iowait + 2.2% irq + 0.3% softirq
+07-28 20:37:42.462  2281  3276 E ActivityManager: CPU usage from 615096ms to 615096ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:37:42.462  2281  3276 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:37:52.461  2281  3275 E ActivityManager: Aborted stack trace dump (current primary pid=450); deadline exceeded.
+07-28 20:38:02.584  2281  5331 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:38:02.584  2281  5331 E ActivityManager: PID: 3311
+07-28 20:38:02.584  2281  5331 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:38:02.584  2281  5331 E ActivityManager: ErrorId: 865ae912-c16a-42f2-8bdd-7560754fc549
+07-28 20:38:02.584  2281  5331 E ActivityManager: Frozen: false
+07-28 20:38:02.584  2281  5331 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:38:02.584  2281  5331 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:38:02.584  2281  5331 E ActivityManager: some avg10=0.04 avg60=0.05 avg300=0.05 total=1314443
+07-28 20:38:02.584  2281  5331 E ActivityManager: full avg10=0.04 avg60=0.05 avg300=0.04 total=939401
+07-28 20:38:02.584  2281  5331 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:38:02.584  2281  5331 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:38:02.584  2281  5331 E ActivityManager: some avg10=10.58 avg60=11.55 avg300=11.85 total=89528816
+07-28 20:38:02.584  2281  5331 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:38:02.584  2281  5331 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:38:02.584  2281  5331 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:38:02.584  2281  5331 E ActivityManager: some avg10=0.00 avg60=0.02 avg300=0.08 total=2547468
+07-28 20:38:02.584  2281  5331 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=1205536
+07-28 20:38:02.584  2281  5331 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:38:02.584  2281  5331 E ActivityManager: 
+07-28 20:38:02.584  2281  5331 E ActivityManager: CPU usage from 22641ms to -1ms ago (2026-07-28 20:37:39.869 to 2026-07-28 20:38:02.511):
+07-28 20:38:02.584  2281  5331 E ActivityManager:   122% 25963/com.miHoYo.Yuanshen: 95% user + 26% kernel / faults: 478086 minor 430 major
+07-28 20:38:02.584  2281  5331 E ActivityManager:   16% 1583/surfaceflinger: 7.8% user + 8.2% kernel / faults: 13 minor
+07-28 20:38:02.584  2281  5331 E ActivityManager:   9.9% 1490/vendor.qti.hardware.display.composer-service: 6.3% user + 3.5% kernel / faults: 128 minor
+07-28 20:38:02.584  2281  5331 E ActivityManager:   9.7% 28893/com.kei.pulse: 6.6% user + 3% kernel / faults: 9672 minor
+07-28 20:38:02.584  2281  5331 E ActivityManager:   6% 4282/com.ayaneo.gamewindow: 2.4% user + 3.6% kernel / faults: 2128 minor 3 major
+07-28 20:38:02.584  2281  5331 E ActivityManager:   5.2% 1358/android.hardware.audio.service_64: 1.4% user + 3.8% kernel
+07-28 20:38:02.584  2281  5331 E ActivityManager:   4.2% 30981/com.retrohrai.launcher: 3% user + 1.2% kernel / faults: 1513 minor 4 major
+07-28 20:38:02.584  2281  5331 E ActivityManager:   3.9% 2281/system_server: 2% user + 1.9% kernel / faults: 1459 minor
+07-28 20:38:02.584  2281  5331 E ActivityManager:   3.7% 922/crtc_commit:198: 0% user + 3.7% kernel
+07-28 20:38:02.584  2281  5331 E ActivityManager:   3.5% 568/logd: 0.5% user + 3% kernel / faults: 621 minor
+07-28 20:38:02.584  2281  5331 E ActivityManager: 33% TOTAL: 18% user + 12% kernel + 0% iowait + 2.4% irq + 0.2% softirq
+07-28 20:38:02.584  2281  5331 E ActivityManager: CPU usage from 635161ms to 635161ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:38:02.584  2281  5331 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:38:22.686  2281  6916 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:38:22.686  2281  6916 E ActivityManager: PID: 5342
+07-28 20:38:22.686  2281  6916 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:38:22.686  2281  6916 E ActivityManager: ErrorId: 863e4496-c335-47e1-8777-3e0520b2ddbd
+07-28 20:38:22.686  2281  6916 E ActivityManager: Frozen: false
+07-28 20:38:22.686  2281  6916 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:38:22.686  2281  6916 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:38:22.686  2281  6916 E ActivityManager: some avg10=0.00 avg60=0.03 avg300=0.05 total=1328644
+07-28 20:38:22.686  2281  6916 E ActivityManager: full avg10=0.00 avg60=0.03 avg300=0.04 total=951328
+07-28 20:38:22.686  2281  6916 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:38:22.686  2281  6916 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:38:22.686  2281  6916 E ActivityManager: some avg10=10.42 avg60=11.31 avg300=11.78 total=91737908
+07-28 20:38:22.686  2281  6916 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:38:22.686  2281  6916 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:38:22.686  2281  6916 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:38:22.686  2281  6916 E ActivityManager: some avg10=0.00 avg60=0.01 avg300=0.07 total=2560808
+07-28 20:38:22.686  2281  6916 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=1216142
+07-28 20:38:22.686  2281  6916 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:38:22.686  2281  6916 E ActivityManager: 
+07-28 20:38:22.686  2281  6916 E ActivityManager: CPU usage from 20131ms to 0ms ago (2026-07-28 20:38:02.511 to 2026-07-28 20:38:22.642) with 99% awake:
+07-28 20:38:22.686  2281  6916 E ActivityManager:   148% 25963/com.miHoYo.Yuanshen: 119% user + 29% kernel / faults: 69485 minor 7 major
+07-28 20:38:22.686  2281  6916 E ActivityManager:   16% 1583/surfaceflinger: 9.7% user + 7.2% kernel / faults: 6 minor 1 major
+07-28 20:38:22.686  2281  6916 E ActivityManager:   10% 1490/vendor.qti.hardware.display.composer-service: 6.4% user + 4.2% kernel / faults: 80 minor
+07-28 20:38:22.686  2281  6916 E ActivityManager:   10% 2281/system_server: 5.2% user + 5.3% kernel / faults: 433 minor
+07-28 20:38:22.686  2281  6916 E ActivityManager:   9.9% 28893/com.kei.pulse: 6.9% user + 3% kernel / faults: 6917 minor
+07-28 20:38:22.686  2281  6916 E ActivityManager:   5.7% 4282/com.ayaneo.gamewindow: 2.4% user + 3.3% kernel / faults: 2538 minor
+07-28 20:38:22.686  2281  6916 E ActivityManager:   4.4% 1358/android.hardware.audio.service_64: 1.1% user + 3.2% kernel
+07-28 20:38:22.686  2281  6916 E ActivityManager:   4.2% 30981/com.retrohrai.launcher: 3.5% user + 0.7% kernel / faults: 1815 minor
+07-28 20:38:22.686  2281  6916 E ActivityManager:   3.4% 922/crtc_commit:198: 0% user + 3.4% kernel
+07-28 20:38:22.686  2281  6916 E ActivityManager:   3.1% 1571/audioserver: 1.2% user + 1.8% kernel
+07-28 20:38:22.686  2281  6916 E ActivityManager: 37% TOTAL: 21% user + 12% kernel + 0% iowait + 2.4% irq + 0.2% softirq
+07-28 20:38:22.686  2281  6916 E ActivityManager: CPU usage from 655293ms to 655293ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:38:22.686  2281  6916 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:38:42.783  2281  8486 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:38:42.783  2281  8486 E ActivityManager: PID: 6936
+07-28 20:38:42.783  2281  8486 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:38:42.783  2281  8486 E ActivityManager: ErrorId: eaa4302e-a8ee-4e9c-ac35-b9fa16144dc0
+07-28 20:38:42.783  2281  8486 E ActivityManager: Frozen: false
+07-28 20:38:42.783  2281  8486 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:38:42.783  2281  8486 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:38:42.783  2281  8486 E ActivityManager: some avg10=0.00 avg60=0.02 avg300=0.04 total=1329965
+07-28 20:38:42.783  2281  8486 E ActivityManager: full avg10=0.00 avg60=0.02 avg300=0.03 total=952161
+07-28 20:38:42.783  2281  8486 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:38:42.783  2281  8486 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:38:42.783  2281  8486 E ActivityManager: some avg10=9.12 avg60=10.76 avg300=11.62 total=93769082
+07-28 20:38:42.783  2281  8486 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:38:42.783  2281  8486 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:38:42.783  2281  8486 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:38:42.783  2281  8486 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.06 total=2565792
+07-28 20:38:42.783  2281  8486 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=1218615
+07-28 20:38:42.783  2281  8486 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:38:42.783  2281  8486 E ActivityManager: 
+07-28 20:38:42.783  2281  8486 E ActivityManager: CPU usage from 20093ms to 4452ms ago (2026-07-28 20:38:22.642 to 2026-07-28 20:38:38.283):
+07-28 20:38:42.783  2281  8486 E ActivityManager:   138% 25963/com.miHoYo.Yuanshen: 111% user + 27% kernel / faults: 1273 minor
+07-28 20:38:42.783  2281  8486 E ActivityManager:   17% 1583/surfaceflinger: 9.8% user + 7.1% kernel
+07-28 20:38:42.783  2281  8486 E ActivityManager:   10% 1490/vendor.qti.hardware.display.composer-service: 7.2% user + 3.7% kernel / faults: 60 minor
+07-28 20:38:42.783  2281  8486 E ActivityManager:   9.9% 2281/system_server: 4.4% user + 5.4% kernel / faults: 197 minor
+07-28 20:38:42.783  2281  8486 E ActivityManager:   9.5% 28893/com.kei.pulse: 6.5% user + 3% kernel / faults: 4316 minor
+07-28 20:38:42.783  2281  8486 E ActivityManager:   5.4% 4282/com.ayaneo.gamewindow: 2.3% user + 3.1% kernel / faults: 926 minor
+07-28 20:38:42.783  2281  8486 E ActivityManager:   4.4% 1358/android.hardware.audio.service_64: 1.2% user + 3.1% kernel
+07-28 20:38:42.783  2281  8486 E ActivityManager:   4.2% 30981/com.retrohrai.launcher: 2.9% user + 1.2% kernel / faults: 860 minor
+07-28 20:38:42.783  2281  8486 E ActivityManager:   3.4% 922/crtc_commit:198: 0% user + 3.4% kernel
+07-28 20:38:42.783  2281  8486 E ActivityManager:   3.1% 1571/audioserver: 1.2% user + 1.8% kernel
+07-28 20:38:42.783  2281  8486 E ActivityManager: 34% TOTAL: 20% user + 11% kernel + 0% iowait + 2.3% irq + 0.2% softirq
+07-28 20:38:42.783  2281  8486 E ActivityManager: CPU usage from 675386ms to 675386ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:38:42.783  2281  8486 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:39:02.853  2281 10387 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:39:02.853  2281 10387 E ActivityManager: PID: 8494
+07-28 20:39:02.853  2281 10387 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:39:02.853  2281 10387 E ActivityManager: ErrorId: 544b54ca-a159-4cad-a1bd-1df45297f45e
+07-28 20:39:02.853  2281 10387 E ActivityManager: Frozen: false
+07-28 20:39:02.853  2281 10387 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:39:02.853  2281 10387 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:39:02.853  2281 10387 E ActivityManager: some avg10=0.00 avg60=0.01 avg300=0.04 total=1332191
+07-28 20:39:02.853  2281 10387 E ActivityManager: full avg10=0.00 avg60=0.01 avg300=0.03 total=953681
+07-28 20:39:02.853  2281 10387 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:39:02.853  2281 10387 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:39:02.853  2281 10387 E ActivityManager: some avg10=7.81 avg60=9.92 avg300=11.37 total=95446505
+07-28 20:39:02.853  2281 10387 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:39:02.853  2281 10387 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:39:02.853  2281 10387 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:39:02.853  2281 10387 E ActivityManager: some avg10=0.72 avg60=0.13 avg300=0.09 total=2663884
+07-28 20:39:02.853  2281 10387 E ActivityManager: full avg10=0.36 avg60=0.06 avg300=0.01 total=1277288
+07-28 20:39:02.853  2281 10387 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:39:02.853  2281 10387 E ActivityManager: 
+07-28 20:39:02.853  2281 10387 E ActivityManager: CPU usage from 24540ms to -3ms ago (2026-07-28 20:38:38.283 to 2026-07-28 20:39:02.826) with 99% awake:
+07-28 20:39:02.853  2281 10387 E ActivityManager:   66% 25963/com.miHoYo.Yuanshen: 50% user + 15% kernel / faults: 31328 minor 215 major
+07-28 20:39:02.853  2281 10387 E ActivityManager:   17% 30981/com.retrohrai.launcher: 14% user + 2.9% kernel / faults: 39816 minor 20 major
+07-28 20:39:02.853  2281 10387 E ActivityManager:   16% 1583/surfaceflinger: 9.6% user + 6.9% kernel / faults: 141 minor 2 major
+07-28 20:39:02.853  2281 10387 E ActivityManager:   9.4% 28893/com.kei.pulse: 6.3% user + 3.1% kernel / faults: 7832 minor
+07-28 20:39:02.853  2281 10387 E ActivityManager:   9.3% 1490/vendor.qti.hardware.display.composer-service: 5.5% user + 3.7% kernel / faults: 144 minor
+07-28 20:39:02.853  2281 10387 E ActivityManager:   7.9% 2281/system_server: 3.9% user + 3.9% kernel / faults: 4317 minor 69 major
+07-28 20:39:02.853  2281 10387 E ActivityManager:   5.6% 4282/com.ayaneo.gamewindow: 2.4% user + 3.1% kernel / faults: 1183 minor 2 major
+07-28 20:39:02.853  2281 10387 E ActivityManager:   3.7% 922/crtc_commit:198: 0% user + 3.7% kernel
+07-28 20:39:02.853  2281 10387 E ActivityManager:   2.6% 1358/android.hardware.audio.service_64: 0.7% user + 1.9% kernel / faults: 9 minor 1 major
+07-28 20:39:02.853  2281 10387 E ActivityManager:   2.2% 2634/com.android.systemui: 1.5% user + 0.6% kernel / faults: 2334 minor 58 major
+07-28 20:39:02.853  2281 10387 E ActivityManager: 27% TOTAL: 14% user + 10% kernel + 0% iowait + 1.8% irq + 0.2% softirq
+07-28 20:39:02.853  2281 10387 E ActivityManager: CPU usage from 695474ms to 695474ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:39:02.853  2281 10387 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:39:22.913  2281 12475 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:39:22.913  2281 12475 E ActivityManager: PID: 10412
+07-28 20:39:22.913  2281 12475 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:39:22.913  2281 12475 E ActivityManager: ErrorId: 9a96b312-700d-460d-afe3-1373251dfe65
+07-28 20:39:22.913  2281 12475 E ActivityManager: Frozen: false
+07-28 20:39:22.913  2281 12475 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:39:22.913  2281 12475 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:39:22.913  2281 12475 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.03 total=1332428
+07-28 20:39:22.913  2281 12475 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.02 total=953687
+07-28 20:39:22.913  2281 12475 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:39:22.913  2281 12475 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:39:22.913  2281 12475 E ActivityManager: some avg10=11.05 avg60=10.77 avg300=11.49 total=98197116
+07-28 20:39:22.913  2281 12475 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:39:22.913  2281 12475 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:39:22.913  2281 12475 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:39:22.913  2281 12475 E ActivityManager: some avg10=0.12 avg60=0.11 avg300=0.08 total=2747226
+07-28 20:39:22.913  2281 12475 E ActivityManager: full avg10=0.04 avg60=0.04 avg300=0.00 total=1324849
+07-28 20:39:22.913  2281 12475 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:39:22.913  2281 12475 E ActivityManager: 
+07-28 20:39:22.913  2281 12475 E ActivityManager: CPU usage from 20063ms to -1ms ago (2026-07-28 20:39:02.826 to 2026-07-28 20:39:22.890):
+07-28 20:39:22.913  2281 12475 E ActivityManager:   36% 30981/com.retrohrai.launcher: 31% user + 5.6% kernel / faults: 53886 minor 3 major
+07-28 20:39:22.913  2281 12475 E ActivityManager:   18% 1583/surfaceflinger: 10% user + 8.1% kernel / faults: 43 minor
+07-28 20:39:22.913  2281 12475 E ActivityManager:   10% 28893/com.kei.pulse: 6.6% user + 3.3% kernel / faults: 5983 minor
+07-28 20:39:22.913  2281 12475 E ActivityManager:   9% 2281/system_server: 3.6% user + 5.3% kernel / faults: 8533 minor 45 major
+07-28 20:39:22.913  2281 12475 E ActivityManager:   8.6% 1490/vendor.qti.hardware.display.composer-service: 5.5% user + 3% kernel / faults: 36 minor
+07-28 20:39:22.913  2281 12475 E ActivityManager:   7.5% 4282/com.ayaneo.gamewindow: 2.7% user + 4.7% kernel / faults: 952 minor
+07-28 20:39:22.913  2281 12475 E ActivityManager:   3.8% 922/crtc_commit:198: 0% user + 3.8% kernel
+07-28 20:39:22.913  2281 12475 E ActivityManager:   3.7% 568/logd: 0.5% user + 3.1% kernel / faults: 363 minor 6 major
+07-28 20:39:22.913  2281 12475 E ActivityManager:   0.4% 905/android.hardware.security.keymint-service-qti: 0% user + 0.4% kernel / faults: 43 minor
+07-28 20:39:22.913  2281 12475 E ActivityManager:   3.1% 10011/com.android.vending: 2% user + 1% kernel / faults: 8933 minor 76 major
+07-28 20:39:22.913  2281 12475 E ActivityManager: 35% TOTAL: 19% user + 13% kernel + 0.1% iowait + 2.2% irq + 0.3% softirq
+07-28 20:39:22.913  2281 12475 E ActivityManager: CPU usage from 715540ms to 715540ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:39:22.913  2281 12475 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:39:32.907  2281 12474 E ActivityManager: Aborted stack trace dump (current primary pid=10412); deadline exceeded.
+07-28 20:39:42.984  2281 14443 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:39:42.984  2281 14443 E ActivityManager: PID: 12480
+07-28 20:39:42.984  2281 14443 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:39:42.984  2281 14443 E ActivityManager: ErrorId: 9ae640f3-c014-4c35-861f-2d1dc73f736c
+07-28 20:39:42.984  2281 14443 E ActivityManager: Frozen: false
+07-28 20:39:42.984  2281 14443 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:39:42.984  2281 14443 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:39:42.984  2281 14443 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.03 total=1332430
+07-28 20:39:42.984  2281 14443 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.02 total=953689
+07-28 20:39:42.984  2281 14443 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:39:42.984  2281 14443 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:39:42.984  2281 14443 E ActivityManager: some avg10=9.95 avg60=10.52 avg300=11.38 total=100252832
+07-28 20:39:42.984  2281 14443 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:39:42.984  2281 14443 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:39:42.984  2281 14443 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:39:42.984  2281 14443 E ActivityManager: some avg10=0.01 avg60=0.08 avg300=0.07 total=2753039
+07-28 20:39:42.984  2281 14443 E ActivityManager: full avg10=0.00 avg60=0.02 avg300=0.00 total=1327341
+07-28 20:39:42.984  2281 14443 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:39:42.984  2281 14443 E ActivityManager: 
+07-28 20:39:42.984  2281 14443 E ActivityManager: CPU usage from 20072ms to 0ms ago (2026-07-28 20:39:22.890 to 2026-07-28 20:39:42.963) with 99% awake:
+07-28 20:39:42.984  2281 14443 E ActivityManager:   51% 30981/com.retrohrai.launcher: 42% user + 9.1% kernel / faults: 29668 minor
+07-28 20:39:42.984  2281 14443 E ActivityManager:   14% 28893/com.kei.pulse: 9.1% user + 4.9% kernel / faults: 6873 minor
+07-28 20:39:42.984  2281 14443 E ActivityManager:   12% 1583/surfaceflinger: 6.5% user + 6.4% kernel / faults: 4 minor 6 major
+07-28 20:39:42.984  2281 14443 E ActivityManager:   9.7% 4282/com.ayaneo.gamewindow: 3.3% user + 6.3% kernel / faults: 1681 minor
+07-28 20:39:42.984  2281 14443 E ActivityManager:   5.3% 1490/vendor.qti.hardware.display.composer-service: 3.3% user + 2% kernel
+07-28 20:39:42.984  2281 14443 E ActivityManager:   3.6% 2281/system_server: 1.1% user + 2.4% kernel / faults: 165 minor 1 major
+07-28 20:39:42.984  2281 14443 E ActivityManager:   2% 922/crtc_commit:198: 0% user + 2% kernel
+07-28 20:39:42.984  2281 14443 E ActivityManager:   1.7% 28929/sh: 0.1% user + 1.5% kernel / faults: 15131 minor
+07-28 20:39:42.984  2281 14443 E ActivityManager:   1.6% 568/logd: 0.2% user + 1.3% kernel / faults: 210 minor
+07-28 20:39:42.984  2281 14443 E ActivityManager:   1.3% 65/rcuop/6: 0% user + 1.3% kernel
+07-28 20:39:42.984  2281 14443 E ActivityManager: 22% TOTAL: 10% user + 10% kernel + 0% iowait + 1.6% irq + 0.3% softirq
+07-28 20:39:42.984  2281 14443 E ActivityManager: CPU usage from 735613ms to 735613ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:39:42.984  2281 14443 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:39:52.983  2281 14442 E ActivityManager: Aborted stack trace dump (current primary pid=12480); deadline exceeded.
+07-28 20:40:03.044  2281 16375 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:40:03.044  2281 16375 E ActivityManager: PID: 14448
+07-28 20:40:03.044  2281 16375 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:40:03.044  2281 16375 E ActivityManager: ErrorId: 1888d9a6-ae73-40f8-9b54-33e412d4d3b0
+07-28 20:40:03.044  2281 16375 E ActivityManager: Frozen: false
+07-28 20:40:03.044  2281 16375 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:40:03.044  2281 16375 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:40:03.044  2281 16375 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.02 total=1332430
+07-28 20:40:03.044  2281 16375 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.01 total=953689
+07-28 20:40:03.044  2281 16375 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:40:03.044  2281 16375 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:40:03.044  2281 16375 E ActivityManager: some avg10=9.86 avg60=10.34 avg300=11.28 total=102315379
+07-28 20:40:03.044  2281 16375 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:40:03.044  2281 16375 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:40:03.044  2281 16375 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:40:03.044  2281 16375 E ActivityManager: some avg10=0.00 avg60=0.05 avg300=0.06 total=2763803
+07-28 20:40:03.044  2281 16375 E ActivityManager: full avg10=0.00 avg60=0.02 avg300=0.00 total=1333161
+07-28 20:40:03.044  2281 16375 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:40:03.044  2281 16375 E ActivityManager: 
+07-28 20:40:03.044  2281 16375 E ActivityManager: CPU usage from 20060ms to -1ms ago (2026-07-28 20:39:42.963 to 2026-07-28 20:40:03.023):
+07-28 20:40:03.044  2281 16375 E ActivityManager:   51% 30981/com.retrohrai.launcher: 43% user + 8.5% kernel / faults: 33186 minor
+07-28 20:40:03.044  2281 16375 E ActivityManager:   13% 28893/com.kei.pulse: 8.9% user + 4.4% kernel / faults: 6863 minor
+07-28 20:40:03.044  2281 16375 E ActivityManager:   13% 1583/surfaceflinger: 7.2% user + 6% kernel / faults: 4 minor
+07-28 20:40:03.044  2281 16375 E ActivityManager:   9.6% 4282/com.ayaneo.gamewindow: 3.5% user + 6% kernel / faults: 1548 minor
+07-28 20:40:03.044  2281 16375 E ActivityManager:   5.5% 1490/vendor.qti.hardware.display.composer-service: 3.6% user + 1.8% kernel
+07-28 20:40:03.044  2281 16375 E ActivityManager:   2.2% 2281/system_server: 1.1% user + 1% kernel / faults: 415 minor
+07-28 20:40:03.044  2281 16375 E ActivityManager:   2.1% 922/crtc_commit:198: 0% user + 2.1% kernel
+07-28 20:40:03.044  2281 16375 E ActivityManager:   1.7% 28929/sh: 0.1% user + 1.5% kernel / faults: 14738 minor
+07-28 20:40:03.044  2281 16375 E ActivityManager:   1.6% 568/logd: 0.3% user + 1.3% kernel / faults: 223 minor 1 major
+07-28 20:40:03.044  2281 16375 E ActivityManager:   1.3% 14/rcu_preempt: 0% user + 1.3% kernel
+07-28 20:40:03.044  2281 16375 E ActivityManager: 22% TOTAL: 11% user + 9.7% kernel + 0% iowait + 1.6% irq + 0.3% softirq
+07-28 20:40:03.044  2281 16375 E ActivityManager: CPU usage from 755673ms to 755673ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:40:03.044  2281 16375 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:40:13.041  2281 16374 E ActivityManager: Aborted stack trace dump (current primary pid=14448); deadline exceeded.
+07-28 20:40:23.107  2281 18351 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:40:23.107  2281 18351 E ActivityManager: PID: 16384
+07-28 20:40:23.107  2281 18351 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:40:23.107  2281 18351 E ActivityManager: ErrorId: eac35b65-bb4f-4b0a-a51a-b0a4f70408a2
+07-28 20:40:23.107  2281 18351 E ActivityManager: Frozen: false
+07-28 20:40:23.107  2281 18351 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:40:23.107  2281 18351 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:40:23.107  2281 18351 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.02 total=1332432
+07-28 20:40:23.107  2281 18351 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.01 total=953691
+07-28 20:40:23.107  2281 18351 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:40:23.107  2281 18351 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:40:23.107  2281 18351 E ActivityManager: some avg10=9.71 avg60=10.08 avg300=11.15 total=104340651
+07-28 20:40:23.107  2281 18351 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:40:23.107  2281 18351 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:40:23.107  2281 18351 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:40:23.107  2281 18351 E ActivityManager: some avg10=0.00 avg60=0.03 avg300=0.06 total=2766560
+07-28 20:40:23.107  2281 18351 E ActivityManager: full avg10=0.00 avg60=0.01 avg300=0.00 total=1334137
+07-28 20:40:23.107  2281 18351 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:40:23.107  2281 18351 E ActivityManager: 
+07-28 20:40:23.107  2281 18351 E ActivityManager: CPU usage from 20062ms to -2ms ago (2026-07-28 20:40:03.023 to 2026-07-28 20:40:23.087):
+07-28 20:40:23.107  2281 18351 E ActivityManager:   50% 30981/com.retrohrai.launcher: 42% user + 7.7% kernel / faults: 32711 minor
+07-28 20:40:23.107  2281 18351 E ActivityManager:   14% 28893/com.kei.pulse: 9.8% user + 4.2% kernel / faults: 7230 minor
+07-28 20:40:23.107  2281 18351 E ActivityManager:   12% 1583/surfaceflinger: 7% user + 5.7% kernel / faults: 1 minor
+07-28 20:40:23.107  2281 18351 E ActivityManager:   9.4% 4282/com.ayaneo.gamewindow: 3.5% user + 5.8% kernel / faults: 1996 minor
+07-28 20:40:23.107  2281 18351 E ActivityManager:   5.2% 1490/vendor.qti.hardware.display.composer-service: 3.5% user + 1.6% kernel
+07-28 20:40:23.107  2281 18351 E ActivityManager:   2% 922/crtc_commit:198: 0% user + 2% kernel
+07-28 20:40:23.107  2281 18351 E ActivityManager:   2% 2281/system_server: 1.1% user + 0.8% kernel / faults: 98 minor
+07-28 20:40:23.107  2281 18351 E ActivityManager:   1.9% 28929/sh: 0.2% user + 1.6% kernel / faults: 17423 minor
+07-28 20:40:23.107  2281 18351 E ActivityManager:   1.6% 568/logd: 0.2% user + 1.3% kernel / faults: 159 minor
+07-28 20:40:23.107  2281 18351 E ActivityManager:   1.3% 65/rcuop/6: 0% user + 1.3% kernel
+07-28 20:40:23.107  2281 18351 E ActivityManager: 22% TOTAL: 11% user + 9.3% kernel + 1.6% irq + 0.3% softirq
+07-28 20:40:23.107  2281 18351 E ActivityManager: CPU usage from 775736ms to 775736ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:40:23.107  2281 18351 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:40:33.107  2281 18350 E ActivityManager: Aborted stack trace dump (current primary pid=16384); deadline exceeded.
+07-28 20:40:43.187  2281 20251 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:40:43.187  2281 20251 E ActivityManager: PID: 18364
+07-28 20:40:43.187  2281 20251 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:40:43.187  2281 20251 E ActivityManager: ErrorId: b523135c-0f03-462a-9ec9-6c7c002ae169
+07-28 20:40:43.187  2281 20251 E ActivityManager: Frozen: false
+07-28 20:40:43.187  2281 20251 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:40:43.187  2281 20251 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:40:43.187  2281 20251 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.01 total=1336569
+07-28 20:40:43.187  2281 20251 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=956227
+07-28 20:40:43.187  2281 20251 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:40:43.187  2281 20251 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:40:43.187  2281 20251 E ActivityManager: some avg10=9.75 avg60=10.02 avg300=11.07 total=106414944
+07-28 20:40:43.187  2281 20251 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:40:43.187  2281 20251 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:40:43.187  2281 20251 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:40:43.187  2281 20251 E ActivityManager: some avg10=0.00 avg60=0.02 avg300=0.06 total=2774825
+07-28 20:40:43.187  2281 20251 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=1337412
+07-28 20:40:43.187  2281 20251 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:40:43.187  2281 20251 E ActivityManager: 
+07-28 20:40:43.187  2281 20251 E ActivityManager: CPU usage from 20064ms to -1ms ago (2026-07-28 20:40:23.087 to 2026-07-28 20:40:43.153) with 99% awake:
+07-28 20:40:43.187  2281 20251 E ActivityManager:   46% 30981/com.retrohrai.launcher: 39% user + 7.4% kernel / faults: 39963 minor
+07-28 20:40:43.187  2281 20251 E ActivityManager:   27% 28893/com.kei.pulse: 19% user + 8% kernel / faults: 18065 minor 1 major
+07-28 20:40:43.187  2281 20251 E ActivityManager:   16% 1583/surfaceflinger: 9.6% user + 7.2% kernel / faults: 38 minor 5 major
+07-28 20:40:43.187  2281 20251 E ActivityManager:   9.7% 4282/com.ayaneo.gamewindow: 3.3% user + 6.4% kernel / faults: 2175 minor 2 major
+07-28 20:40:43.187  2281 20251 E ActivityManager:   7.1% 1490/vendor.qti.hardware.display.composer-service: 4.5% user + 2.5% kernel / faults: 35 minor
+07-28 20:40:43.187  2281 20251 E ActivityManager:   5.1% 2281/system_server: 2.3% user + 2.7% kernel / faults: 492 minor 1 major
+07-28 20:40:43.187  2281 20251 E ActivityManager:   2.7% 922/crtc_commit:198: 0% user + 2.7% kernel
+07-28 20:40:43.187  2281 20251 E ActivityManager:   2.4% 568/logd: 0.4% user + 1.9% kernel / faults: 281 minor 2 major
+07-28 20:40:43.187  2281 20251 E ActivityManager:   1.4% 28954/sh: 0.1% user + 1.2% kernel / faults: 10469 minor
+07-28 20:40:43.187  2281 20251 E ActivityManager:   1.3% 14/rcu_preempt: 0% user + 1.3% kernel
+07-28 20:40:43.187  2281 20251 E ActivityManager: 25% TOTAL: 12% user + 10% kernel + 0% iowait + 1.7% irq + 0.3% softirq
+07-28 20:40:43.187  2281 20251 E ActivityManager: CPU usage from 795802ms to 795802ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:40:43.187  2281 20251 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:41:03.290  2281 20684 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:41:03.290  2281 20684 E ActivityManager: PID: 20254
+07-28 20:41:03.290  2281 20684 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:41:03.290  2281 20684 E ActivityManager: ErrorId: 3e396be2-4a8b-4ec0-b1bd-a1d9a7bd09b9
+07-28 20:41:03.290  2281 20684 E ActivityManager: Frozen: false
+07-28 20:41:03.290  2281 20684 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:41:03.290  2281 20684 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:41:03.290  2281 20684 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.01 total=1336683
+07-28 20:41:03.290  2281 20684 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=956341
+07-28 20:41:03.290  2281 20684 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:41:03.290  2281 20684 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:41:03.290  2281 20684 E ActivityManager: some avg10=7.97 avg60=9.55 avg300=10.89 total=108179840
+07-28 20:41:03.290  2281 20684 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:41:03.290  2281 20684 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:41:03.290  2281 20684 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:41:03.290  2281 20684 E ActivityManager: some avg10=0.00 avg60=0.01 avg300=0.05 total=2778099
+07-28 20:41:03.290  2281 20684 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=1338341
+07-28 20:41:03.290  2281 20684 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:41:03.290  2281 20684 E ActivityManager: 
+07-28 20:41:03.290  2281 20684 E ActivityManager: CPU usage from 20080ms to 0ms ago (2026-07-28 20:40:43.153 to 2026-07-28 20:41:03.233):
+07-28 20:41:03.290  2281 20684 E ActivityManager:   81% 28893/com.kei.pulse: 64% user + 17% kernel / faults: 23004 minor
+07-28 20:41:03.290  2281 20684 E ActivityManager:   26% 1583/surfaceflinger: 13% user + 12% kernel / faults: 21 minor
+07-28 20:41:03.290  2281 20684 E ActivityManager:   12% 1490/vendor.qti.hardware.display.composer-service: 7.5% user + 4.8% kernel / faults: 93 minor
+07-28 20:41:03.290  2281 20684 E ActivityManager:   11% 30981/com.retrohrai.launcher: 9.7% user + 2.2% kernel / faults: 11283 minor
+07-28 20:41:03.290  2281 20684 E ActivityManager:   10% 4282/com.ayaneo.gamewindow: 3.8% user + 6.6% kernel / faults: 1715 minor
+07-28 20:41:03.290  2281 20684 E ActivityManager:   9.5% 2281/system_server: 4.9% user + 4.6% kernel / faults: 785 minor
+07-28 20:41:03.290  2281 20684 E ActivityManager:   5.1% 922/crtc_commit:198: 0% user + 5.1% kernel
+07-28 20:41:03.290  2281 20684 E ActivityManager:   2.5% 568/logd: 0.4% user + 2.1% kernel / faults: 184 minor 4 major
+07-28 20:41:03.290  2281 20684 E ActivityManager:   2.2% 2634/com.android.systemui: 1.2% user + 0.9% kernel / faults: 644 minor
+07-28 20:41:03.290  2281 20684 E ActivityManager:   1.6% 28954/sh: 0.1% user + 1.4% kernel / faults: 10471 minor
+07-28 20:41:03.290  2281 20684 E ActivityManager: 26% TOTAL: 13% user + 9.9% kernel + 0% iowait + 2.1% irq + 0.3% softirq
+07-28 20:41:03.290  2281 20684 E ActivityManager: CPU usage from 815883ms to 815883ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:41:03.290  2281 20684 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:41:23.386  2281 21074 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:41:23.386  2281 21074 E ActivityManager: PID: 20687
+07-28 20:41:23.386  2281 21074 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:41:23.386  2281 21074 E ActivityManager: ErrorId: cac568c7-5887-420d-9ec7-fe4bd5a2b454
+07-28 20:41:23.386  2281 21074 E ActivityManager: Frozen: false
+07-28 20:41:23.386  2281 21074 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:41:23.386  2281 21074 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:41:23.386  2281 21074 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.00 total=1337646
+07-28 20:41:23.386  2281 21074 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=957009
+07-28 20:41:23.386  2281 21074 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:41:23.386  2281 21074 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:41:23.386  2281 21074 E ActivityManager: some avg10=9.15 avg60=9.29 avg300=10.73 total=109982354
+07-28 20:41:23.386  2281 21074 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:41:23.386  2281 21074 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:41:23.386  2281 21074 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:41:23.386  2281 21074 E ActivityManager: some avg10=0.00 avg60=0.01 avg300=0.05 total=2800769
+07-28 20:41:23.386  2281 21074 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=1354367
+07-28 20:41:23.386  2281 21074 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:41:23.386  2281 21074 E ActivityManager: 
+07-28 20:41:23.386  2281 21074 E ActivityManager: CPU usage from 20110ms to -1ms ago (2026-07-28 20:41:03.233 to 2026-07-28 20:41:23.343):
+07-28 20:41:23.386  2281 21074 E ActivityManager:   81% 28893/com.kei.pulse: 64% user + 17% kernel / faults: 22569 minor
+07-28 20:41:23.386  2281 21074 E ActivityManager:   24% 1583/surfaceflinger: 13% user + 10% kernel / faults: 34 minor
+07-28 20:41:23.386  2281 21074 E ActivityManager:   11% 30981/com.retrohrai.launcher: 10% user + 1.8% kernel / faults: 11576 minor
+07-28 20:41:23.386  2281 21074 E ActivityManager:   11% 1490/vendor.qti.hardware.display.composer-service: 7.2% user + 3.8% kernel / faults: 78 minor
+07-28 20:41:23.386  2281 21074 E ActivityManager:   10% 2281/system_server: 4.3% user + 6.1% kernel / faults: 848 minor 3 major
+07-28 20:41:23.386  2281 21074 E ActivityManager:   9.7% 4282/com.ayaneo.gamewindow: 3.5% user + 6.2% kernel / faults: 1676 minor
+07-28 20:41:23.386  2281 21074 E ActivityManager:   4.7% 922/crtc_commit:198: 0% user + 4.7% kernel
+07-28 20:41:23.386  2281 21074 E ActivityManager:   3% 568/logd: 0.3% user + 2.7% kernel / faults: 236 minor
+07-28 20:41:23.386  2281 21074 E ActivityManager:   2.9% 28557/com.google.android.inputmethod.latin: 1.6% user + 1.2% kernel / faults: 9815 minor 93 major
+07-28 20:41:23.386  2281 21074 E ActivityManager:   1.7% 890/kgsl_hwsched: 0% user + 1.7% kernel
+07-28 20:41:23.386  2281 21074 E ActivityManager: 26% TOTAL: 13% user + 9.8% kernel + 0% iowait + 2.1% irq + 0.3% softirq
+07-28 20:41:23.386  2281 21074 E ActivityManager: CPU usage from 835993ms to 835993ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:41:23.386  2281 21074 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:41:43.461  2281 21598 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:41:43.461  2281 21598 E ActivityManager: PID: 21077
+07-28 20:41:43.461  2281 21598 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:41:43.461  2281 21598 E ActivityManager: ErrorId: 8de7ea5e-ef2f-4d4a-b9ff-7c9bc5ddc2c3
+07-28 20:41:43.461  2281 21598 E ActivityManager: Frozen: false
+07-28 20:41:43.461  2281 21598 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:41:43.461  2281 21598 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:41:43.461  2281 21598 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.00 total=1337842
+07-28 20:41:43.461  2281 21598 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=957165
+07-28 20:41:43.461  2281 21598 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:41:43.461  2281 21598 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:41:43.461  2281 21598 E ActivityManager: some avg10=7.78 avg60=9.01 avg300=10.58 total=111783218
+07-28 20:41:43.461  2281 21598 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:41:43.461  2281 21598 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:41:43.461  2281 21598 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:41:43.461  2281 21598 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.04 total=2802877
+07-28 20:41:43.461  2281 21598 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=1355478
+07-28 20:41:43.461  2281 21598 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:41:43.461  2281 21598 E ActivityManager: 
+07-28 20:41:43.461  2281 21598 E ActivityManager: CPU usage from 20096ms to -1ms ago (2026-07-28 20:41:23.343 to 2026-07-28 20:41:43.440):
+07-28 20:41:43.461  2281 21598 E ActivityManager:   84% 28893/com.kei.pulse: 64% user + 20% kernel / faults: 28191 minor
+07-28 20:41:43.461  2281 21598 E ActivityManager:   27% 1583/surfaceflinger: 14% user + 12% kernel / faults: 29 minor 1 major
+07-28 20:41:43.461  2281 21598 E ActivityManager:   13% 1490/vendor.qti.hardware.display.composer-service: 8.1% user + 5.1% kernel / faults: 73 minor
+07-28 20:41:43.461  2281 21598 E ActivityManager:   12% 2281/system_server: 5.2% user + 6.9% kernel / faults: 548 minor
+07-28 20:41:43.461  2281 21598 E ActivityManager:   11% 30981/com.retrohrai.launcher: 8.9% user + 2.6% kernel / faults: 10990 minor
+07-28 20:41:43.461  2281 21598 E ActivityManager:   10% 4282/com.ayaneo.gamewindow: 3.3% user + 7% kernel / faults: 2573 minor
+07-28 20:41:43.461  2281 21598 E ActivityManager:   5.3% 922/crtc_commit:198: 0% user + 5.3% kernel
+07-28 20:41:43.461  2281 21598 E ActivityManager:   3.6% 568/logd: 0.6% user + 3% kernel / faults: 271 minor 2 major
+07-28 20:41:43.461  2281 21598 E ActivityManager:   1.9% 27792/com.android.launcher3: 0.7% user + 1.2% kernel / faults: 65 minor
+07-28 20:41:43.461  2281 21598 E ActivityManager:   1.7% 890/kgsl_hwsched: 0% user + 1.7% kernel
+07-28 20:41:43.461  2281 21598 E ActivityManager: 27% TOTAL: 13% user + 11% kernel + 0% iowait + 2.2% irq + 0.3% softirq
+07-28 20:41:43.461  2281 21598 E ActivityManager: CPU usage from 856090ms to 856090ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:41:43.461  2281 21598 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:41:53.457  2281 21597 E ActivityManager: Aborted stack trace dump (current primary pid=21077); deadline exceeded.
+07-28 20:42:03.640  2281 22980 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:42:03.640  2281 22980 E ActivityManager: PID: 21602
+07-28 20:42:03.640  2281 22980 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:42:03.640  2281 22980 E ActivityManager: ErrorId: f177093f-edea-405a-8e44-08720e4b881f
+07-28 20:42:03.640  2281 22980 E ActivityManager: Frozen: false
+07-28 20:42:03.640  2281 22980 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:42:03.640  2281 22980 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:42:03.640  2281 22980 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.00 total=1338735
+07-28 20:42:03.640  2281 22980 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=957875
+07-28 20:42:03.640  2281 22980 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:42:03.640  2281 22980 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:42:03.640  2281 22980 E ActivityManager: some avg10=10.60 avg60=9.22 avg300=10.51 total=113804021
+07-28 20:42:03.640  2281 22980 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:42:03.640  2281 22980 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:42:03.640  2281 22980 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:42:03.640  2281 22980 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.04 total=2808117
+07-28 20:42:03.640  2281 22980 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=1357681
+07-28 20:42:03.640  2281 22980 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:42:03.640  2281 22980 E ActivityManager: 
+07-28 20:42:03.640  2281 22980 E ActivityManager: CPU usage from 20066ms to -4ms ago (2026-07-28 20:41:43.440 to 2026-07-28 20:42:03.510):
+07-28 20:42:03.640  2281 22980 E ActivityManager:   85% 30981/com.retrohrai.launcher: 74% user + 11% kernel / faults: 46243 minor 2 major
+07-28 20:42:03.640  2281 22980 E ActivityManager:   31% 28893/com.kei.pulse: 23% user + 8.6% kernel / faults: 18567 minor
+07-28 20:42:03.640  2281 22980 E ActivityManager:   28% 1583/surfaceflinger: 15% user + 13% kernel / faults: 32 minor
+07-28 20:42:03.640  2281 22980 E ActivityManager:   13% 1490/vendor.qti.hardware.display.composer-service: 8.8% user + 4.6% kernel / faults: 64 minor
+07-28 20:42:03.640  2281 22980 E ActivityManager:   10% 4282/com.ayaneo.gamewindow: 4.1% user + 6.4% kernel / faults: 2600 minor
+07-28 20:42:03.640  2281 22980 E ActivityManager:   6.8% 2281/system_server: 3.6% user + 3.1% kernel / faults: 7501 minor
+07-28 20:42:03.640  2281 22980 E ActivityManager:   5% 922/crtc_commit:198: 0% user + 5% kernel
+07-28 20:42:03.640  2281 22980 E ActivityManager:   2.8% 568/logd: 0.6% user + 2.2% kernel / faults: 267 minor
+07-28 20:42:03.640  2281 22980 E ActivityManager:   2.3% 890/kgsl_hwsched: 0% user + 2.3% kernel
+07-28 20:42:03.640  2281 22980 E ActivityManager:   2.2% 2634/com.android.systemui: 1.3% user + 0.8% kernel / faults: 485 minor 1 major
+07-28 20:42:03.640  2281 22980 E ActivityManager: 35% TOTAL: 19% user + 13% kernel + 0% iowait + 2.3% irq + 0.3% softirq
+07-28 20:42:03.640  2281 22980 E ActivityManager: CPU usage from 876157ms to 876157ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:42:03.640  2281 22980 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:42:23.895  2281 24441 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:42:23.895  2281 24441 E ActivityManager: PID: 22996
+07-28 20:42:23.895  2281 24441 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:42:23.895  2281 24441 E ActivityManager: ErrorId: eea3d77a-63bb-4768-a253-90e2b4bfc937
+07-28 20:42:23.895  2281 24441 E ActivityManager: Frozen: false
+07-28 20:42:23.895  2281 24441 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:42:23.895  2281 24441 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:42:23.895  2281 24441 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.00 total=1338784
+07-28 20:42:23.895  2281 24441 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=957881
+07-28 20:42:23.895  2281 24441 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:42:23.895  2281 24441 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:42:23.895  2281 24441 E ActivityManager: some avg10=12.99 avg60=10.42 avg300=10.71 total=116623525
+07-28 20:42:23.895  2281 24441 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:42:23.895  2281 24441 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:42:23.895  2281 24441 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:42:23.895  2281 24441 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.03 total=2812843
+07-28 20:42:23.895  2281 24441 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=1359139
+07-28 20:42:23.895  2281 24441 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:42:23.895  2281 24441 E ActivityManager: 
+07-28 20:42:23.895  2281 24441 E ActivityManager: CPU usage from 20244ms to -1ms ago (2026-07-28 20:42:03.510 to 2026-07-28 20:42:23.755):
+07-28 20:42:23.895  2281 24441 E ActivityManager:   140% 30981/com.retrohrai.launcher: 123% user + 17% kernel / faults: 54009 minor 2 major
+07-28 20:42:23.895  2281 24441 E ActivityManager:   31% 1583/surfaceflinger: 18% user + 13% kernel / faults: 4 minor
+07-28 20:42:23.895  2281 24441 E ActivityManager:   17% 28893/com.kei.pulse: 11% user + 6.4% kernel / faults: 6815 minor
+07-28 20:42:23.895  2281 24441 E ActivityManager:   14% 1490/vendor.qti.hardware.display.composer-service: 9% user + 5.1% kernel
+07-28 20:42:23.895  2281 24441 E ActivityManager:   13% 4282/com.ayaneo.gamewindow: 4.7% user + 8.2% kernel / faults: 2107 minor
+07-28 20:42:23.895  2281 24441 E ActivityManager:   5.6% 2281/system_server: 2.8% user + 2.8% kernel / faults: 364 minor
+07-28 20:42:23.895  2281 24441 E ActivityManager:   4.9% 922/crtc_commit:198: 0% user + 4.9% kernel
+07-28 20:42:23.895  2281 24441 E ActivityManager:   3.7% 568/logd: 0.8% user + 2.8% kernel / faults: 249 minor
+07-28 20:42:23.895  2281 24441 E ActivityManager:   2.7% 890/kgsl_hwsched: 0% user + 2.7% kernel
+07-28 20:42:23.895  2281 24441 E ActivityManager:   2.1% 28954/sh: 0.2% user + 1.8% kernel / faults: 8077 minor
+07-28 20:42:23.895  2281 24441 E ActivityManager: 48% TOTAL: 26% user + 18% kernel + 0% iowait + 2.9% irq + 0.4% softirq
+07-28 20:42:23.895  2281 24441 E ActivityManager: CPU usage from 896405ms to 896405ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:42:23.895  2281 24441 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:42:44.115  2281 25887 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:42:44.115  2281 25887 E ActivityManager: PID: 24464
+07-28 20:42:44.115  2281 25887 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:42:44.115  2281 25887 E ActivityManager: ErrorId: 60719ba4-b662-4f08-a589-74fa7979e0fd
+07-28 20:42:44.115  2281 25887 E ActivityManager: Frozen: false
+07-28 20:42:44.115  2281 25887 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:42:44.115  2281 25887 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:42:44.115  2281 25887 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.00 total=1338784
+07-28 20:42:44.115  2281 25887 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=957881
+07-28 20:42:44.115  2281 25887 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:42:44.115  2281 25887 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:42:44.115  2281 25887 E ActivityManager: some avg10=19.51 avg60=12.59 avg300=11.18 total=120350872
+07-28 20:42:44.115  2281 25887 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:42:44.115  2281 25887 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:42:44.115  2281 25887 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:42:44.115  2281 25887 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.03 total=2819944
+07-28 20:42:44.115  2281 25887 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=1362202
+07-28 20:42:44.115  2281 25887 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:42:44.115  2281 25887 E ActivityManager: 
+07-28 20:42:44.115  2281 25887 E ActivityManager: CPU usage from 20297ms to 4139ms ago (2026-07-28 20:42:23.755 to 2026-07-28 20:42:39.913) with 99% awake:
+07-28 20:42:44.115  2281 25887 E ActivityManager:   133% 30981/com.retrohrai.launcher: 117% user + 15% kernel / faults: 37529 minor
+07-28 20:42:44.115  2281 25887 E ActivityManager:   29% 1583/surfaceflinger: 16% user + 13% kernel
+07-28 20:42:44.115  2281 25887 E ActivityManager:   20% 28893/com.kei.pulse: 13% user + 7.2% kernel / faults: 5628 minor
+07-28 20:42:44.115  2281 25887 E ActivityManager:   14% 4282/com.ayaneo.gamewindow: 4.9% user + 9.1% kernel / faults: 1846 minor
+07-28 20:42:44.115  2281 25887 E ActivityManager:   13% 1490/vendor.qti.hardware.display.composer-service: 8.7% user + 4.5% kernel / faults: 4 minor
+07-28 20:42:44.115  2281 25887 E ActivityManager:   5.9% 2281/system_server: 3.5% user + 2.3% kernel / faults: 663 minor
+07-28 20:42:44.115  2281 25887 E ActivityManager:   4.6% 922/crtc_commit:198: 0% user + 4.6% kernel
+07-28 20:42:44.115  2281 25887 E ActivityManager:   3.8% 568/logd: 0.8% user + 2.9% kernel / faults: 185 minor
+07-28 20:42:44.115  2281 25887 E ActivityManager:   2.5% 890/kgsl_hwsched: 0% user + 2.5% kernel
+07-28 20:42:44.115  2281 25887 E ActivityManager:   2.3% 28954/sh: 0.1% user + 2.2% kernel / faults: 6686 minor
+07-28 20:42:44.115  2281 25887 E ActivityManager: 48% TOTAL: 26% user + 18% kernel + 0% iowait + 3% irq + 0.5% softirq
+07-28 20:42:44.115  2281 25887 E ActivityManager: CPU usage from 916703ms to 916703ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:42:44.115  2281 25887 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:42:54.114  2281 25886 E ActivityManager: Aborted stack trace dump (current primary pid=24464); deadline exceeded.
+07-28 20:43:04.254  2281 27232 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:43:04.254  2281 27232 E ActivityManager: PID: 25899
+07-28 20:43:04.254  2281 27232 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:43:04.254  2281 27232 E ActivityManager: ErrorId: a7fb7f47-0b47-4910-a608-ca04a8391f97
+07-28 20:43:04.254  2281 27232 E ActivityManager: Frozen: false
+07-28 20:43:04.254  2281 27232 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:43:04.254  2281 27232 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:43:04.254  2281 27232 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.00 total=1345742
+07-28 20:43:04.254  2281 27232 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=961561
+07-28 20:43:04.254  2281 27232 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:43:04.254  2281 27232 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:43:04.254  2281 27232 E ActivityManager: some avg10=18.59 avg60=14.60 avg300=11.75 total=124325424
+07-28 20:43:04.254  2281 27232 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:43:04.254  2281 27232 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:43:04.254  2281 27232 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:43:04.254  2281 27232 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.02 total=2831033
+07-28 20:43:04.254  2281 27232 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=1366270
+07-28 20:43:04.254  2281 27232 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:43:04.254  2281 27232 E ActivityManager: 
+07-28 20:43:04.254  2281 27232 E ActivityManager: CPU usage from 24316ms to -1ms ago (2026-07-28 20:42:39.913 to 2026-07-28 20:43:04.230):
+07-28 20:43:04.254  2281 27232 E ActivityManager:   75% 30981/com.retrohrai.launcher: 62% user + 12% kernel / faults: 58268 minor 1 major
+07-28 20:43:04.254  2281 27232 E ActivityManager:   65% 28893/com.kei.pulse: 48% user + 17% kernel / faults: 30257 minor
+07-28 20:43:04.254  2281 27232 E ActivityManager:   25% 1583/surfaceflinger: 12% user + 12% kernel / faults: 30 minor
+07-28 20:43:04.254  2281 27232 E ActivityManager:   15% 4282/com.ayaneo.gamewindow: 5.6% user + 9.4% kernel / faults: 2472 minor 1 major
+07-28 20:43:04.254  2281 27232 E ActivityManager:   10% 1490/vendor.qti.hardware.display.composer-service: 6.8% user + 3.8% kernel / faults: 105 minor
+07-28 20:43:04.254  2281 27232 E ActivityManager:   10% 2281/system_server: 5.4% user + 5.1% kernel / faults: 1320 minor 1 major
+07-28 20:43:04.254  2281 27232 E ActivityManager:   5.2% 568/logd: 1% user + 4.2% kernel / faults: 311 minor
+07-28 20:43:04.254  2281 27232 E ActivityManager:   3.7% 922/crtc_commit:198: 0% user + 3.7% kernel
+07-28 20:43:04.254  2281 27232 E ActivityManager:   2.3% 28954/sh: 0.1% user + 2.2% kernel / faults: 9536 minor
+07-28 20:43:04.254  2281 27232 E ActivityManager:   2% 14/rcu_preempt: 0% user + 2% kernel
+07-28 20:43:04.254  2281 27232 E ActivityManager: 46% TOTAL: 22% user + 19% kernel + 0% iowait + 3% irq + 0.5% softirq
+07-28 20:43:04.254  2281 27232 E ActivityManager: CPU usage from 936880ms to 936880ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:43:04.254  2281 27232 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:43:14.243  2281 27231 E ActivityManager: Aborted stack trace dump (current primary pid=25899); deadline exceeded.
+07-28 20:43:24.355  2281 27601 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:43:24.355  2281 27601 E ActivityManager: PID: 27238
+07-28 20:43:24.355  2281 27601 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:43:24.355  2281 27601 E ActivityManager: ErrorId: 18f93ccc-32a6-4a4b-9d09-cedf1d8559a5
+07-28 20:43:24.355  2281 27601 E ActivityManager: Frozen: false
+07-28 20:43:24.355  2281 27601 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:43:24.355  2281 27601 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:43:24.355  2281 27601 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.00 total=1345747
+07-28 20:43:24.355  2281 27601 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=961566
+07-28 20:43:24.355  2281 27601 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:43:24.355  2281 27601 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:43:24.355  2281 27601 E ActivityManager: some avg10=9.59 avg60=12.69 avg300=11.49 total=126089224
+07-28 20:43:24.355  2281 27601 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:43:24.355  2281 27601 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:43:24.355  2281 27601 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:43:24.355  2281 27601 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.02 total=2832913
+07-28 20:43:24.355  2281 27601 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=1367019
+07-28 20:43:24.355  2281 27601 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:43:24.355  2281 27601 E ActivityManager: 
+07-28 20:43:24.355  2281 27601 E ActivityManager: CPU usage from 20071ms to -2ms ago (2026-07-28 20:43:04.230 to 2026-07-28 20:43:24.303):
+07-28 20:43:24.355  2281 27601 E ActivityManager:   81% 28893/com.kei.pulse: 61% user + 20% kernel / faults: 16918 minor
+07-28 20:43:24.355  2281 27601 E ActivityManager:   25% 1583/surfaceflinger: 13% user + 12% kernel / faults: 34 minor
+07-28 20:43:24.355  2281 27601 E ActivityManager:   12% 1490/vendor.qti.hardware.display.composer-service: 7.6% user + 4.5% kernel / faults: 99 minor
+07-28 20:43:24.355  2281 27601 E ActivityManager:   11% 30981/com.retrohrai.launcher: 8.9% user + 2.4% kernel / faults: 11738 minor
+07-28 20:43:24.355  2281 27601 E ActivityManager:   10% 4282/com.ayaneo.gamewindow: 3.4% user + 6.8% kernel / faults: 2257 minor
+07-28 20:43:24.355  2281 27601 E ActivityManager:   8.3% 2281/system_server: 3.9% user + 4.3% kernel / faults: 436 minor
+07-28 20:43:24.355  2281 27601 E ActivityManager:   4.9% 922/crtc_commit:198: 0% user + 4.9% kernel
+07-28 20:43:24.355  2281 27601 E ActivityManager:   2.3% 568/logd: 0.4% user + 1.8% kernel / faults: 163 minor
+07-28 20:43:24.355  2281 27601 E ActivityManager:   1.6% 890/kgsl_hwsched: 0% user + 1.6% kernel
+07-28 20:43:24.355  2281 27601 E ActivityManager:   1.5% 28954/sh: 0% user + 1.5% kernel / faults: 10271 minor
+07-28 20:43:24.355  2281 27601 E ActivityManager: 25% TOTAL: 13% user + 9.6% kernel + 0% iowait + 2.1% irq + 0.3% softirq
+07-28 20:43:24.355  2281 27601 E ActivityManager: CPU usage from 956952ms to 956952ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:43:24.355  2281 27601 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:43:44.429  2281 28887 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:43:44.429  2281 28887 E ActivityManager: PID: 27611
+07-28 20:43:44.429  2281 28887 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:43:44.429  2281 28887 E ActivityManager: ErrorId: 2a04b528-b649-44b4-a6d5-d688a01e947e
+07-28 20:43:44.429  2281 28887 E ActivityManager: Frozen: false
+07-28 20:43:44.429  2281 28887 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:43:44.429  2281 28887 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:43:44.429  2281 28887 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.00 total=1347173
+07-28 20:43:44.429  2281 28887 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=962512
+07-28 20:43:44.429  2281 28887 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:43:44.429  2281 28887 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:43:44.429  2281 28887 E ActivityManager: some avg10=10.61 avg60=11.95 avg300=11.39 total=128136338
+07-28 20:43:44.429  2281 28887 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:43:44.429  2281 28887 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:43:44.429  2281 28887 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:43:44.429  2281 28887 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.01 total=2849803
+07-28 20:43:44.429  2281 28887 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=1376393
+07-28 20:43:44.429  2281 28887 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:43:44.429  2281 28887 E ActivityManager: 
+07-28 20:43:44.429  2281 28887 E ActivityManager: CPU usage from 20104ms to 0ms ago (2026-07-28 20:43:24.303 to 2026-07-28 20:43:44.407) with 99% awake:
+07-28 20:43:44.429  2281 28887 E ActivityManager:   56% 28893/com.kei.pulse: 42% user + 14% kernel / faults: 16743 minor
+07-28 20:43:44.429  2281 28887 E ActivityManager:   29% 1583/surfaceflinger: 16% user + 13% kernel / faults: 104 minor
+07-28 20:43:44.429  2281 28887 E ActivityManager:   26% 30981/com.retrohrai.launcher: 22% user + 4.5% kernel / faults: 25609 minor 4 major
+07-28 20:43:44.429  2281 28887 E ActivityManager:   14% 1490/vendor.qti.hardware.display.composer-service: 8.6% user + 5.4% kernel / faults: 106 minor
+07-28 20:43:44.429  2281 28887 E ActivityManager:   9.6% 2281/system_server: 4.7% user + 4.9% kernel / faults: 7777 minor 29 major
+07-28 20:43:44.429  2281 28887 E ActivityManager:   9.4% 4282/com.ayaneo.gamewindow: 3.2% user + 6.1% kernel / faults: 2182 minor 3 major
+07-28 20:43:44.429  2281 28887 E ActivityManager:   5.9% 922/crtc_commit:198: 0% user + 5.9% kernel
+07-28 20:43:44.429  2281 28887 E ActivityManager:   2.9% 568/logd: 0.5% user + 2.3% kernel / faults: 340 minor
+07-28 20:43:44.429  2281 28887 E ActivityManager:   2.6% 2634/com.android.systemui: 1.4% user + 1.1% kernel / faults: 685 minor 2 major
+07-28 20:43:44.429  2281 28887 E ActivityManager:   2.2% 890/kgsl_hwsched: 0% user + 2.2% kernel
+07-28 20:43:44.429  2281 28887 E ActivityManager: 29% TOTAL: 14% user + 11% kernel + 0% iowait + 2.3% irq + 0.3% softirq
+07-28 20:43:44.429  2281 28887 E ActivityManager: CPU usage from 977058ms to 977058ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:43:44.429  2281 28887 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:43:54.427  2281 28886 E ActivityManager: Aborted stack trace dump (current primary pid=27611); deadline exceeded.
+07-28 20:44:04.625  2281 30517 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:44:04.625  2281 30517 E ActivityManager: PID: 28892
+07-28 20:44:04.625  2281 30517 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:44:04.625  2281 30517 E ActivityManager: ErrorId: 63277ff9-2f1a-4f5a-994b-576855d6238f
+07-28 20:44:04.625  2281 30517 E ActivityManager: Frozen: false
+07-28 20:44:04.625  2281 30517 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:44:04.625  2281 30517 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:44:04.625  2281 30517 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.00 total=1347403
+07-28 20:44:04.625  2281 30517 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=962742
+07-28 20:44:04.625  2281 30517 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:44:04.625  2281 30517 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:44:04.625  2281 30517 E ActivityManager: some avg10=20.05 avg60=14.04 avg300=11.89 total=132082995
+07-28 20:44:04.625  2281 30517 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:44:04.625  2281 30517 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:44:04.625  2281 30517 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:44:04.625  2281 30517 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.01 total=2859036
+07-28 20:44:04.625  2281 30517 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=1378880
+07-28 20:44:04.625  2281 30517 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:44:04.625  2281 30517 E ActivityManager: 
+07-28 20:44:04.625  2281 30517 E ActivityManager: CPU usage from 20064ms to -2ms ago (2026-07-28 20:43:44.407 to 2026-07-28 20:44:04.473):
+07-28 20:44:04.625  2281 30517 E ActivityManager:   52% 28318/com.retroarch.aarch64: 42% user + 9.9% kernel / faults: 128850 minor
+07-28 20:44:04.625  2281 30517 E ActivityManager:   24% 1583/surfaceflinger: 13% user + 10% kernel / faults: 6 minor
+07-28 20:44:04.625  2281 30517 E ActivityManager:   16% 28893/com.kei.pulse: 10% user + 5.7% kernel / faults: 7386 minor
+07-28 20:44:04.625  2281 30517 E ActivityManager:   12% 1490/vendor.qti.hardware.display.composer-service: 8% user + 4.5% kernel / faults: 41 minor
+07-28 20:44:04.625  2281 30517 E ActivityManager:   11% 1358/android.hardware.audio.service_64: 3% user + 8.3% kernel
+07-28 20:44:04.625  2281 30517 E ActivityManager:   10% 4282/com.ayaneo.gamewindow: 4.3% user + 6.4% kernel / faults: 2301 minor 1 major
+07-28 20:44:04.625  2281 30517 E ActivityManager:   7.2% 30981/com.retrohrai.launcher: 5.3% user + 1.8% kernel / faults: 1883 minor
+07-28 20:44:04.625  2281 30517 E ActivityManager:   6.9% 1571/audioserver: 2.8% user + 4% kernel
+07-28 20:44:04.625  2281 30517 E ActivityManager:   4.7% 922/crtc_commit:198: 0% user + 4.7% kernel
+07-28 20:44:04.625  2281 30517 E ActivityManager:   3% 568/logd: 0.4% user + 2.5% kernel / faults: 174 minor
+07-28 20:44:04.625  2281 30517 E ActivityManager: 34% TOTAL: 15% user + 15% kernel + 0% iowait + 2.8% irq + 0.4% softirq
+07-28 20:44:04.625  2281 30517 E ActivityManager: CPU usage from 997122ms to 997122ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:44:04.625  2281 30517 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:44:24.797  2281 32031 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:44:24.797  2281 32031 E ActivityManager: PID: 30537
+07-28 20:44:24.797  2281 32031 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:44:24.797  2281 32031 E ActivityManager: ErrorId: 7be8b977-c631-410b-9d3d-117645c0d075
+07-28 20:44:24.797  2281 32031 E ActivityManager: Frozen: false
+07-28 20:44:24.797  2281 32031 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:44:24.797  2281 32031 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:44:24.797  2281 32031 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.00 total=1352362
+07-28 20:44:24.797  2281 32031 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=966331
+07-28 20:44:24.797  2281 32031 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:44:24.797  2281 32031 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:44:24.797  2281 32031 E ActivityManager: some avg10=22.78 avg60=16.68 avg300=12.65 total=136965820
+07-28 20:44:24.797  2281 32031 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:44:24.797  2281 32031 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:44:24.797  2281 32031 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:44:24.797  2281 32031 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.00 total=2864557
+07-28 20:44:24.797  2281 32031 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=1379359
+07-28 20:44:24.797  2281 32031 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:44:24.797  2281 32031 E ActivityManager: 
+07-28 20:44:24.797  2281 32031 E ActivityManager: CPU usage from 6510ms to -1ms ago (2026-07-28 20:44:18.218 to 2026-07-28 20:44:24.729):
+07-28 20:44:24.797  2281 32031 E ActivityManager:   55% 28318/com.retroarch.aarch64: 44% user + 11% kernel / faults: 41454 minor
+07-28 20:44:24.797  2281 32031 E ActivityManager:   33% 1583/surfaceflinger: 16% user + 16% kernel
+07-28 20:44:24.797  2281 32031 E ActivityManager:   21% 28893/com.kei.pulse: 12% user + 8.6% kernel / faults: 1293 minor
+07-28 20:44:24.797  2281 32031 E ActivityManager:   20% 1358/android.hardware.audio.service_64: 5.3% user + 14% kernel
+07-28 20:44:24.797  2281 32031 E ActivityManager:   17% 1490/vendor.qti.hardware.display.composer-service: 10% user + 6.7% kernel
+07-28 20:44:24.797  2281 32031 E ActivityManager:   15% 4282/com.ayaneo.gamewindow: 5.3% user + 10% kernel / faults: 179 minor
+07-28 20:44:24.797  2281 32031 E ActivityManager:   11% 1571/audioserver: 4.7% user + 6.7% kernel
+07-28 20:44:24.797  2281 32031 E ActivityManager:   10% 30981/com.retrohrai.launcher: 7.2% user + 3% kernel / faults: 194 minor
+07-28 20:44:24.797  2281 32031 E ActivityManager:   6.3% 922/crtc_commit:198: 0% user + 6.3% kernel
+07-28 20:44:24.797  2281 32031 E ActivityManager:   4.3% 568/logd: 0.6% user + 3.6% kernel / faults: 57 minor
+07-28 20:44:24.797  2281 32031 E ActivityManager: 44% TOTAL: 18% user + 20% kernel + 4.5% irq + 0.6% softirq
+07-28 20:44:24.797  2281 32031 E ActivityManager: CPU usage from 1017379ms to 1017379ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:44:24.797  2281 32031 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:44:34.767  2281 32030 E ActivityManager: Aborted stack trace dump (current primary pid=30537); deadline exceeded.
+07-28 20:44:45.054  2281  1590 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:44:45.054  2281  1590 E ActivityManager: PID: 32045
+07-28 20:44:45.054  2281  1590 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:44:45.054  2281  1590 E ActivityManager: ErrorId: 6c662906-7a96-4104-a0de-8a88eaa456ff
+07-28 20:44:45.054  2281  1590 E ActivityManager: Frozen: false
+07-28 20:44:45.054  2281  1590 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:44:45.054  2281  1590 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:44:45.054  2281  1590 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.00 total=1352362
+07-28 20:44:45.054  2281  1590 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=966331
+07-28 20:44:45.054  2281  1590 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:44:45.054  2281  1590 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:44:45.054  2281  1590 E ActivityManager: some avg10=18.74 avg60=17.26 avg300=13.07 total=140957157
+07-28 20:44:45.054  2281  1590 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:44:45.054  2281  1590 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:44:45.054  2281  1590 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:44:45.054  2281  1590 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.00 total=2866736
+07-28 20:44:45.054  2281  1590 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=1380086
+07-28 20:44:45.054  2281  1590 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:44:45.054  2281  1590 E ActivityManager: 
+07-28 20:44:45.054  2281  1590 E ActivityManager: CPU usage from 20235ms to -3ms ago (2026-07-28 20:44:24.729 to 2026-07-28 20:44:44.967):
+07-28 20:44:45.054  2281  1590 E ActivityManager:   71% 28318/com.retroarch.aarch64: 58% user + 12% kernel / faults: 134227 minor
+07-28 20:44:45.054  2281  1590 E ActivityManager:   30% 1583/surfaceflinger: 16% user + 14% kernel
+07-28 20:44:45.054  2281  1590 E ActivityManager:   19% 28893/com.kei.pulse: 11% user + 8.1% kernel / faults: 6042 minor
+07-28 20:44:45.054  2281  1590 E ActivityManager:   15% 1358/android.hardware.audio.service_64: 4.1% user + 11% kernel
+07-28 20:44:45.054  2281  1590 E ActivityManager:   14% 1490/vendor.qti.hardware.display.composer-service: 8.7% user + 6.1% kernel
+07-28 20:44:45.054  2281  1590 E ActivityManager:   14% 4282/com.ayaneo.gamewindow: 4.8% user + 9.7% kernel / faults: 2548 minor
+07-28 20:44:45.054  2281  1590 E ActivityManager:   10% 2281/system_server: 5% user + 5.6% kernel / faults: 411 minor
+07-28 20:44:45.054  2281  1590 E ActivityManager:   9.2% 1571/audioserver: 3.8% user + 5.4% kernel
+07-28 20:44:45.054  2281  1590 E ActivityManager:   8.2% 30981/com.retrohrai.launcher: 5.6% user + 2.5% kernel / faults: 1104 minor
+07-28 20:44:45.054  2281  1590 E ActivityManager:   5.4% 568/logd: 0.6% user + 4.7% kernel / faults: 406 minor
+07-28 20:44:45.054  2281  1590 E ActivityManager: 45% TOTAL: 20% user + 21% kernel + 3.8% irq + 0.7% softirq
+07-28 20:44:45.054  2281  1590 E ActivityManager: CPU usage from 1037615ms to 1037615ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:44:45.054  2281  1590 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:44:54.997  2281  1589 E ActivityManager: Aborted stack trace dump (current primary pid=32045); deadline exceeded.
+07-28 20:45:05.384  2281  4061 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:45:05.384  2281  4061 E ActivityManager: PID: 1608
+07-28 20:45:05.384  2281  4061 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:45:05.384  2281  4061 E ActivityManager: ErrorId: f180c5c6-022e-42ce-819e-6af70ecc700c
+07-28 20:45:05.384  2281  4061 E ActivityManager: Frozen: false
+07-28 20:45:05.384  2281  4061 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:45:05.384  2281  4061 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:45:05.384  2281  4061 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.00 total=1352362
+07-28 20:45:05.384  2281  4061 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=966331
+07-28 20:45:05.384  2281  4061 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:45:05.384  2281  4061 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:45:05.384  2281  4061 E ActivityManager: some avg10=16.69 avg60=17.50 avg300=13.43 total=144833122
+07-28 20:45:05.384  2281  4061 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:45:05.384  2281  4061 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:45:05.384  2281  4061 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:45:05.384  2281  4061 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.00 total=2868349
+07-28 20:45:05.384  2281  4061 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=1380620
+07-28 20:45:05.384  2281  4061 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:45:05.384  2281  4061 E ActivityManager: 
+07-28 20:45:05.384  2281  4061 E ActivityManager: CPU usage from 20253ms to -3ms ago (2026-07-28 20:44:44.967 to 2026-07-28 20:45:05.223):
+07-28 20:45:05.384  2281  4061 E ActivityManager:   85% 28318/com.retroarch.aarch64: 73% user + 12% kernel / faults: 128516 minor
+07-28 20:45:05.384  2281  4061 E ActivityManager:   27% 1583/surfaceflinger: 14% user + 12% kernel
+07-28 20:45:05.384  2281  4061 E ActivityManager:   19% 568/logd: 3.7% user + 15% kernel / faults: 2340 minor 1 major
+07-28 20:45:05.384  2281  4061 E ActivityManager:   16% 28893/com.kei.pulse: 10% user + 6.6% kernel / faults: 6213 minor
+07-28 20:45:05.384  2281  4061 E ActivityManager:   15% 2281/system_server: 6.6% user + 9% kernel / faults: 1278 minor
+07-28 20:45:05.384  2281  4061 E ActivityManager:   13% 1490/vendor.qti.hardware.display.composer-service: 7.9% user + 5.1% kernel
+07-28 20:45:05.384  2281  4061 E ActivityManager:   12% 1358/android.hardware.audio.service_64: 3.3% user + 8.9% kernel
+07-28 20:45:05.384  2281  4061 E ActivityManager:   12% 2732/com.android.bluetooth: 5.8% user + 6.3% kernel / faults: 13169 minor 443 major
+07-28 20:45:05.384  2281  4061 E ActivityManager:   11% 4282/com.ayaneo.gamewindow: 4.6% user + 7.3% kernel / faults: 1083 minor
+07-28 20:45:05.384  2281  4061 E ActivityManager:   8.8% 1571/audioserver: 3.6% user + 5.2% kernel
+07-28 20:45:05.384  2281  4061 E ActivityManager: 48% TOTAL: 22% user + 22% kernel + 0% iowait + 3.4% irq + 0.5% softirq
+07-28 20:45:05.384  2281  4061 E ActivityManager: CPU usage from 1057871ms to 1057871ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:45:05.384  2281  4061 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+07-28 20:45:25.808  2281  5823 E ActivityManager: ANR in com.qti.diagservices
+07-28 20:45:25.808  2281  5823 E ActivityManager: PID: 4077
+07-28 20:45:25.808  2281  5823 E ActivityManager: Reason: executing service com.qti.diagservices/.QTIDiagServices
+07-28 20:45:25.808  2281  5823 E ActivityManager: ErrorId: df1303e0-0d1e-4a9f-aabd-88877de4b1ac
+07-28 20:45:25.808  2281  5823 E ActivityManager: Frozen: false
+07-28 20:45:25.808  2281  5823 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+07-28 20:45:25.808  2281  5823 E ActivityManager: ----- Output from /proc/pressure/memory -----
+07-28 20:45:25.808  2281  5823 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.00 total=1352362
+07-28 20:45:25.808  2281  5823 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=966331
+07-28 20:45:25.808  2281  5823 E ActivityManager: ----- End output from /proc/pressure/memory -----
+07-28 20:45:25.808  2281  5823 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+07-28 20:45:25.808  2281  5823 E ActivityManager: some avg10=23.26 avg60=18.77 avg300=14.00 total=149200680
+07-28 20:45:25.808  2281  5823 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+07-28 20:45:25.808  2281  5823 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+07-28 20:45:25.808  2281  5823 E ActivityManager: ----- Output from /proc/pressure/io -----
+07-28 20:45:25.808  2281  5823 E ActivityManager: some avg10=0.00 avg60=0.00 avg300=0.00 total=2870241
+07-28 20:45:25.808  2281  5823 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=1381873
+07-28 20:45:25.808  2281  5823 E ActivityManager: ----- End output from /proc/pressure/io -----
+07-28 20:45:25.808  2281  5823 E ActivityManager: 
+07-28 20:45:25.808  2281  5823 E ActivityManager: CPU usage from 20335ms to -1ms ago (2026-07-28 20:45:05.223 to 2026-07-28 20:45:25.559) with 99% awake:
+07-28 20:45:25.808  2281  5823 E ActivityManager:   79% 28318/com.retroarch.aarch64: 66% user + 13% kernel / faults: 132446 minor
+07-28 20:45:25.808  2281  5823 E ActivityManager:   30% 1583/surfaceflinger: 15% user + 14% kernel
+07-28 20:45:25.808  2281  5823 E ActivityManager:   20% 28893/com.kei.pulse: 12% user + 7.7% kernel / faults: 6796 minor
+07-28 20:45:25.808  2281  5823 E ActivityManager:   15% 1358/android.hardware.audio.service_64: 4.1% user + 11% kernel
+07-28 20:45:25.808  2281  5823 E ActivityManager:   14% 1490/vendor.qti.hardware.display.composer-service: 9.2% user + 5.6% kernel
+07-28 20:45:25.808  2281  5823 E ActivityManager:   14% 2281/system_server: 6.9% user + 7.8% kernel / faults: 829 minor
+07-28 20:45:25.808  2281  5823 E ActivityManager:   14% 4282/com.ayaneo.gamewindow: 5.1% user + 9.1% kernel / faults: 2332 minor
+07-28 20:45:25.808  2281  5823 E ActivityManager:   12% 568/logd: 2.5% user + 10% kernel / faults: 1567 minor
+07-28 20:45:25.808  2281  5823 E ActivityManager:   10% 1571/audioserver: 4.1% user + 6% kernel
+07-28 20:45:25.808  2281  5823 E ActivityManager:   8.5% 30981/com.retrohrai.launcher: 6.2% user + 2.3% kernel / faults: 1048 minor
+07-28 20:45:25.808  2281  5823 E ActivityManager: 49% TOTAL: 22% user + 22% kernel + 0% iowait + 4% irq + 0.6% softirq
+07-28 20:45:25.808  2281  5823 E ActivityManager: CPU usage from 1078209ms to 1078209ms ago (1970-01-01 01:00:00.000 to 1970-01-01 01:00:00.000) with 0% awake:
+07-28 20:45:25.808  2281  5823 E ActivityManager: 0% TOTAL: 0% user + 0% kernel

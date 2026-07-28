@@ -1,0 +1,68 @@
+# TRIMMED -- kernel ring-buffer routine noise, zero crash-keyword hits.
+# Original: 4136 lines, no SIGSEGV/SIGABRT/panic/etc. crash indicators,
+# routine kernel noise with nothing session-relevant found. Kept: first 30 lines,
+# last 30 lines as a reference sample.
+# ---
+[  456.444193] init: Untracked pid 6059 exited with status 143
+[  456.444213] init: Untracked pid 6059 did not have an associated service entry and will not be reaped
+[  456.445833] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 754 (/system/bin/hwservicemanager)
+[  456.619664] audit: audit_lost=35947 audit_rate_limit=5 audit_backlog_limit=64
+[  456.619674] audit: rate limit exceeded
+[  456.697486] init: Untracked pid 6150 exited with status 143
+[  456.697527] init: Untracked pid 6150 did not have an associated service entry and will not be reaped
+[  457.448930] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 754 (/system/bin/hwservicemanager)
+[  457.629577] audit: audit_lost=36169 audit_rate_limit=5 audit_backlog_limit=64
+[  457.629582] audit: rate limit exceeded
+[  459.357619] type=1400 audit(1785263706.700:38173): avc:  denied  { setattr } for  comm="chmod" name="online" dev="sysfs" ino=43982 scontext=u:r:xsud:s0 tcontext=u:object_r:sysfs_devices_system_cpu:s0 tclass=file permissive=1
+[  459.358461] type=1400 audit(1785263706.700:38174): avc:  denied  { write } for  comm="sh" name="online" dev="sysfs" ino=43982 scontext=u:r:xsud:s0 tcontext=u:object_r:sysfs_devices_system_cpu:s0 tclass=file permissive=1
+[  459.453359] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 754 (/system/bin/hwservicemanager)
+[  459.464185] type=1400 audit(1785263706.804:38175): avc:  denied  { syslog_read } for  comm="dmesg" scontext=u:r:xsud:s0 tcontext=u:r:kernel:s0 tclass=system permissive=1
+[  459.465729] type=1400 audit(1785263706.804:38176): avc:  denied  { syslog_mod } for  comm="dmesg" scontext=u:r:xsud:s0 tcontext=u:r:kernel:s0 tclass=system permissive=1
+[  459.495725] type=1400 audit(1785263706.836:38177): avc:  denied  { getattr } for  comm="DefaultDispatch" path="/dev/ttyHS5" dev="tmpfs" ino=1195 scontext=u:r:system_app:s0 tcontext=u:object_r:device:s0 tclass=chr_file permissive=1
+[  459.628825] audit: audit_lost=36194 audit_rate_limit=5 audit_backlog_limit=64
+[  459.628832] audit: rate limit exceeded
+[  460.403405] gen7_err_callback: 2161 callbacks suppressed
+[  460.403419] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  460.413184] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  460.413213] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  460.416758] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  460.420831] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  460.424555] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  460.428914] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  460.428954] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  460.430510] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  460.430533] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  460.459291] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 754 (/system/bin/hwservicemanager)
+
+# ... 4076 lines of routine audit denials, control messages, kworker messages elided ...
+
+[ 1086.240375] type=1400 audit(1785264333.580:66985): avc:  denied  { read } for  comm="top" name="pid_max" dev="proc" ino=756353 scontext=u:r:system_app:s0 tcontext=u:object_r:proc_pid_max:s0 tclass=file permissive=1
+[ 1086.240960] type=1400 audit(1785264333.580:66986): avc:  denied  { open } for  comm="top" path="/proc/sys/kernel/pid_max" dev="proc" ino=756353 scontext=u:r:system_app:s0 tcontext=u:object_r:proc_pid_max:s0 tclass=file permissive=1
+[ 1086.246539] type=1400 audit(1785264333.584:66987): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:servicemanager:s0 tclass=file permissive=1
+[ 1086.246898] type=1400 audit(1785264333.584:66988): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:hwservicemanager:s0 tclass=file permissive=1
+[ 1086.247191] type=1400 audit(1785264333.584:66989): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vndservicemanager:s0 tclass=file permissive=1
+[ 1086.422870] audit: audit_lost=62748 audit_rate_limit=5 audit_backlog_limit=64
+[ 1086.422881] audit: rate limit exceeded
+[ 1086.532477] [kworke][0x4e93e8530][18:45:33.878372] kiwi_v2: [859:I:PMO] pmo_core_psoc_send_host_wakeup_ind_to_fw: Host wakeup indication sent to fw
+[ 1086.706624] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 754 (/system/bin/hwservicemanager)
+[ 1086.812216] adsp_sleepmon: Audio: num_sessions=0,num_lpi_sessions=0,timer_pending=1
+[ 1087.287082] type=1400 audit(1785264334.628:67161): avc:  denied  { write } for  comm="xsu" name="xsud" dev="tmpfs" ino=1381 scontext=u:r:untrusted_app:s0:c183,c256,c512,c768 tcontext=u:object_r:xsud_socket:s0 tclass=sock_file permissive=1 app=com.kei.pulse
+[ 1087.306317] type=1400 audit(1785264334.648:67162): avc:  denied  { search } for  comm="cat" name="battery" dev="sysfs" ino=141568 scontext=u:r:xsud:s0 tcontext=u:object_r:vendor_sysfs_battery_supply:s0 tclass=dir permissive=1
+[ 1087.475367] type=1400 audit(1785264334.816:67163): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:hal_light_default:s0 tclass=file permissive=1
+[ 1087.475604] audit: audit_lost=62862 audit_rate_limit=5 audit_backlog_limit=64
+[ 1087.475611] type=1400 audit(1785264334.816:67164): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_secureprocessor_qti:s0 tclass=file permissive=1
+[ 1087.475612] audit: rate limit exceeded
+[ 1087.475749] type=1400 audit(1785264334.816:67165): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_sxrd_vndr:s0 tclass=file permissive=1
+[ 1087.708687] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 754 (/system/bin/hwservicemanager)
+[ 1088.650597] audit: audit_lost=62941 audit_rate_limit=5 audit_backlog_limit=64
+[ 1088.650610] audit: rate limit exceeded
+[ 1088.713371] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 754 (/system/bin/hwservicemanager)
+[ 1088.997665] wcd-usbss-i2c-driver 1-000e: wcd_usbss_is_in_reset_state: Surge check #3 failed
+[ 1089.715115] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 754 (/system/bin/hwservicemanager)
+[ 1090.021967] [kworke][0x4ed3cd43d][18:45:37.367852] kiwi_v2: [2202:I:PMO] pmo_core_enable_wow_in_fw: drv wow is enabled
+[ 1090.211034] audit: audit_lost=62977 audit_rate_limit=5 audit_backlog_limit=64
+[ 1090.211064] audit: rate limit exceeded
+[ 1090.718003] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 754 (/system/bin/hwservicemanager)
+[ 1091.720521] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 754 (/system/bin/hwservicemanager)
+[ 1091.961881] type=1400 audit(1785264339.304:67312): avc:  denied  { search } for  comm="sh" name="0" dev="tmpfs" ino=12 scontext=u:r:xsud:s0 tcontext=u:object_r:mnt_user_file:s0 tclass=dir permissive=1
+[ 1091.991334] type=1400 audit(1785264339.332:67313): avc:  denied  { syslog_read } for  comm="dmesg" scontext=u:r:xsud:s0 tcontext=u:r:kernel:s0 tclass=system permissive=1

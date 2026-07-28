@@ -1,0 +1,278 @@
+# TRIMMED (analyze-pulse-logs.py) -- original was 540 lines / 84666B.
+# Kept: every distinct line; runs of 3+ consecutive identical lines (idle TICK-SKIP polling,
+# only the timestamp differs) collapsed to first + elision count + last.
+# ---
+2026-07-28 20:35:03 === pulse_daemon session start === version=1.19.6 (303) built 2026-07-28 20:18:16 script_crc32=f233ff4c
+2026-07-28 20:35:08 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-07-28 20:35:08 PulseFan: arbiter=None auto=false bound=null managed=null latched=true
+2026-07-28 20:35:09 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+# ... 82 more identical lines elided (same content, only timestamp differs) ...
+2026-07-28 20:36:35 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-07-28 20:36:36 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+# ... 1 more identical lines elided (same content, only timestamp differs) ...
+2026-07-28 20:36:38 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+2026-07-28 20:36:39 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+# ... 45 more identical lines elided (same content, only timestamp differs) ...
+2026-07-28 20:37:26 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-07-28 20:37:27 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+# ... 7 more identical lines elided (same content, only timestamp differs) ...
+2026-07-28 20:37:35 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+2026-07-28 20:37:45 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+# ... 38 more identical lines elided (same content, only timestamp differs) ...
+2026-07-28 20:38:53 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-07-28 20:38:59 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+# ... 2 more identical lines elided (same content, only timestamp differs) ...
+2026-07-28 20:39:02 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+2026-07-28 20:39:07 PulseDaemon: cap write via daemon (3 node(s))
+2026-07-28 20:39:07 PulseDaemon: cap write via xsu fallback (10 node(s), ~1941 chars, chunked)
+2026-07-28 20:39:08 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:39:09 PulseDaemon: engage governor via daemon (schedutil)
+2026-07-28 20:39:20 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:20 PulseAutoTdp: AUTOTDP-SESSION tgt=90 bias=EFFICIENT wattCap=0 policies=0:2265600:0,1;2:3148800:2,3,4;5:2956800:5,6;7:3052800:7;-100:1050000:
+2026-07-28 20:39:23 PulseAutoTdp: tgt=90 fps=- jank=0 tail=-ms act=HOLD bn=- cpuB=-1 cpuPk=-1 primePk=-1 io=-1 gpuB=19 gpuL=4 capped=0 prk=0 stl=0 draw=3.62W cT=55 gT=52 caps%[0:100,2:85,5:100,7:50,-100:60] curMHz[0:1574,2:2707,5:2956,7:480] mn/mx[0:364/2265,2:499/2707,5:499/2956,7:480/1478] gpu=231 gcap=1050[0/13] lrn=100
+2026-07-28 20:39:23 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:39:23 PulseDaemon: cap write via daemon (1 node(s))
+2026-07-28 20:39:23 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:39:23 PulseFan: arbiter=None auto=true bound=null managed=null latched=true
+2026-07-28 20:39:25 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:26 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:26 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:39:26 PulseAutoTdp: tgt=90 fps=30.5 jank=31 tail=44ms act=RAISE bn=- cpuB=16 cpuPk=55 primePk=3 io=0 gpuB=14 gpuL=3 capped=0 prk=0 stl=0 draw=3.47W cT=54 gT=51 caps%[0:100,2:85,5:100,7:50,-100:65] curMHz[0:1920,2:499,5:1612,7:480] gpu=231 gcap=629[7/13] lrn=100
+2026-07-28 20:39:26 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:39:26 PulseDaemon: cap write via daemon (1 node(s))
+2026-07-28 20:39:26 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:39:28 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:29 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:29 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:39:29 PulseAutoTdp: tgt=90 fps=30.6 jank=25 tail=44ms act=RAISE bn=- cpuB=21 cpuPk=53 primePk=2 io=0 gpuB=14 gpuL=3 capped=0 prk=0 stl=0 draw=2.62W cT=54 gT=50 caps%[0:100,2:85,5:100,7:50,-100:70] curMHz[0:2265,2:499,5:2956,7:480] gpu=231 gcap=680[6/13] lrn=100
+2026-07-28 20:39:29 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:39:29 PulseDaemon: cap write via daemon (1 node(s))
+2026-07-28 20:39:31 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:32 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:33 PulseAutoTdp: tgt=90 fps=30.7 jank=29 tail=58ms act=RAISE bn=- cpuB=18 cpuPk=51 primePk=2 io=0 gpuB=14 gpuL=3 capped=0 prk=0 stl=0 draw=2.53W cT=54 gT=50 caps%[0:100,2:85,5:100,7:50,-100:75] curMHz[0:1920,2:499,5:2630,7:480] gpu=231 gcap=720[5/13] lrn=100
+2026-07-28 20:39:33 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:39:33 PulseDaemon: cap write via daemon (1 node(s))
+2026-07-28 20:39:34 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:35 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:36 PulseDaemon: cap write via xsu fallback (7 node(s), ~1323 chars, chunked)
+2026-07-28 20:39:36 PulseAutoTdp: tgt=90 fps=30.8 jank=30 tail=44ms act=RAISE bn=- cpuB=19 cpuPk=57 primePk=1 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=3.77W cT=53 gT=50 caps%[0:100,2:85,5:100,7:50,-100:80] curMHz[0:2035,2:499,5:2515,7:480] gpu=231 gcap=770[4/13] lrn=100
+2026-07-28 20:39:36 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:39:36 PulseDaemon: cap write via daemon (1 node(s))
+2026-07-28 20:39:36 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:39:38 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:39 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:39 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:39:39 PulseAutoTdp: tgt=90 fps=30.0 jank=33 tail=58ms act=RAISE bn=- cpuB=10 cpuPk=56 primePk=3 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=3.40W cT=53 gT=50 caps%[0:100,2:85,5:100,7:50,-100:85] curMHz[0:787,2:499,5:2131,7:480] gpu=231 gcap=834[3/13] lrn=100
+2026-07-28 20:39:39 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:39:40 PulseDaemon: cap write via daemon (1 node(s))
+2026-07-28 20:39:40 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:39:41 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:42 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:43 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:39:43 PulseAutoTdp: tgt=90 fps=30.5 jank=26 tail=58ms act=RAISE bn=- cpuB=15 cpuPk=56 primePk=4 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=2.13W cT=52 gT=50 caps%[0:100,2:85,5:100,7:50,-100:90] curMHz[0:2265,2:499,5:729,7:480] gpu=231 gcap=903[2/13] lrn=100
+2026-07-28 20:39:43 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:39:43 PulseDaemon: cap write via daemon (1 node(s))
+2026-07-28 20:39:43 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:39:44 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:46 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:46 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:39:46 PulseAutoTdp: tgt=90 fps=31.2 jank=31 tail=58ms act=RAISE bn=- cpuB=8 cpuPk=54 primePk=3 io=0 gpuB=14 gpuL=3 capped=0 prk=0 stl=0 draw=2.81W cT=53 gT=50 caps%[0:100,2:85,5:100,7:50,-100:95] curMHz[0:902,2:499,5:1075,7:480] gpu=231 gcap=903[2/13] lrn=100
+2026-07-28 20:39:46 PulseDaemon: cap write via daemon (1 node(s))
+2026-07-28 20:39:46 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:39:47 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:49 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:49 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:39:49 PulseAutoTdp: tgt=90 fps=30.9 jank=32 tail=58ms act=RAISE bn=- cpuB=15 cpuPk=51 primePk=4 io=0 gpuB=14 gpuL=3 capped=0 prk=0 stl=0 draw=2.84W cT=53 gT=50 caps%[0:100,2:85,5:100,7:50,-100:100] curMHz[0:1344,2:499,5:2707,7:480] gpu=231 gcap=1000[1/13] lrn=100
+2026-07-28 20:39:51 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:52 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:52 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:39:52 PulseDaemon: cap write via daemon (1 node(s))
+2026-07-28 20:39:54 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:55 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:39:55 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:39:57 PulseAutoTdp: tgt=90 fps=38.7 jank=21 tail=44ms act=RAISE bn=- cpuB=19 cpuPk=56 primePk=0 io=0 gpuB=17 gpuL=3 capped=0 prk=0 stl=0 draw=3.06W cT=52 gT=49 caps%[0:100,2:85,5:100,7:60,-100:100] curMHz[0:2265,2:499,5:1824,7:480] mn/mx[0:364/2265,2:499/2707,5:499/2956,7:480/1824] gpu=231 gcap=1050[0/13] lrn=100
+2026-07-28 20:39:57 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:39:57 PulseDaemon: cap write via daemon (1 node(s))
+2026-07-28 20:39:58 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:00 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:00 PulseAutoTdp: tgt=90 fps=30.4 jank=27 tail=58ms act=RAISE bn=- cpuB=22 cpuPk=55 primePk=1 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=3.28W cT=52 gT=49 caps%[0:100,2:85,5:100,7:65,-100:100] curMHz[0:2265,2:499,5:2956,7:480] gpu=231 gcap=1050[0/13] lrn=100
+2026-07-28 20:40:00 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:40:01 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:03 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:03 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:40:03 PulseAutoTdp: tgt=90 fps=30.3 jank=35 tail=44ms act=RAISE bn=- cpuB=11 cpuPk=51 primePk=9 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=2.82W cT=52 gT=49 caps%[0:100,2:85,5:100,7:70,-100:100] curMHz[0:1574,2:1401,5:499,7:480] gpu=231 gcap=1050[0/13] lrn=100
+2026-07-28 20:40:03 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:40:03 PulseDaemon: cap write via daemon (1 node(s))
+2026-07-28 20:40:05 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:06 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:07 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:40:07 PulseAutoTdp: tgt=90 fps=30.2 jank=29 tail=58ms act=RAISE bn=- cpuB=20 cpuPk=50 primePk=2 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=3.34W cT=52 gT=49 caps%[0:100,2:85,5:100,7:75,-100:100] curMHz[0:2150,2:499,5:2956,7:480] gpu=231 gcap=1050[0/13] lrn=100
+2026-07-28 20:40:07 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:40:07 PulseDaemon: cap write via daemon (1 node(s))
+2026-07-28 20:40:08 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:09 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:10 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:40:10 PulseAutoTdp: tgt=90 fps=30.2 jank=30 tail=58ms act=RAISE bn=- cpuB=18 cpuPk=54 primePk=2 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=3.30W cT=52 gT=48 caps%[0:100,2:85,5:100,7:80,-100:100] curMHz[0:2265,2:499,5:1612,7:480] gpu=231 gcap=1050[0/13] lrn=100
+2026-07-28 20:40:10 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:40:10 PulseDaemon: cap write via daemon (1 node(s))
+2026-07-28 20:40:11 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:12 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:13 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:40:13 PulseAutoTdp: AUTOTDP-SESSION tgt=90 bias=EFFICIENT wattCap=0 policies=0:2265600:0,1;2:3148800:2,3,4;5:2956800:5,6;7:3052800:7;-100:1050000:
+2026-07-28 20:40:13 PulseAutoTdp: tgt=90 fps=29.6 jank=28 tail=58ms act=RAISE bn=- cpuB=16 cpuPk=53 primePk=2 io=0 gpuB=14 gpuL=3 capped=0 prk=0 stl=0 draw=3.09W cT=52 gT=49 caps%[0:100,2:85,5:100,7:85,-100:100] curMHz[0:1344,2:499,5:2956,7:480] gpu=231 gcap=1050[0/13] lrn=100
+2026-07-28 20:40:13 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:40:13 PulseDaemon: cap write via daemon (1 node(s))
+2026-07-28 20:40:14 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:16 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:16 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:40:16 PulseAutoTdp: tgt=90 fps=30.2 jank=35 tail=58ms act=RAISE bn=- cpuB=21 cpuPk=60 primePk=1 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=3.55W cT=51 gT=49 caps%[0:100,2:85,5:100,7:90,-100:100] curMHz[0:2265,2:499,5:2707,7:480] gpu=231 gcap=1050[0/13] lrn=100
+2026-07-28 20:40:16 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:40:16 PulseDaemon: cap write via daemon (1 node(s))
+2026-07-28 20:40:17 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:19 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:19 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:40:19 PulseAutoTdp: tgt=90 fps=29.8 jank=34 tail=58ms act=RAISE bn=- cpuB=21 cpuPk=54 primePk=4 io=0 gpuB=14 gpuL=3 capped=0 prk=0 stl=0 draw=2.68W cT=52 gT=49 caps%[0:100,2:85,5:100,7:95,-100:100] curMHz[0:2265,2:499,5:2956,7:480] gpu=231 gcap=1050[0/13] lrn=100
+2026-07-28 20:40:19 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:40:19 PulseDaemon: cap write via daemon (1 node(s))
+2026-07-28 20:40:21 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:22 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:23 PulseDaemon: cap write via xsu fallback (7 node(s), ~1323 chars, chunked)
+2026-07-28 20:40:23 PulseAutoTdp: tgt=90 fps=30.7 jank=41 tail=44ms act=RAISE bn=- cpuB=18 cpuPk=56 primePk=1 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=2.94W cT=52 gT=49 caps%[0:100,2:85,5:100,7:100,-100:100] curMHz[0:2265,2:499,5:2035,7:480] gpu=231 gcap=1050[0/13] lrn=100
+2026-07-28 20:40:23 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:40:24 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:26 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:26 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:40:26 PulseAutoTdp: tgt=90 fps=30.0 jank=27 tail=58ms act=RAISE bn=- cpuB=15 cpuPk=53 primePk=7 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=3.46W cT=52 gT=49 caps%[0:100,2:90,5:100,7:100,-100:100] curMHz[0:2265,2:2515,5:729,7:480] gpu=231 gcap=1050[0/13] lrn=100
+2026-07-28 20:40:26 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:40:27 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:29 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:29 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:40:31 PulseAutoTdp: tgt=90 fps=42.4 jank=22 tail=58ms act=RAISE bn=- cpuB=19 cpuPk=55 primePk=4 io=0 gpuB=18 gpuL=3 capped=0 prk=0 stl=0 draw=3.51W cT=51 gT=49 caps%[0:100,2:95,5:100,7:100,-100:100] curMHz[0:2265,2:499,5:1920,7:480] mn/mx[0:364/2265,2:499/3014,5:499/2956,7:480/3052] gpu=231 gcap=1050[0/13] lrn=100
+2026-07-28 20:40:31 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 20:40:32 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:34 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:34 PulseDaemon: cap write via xsu fallback (7 node(s), ~1323 chars, chunked)
+2026-07-28 20:40:35 PulseAutoTdp: tgt=90 fps=29.8 jank=33 tail=58ms act=RAISE bn=- cpuB=20 cpuPk=54 primePk=4 io=0 gpuB=14 gpuL=3 capped=0 prk=0 stl=0 draw=2.66W cT=51 gT=48 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:499,5:2572,7:480] gpu=231 gcap=1050[0/13] lrn=100
+2026-07-28 20:40:36 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:38 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:38 PulseAutoTdp: tgt=90 fps=77.6 jank=8 tail=44ms act=HOLD bn=- cpuB=24 cpuPk=55 primePk=27 io=0 gpuB=16 gpuL=3 capped=0 prk=0 stl=0 draw=2.51W cT=52 gT=49 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:499,5:2515,7:480] gpu=231 gcap=1050[0/13] lrn=100
+2026-07-28 20:40:39 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:40:41 PulseDaemon: cap write via daemon (3 node(s))
+2026-07-28 20:40:41 PulseDaemon: cap write via daemon (10 node(s))
+2026-07-28 20:40:43 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-07-28 20:40:43 PulseFan: arbiter=None auto=false bound=null managed=null latched=true
+2026-07-28 20:40:44 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+# ... 62 more identical lines elided (same content, only timestamp differs) ...
+2026-07-28 20:41:48 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-07-28 20:41:59 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:01 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:42:02 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:04 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:05 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:42:06 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:08 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:09 PulseDaemon: cap write via xsu fallback (7 node(s), ~1323 chars, chunked)
+2026-07-28 20:42:11 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:13 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:14 PulseDaemon: cap write via xsu fallback (7 node(s), ~1323 chars, chunked)
+2026-07-28 20:42:16 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:19 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:20 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:42:21 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:23 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:24 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:42:25 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:27 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:28 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:42:29 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:31 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:32 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:42:33 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+# ... 4 more identical lines elided (same content, only timestamp differs) ...
+2026-07-28 20:42:44 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:46 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:42:47 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:49 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:50 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:42:51 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:53 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:55 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:42:56 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retrohrai.launcher lastForeground=com.retrohrai.launcher
+2026-07-28 20:42:59 PulseDaemon: cap write via daemon (10 node(s))
+2026-07-28 20:43:02 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+# ... 32 more identical lines elided (same content, only timestamp differs) ...
+2026-07-28 20:43:36 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-07-28 20:43:42 PulseDaemon: engage governor via daemon (schedutil)
+2026-07-28 20:43:42 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:43:43 PulseAutoTdp: AUTOTDP-SESSION tgt=90 bias=EFFICIENT wattCap=0 policies=0:2265600:0,1;2:3148800:2,3,4;5:2956800:5,6;7:3052800:7;-100:1050000:
+2026-07-28 20:43:45 PulseAutoTdp: tgt=90 fps=- jank=0 tail=-ms act=HOLD bn=- cpuB=22 cpuPk=53 primePk=30 io=0 gpuB=19 gpuL=4 capped=0 prk=0 stl=0 draw=3.90W cT=53 gT=48 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:1132,2:1401,5:2956,7:480] mn/mx[0:672/2265,2:499/3148,5:499/2956,7:480/3052] gpu=231 gcap=1050[0/13] lrn=100
+2026-07-28 20:43:45 PulseFan: arbiter=None auto=true bound=null managed=null latched=true
+2026-07-28 20:43:46 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-07-28 20:43:47 PulseDaemon: cap write via daemon (3 node(s))
+2026-07-28 20:43:48 PulseDaemon: cap write via daemon (10 node(s))
+2026-07-28 20:43:53 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:43:54 PulseFan: arbiter=None auto=false bound=null managed=null latched=true
+2026-07-28 20:43:55 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:43:56 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:43:58 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:00 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:44:01 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+# ... 2 more identical lines elided (same content, only timestamp differs) ...
+2026-07-28 20:44:06 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:08 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:44:09 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:11 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:11 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:44:12 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:15 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:16 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:44:17 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:19 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:20 PulseDaemon: cap write via xsu fallback (7 node(s), ~1323 chars, chunked)
+2026-07-28 20:44:22 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:24 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:26 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:44:27 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:28 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:30 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:44:31 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:33 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:35 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:44:36 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:38 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:39 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:44:40 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:42 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:44 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:44:45 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:48 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:49 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:44:50 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:52 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:53 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:44:54 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:56 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:44:58 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:44:59 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:45:00 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:45:01 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:45:02 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:45:04 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:45:06 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:45:07 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+# ... 2 more identical lines elided (same content, only timestamp differs) ...
+2026-07-28 20:45:12 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:45:13 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:45:14 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:45:17 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:45:18 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:45:19 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:45:21 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:45:23 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:45:24 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:45:27 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:45:29 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 20:45:30 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+# ... 1 more identical lines elided (same content, only timestamp differs) ...
+2026-07-28 20:45:35 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.retroarch.aarch64 lastForeground=com.retroarch.aarch64
+2026-07-28 20:45:37 PulseDaemon: cap write via daemon (10 node(s))

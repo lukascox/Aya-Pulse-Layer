@@ -1,0 +1,68 @@
+# TRIMMED -- kernel ring-buffer routine noise, 2 crash-keyword hits at boot time.
+# Original: 5682 lines, 2 hits (gh_panic_notifier, sde_dbg_init at kernel uptime ~1.28/1.48s)
+# are boot-time driver-init noise, not session-relevant. Kept: first 30 lines,
+# last 30 lines as a reference sample.
+# ---
+[    1.006431] modprobe: Loaded kernel module /system_dlkm/lib/modules/6.1.75-android14-11-maybe-dirty//kernel/net/6lowpan/nhc_hop.ko
+[    1.006443] usbcore: registered new interface driver cdc_eem
+[    1.006520] modprobe: Loaded kernel module /system_dlkm/lib/modules/6.1.75-android14-11-maybe-dirty//kernel/drivers/net/usb/cdc_eem.ko
+[    1.006598] Bluetooth: RFCOMM TTY layer initialized
+[    1.006602] Bluetooth: RFCOMM socket layer initialized
+[    1.006615] Bluetooth: RFCOMM ver 1.11
+[    1.006646] Bluetooth: Bind failed -13
+[    1.006706] modprobe: Loaded kernel module /system_dlkm/lib/modules/6.1.75-android14-11-maybe-dirty//kernel/net/bluetooth/rfcomm/rfcomm.ko
+[    1.007104] modprobe: Loading module /system_dlkm/lib/modules/6.1.75-android14-11-maybe-dirty//kernel/net/6lowpan/6lowpan.ko with args ''
+[    1.007563] modprobe: Loading module /system_dlkm/lib/modules/6.1.75-android14-11-maybe-dirty//kernel/net/6lowpan/nhc_routing.ko with args ''
+[    1.007598] modprobe: Loaded kernel module /system_dlkm/lib/modules/6.1.75-android14-11-maybe-dirty//kernel/drivers/bluetooth/btqca.ko
+[    1.007721] modprobe: Loaded kernel module /system_dlkm/lib/modules/6.1.75-android14-11-maybe-dirty//kernel/drivers/bluetooth/btbcm.ko
+[    1.007757] modprobe: Loaded kernel module /system_dlkm/lib/modules/6.1.75-android14-11-maybe-dirty//kernel/net/6lowpan/nhc_dest.ko
+[    1.007763] Bluetooth: HIDP (Human Interface Emulation) ver 1.2
+[    1.007768] Bluetooth: HIDP socket layer initialized
+[    1.007798] modprobe: Loading module /system_dlkm/lib/modules/6.1.75-android14-11-maybe-dirty//kernel/drivers/bluetooth/btqca.ko with args ''
+[    1.007833] modprobe: Loaded kernel module /system_dlkm/lib/modules/6.1.75-android14-11-maybe-dirty//kernel/net/bluetooth/hidp/hidp.ko
+[    1.008226] modprobe: Loading module /system_dlkm/lib/modules/6.1.75-android14-11-maybe-dirty//kernel/drivers/bluetooth/hci_uart.ko with args ''
+[    1.009241] modprobe: Loaded kernel module /system_dlkm/lib/modules/6.1.75-android14-11-maybe-dirty//kernel/net/6lowpan/nhc_routing.ko
+[    1.009872] Bluetooth: HCI UART driver ver 2.3
+[    1.009875] Bluetooth: HCI UART protocol H4 registered
+[    1.009888] Bluetooth: HCI UART protocol LL registered
+[    1.010037] Bluetooth: HCI UART protocol Broadcom registered
+[    1.010041] Bluetooth: HCI UART protocol QCA registered
+[    1.010124] modprobe: Loaded kernel module /system_dlkm/lib/modules/6.1.75-android14-11-maybe-dirty//kernel/drivers/bluetooth/hci_uart.ko
+[    1.045244] modprobe: Loading module /vendor/lib/modules/msm_sysstats.ko with args ''
+[    1.046446] registered sysstats version 2
+[    1.046805] modprobe: Loaded kernel module /vendor/lib/modules/msm_sysstats.ko
+[    1.053982] ntfs: driver 2.1.32 [Flags: R/O MODULE].
+[    1.067635] Registered swp emulation handler
+
+# ... 5622 lines of routine audit denials, control messages, kworker messages elided ...
+
+[  452.669026] audit: audit_lost=34967 audit_rate_limit=5 audit_backlog_limit=64
+[  452.669027] type=1400 audit(1785263700.012:36925): avc:  denied  { search } for  comm="top" name="754" dev="proc" ino=570150 scontext=u:r:system_app:s0 tcontext=u:r:hwservicemanager:s0 tclass=dir permissive=1
+[  452.669032] audit: rate limit exceeded
+[  453.319807] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 754 (/system/bin/hwservicemanager)
+[  453.899976] type=1400 audit(1785263701.240:36972): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_keymint_spu_qti:s0 tclass=file permissive=1
+[  453.900469] type=1400 audit(1785263701.244:36973): avc:  denied  { open } for  comm="top" path="/proc/1073/stat" dev="proc" ino=570223 scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_keymint_spu_qti:s0 tclass=file permissive=1
+[  453.900847] type=1400 audit(1785263701.244:36974): avc:  denied  { getattr } for  comm="top" path="/proc/1483" dev="proc" ino=570170 scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_capabilityconfigstore_qti_default:s0 tclass=dir permissive=1
+[  453.901123] type=1400 audit(1785263701.244:36975): avc:  denied  { search } for  comm="top" name="1483" dev="proc" ino=570170 scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_capabilityconfigstore_qti_default:s0 tclass=dir permissive=1
+[  454.300977] type=1400 audit(1785263701.644:36976): avc:  denied  { getattr } for  comm="DefaultDispatch" path="/dev/ttyHS5" dev="tmpfs" ino=1195 scontext=u:r:system_app:s0 tcontext=u:object_r:device:s0 tclass=chr_file permissive=1
+[  454.320549] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 754 (/system/bin/hwservicemanager)
+[  454.344361] audit: audit_lost=35013 audit_rate_limit=5 audit_backlog_limit=64
+[  454.344372] audit: rate limit exceeded
+[  454.428658] servicemanager: Found vendor.qti.hardware.perf2.IPerf/default in device VINTF manifest.
+[  454.438188] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 754 (/system/bin/hwservicemanager)
+[  454.439068] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 754 (/system/bin/hwservicemanager)
+[  454.629239] wcd-usbss-i2c-driver 1-000e: wcd_usbss_is_in_reset_state: Surge check #3 failed
+[  455.395461] gen7_err_callback: 1594 callbacks suppressed
+[  455.395478] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  455.400675] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  455.401074] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  455.401130] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  455.405878] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  455.408528] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  455.408550] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  455.414834] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  455.416004] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  455.416024] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[  455.440108] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 754 (/system/bin/hwservicemanager)
+[  455.613135] audit: audit_lost=35199 audit_rate_limit=5 audit_backlog_limit=64
+[  455.613140] audit: rate limit exceeded

@@ -6,6 +6,37 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## Per-app profile testing (2026-07-28, night): 5 findings, full writeup in `pulse-for-aya/README.md`
+
+Real per-app testing session (RetroArch/GBA, Mario Odyssey on Eden,
+Minecraft, `retrohrai` frontend), post self-kill-fix. Full detail + code
+references: `research/pulse-for-aya/README.md`'s "Per-app profile testing
+session" section. Summary:
+
+1. **Open, needs a device check**: log shows `com.miHoYo.Yuanshen` (Genshin)
+   bound/foreground for ~68s — user says they never launched it, and the
+   foreground-detection code's 10s event window rules out a stale-replay
+   explanation. Next cheap step: confirm on-device whether Genshin is even
+   installed.
+2. Custom tier per-app binding shares ONE global slider set (no per-app
+   custom frequency curves) — confirmed by reading the code, a real
+   limitation not a bug.
+3. Power Saving tier (0.55/0.45 factors) is unstable for some RetroArch
+   titles (Super Wario Land 4, ~55-60fps) — expected trade-off of the most
+   restrictive tier, not a bug.
+4. AutoTDP regulates Minecraft correctly, loses the FPS target on Eden
+   (stuck ~30fps against tgt=90 despite continuous RAISE) — extends the
+   still-open Eden thread below. AAA/Max (static, no AutoTDP) ran the same
+   session smoothly, isolating the problem to the AutoTDP loop specifically,
+   not the hardware. The regulation log line doesn't print which package
+   it's regulating — cheap logging fix identified, not yet done.
+5. AAA/Max sustained max CPU clock (~70°C, fan never ramped) — expected:
+   `performance` governor pins the frequency ceiling, not actual power draw,
+   which still tracks real workload intensity; PULSE's fan control is a
+   confirmed no-op on this device regardless of tier.
+
+Raw evidence: `research/ab-logger/results/per_app_profile_test/`.
+
 ## VERIFIED ON-DEVICE (2026-07-28, late evening): self-kill fix confirmed — daemon fully functional again
 
 First real post-fix test (build `20:18:16`, Minecraft, ~4.5min session
@@ -362,6 +393,13 @@ after waiting, this candidate is ruled out and the search moves back to
 doesn't."
 
 ## To investigate next session: Eden (Switch emulation) stays at ~40 FPS despite AutoTDP visibly regulating
+
+**Update (2026-07-28, night)**: confirmed again, new data point — AAA/Max
+(static tier, no AutoTDP) ran the same Eden/Mario session smoothly, isolating
+the problem to the AutoTDP loop itself, not the SoC/hardware. See the
+"Per-app profile testing" entry above for the log evidence and the identified
+next step (log which package AutoTDP is regulating, currently invisible in
+the `tgt=` telemetry lines).
 
 Raised by the user (2026-07-27, later session), user-observed: with
 `AutoTdpBias.SMOOTH` forced (highest power-ceiling label, though the
