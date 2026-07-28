@@ -6,6 +6,69 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## CONFIRMED (2026-07-28, first-test-after-FIFO-migration session): AutoTDP genuinely regulates — first solid continuous evidence, zero xsu fallback, no crash
+
+Following the retraction below, `AutoTuneController`'s own per-tick CPU/GPU
+cap writes were migrated onto the `PulseDaemon` FIFO (same fallback contract
+as the earlier governor-engage migration), and the app was given its own
+`/sdcard/apl_pulse_logs/pulse_<timestamp>.log` (via a new `LOG` verb on the
+same FIFO — zero extra `xsu` connections, written by the already-root daemon
+since the app's own sandboxed process can't reliably reach `/sdcard`
+directly). First real test of both, same session:
+
+**`pulled_pulse_logs/pulse_20260728_095642.log`** (trimmed; full narrative
+here) is a single unbroken session, Minecraft foreground the whole time,
+that answers the open question directly: engage at 09:57:26 (`cap write via
+daemon (3 node(s))` + `(10 node(s))` — governor + full release, both via the
+daemon, zero `xsu` fallback logged anywhere in this file), `HOLD` while FPS
+sits at target, then a real, **repeated, monotonic TRIM sequence on the GPU
+cap** over the next ~70s: `caps%[...,-100:100]` → `85` → `80` → `70` → `65`
+→ `55` (`gcap` alongside it: `1050[0/13]` → `903[2/13]` → `770[4/13]` →
+`720[5/13]` → `629[7/13]`), each step logged as its own `PulseDaemon: cap
+write via daemon (N node(s))` line. At 09:59:44 fps drops to 18.8 (jank=7,
+tail=78ms) and the controller correctly **RAISEs** the same GPU cap back up
+to 60% in response. **Every single cap write in this file went via the
+daemon — not one `xsu fallback` line appears.** No crash for the entire
+session. This is the first time this investigation has continuous,
+multi-step, load-responsive evidence of `stepAutoTdp()` actually working —
+not a single isolated tick (like the one `act=TRIM` line in `crash_8.log`),
+a real trim→hold→raise arc.
+
+**Cross-checked against `cap_poll10_new_fifo.log`** (the independent,
+no-root `poll-cpufreq.sh` ground truth, same session): CPU policies'
+`scaling_max_freq` (`p2_max`/`p5_max`/`p7_max`) stay flat throughout — this
+does **NOT** contradict the app log, because this session's entire TRIM/RAISE
+arc happened on the **GPU** cap (`-100:` in the app log's `caps%[...]`), and
+`poll-cpufreq.sh` only ever polled the GPU's *current* clock (`gpu_cur` /
+`kgsl-3d0/gpuclk`), never its actual ceiling (`min_pwrlevel`/`max_pwrlevel`,
+what `gcap=`/the GPU line in `PerformanceCommandBuilder` actually writes).
+**Real gap in that script, worth fixing next**: add `min_pwrlevel`/
+`max_pwrlevel` polling for `kgsl-3d0` alongside the existing CPU policies, or
+this class of GPU-only regulation will keep looking invisible to it even
+when it's genuinely happening (confirmed here by the app's own telemetry
+instead).
+
+**Also from this same test round, a separate, already-known bug, NOT a
+regression**: `cap_poll9_new_fifo.log` (6 lines, blank from the very first
+sample) plus `pulse_20260728_095447.log` (the daemon session started just
+before it) show the device becoming unresponsive to `adb shell` shortly
+after a fresh install, with `lastForeground` stuck on the launcher the whole
+time — Minecraft never reached foreground in this window at all. This
+matches the **pre-existing, separate "Minecraft needs a reboot after
+install" ritual** (this file's dedicated entry, boot-receiver/anti-stranding
+hypothesis still open there), not the `xsud`/`BatteryService$Led` gameplay
+crash this session's FIFO migration targeted. After a reboot, the second
+daemon session (`pulse_20260728_095642.log` above) ran clean.
+
+**Net effect**: both threads from the retraction entry below now have a
+positive data point in the same session — the FIFO migration produced a
+crash-free real Minecraft session with continuous, verified regulation, and
+the in-app `/sdcard` logging is confirmed working end-to-end (survives
+independent of `logcat`, pulls cleanly via plain `adb pull`). **Still only
+one clean session** — worth repeating a few more times (ideally a longer
+one, and one with Eden too) before calling either thread fully closed, but
+this is the strongest evidence gathered so far in either direction.
+
 ## RETRACTED (2026-07-28): AutoTDP regulation is NOT confirmed working — prior "DEFINITIVELY CONFIRMED" ground-truth claim doesn't hold up
 
 The entry below ("Ground-truth re-verification, independent of logcat entirely")

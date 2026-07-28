@@ -1,0 +1,37 @@
+# TRIMMED 2026-07-28 -- original was 47 lines / 7389B.
+# Full narrative analysis of this capture is in STATUS.md (search for this file's name).
+# Kept: every distinct line; runs of 3+ consecutive identical lines (same content, only the
+# timestamp differs -- almost always idle TICK-SKIP polling before a game came foreground)
+# collapsed to first + elision count + last.
+# ---
+2026-07-28 09:56:42 === pulse_daemon session start ===
+2026-07-28 09:57:00 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+# ... 14 more identical lines elided (same content, only timestamp differs) ...
+2026-07-28 09:57:15 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-07-28 09:57:16 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+# ... 4 more identical lines elided (same content, only timestamp differs) ...
+2026-07-28 09:57:21 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.retrohrai.launcher
+2026-07-28 09:57:26 PulseDaemon: cap write via daemon (3 node(s))
+2026-07-28 09:57:26 PulseDaemon: cap write via daemon (10 node(s))
+2026-07-28 09:57:42 PulseAutoTdp: AUTOTDP-SESSION tgt=120 bias=EFFICIENT wattCap=0 policies=0:2265600:0,1;2:3148800:2,3,4;5:2956800:5,6;7:3052800:7;-100:1050000:
+2026-07-28 09:57:43 PulseAutoTdp: tgt=120 fps=- jank=0 tail=-ms act=HOLD bn=- cpuB=-1 cpuPk=-1 primePk=-1 io=-1 gpuB=16 gpuL=3 capped=0 prk=0 stl=0 draw=-W cT=65 gT=55 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:1286,5:2956,7:3052] mn/mx[0:1248/2265,2:499/3148,5:499/2956,7:480/3052] gpu=231 gcap=1050[0/13] lrn=0
+2026-07-28 09:57:54 PulseAutoTdp: tgt=120 fps=120.0 jank=0 tail=16ms act=HOLD bn=- cpuB=42 cpuPk=69 primePk=63 io=0 gpuB=69 gpuL=15 capped=0 prk=0 stl=0 draw=-W cT=62 gT=55 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:960,7:480] gpu=231 gcap=1050[0/13] lrn=0
+2026-07-28 09:58:05 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 09:58:16 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 09:58:26 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 09:58:26 PulseAutoTdp: tgt=120 fps=120.0 jank=0 tail=8ms act=TRIM bn=CPU cpuB=41 cpuPk=70 primePk=62 io=0 gpuB=74 gpuL=21 capped=0 prk=0 stl=0 draw=-W cT=64 gT=56 caps%[0:100,2:100,5:100,7:100,-100:85] curMHz[0:2265,2:3148,5:960,7:2304] gpu=310 gcap=903[2/13] lrn=0
+2026-07-28 09:58:26 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 09:58:37 PulseAutoTdp: tgt=120 fps=120.0 jank=0 tail=8ms act=TRIM bn=CPU cpuB=50 cpuPk=66 primePk=60 io=0 gpuB=74 gpuL=21 capped=0 prk=0 stl=0 draw=-W cT=63 gT=57 caps%[0:100,2:100,5:100,7:100,-100:80] curMHz[0:2265,2:3148,5:2956,7:480] gpu=310 gcap=903[2/13] lrn=0
+2026-07-28 09:58:48 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 09:58:59 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 09:58:59 PulseAutoTdp: tgt=120 fps=120.0 jank=0 tail=8ms act=TRIM bn=CPU cpuB=31 cpuPk=66 primePk=63 io=0 gpuB=80 gpuL=23 capped=0 prk=0 stl=0 draw=-W cT=64 gT=56 caps%[0:100,2:100,5:100,7:100,-100:70] curMHz[0:1920,2:2131,5:729,7:480] gpu=310 gcap=770[4/13] lrn=0
+2026-07-28 09:58:59 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 09:59:10 PulseAutoTdp: tgt=120 fps=120.0 jank=0 tail=8ms act=TRIM bn=CPU cpuB=39 cpuPk=66 primePk=63 io=0 gpuB=84 gpuL=24 capped=0 prk=0 stl=0 draw=-W cT=67 gT=56 caps%[0:100,2:100,5:100,7:100,-100:65] curMHz[0:2035,2:3148,5:1612,7:480] gpu=310 gcap=720[5/13] lrn=0
+2026-07-28 09:59:22 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 09:59:32 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 09:59:35 PulseAutoTdp: tgt=120 fps=120.0 jank=0 tail=8ms act=TRIM bn=CPU cpuB=32 cpuPk=66 primePk=60 io=0 gpuB=78 gpuL=27 capped=0 prk=0 stl=0 draw=-W cT=64 gT=57 caps%[0:100,2:100,5:100,7:100,-100:55] curMHz[0:2265,2:1824,5:844,7:480] mn/mx[0:672/2265,2:499/3148,5:499/2956,7:480/3052] gpu=366 gcap=629[7/13] lrn=0
+2026-07-28 09:59:35 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 09:59:44 PulseDaemon: cap write via daemon (7 node(s))
+2026-07-28 09:59:44 PulseAutoTdp: tgt=120 fps=18.8 jank=7 tail=78ms act=RAISE bn=- cpuB=15 cpuPk=45 primePk=10 io=0 gpuB=0 gpuL=0 capped=0 prk=0 stl=0 draw=-W cT=52 gT=50 caps%[0:100,2:100,5:100,7:100,-100:60] curMHz[0:1920,2:499,5:2188,7:480] gpu=231 gcap=578[8/13] lrn=0
+2026-07-28 09:59:44 PulseDaemon: cap write via daemon (2 node(s))
+2026-07-28 09:59:45 PulseDaemon: cap write via daemon (10 node(s))
