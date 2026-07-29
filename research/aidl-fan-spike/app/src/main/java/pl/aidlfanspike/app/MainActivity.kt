@@ -31,11 +31,18 @@ private const val MODE_BALANCE = "FAN_MODE_BALANCE"
 private const val MODE_TURBO = "FAN_MODE_TURBO"
 private const val MODE_CUSTOM = "FAN_MODE_CUSTOM"
 
-// Test curve: the same moderate "ramp harder, sooner" shape discussed in-session as a
-// sensible improvement over a too-late-ramping curve -- not an extreme value picked
-// just to be visible. temp:duty pairs, format confirmed from FanSpeedConfig.h()
-// (evidence: joins pairs with '|', each pair "temp,duty").
-private const val TEST_CURVE = "50,12|65,32|78,68|85,95|95,100"
+// Run1's moderate "ramp harder, sooner" curve (50,12|65,32|78,68|85,95|95,100) produced
+// an inconclusive read: duty=25 after send, which is suspiciously identical to this run's
+// own pre-test baseline -- can't tell "curve didn't apply" from "SoC was below the curve's
+// lowest point (50C) and it coincidentally matches the pre-existing default". Run2's curve
+// is deliberately flat at 100% duty for every temp point, chosen so the result is
+// unambiguous regardless of actual SoC temp at test time: if the curve applies at all, the
+// read-back duty must jump to ~255 (100%); if it stays near run1's ~25% baseline (or
+// anything else well below 255), that's a clean signal the write was rejected/ignored
+// rather than "we happened to test at a temp below the curve's range." temp:duty pairs,
+// format confirmed from FanSpeedConfig.h() (evidence: joins pairs with '|', each pair
+// "temp,duty").
+private const val TEST_CURVE = "30,100|50,100|70,100|85,100|95,100"
 
 // Confirmed live and real (research/aya-gamewindows-teardown/FINDINGS.md section 6):
 // standard Linux pwm-fan hwmon node, readable even without root. hwmon index globbed
@@ -55,6 +62,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnReadFan: Button
     private val log = StringBuilder()
     private lateinit var localLogFile: File
+    private var cpuTempPaths: List<String> = emptyList()
+    private var zonesResolved = false
 
     private var serviceBinder: IBinder? = null
     private var clientId: String? = null
@@ -254,17 +263,46 @@ class MainActivity : AppCompatActivity() {
     /** Pure xsu read, no AIDL involved -- safe to call anytime, including before
      *  connecting. RPM comes from the vendor's own reporting node; PWM duty comes
      *  from the raw hwmon node underneath it (both confirmed readable in
-     *  research/aya-gamewindows-teardown/FINDINGS.md section 6). */
+     *  research/aya-gamewindows-teardown/FINDINGS.md section 6). Also reads real SoC
+     *  temp (run2 addition -- run1 had no temp logged, which is why its curve-write
+     *  result was inconclusive: no way to tell whether the SoC was simply below the
+     *  test curve's lowest defined point).
+     */
     private fun readFanState(tag: String) {
+        ensureThermalZonesResolved()
+        val tempCmd = if (cpuTempPaths.isNotEmpty()) {
+            "echo CPU_TEMP_RAW=\$(cat ${cpuTempPaths.joinToString(" ")} 2>/dev/null | tr '\\n' ',')"
+        } else {
+            "echo CPU_TEMP_RAW=unresolved"
+        }
         val result = XsuShell.exec(
             "echo RPM=\$(cat $FAN_RPM_PATH 2>/dev/null); " +
-                "echo PWM_DUTY=\$(cat $FAN_PWM_GLOB 2>/dev/null)"
+                "echo PWM_DUTY=\$(cat $FAN_PWM_GLOB 2>/dev/null); " +
+                tempCmd
         )
-        appendLog("fan state [$tag] (${result.elapsedMs}ms): ${result.stdout.replace("\n", " | ")}")
+        val rawTemps = result.stdout.lineSequence()
+            .firstOrNull { it.startsWith("CPU_TEMP_RAW=") }
+            ?.removePrefix("CPU_TEMP_RAW=")
+            ?.split(",")
+            ?.filter { it.isNotBlank() }
+            ?: emptyList()
+        val tempC = ThermalZones.formatMaxTempC(rawTemps)
+        appendLog("fan state [$tag] (${result.elapsedMs}ms): ${result.stdout.replace("\n", " | ")} | CPU_TEMP_MAX=${tempC}C")
         if (result.stderr.isNotBlank()) appendLog("  stderr: ${result.stderr}")
         if (result.error != null) appendLog("  error: ${result.error}")
         appendLog("")
         syncToSdcard()
+    }
+
+    /** Resolves CPU thermal zone paths once (dynamic, zone numbers can shift across
+     *  firmware revisions -- same principle as ThermalZones.kt's other callers) and
+     *  caches for the rest of this session. */
+    private fun ensureThermalZonesResolved() {
+        if (zonesResolved) return
+        val result = XsuShell.exec(ThermalZones.buildResolveCommand())
+        cpuTempPaths = ThermalZones.parseResolveOutput(result.stdout).cpuZones
+        zonesResolved = true
+        appendLog("resolved CPU thermal zones: $cpuTempPaths")
     }
 
     private fun appendLog(line: String) {

@@ -573,25 +573,28 @@ gap to a real 1:1 port is visible at a glance.
   pass.
 
 **Confirmed a real, currently unaddressed gap:**
-- **Fan control — the big one, partially closed as of 2026-07-29.**
+- **Fan control — the big one, partially closed as of 2026-07-30.**
   `FanController.kt` is still fully stubbed in code
   (`setMode()` always `false`, `customFanAvailable()` always `false`) —
   upstream's two fan mechanisms (`gpio5_pwm2` PWM, `Settings.System
   fan_mode`) are confirmed dead on this device
   (`pulse-glue-assessment/FINDINGS.md`). **Discrete fan-mode control
-  (OFF/MUTE/BALANCE/TURBO) is now confirmed working live, no root** —
+  (OFF/MUTE/BALANCE/TURBO) is confirmed working live, no root** —
   `com_set_performance_fan` over the same no-root AIDL channel already
   proven for performance-mode switching, verified two independent ways
   (real PWM duty changes, AND the vendor's own unsolicited state callback
   echoing the exact mode back) — see `research/aidl-fan-spike/FINDINGS.md`.
   **The full curve write (`com_set_fan_speed_strategy`, the actual
-  PI-controller/spline-curve replacement) is still unconfirmed** — same
-  spike's step 2 was inconclusive, needs a better-instrumented follow-up
-  (see that FINDINGS.md's "Not yet done"). Porting upstream's own
-  `FanTempController.kt` (PI controller) /`FanCurve.kt` (spline curve
-  editor) logic to drive that channel instead of raw sysfs remains the
-  end goal — not yet wired into `pulse-for-aya` itself (see "Next: fan control via
-  AIDL" below).
+  PI-controller/spline-curve replacement) is now a confirmed *negative*
+  result** — after 3 test rounds (6 curve-write attempts with real SoC
+  temp logged), duty never once tracked the sent curve, even with an
+  unambiguous flat-100%-everywhere test curve at temps well above its
+  lowest defined point. The command is likely rejected/ignored rather
+  than applied. Porting upstream's own `FanTempController.kt` (PI
+  controller) /`FanCurve.kt` (spline curve editor) logic to drive this
+  channel isn't viable until that's root-caused or a different
+  invocation is found (see `research/aidl-fan-spike/FINDINGS.md`'s "Not
+  yet done").
 - **RGB — smaller, same shape of gap.** Upstream's own RGB mechanism
   (`joystick_led_light_picker_color`) is confirmed dead here too, but
   self-gates off safely (no crash, just inert — `RgbController.kt` is
@@ -617,30 +620,35 @@ touches day to day. RGB and the sleep-monitor unknown are real but small
 remaining items, worth closing before calling this a true 1:1 port, not
 before calling it *usable*.
 
-## Fan control via AIDL — run1 complete (2026-07-29): mode switching confirmed, curve write open
+## Fan control via AIDL — runs 1-3 complete (2026-07-29/30): mode switching confirmed, curve write confirmed not working
 
 `research/aidl-fan-spike/` (same shape as `research/aidl-bind-spike/`) has
-now actually been run on-device by the user. Result, full detail in that
-project's `FINDINGS.md`:
+now been run on-device three times by the user. Result, full detail in
+that project's `FINDINGS.md`:
 
 - **Step 1 (discrete `com_set_performance_fan:<mode>`) — confirmed
   working, strong evidence.** Real PWM duty tracked the requested mode
-  (OFF→0, MUTE→76 perfectly repeatable), AND — independently —
-  gamewindow's own unsolicited state callback echoed the exact mode back,
-  every single send, zero misses, across 14 commands. Not a fluke.
+  (OFF→0, MUTE→76 perfectly repeatable across all three runs), AND —
+  independently — gamewindow's own unsolicited state callback echoed the
+  exact mode back, every single send, zero misses. Not a fluke.
 - **Step 2 (`com_set_fan_speed_strategy`, the real curve write) —
-  inconclusive.** The mode-switch to CUSTOM was confirmed, but the
-  resulting duty reading didn't clearly match the test curve — three open
-  explanations (temp-dependent hold-flat behavior, a wrong string-format
-  guess, or coincidence), not yet distinguished. See that FINDINGS.md's
-  "Not yet done" for the concrete follow-up (log actual SoC temp, or test
-  an unambiguous all-100% curve).
+  confirmed *not* working, after 6 attempts across runs 2-3.** Runs 2/3
+  switched to an unambiguous flat-100%-everywhere test curve and started
+  logging real SoC temp on every read. Across 6 curve-write attempts at
+  CPU temps of 38-48°C (comfortably above the curve's lowest 30°C point,
+  which would force duty≈255 if applied), **duty never once reached
+  anywhere near 255** — results only ever landed on two values (25, 76)
+  already known to belong to other states, with no correlation to the
+  rising temp trend. Mode-switch to CUSTOM itself still confirmed working
+  via callback; it's specifically the curve *content* that isn't landing.
 
 **Practical upshot**: a real, usable discrete fan-mode toggle for
 `FanController.kt` is achievable today with high confidence. The full
 PI-controller/spline-curve replacement (the actual upstream-parity goal)
-still needs one more, better-instrumented on-device round before it's
-either confirmed or ruled out.
+is blocked until the curve-write path is root-caused (wrong string
+format vs. not wired to real PWM on this firmware) — see
+`research/aidl-fan-spike/FINDINGS.md`'s "Not yet done" for the next
+things to try.
 
 ## Build / install
 

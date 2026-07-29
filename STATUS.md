@@ -6,36 +6,43 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
-## Fan control via AIDL — run1 complete (2026-07-29): discrete mode CONFIRMED working, curve write inconclusive
+## Fan control via AIDL — runs 1-3 complete (2026-07-29/30): discrete mode CONFIRMED working, curve write CONFIRMED not working
 
-User ran `research/aidl-fan-spike/` for real. Full writeup:
+User ran `research/aidl-fan-spike/` three times. Full writeup:
 `research/aidl-fan-spike/FINDINGS.md`; feature-parity checklist updated in
 `research/pulse-for-aya/README.md`.
 
 **Step 1 (`com_set_performance_fan:<OFF|MUTE|BALANCE|TURBO>`) — confirmed,
 strong evidence, two independent signals agree**: real PWM duty (via the
 confirmed `pwm-fan` hwmon read) tracked the requested mode (OFF→0, MUTE→76
-perfectly repeatable across 2 sends each); AND, independently, gamewindow's
+perfectly repeatable across all runs); AND, independently, gamewindow's
 own unsolicited state callback (the same bonus per-mode JSON dump
-`aidl-bind-spike` found) echoed the exact fan mode back for every one of
-14 commands sent, in order, zero misses — this is the vendor's own state,
-not our code claiming success. **This alone is a usable, real feature** —
-a discrete fan-mode toggle in `FanController.kt` is achievable now with
-high confidence, independent of the curve question below.
+`aidl-bind-spike` found) echoed the exact fan mode back for every command
+sent, in order, zero misses — this is the vendor's own state, not our code
+claiming success. **This alone is a usable, real feature** — a discrete
+fan-mode toggle in `FanController.kt` is achievable now with high
+confidence, independent of the curve question below.
 
-**Step 2 (`com_set_fan_speed_strategy`, the real curve write) —
-inconclusive, not proven either way.** Mode-switch to CUSTOM confirmed via
-the same callback mechanism, but the resulting duty reading (0, then 25 on
-recheck) didn't clearly match the sent test curve's values — 25 happens to
-equal this run's very first baseline reading, before anything was touched,
-which is suspicious but not conclusive. Three explanations still open,
-not distinguished by this run: device temp was below the curve's lowest
-point and AYA's real hold-flat behavior differs from upstream `pulse`'s
-own `FanCurve.kt`; the `mode-pairs` string format guess was subtly wrong
-and silently rejected; or it's a genuine coincidence and the write worked.
-**Next step, not yet done**: a better-instrumented rerun (log actual SoC
-temp at read time, and/or test an unambiguous all-100% curve that can't be
-confused with any idle default).
+**Step 2 (`com_set_fan_speed_strategy`, the real curve write) — confirmed
+NOT working, after 6 attempts across runs 2-3.** Run1 (moderate curve, no
+temp logging) was inconclusive: resulting duty (0, then 25 on recheck)
+didn't clearly match the sent curve, and "device was below the curve's
+lowest temp point" couldn't be ruled out. Runs 2-3 fixed both gaps: added
+real SoC temp logging to every read (via `ThermalZones.kt`, ported from
+`ab-logger`), and switched to a deliberately unambiguous test curve —
+100% duty at every defined point, including the lowest (30°C). Result:
+across 6 curve-write attempts, at CPU temps of 38-48°C (always well above
+the curve's 30°C floor, which should force duty≈255 unconditionally if
+applied), **duty never once reached anywhere near 255** — results only
+ever landed on two values (25, 76) already known to belong to other
+states, uncorrelated with the temp trend. Mode-switch to CUSTOM itself
+still confirmed working via callback every time; it's specifically the
+curve *content* that isn't landing. **Next step, not yet done**:
+root-cause why — try a different string-format guess (swap
+`duty,temp` order, different separator, drop the `FAN_MODE_CUSTOM-`
+prefix), re-check `FanSpeedConfig.java`'s exact serialization, or test
+`com_set_fan_speed_is_linear` (not exercised in any run so far). See
+`research/aidl-fan-spike/FINDINGS.md`'s "Not yet done" for the full list.
 
 ## Unsupervised session analyzed (2026-07-29): self-kill fix holding, one new kernel-level anomaly found
 

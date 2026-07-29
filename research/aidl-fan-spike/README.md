@@ -162,10 +162,13 @@ over whatever this throwaway probe last sent.
 ## Pull results
 
 ```bash
-adb pull /sdcard/aidl_fan_spike_result.txt results/
-adb logcat -d | grep AIDL_FAN_SPIKE > results/aidl_fan_spike_logcat_dump.txt
+adb pull /sdcard/aidl_fan_spike_result.txt results/runN/
+adb logcat -d | grep AIDL_FAN_SPIKE > results/runN/aidl_fan_spike_logcat_dump.txt
 ```
 Pull immediately after testing, not later (lesson already learned the hard
-way in `autotdp-ab-harness`'s run1). Report back regardless of outcome —
-write up in `FINDINGS.md` (not yet created — this is a pre-test README
-only) once there's a real result to record.
+way in `autotdp-ab-harness`'s run1). Each on-device test round gets its
+own `results/runN/` folder (see `run1`/`run2`/`run3`) so consecutive runs
+with a changed `TEST_CURVE` or protocol tweak don't overwrite each other.
+Report back regardless of outcome — see `FINDINGS.md` for the full
+run1-3 write-up (mode switching confirmed working; curve write confirmed
+*not* working as sent, after 6 attempts across runs 2-3).
