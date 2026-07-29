@@ -98,6 +98,15 @@ former, to build and validate that substitution.
   (TODO-comment stubs, never implemented). Superseded by the glue-patch
   approach above; not actively developed. Kept as the historical starting
   point, not a target to keep building out.
+- **`research/konabess-g3gen3-assessment/`, `research/clustertune-assessment/`,
+  `research/pam-stock-os-optimization-assessment/`** — read-only research
+  passes over three community projects, confronted against this repo's own
+  findings, looking for reusable technique/data. One concrete lead found
+  (a cheap unprivileged-read-before-privileged-fallback pattern worth
+  checking against `pulse-for-aya`'s telemetry reads); the other two ruled
+  out (wrong risk class, or no evidence for the hoped-for Shizuku
+  root-alternative). See "Community repos referenced" below and each
+  folder's `FINDINGS.md` for the full writeup.
 
 ## Why glue, not rewrite
 
@@ -127,12 +136,56 @@ apl/
 │   ├── aya-gamewindows-teardown/  -- vendor app static analysis (found the AIDL gap)
 │   ├── xsu-capability-probe/
 │   ├── autotdp-ab-harness/        -- root-channel probes + superseded A/B harness
-│   └── ab-logger/                 -- current A/B telemetry recorder (start/stop log)
+│   ├── ab-logger/                 -- current A/B telemetry recorder (start/stop log)
+│   ├── konabess-g3gen3-assessment/         -- community-repo research pass, see below
+│   ├── konabess-g3gen3-upstream/           -- gitignored, read-only clone
+│   ├── clustertune-assessment/             -- community-repo research pass, see below
+│   ├── clustertune-upstream/               -- gitignored, read-only clone
+│   ├── pam-stock-os-optimization-assessment/  -- community-guide research pass, see below
+│   └── pam-stock-os-optimization-upstream/    -- gitignored, read-only clone
 ├── diagnostics/                   -- raw hardware facts + FPS script (formerly apl-diag)
 ├── app/                           -- original from-scratch skeleton, superseded, not active
 ├── docs/archive/                  -- frozen pre-git history (do not extend further)
 └── STATUS.md                      -- current state, living document
 ```
+
+## Community repos referenced
+
+Beyond upstream `pulse` itself (credited above), a handful of other
+community projects have been cloned locally (gitignored, read-only,
+never built or modified — see "Session scope" in `CLAUDE.md`) and
+confronted against this repo's own findings via a scoped research pass,
+looking specifically for reusable technique or data, not general reading.
+Full writeup in each `research/<name>-assessment/FINDINGS.md`:
+
+- **[KonaBess-Next-G3Gen3](https://github.com/thefiqs/KonaBess-Next-G3Gen3)**
+  — a GPU frequency/voltage table editor for the "G3 Gen 3" chipset family.
+  Verdict: reference only, not reusable — it's a DTB-patch-and-reboot tool
+  (Magisk root, raw `dd` to the boot/vendor_boot/dtbo partition, unlocked
+  bootloader required), a categorically more invasive risk class than
+  `pulse-for-aya`'s reversible sysfs caps. One free, minor confirmation:
+  its chip-inference table independently matches `ro.board.platform=pineapple`
+  to Snapdragon 8 Gen 3.
+- **[ClusterTune](https://github.com/AurelioB/ClusterTune)** — the project
+  upstream `pulse`'s own README credits as pioneering its no-root
+  `PServerBinder` technique. Verdict: its `su`-based fallback for devices
+  without `PServerBinder` is a naive per-call pattern (no daemon, and it
+  inlines whole scripts into a single `-c` argument — the exact anti-pattern
+  behind `xsud`'s crashes on our device), so it neither validates nor
+  improves on `pulse-for-aya`'s FIFO-daemon architecture. One genuinely
+  useful idea found independent of that: it tries a plain unprivileged file
+  read before ever escalating to a privileged call — worth checking whether
+  any of `pulse-for-aya`'s own telemetry reads could skip the root path the
+  same way.
+- **[PAM Stock OS Optimization Guide](https://github.com/BruhMeh/PAM-Stock-OS-Optimization-Guide)**
+  — a community guide (not code) for tuning AYANEO handhelds. Hoped-for
+  lead was its "Canta and Shizuku" chapter documenting Shizuku as a general
+  no-root privilege-delegation technique that could replace/supplement
+  `xsu` — did not pan out; the guide only uses Shizuku for its narrowest
+  common case (authorizing one uninstaller app). Mostly generic Android
+  debloat/`appops` tuning otherwise, with two minor display-latency facts
+  worth a low-priority footnote (a `peak_refresh_rate`/`min_refresh_rate`
+  60Hz lock, and a root-gated SurfaceFlinger VSync toggle).
 
 ## Design principles
 

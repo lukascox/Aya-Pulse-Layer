@@ -32,3 +32,6 @@ keystore.properties
 # Upstream reference clones (separate git history, GPL-2.0 source we read but don't
 # fork into this repo directly) -- keep local only, never as a submodule/gitlink.
 research/pulse-upstream/
+research/konabess-g3gen3-upstream/
+research/clustertune-upstream/
+research/pam-stock-os-optimization-upstream/

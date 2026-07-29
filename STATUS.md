@@ -6,6 +6,70 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## Community repos assessed (2026-07-29): KonaBess-Next-G3Gen3, ClusterTune, PAM Stock OS Optimization Guide — one concrete lead, two ruled out
+
+**Third repo (PAM Stock OS Optimization Guide)** — a written guide, not
+code (`research/pam-stock-os-optimization-upstream/`, assessment in
+`research/pam-stock-os-optimization-assessment/FINDINGS.md`). Hoped-for
+lead was chapter 2 ("Canta and Shizuku") documenting Shizuku as a general
+no-root privilege-delegation technique that could replace/supplement
+`xsu` — **did not pan out**: the guide only uses Shizuku for its
+narrowest common case (authorizing one uninstaller app), no `UserService`
+API or general technique shown. "Shizuku as an `xsu` alternative" remains
+an untested idea from prior general knowledge, not something validated by
+this source. Rest of the guide is mostly generic Android debloat/appops
+tuning (background-activity/battery, not CPU/GPU/thermal) — two minor,
+low-priority facts worth a `HARDWARE_PROFILE.md` footnote someday
+(`peak_refresh_rate`/`min_refresh_rate` 60Hz lock, and a root-gated
+SurfaceFlinger VSync toggle with the guide's own OLED-damage warning). Its
+"Game Driver" chapter turned out to be just the stock Android
+developer-options driver picker, not a driver-swap technique — no light
+shed on our still-open `persist.sys.fake.gpu` spoofing question. Target
+device ("PAM") never confirmed to be our specific Pocket FIT.
+
+## Community repos assessed (2026-07-29): KonaBess-Next-G3Gen3, ClusterTune — one concrete lead, one ruled out
+
+Two community repos cloned as read-only references
+(`research/konabess-g3gen3-upstream/`, `research/clustertune-upstream/`,
+gitignored, same pattern as `pulse-upstream/`) and confronted against our
+own findings via `scout`. Full writeups:
+`research/konabess-g3gen3-assessment/FINDINGS.md`,
+`research/clustertune-assessment/FINDINGS.md`.
+
+- **KonaBess-Next-G3Gen3**: reference only, not reusable. It's a
+  DTB-patch-and-reboot GPU OPP editor (Magisk root, raw `dd` to the
+  boot/vendor_boot/dtbo partition, unlocked bootloader required) — a
+  categorically more invasive risk class than `pulse-for-aya`'s
+  instantly-reversible sysfs caps, not a smaller version of it. No CPU
+  control, no fan/thermal control, no hardcoded frequency/voltage numbers
+  for our chip (only generic Qualcomm voltage-corner labels, populated
+  from whatever DTB the user's own device supplies). One free, minor
+  confirmation: its chip-inference table independently matches
+  `ro.board.platform=pineapple` to Snapdragon 8 Gen 3 — corroborates
+  `diagnostics/docs/HARDWARE_PROFILE.md`'s existing identification, not
+  new information.
+- **ClusterTune** (the project upstream `pulse`'s own README credits as
+  pioneering its no-root technique): confirmed to have a real `su`-based
+  fallback (`RootShellExecutionMethod`) for devices without
+  `PServerBinder` — but it's per-call (fresh `su -c` subprocess every
+  time, no daemon) and, worse, inlines whole multi-line scripts into a
+  single `-c` argument with no file-write/chunking discipline — the same
+  anti-pattern behind `xsud`'s crashes on our device. Does NOT validate or
+  improve on our FIFO-daemon architecture; ClusterTune has evidently never
+  hit this class of bug, most likely because standard Magisk/KernelSU
+  `su` is more hardened than AYANEO's bespoke `xsud`, not because of
+  anything in their design. **One genuinely actionable idea found**,
+  independent of the `su` question: `CpuPolicyDetector.readText()` always
+  tries a plain **unprivileged** file read first, only escalating to the
+  privileged path on failure — `scaling_max_freq`-class nodes are commonly
+  world-readable. Worth a cheap on-device check next session: `ls -l` on
+  whatever sysfs nodes `TelemetryReader`/`FpsReader` read — if any are
+  world-readable, skipping the FIFO daemon round-trip for those specific
+  reads would cut real connection volume for free, same win ClusterTune
+  gets today. Independently confirms our `RootExec.kt` "never cache a
+  `false` probe" fix — ClusterTune's own resolver has the identical
+  never-cache-negative design, arrived at separately.
+
 ## Per-app profile testing (2026-07-28, night): 5 findings, full writeup in `pulse-for-aya/README.md`
 
 Real per-app testing session (RetroArch/GBA, Mario Odyssey on Eden,
