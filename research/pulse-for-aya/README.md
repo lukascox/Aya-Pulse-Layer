@@ -9,11 +9,11 @@ upstream clone itself stays a separate, gitignored reference). Upstream's
 own README/docs/licenses are preserved unchanged alongside this file; see
 `research/pulse-upstream/README.md` for the pristine original.
 
-**Status (2026-07-25): builds clean, installs, launches, live CPU/GPU/thermal
-telemetry confirmed working over `xsu` on-device.** Actuation (AutoTDP
-actually writing frequencies) not yet exercised — needs the one-time
-"Usage access" grant (Settings → Apps → Special app access → Usage access →
-Pulse → Allow), which the app's own onboarding flow correctly prompts for.
+**Status (2026-07-29): AutoTDP, manual tiers, per-app profiles, and live
+telemetry all confirmed working on real hardware** — see "Feature parity vs
+upstream" below for the full checklist. **Fan control is the one remaining
+functional gap for full 1:1 parity**, and now has a validated, no-root path
+forward (see that section) instead of being a dead end.
 
 ## What's patched vs upstream (see `pulse-glue-assessment/FINDINGS.md` for the
 full reasoning behind each)
@@ -549,15 +549,82 @@ never backs off preemptively, so a sustained CPU/GPU-bound 3D game at
 AAA/Max would rely purely on the SoC's own hardware throttling, not
 anything PULSE-side, to avoid overheating.
 
-## Not yet exercised / open
+## Feature parity vs upstream `pulse` (2026-07-29)
 
-- AutoTDP's actual write path (CPU/GPU frequency actuation) — needs Usage
-  Access granted once, then a supervised first run per the risk assessment
-  in `pulse-glue-assessment/FINDINGS.md` (watch logs + temperature, don't
-  background it unattended yet).
+Honest checklist against upstream's own feature list (its `README.md`,
+"Features" section) — not a claim of "done," a record of what's actually
+been confirmed working on **this** hardware vs. what's still open, so the
+gap to a real 1:1 port is visible at a glance.
+
+**Confirmed working, live on real hardware:**
+- **AutoTDP** — closed-loop CPU/GPU regulation, real TRIM/RAISE cycles
+  observed under genuine load, zero `xsu` fallback for a full clean
+  session (`STATUS.md`, "VERIFIED ON-DEVICE" entries).
+- **Manual tiers / per-cluster CPU caps / GPU cap** — the same sysfs
+  mechanics AutoTDP already proves out; no separate doubt here.
+- **Per-app profiles** — real session testing across RetroArch, Eden,
+  Minecraft, `retrohrai` (`STATUS.md`, "Per-app profile testing").
+- **Live telemetry HUD/OSD** — CPU/GPU/thermal readings confirmed over
+  `xsu`/the FIFO daemon.
+- **Quick Settings tile, autostart, themes** — inherited byte-identical
+  from upstream (see "What's patched" above — none of these files were
+  touched), no device-specific dependency in any of them, no reason to
+  doubt they work; not yet independently exercised in a dedicated test
+  pass.
+
+**Confirmed a real, currently unaddressed gap:**
+- **Fan control — the big one.** `FanController.kt` is fully stubbed
+  (`setMode()` always `false`, `customFanAvailable()` always `false`) —
+  upstream's two fan mechanisms (`gpio5_pwm2` PWM, `Settings.System
+  fan_mode`) are confirmed dead on this device
+  (`pulse-glue-assessment/FINDINGS.md`). **Now has a validated way
+  forward, not a dead end**: AYA's own native fan-curve editor is driven
+  by undocumented-but-real AIDL commands (`com_set_performance_fan`,
+  `com_set_fan_speed_strategy`, `com_set_fan_speed_is_linear` —
+  `research/ayaspace-teardown/FINDINGS.md`, "Addendum"), the same no-root
+  channel already proven live for performance-mode switching
+  (`research/aidl-bind-spike/FINDINGS.md`). Porting upstream's own
+  `FanTempController.kt` (PI controller) /`FanCurve.kt` (spline curve
+  editor) logic to drive that channel instead of raw sysfs is the
+  concrete next step — not yet tried on-device (see "Next: fan control via
+  AIDL" below).
+- **RGB — smaller, same shape of gap.** Upstream's own RGB mechanism
+  (`joystick_led_light_picker_color`) is confirmed dead here too, but
+  self-gates off safely (no crash, just inert — `RgbController.kt` is
+  untouched, byte-identical to upstream, no patch was even needed to stay
+  safe). A real AYANEO-native RGB mechanism exists and was already found
+  (`RgbManager`/`RgbUtil`, `Settings.System` keys under `ayaneo/share/*`,
+  `research/aya-gamewindows-teardown/FINDINGS.md` section 5) but isn't
+  wired into `pulse-for-aya` — smaller scope than fan (RGB is cosmetic,
+  not safety-relevant), deferred behind fan.
+
+**Genuinely unknown, never checked:**
 - The `sleep/SleepProfileMonitorService` package — not read during the
-  glue assessment, unknown whether it needs any patching.
-- No A/B comparison against native AyaSettings run yet.
+  glue assessment, unknown whether it needs any patching to work
+  correctly on this device.
+- No formal A/B comparison against native AyaSettings run yet (informal
+  comparisons exist scattered through `STATUS.md`'s per-app testing
+  entries, but nothing structured).
+
+**Bottom line**: fan control is the last *big* piece — closing it gets
+AutoTDP + manual control + profiles + telemetry + fan all genuinely
+working, which is the overwhelming majority of what a user actually
+touches day to day. RGB and the sleep-monitor unknown are real but small
+remaining items, worth closing before calling this a true 1:1 port, not
+before calling it *usable*.
+
+## Next: fan control via AIDL (planned, not yet attempted on-device)
+
+The concrete next step, once approved: a small, isolated spike — same
+shape as `research/aidl-bind-spike/` did for performance-mode — that
+sends `com_set_performance_fan:CUSTOM` followed by a
+`com_set_fan_speed_strategy:...` curve write from a throwaway probe (or a
+debug hook in `pulse-for-aya` itself) and confirms live whether AYA's
+native fan curve actually changes, the same way `aidl-bind-spike`
+confirmed `com_set_performance_mode` earlier in this project. **This
+requires touching the physical device and has not been done** — per this repo's
+own hard rule, that needs an explicit plain-language explanation and
+sign-off first, each time, not assumed from earlier conversation.
 
 ## Build / install
 

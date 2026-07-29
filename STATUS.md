@@ -6,6 +6,121 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## Feature-parity checklist written (2026-07-29): fan is the last big gap, RGB + one unknown remain smaller
+
+End-of-session stocktake, prompted by the user asking whether fan control
+would close feature parity with upstream `pulse` — full checklist now in
+`research/pulse-for-aya/README.md`'s "Feature parity vs upstream" section
+(kept there, not duplicated here, since that's the doc meant to eventually
+inform a summary back to upstream's author). Short version:
+
+**Confirmed working on this hardware**: AutoTDP (real regulation, clean
+FIFO sessions), manual tiers/CPU/GPU caps, per-app profiles, live
+telemetry HUD/OSD, Quick Settings tile/autostart/themes (inherited
+untouched, no device dependency).
+
+**Confirmed remaining gap, in priority order**:
+1. **Fan control** — the big one, `FanController.kt` fully stubbed. Now
+   has a validated way forward (AIDL `com_set_fan_speed_strategy`, see the
+   entry below) instead of being a dead end — next concrete step is a
+   small on-device spike, same shape as `aidl-bind-spike`, **not yet
+   attempted** (needs explicit device-touch sign-off first, per this
+   file's hard rule — ELI5 given in-session, approval not yet requested/
+   granted).
+2. **RGB** — smaller, same shape of gap (upstream's own mechanism dead
+   here, self-gates safely; a real AYANEO-native mechanism exists,
+   `aya-gamewindows-teardown/FINDINGS.md` section 5, not yet wired in).
+   Deferred behind fan — cosmetic, not safety-relevant.
+3. **Unknown, never checked**: `sleep/SleepProfileMonitorService` — not
+   read during the original glue assessment.
+
+**User's stated end goal, worth keeping in view**: once fan (and ideally
+RGB) close, prepare a summary for upstream `pulse`'s own author (Kei) —
+and potentially a version supporting both AYN/Retroid (native
+`PServerBinder`) and AYANEO (`xsu` glue) in one codebase, as a capstone to
+this whole research project. Not started — a real next milestone once the
+remaining gaps above close, not a task for this session.
+
+**Repo housekeeping this session**: checked for stray files/build debris
+(none found), confirmed `.gitignore` covers all three community-repo
+clones added earlier today, confirmed no uncommitted cruft. Not done:
+`STATUS.md` itself has grown to ~750 lines — a proper archive pass
+(moving genuinely closed threads to `STATUS_ARCHIVE.md`, per this file's
+own stated convention) would be a reasonable future cleanup, but wasn't
+attempted this session (most of today's additions are new open threads,
+not closed ones ready to archive — rushing that pass risked losing
+context, not worth it under today's time pressure).
+
+## Button remapping + gyroscope researched (2026-07-29): extra buttons remappable to anything, ABXY architecturally blocked, gyro not a real Android Sensor
+
+Third research vector this session (after fan control and community
+repos): user asked whether extra/back buttons can be remapped to
+arbitrary keyboard/gamepad actions, and whether gyro is usable/improvable
+(the latter specifically with future Moonlight/Artemis streaming in
+mind). Full writeup: `research/aya-gamewindows-teardown/FINDINGS.md`
+sections 4 (expanded) and 8 (new).
+
+- **Extra/back buttons (LC/RC paddles, Mode, Home, Roller, MagicTouch,
+  volume keys) — confirmed remappable to arbitrary keyboard/macro
+  actions**, via an exported, zero-permission-check `ContentProvider`
+  (`content://com.ayaneo.gamewindow.provider.sharedprefs/shared_prefs`),
+  no root, no AIDL binding needed. Full `pCode`/`funCode` action catalog
+  now documented (11 categories — open-app, input/keyevent/tap/swipe,
+  nav, volume/DND, media, brightness, screen/power, clipboard/
+  screenshot, keyboard macros incl. `input keycombination`,
+  connectivity). `appWhite` field confirmed as a real per-foreground-app
+  scoping mechanism. **Not yet tried live on-device** — next step is the
+  read-first `adb shell content query`/`update` recipe already in
+  FINDINGS.md section 4d.
+- **ABXY/D-pad/shoulders/Start-Select — confirmed NOT remappable through
+  this mechanism, architecturally, not just untested.** The event router
+  (`OnKeyInterceptKt.b()`, an `AccessibilityService` callback) only
+  forwards a small hardcoded allowlist of AYA-specific extra-button
+  keycodes to the remap engine — any other keycode falls through
+  unrouted, regardless of what's written via the `ContentProvider`. A
+  `CustomKeyItem` bound to an ABXY keycode would silently never fire.
+- **Gyro exists (`IAyaDevices.hasGyro`) but is not a standard Android
+  `Sensor`** — same out-of-band pattern as the analog sticks (section 7):
+  driven over the proprietary controller serial link, zero
+  `SensorManager`/`TYPE_GYROSCOPE` usage anywhere in either app's own
+  code (the only real `Sensor` registration found is unrelated bundled
+  ExoPlayer 360°-video code). No AIDL exposure either. **Bad news for the
+  later Moonlight/Artemis streaming idea**: a third-party app cannot read
+  raw gyro data via any standard Android API today — same fundamental
+  wall as the joystick-curve investigation, likely shares a root cause
+  (the opaque native serial-decode boundary), worth keeping in mind if
+  that UART reverse-engineering project ever gets picked up, since it
+  would probably solve both at once.
+
+## Fan control revisited (2026-07-29): native curve editor is a full AIDL surface, not just discrete mode
+
+Follow-up to the community-repo assessments below: re-traced how AYA's
+native Custom fan-curve editor (the "Fan Settings" UI, draggable
+temp→duty points + Linear/Step-Based toggle) actually works, since the
+previously-known `com_set_performance_fan:<mode>` AIDL command only covers
+the discrete OFF/MUTE/BALANCE/TURBO/CUSTOM mode, not the curve. Found in
+`ayasettings_decompiled/`'s `FanViewModel.java`/`FanSpeedConfig.java` (full
+writeup: `research/ayaspace-teardown/FINDINGS.md`, "Addendum" section):
+**two more AIDL commands exist** — `com_set_fan_speed_strategy:<mode>-<temp,duty|...>`
+replaces the WHOLE curve in one call, `com_set_fan_speed_is_linear:<mode>`
+toggles the interpolation shape. Same no-root `AyaAidlManager` channel
+already proven live for `com_set_performance_mode`
+(`research/aidl-bind-spike/FINDINGS.md`), but **these two specific
+commands have never actually been tested on-device** — same confidence
+level as the mode-switch spike, still an assumption until verified.
+
+This changes the fan-control picture from earlier in this project
+(`pulse-glue-assessment/FINDINGS.md`, `aya-gamewindows-teardown/FINDINGS.md`
+section 6): a full curve-write lever exists over AIDL, no sysfs race with
+the vendor daemon needed. Opens a real path for `pulse`'s own
+`FanTempController.kt` (PI closed-loop controller — genuinely more
+sophisticated than what native AYA offers, which is curve-shape-only, no
+closed-loop temp-holding) to be ported and driven through this AIDL
+channel instead of raw sysfs. **Next concrete step, not yet done**: a
+small follow-up spike (same shape as `aidl-bind-spike`'s original) to
+confirm `com_set_fan_speed_strategy`/`_is_linear` actually take effect
+live — requires on-device testing, not attempted this session.
+
 ## Community repos assessed (2026-07-29): KonaBess-Next-G3Gen3, ClusterTune, PAM Stock OS Optimization Guide — one concrete lead, two ruled out
 
 **Third repo (PAM Stock OS Optimization Guide)** — a written guide, not

@@ -193,9 +193,10 @@ mechanism, and specifically whether an arbitrary keyboard key (Escape,
 Enter, any letter) could be bound to a pad button, not just another
 gamepad function.
 
-**Short answer: yes for the extra/back buttons, unconfirmed but plausible
-for the main face/shoulder buttons — and the write path is even simpler
-than the AIDL service, no binding required at all.**
+**Short answer: yes for the extra/back buttons, and — as of this pass —
+confirmed NO for the main face/shoulder buttons, not just unconfirmed. The
+write path is even simpler than the AIDL service, no binding required at
+all.**
 
 ### 4a. What `com_set_single_key_mapping` actually is — a dead end
 
@@ -219,20 +220,25 @@ full macro engine: "when physical button with raw Android keycode X fires,
 run function Y." The trigger side (`KeyInfo.value`,
 `evidence/customkey/KeyInfo.java`) is a raw `KeyEvent.getKeyCode()` value —
 not a closed enum. The action side (`FunInfo.pCode`/`funCode`,
-`evidence/customkey/FunInfo.java`) has ~11 categories (`pCode` 0–10:
-open-app, controller/performance shortcuts, **input**, nav, media, display,
-screen, content, **keyboard**, connectivity...). Two categories are exactly
-what we want, confirmed in `evidence/customkey/CustomKeyFunExecutor.java`:
+`evidence/customkey/FunInfo.java`) has 11 categories (`pCode` 0–10:
+open-app, controller/performance shortcuts, input, nav, sound/DND, media,
+brightness, screen-rotation/power, clipboard/screenshot/URL,
+keyboard/macro, connectivity — full catalog in **4e** below). Two
+categories are exactly what we want, confirmed in
+`evidence/customkey/CustomKeyFunExecutor.java`:
 
-- **`pCode=2` ("input"), `funCode=1`** ("input_inputKeyCode"):
+- **`pCode=2` ("input"), `funCode=1`** ("input_inputKeyCode",
+  `CustomKeyFunExecutor.java:279-281`):
   `CmdUtilKt.e("input keyevent " + executePar[0].value)` — sends **any**
   string as an Android `input keyevent` argument. Accepts both numeric
   keycodes and `KEYCODE_*` names — `KEYCODE_ESCAPE`, `KEYCODE_ENTER`,
   `KEYCODE_A`..`KEYCODE_Z`, anything `input keyevent` understands.
-- **`pCode=9` ("keyb"), `funCode=4`** ("keyb_inputSpecifyKey"): takes a
-  comma-separated list in `executePar[0].value` and fires `input keyevent`
-  for each one in sequence — a genuine multi-key macro.
-- **`pCode=9`, `funCode=2`** is a hard-coded example
+- **`pCode=9` ("keyb"), `funCode=4`** ("keyb_inputSpecifyKey",
+  `CustomKeyFunExecutor.java:608-620`): takes a comma-separated list in
+  `executePar[0].value` and fires `input keyevent` for each one in
+  sequence — a genuine multi-key macro.
+- **`pCode=9`, `funCode=2`** (`CustomKeyFunExecutor.java:585-586`) is a
+  hard-coded example
   (`"input keycombination -t 500 KEYCODE_CTRL_LEFT KEYCODE_A"`) proving
   `input keycombination` (real modifier+key combos, e.g. Ctrl+A) is also
   reachable through this engine, not just single keypresses.
@@ -264,16 +270,18 @@ Concretely:
 - `update(...)` with `ContentValues{"value": "<new JSON array>"}` →
   persists it to `SharedPreferences` **and immediately calls
   `CustomKeyDispatch.c(json)`**, which re-parses and re-arms every key
-  detector on the spot. No service bind, no AIDL message framing — a plain
+  detector on the spot (`evidence/customkey/CustomKeyDispatch.java:111-140`).
+  No service bind, no AIDL message framing — a plain
   `ContentResolver.query()`/`update()` call from any app is enough.
 
 **Important safety note, not just a style preference**: `update()`
 replaces the *entire* array, not one item. `CustomKeyDispatch.c()` clears
-all existing detectors (`GlobalKeyInterceptKt.f4920d.clear()`) and rebuilds
-them from whatever you write. **Always `query()` first, parse the existing
-array, append/modify the relevant `CustomKeyItem`, and write the full
-array back** — a naive blind `update()` would silently delete the user's
-existing LC/RC/paddle bindings.
+all existing detectors (`GlobalKeyInterceptKt.f4920d.clear()`,
+`CustomKeyDispatch.java:116`) and rebuilds them from whatever you write.
+**Always `query()` first, parse the existing array, append/modify the
+relevant `CustomKeyItem`, and write the full array back** — a naive blind
+`update()` would silently delete the user's existing LC/RC/paddle
+bindings.
 
 ### 4d. Example payload (for manual, read-only-first testing — not yet tried)
 
@@ -285,7 +293,8 @@ This returns the live JSON array, including the real `KeyInfo.value`
 keycodes this specific device uses for its LC/RC/etc. physical buttons —
 needed before constructing a real write, since those trigger keycodes are
 device-specific and weren't pinned down from static analysis alone (same
-open item as the fan mechanism in part 3).
+open item as the fan mechanism in part 3; see **4h** below for why static
+analysis alone can't fully resolve this).
 
 Shape of one `CustomKeyItem` entry that binds a trigger key to send
 `KEYCODE_ESCAPE` (values illustrative — `keyInfoList[0].value` must be
@@ -322,6 +331,319 @@ adb shell content update --uri content://com.ayaneo.gamewindow.provider.sharedpr
 Not yet executed against a real device — this is the next concrete,
 low-risk experiment (read-first, single-item change, easily reverted by
 writing the original queried array back).
+
+### 4e. Complete `pCode`/`funCode` catalog (all 11 categories, `pCode` 0–10)
+
+Full read of `evidence/customkey/CustomKeyFunExecutor.java` (the `a(CustomKeyItem)`
+dispatch method, `CustomKeyFunExecutor.java:100-682`, one `switch` on
+`funInfo.getPCode()`). Behavior below is read directly from the code (shell
+command issued / `Settings` key written / method called), not guessed.
+Where a friendly label from the class's Kotlin reflection metadata
+(`CustomKeyFunExecutor.java:67`, the huge `@Metadata` `d2` string array —
+JADX preserves Kotlin property/function names there even where it can't
+fully decompile the body) plausibly lines up with a branch, it's noted in
+parens — but that metadata list is alphabetically sorted, not in
+declaration order, so those labels are corroborating color, not proof of
+exact `funCode` alignment; the code-read behavior is the actual evidence.
+
+**`pCode=0` — "openApp"** (`:114-124`)
+Two `executePar` values = `<packageName>|<className>`; builds
+`Intent().setClassName(pkg, cls)` and starts it. Generic "launch this
+activity" action.
+
+**`pCode=1` — "hc" (controller/performance shortcuts)** (`:125-194`)
+- `funCode=0` (`:128`): `new OtherControllerSerialManager().j()` — sends a
+  command over the controller serial link; body of `.j()` not traced
+  further this pass, uncertain exact effect.
+- `funCode=1` (`:129-143`): shows/refreshes the in-overlay performance-mode
+  panel (`PerformanceHolderKt.a`/`MainPanelManager.a`) — UI-only, doesn't
+  itself change mode.
+- `funCode=2` (`:144-176`): cycles fan mode within the *current* performance
+  profile's `ModeConfiguration` (mute→balance→turbo→custom→off) and
+  persists it via `PerformanceManager.f(configDataB, true)`.
+- `funCode=3` (`:179-185`): toggles the AYA magic-window overlay
+  open/closed (`AyaWindow.k()`/`AyaWindow.w()`).
+- `funCode=4` (`:186-190`): toggles RGB on/off (`RgbManager.c(...)`, ties
+  into section 5's RGB mechanism).
+- `funCode=5` (`:191-192`): `MagicFunctioinActionKt.k()` →
+  `switchDirectionDpad$1` coroutine (confirmed by name match,
+  `MagicFunctioinActionKt.java:125-127`) — toggles D-pad direction-mode.
+
+**`pCode=2` — "input"** (`:195-288`) — see 4b for the two keyboard-relevant
+branches (`funCode=1`, main keycode injection; the general macro is under
+`pCode=9`). Full set:
+- `funCode=0` (`:282-287`): `input text "<value>"` (shell-level text
+  injection, no focus check).
+- `funCode=1` (`:279-281`): `input keyevent <value>` — **the main
+  single-keycode remap action**, documented in 4b.
+- `funCode=3` (`:273-278`): `input tap <x> <y>`.
+- `funCode=4` (`:199-255`): `input swipe <x1> <y1> <x2> <y2> <duration>` —
+  builds the swipe from the first/last point of a `"x,y|x,y|..."` path
+  parameter.
+- `funCode=5` (`:256-272`): injects text directly into the currently
+  *focused editable field* via `AccessibilityNodeInfo.performAction`
+  (`ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE`) — distinct from `funCode=0`'s
+  shell-level `input text`; requires `WindowKeyEventService` (the
+  accessibility service) to be running and a focused editable view to
+  exist.
+
+**`pCode=3` — "nav"** (`:289-344`)
+- `funCode=0` and `funCode=1` (`:292-295`, identical branches): both call
+  `MagicFunctioinActionKt.d(83)` = `input keyevent 83`
+  (`KEYCODE_NOTIFICATION`) — opens/toggles the notification shade. Notable:
+  two distinct `funCode`s dispatch to the literal same call — either a
+  genuine duplicate in AYA's own code or two UI-facing options
+  (open/expand vs. something else) that happen to collapse to the same
+  keycode.
+- `funCode=4` (`:296-297`): `input keyevent KEYCODE_BACK`.
+- `funCode=5` (`:304-343`): go to home screen — has extra logic for a
+  "double-confirm before leaving current app" setting
+  (`AyaShareProvider.f6263c.c("home_double_confirm", false)`) and a
+  special-case broadcast (`"ayaGoHomeBroadcast"`) when `com.ayaneo.home`
+  is already foreground.
+- `funCode=6` (`:299-300`): `MagicFunctioinActionKt.e()` →
+  `goPreviousApp$1` coroutine (name-matched) — switches to the previously
+  used app/recents entry.
+- `funCode=7` (`:301-302`): `input keyevent KEYCODE_APP_SWITCH` (recents/
+  task-switcher overlay).
+
+**`pCode=4` — "sound" (volume/DND)** (`:345-429`)
+- `funCode=0`/`funCode=1` (`:349-381`): volume up/down — **not** via
+  `AudioManager`, via `SystemUtilKt` directly plus the on-screen HUD
+  (`BrightnessFloat.setProgress`).
+- `funCode=2` (`:382-395`): re-reads and re-displays current volume on the
+  HUD (no change, just a "show volume" refresh).
+- `funCode=4` (`:396-405`): toggles DND by checking
+  `NotificationManager.getCurrentInterruptionFilter()` and calling
+  `MagicFunctioinActionKt.c()`/`h()`.
+- `funCode=5` (`:406-408`): `MagicFunctioinActionKt.h()` — opens DND
+  (requests `ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS` if not yet
+  granted, `MagicFunctioinActionKt.java:87-100`).
+- `funCode=6` (`:409-411`): `MagicFunctioinActionKt.c()` — closes DND
+  (`MagicFunctioinActionKt.java:50-56`).
+- `funCode=7` (`:412-421`): toggles mute (checks volume==0).
+- `funCode=8` (`:422-424`): `MagicFunctioinActionKt.f()` — mutes (saves
+  current volume to `aya_last_volume.conf`, sets volume to 0,
+  `MagicFunctioinActionKt.java:66-72`).
+- `funCode=9` (`:425-427`): `MagicFunctioinActionKt.i()` — un-mutes
+  (restores the saved volume, `MagicFunctioinActionKt.java:102-119`).
+
+**`pCode=5` — "midea" (media, sic — typo for "media" in AYA's own code)**
+(`:430-454`) — straightforward `input keyevent KEYCODE_MEDIA_*`: `funCode`
+0=pause, 1=play, 2=play/pause toggle, 3=previous, 4=next,
+5=fast-forward, 6=rewind. High confidence — every branch is a literal
+`input keyevent` string.
+
+**`pCode=6` — "display" (screen brightness)** (`:455-521`)
+- `funCode=0`/`1` (`:457-462`): `Settings.System.putInt(..., "screen_brightness_mode", 1/0)`
+  — auto-brightness on/off.
+- `funCode=2` (`:514-520`): toggles auto-brightness mode.
+- `funCode=3`/`4` (`:465-513`): increase/decrease brightness (device-aware
+  step size, plus HUD).
+
+**`pCode=7` — "screen" (rotation/power)** (`:522-557`)
+- `funCode=0` (`:524-529`): sets `accelerometer_rotation=1` **and** calls
+  `iAyaDevices.J0(false)` — forces portrait (locks orientation while
+  technically leaving the auto-rotation flag on; exact interaction of the
+  two calls not fully traced past the `IAyaDevices` interface boundary).
+- `funCode=1` (`:530-531`): `MagicFunctioinActionKt.a()` — disables
+  auto-rotate (`accelerometer_rotation=0`, `MagicFunctioinActionKt.java:30-35`).
+- `funCode=2` (`:532-548`): reads current rotation-lock state and either
+  forces landscape-lock-off (calls the `funCode=0`-style force-portrait
+  path) or disables auto-rotate, depending on state — a "smart toggle".
+- `funCode=3` (`:549-551`): `MagicFunctioinActionKt.a()` **and**
+  `iAyaDevices.J0(true)` — forces landscape.
+- `funCode=5` (`:552-553`): `input keyevent KEYCODE_POWER` — screen
+  sleep/wake (short press).
+- `funCode=6` (`:554-555`): `input keyevent --longpress POWER` — power
+  menu.
+- **No `funCode=4` branch exists in the `switch`.** The class's reflection
+  metadata (`:67`) lists 7 "screen_*" names for what is only 6 wired
+  `funCode`s (0,1,2,3,5,6) — one name (plausibly
+  `screen_openAutoRotateScreen`) has no corresponding case, likely dead
+  code left over from a removed/merged branch. Worth knowing if `apl` ever
+  tries to *write* `funCode=4` for this `pCode` — it would silently no-op.
+
+**`pCode=8` — "content" (clipboard/screenshot/URL)** (`:558-578`)
+- `funCode=0` (`:560-566`): opens a URL from `executePar[0]` via
+  `Intent.ACTION_VIEW` (prepends `https://` if the string doesn't start
+  with `http`).
+- `funCode=1`/`2`/`3` (`:567-572`): `MagicFunctioinActionKt.d(277)` /
+  `d(278)` / `d(279)` = `input keyevent 277/278/279` = standard Android
+  `KEYCODE_CUT`/`KEYCODE_COPY`/`KEYCODE_PASTE` — confirmed by the literal
+  Android `KeyEvent` constant values, not just name-matching.
+- `funCode=4` (`:573-574`): `MagicFunctioinActionKt.j()` →
+  `screenshotFull$1` coroutine (name-matched) — takes a full screenshot.
+- `funCode=5` (`:575-576`): `ScreenRecordHelperKt.a()` — starts/stops
+  screen recording.
+
+**`pCode=9` — "keyb" (keyboard)** (`:579-621`) — see 4b for `funCode=2` and
+`funCode=4` (the keyboard-macro branches already documented). Full set:
+- `funCode=0` (`:581-582`): `input keyevent 123` — Android `KEYCODE_MOVE_END`
+  (literal constant value 123) — moves cursor to end of field.
+- `funCode=1` (`:583-584`): `MagicFunctioinActionKt.d(111)` =
+  `input keyevent 111` — Android `KEYCODE_ESCAPE` (literal constant
+  value). Note the reflection metadata's alphabetical name list includes a
+  `keyb_switchKeyBoard` entry that would intuitively fit this slot better
+  than "Escape" does — flagging the mismatch rather than asserting a label
+  that doesn't match the code's actual behavior.
+- `funCode=2` (`:585-586`): hardcoded `input keycombination -t 500
+  KEYCODE_CTRL_LEFT KEYCODE_A` example (documented in 4b).
+- `funCode=3` (`:587-607`): cycles to the next enabled IME — reads
+  `Settings.Secure` `default_input_method`/`enabled_input_methods`,
+  advances the index, writes the new `default_input_method`.
+- `funCode=4` (`:608-620`): comma-separated multi-`input keyevent` macro
+  (documented in 4b — the general-purpose macro action).
+
+**`pCode=10` — "connect" (connectivity)** (`:622-679`)
+- `funCode=0`/`1`/`2` (`:624-642`): Wi-Fi toggle/on/off via
+  `WifiManager.setWifiEnabled`.
+- `funCode=3` (`:643-649`): toggles Bluetooth (checks
+  `BluetoothAdapter.isEnabled()`).
+- `funCode=4`/`5` (`:650-655`): `MagicFunctioinActionKt.g()`/`b()` —
+  Bluetooth on/off (with a user-facing toast if already in that state,
+  `MagicFunctioinActionKt.java:38-48,74-85`).
+- `funCode=6`/`7`/`8` (`:656-677`): airplane-mode toggle/on/off via
+  `Settings.Global.putInt("airplane_mode_on", ...)` plus the standard
+  `ACTION_AIRPLANE_MODE` broadcast.
+
+### 4f. Trigger side: which physical buttons can actually fire a `CustomKeyItem` — confirmed, not just "extra/back buttons, untested for ABXY"
+
+This closes the open question previously left as "confirmed for the
+extra/back buttons; whether it extends to the main face/shoulder buttons
+... untested."
+
+**At the data layer, there is no restriction at all.** `KeyInfo`
+(`evidence/customkey/KeyInfo.java:13-23`) is a plain `{keyName: String,
+value: Int}` data class — `value` is never validated against any enum or
+range. `CustomButtonIndex` (`evidence/customkey/CustomButtonIndex.java`,
+package `com.ayaneo.gamewindow.ui.window.controller.protocol`, "compiled
+from: `BehindButManager.kt`", `:21,24-29`) is a *separate* enum belonging
+to a different subsystem (the back-paddle-specific `BehindButManager`
+UI/protocol layer) that just happens to also define 4 named values
+(`LC_SHOULDER=16, RC_SHOULDER=17, LC_BACK=18, RC_BACK=19`) — it is never
+referenced by `CustomKeyItem`/`KeyInfo`/`CustomKeyDispatch` at all, so it
+cannot be the gate. Parsing confirms this: `CustomKeyDispatch.c(String)`
+(`evidence/customkey/CustomKeyDispatch.java:111-140`) builds a
+`CustomSingleKeyDetector(customKeyItem.getKeyInfoList().get(0).getValue(), ...)`
+straight from the raw JSON int — any value parses and gets a live detector
+registered (`CustomKeyDispatch.java:124`).
+
+**The real gate is downstream, in event routing, and it *is* restrictive.**
+`WindowKeyEventService` (an `AccessibilityService`,
+`aya-gamewindow-decompiled/sources/com/ayaneo/gamewindow/service/WindowKeyEventService.java:28,157-181`)
+implements `onKeyEvent(KeyEvent)` — Android's global, system-wide key
+interception callback for accessibility services — and forwards every key
+event to `OnKeyInterceptKt.b(event)`
+(`WindowKeyEventService.java:180`). That function
+(`aya-gamewindow-decompiled/sources/com/ayaneo/gamewindow/custom/keydetector/OnKeyInterceptKt.java:40-154`)
+is a long chain of `if (keyCode == iAyaDevices.get<X>())` checks against a
+**fixed, small set of getters on `IAyaDeviceKey`** — and only when the
+incoming keycode matches one of those does it call `onCheckCustomKey`
+(`OnKeyInterceptKt.a`, `:24-37`), which is the function that actually
+iterates the `CustomKeyDetector` list and invokes `dispatchKeyEvent`
+(`OnKeyInterceptKt.java:51-73`, each branch guarding a call to `a(keyEvent)`).
+**Any keycode that doesn't match one of those specific getters falls
+through to the generic branch at the bottom of `b()`
+(`OnKeyInterceptKt.java:125-153`)** — which only forwards to
+`MainPanelManager` if the in-game overlay panel is currently open, or
+passes the event through untouched otherwise. It never reaches
+`onCheckCustomKey`.
+
+The specific `IAyaDeviceKey` getters checked in `OnKeyInterceptKt.b()`
+(`:51,54,58,62,66,70,74,80,86,108`) correspond, by cross-referencing
+`IAyaDeviceKey`'s own property list
+(`aya-gamewindow-decompiled/sources/com/ayaneo/devices/IAyaDeviceKey.java:7,15-66`),
+to: `ayaLCCode`, `ayaRCCode`, `ayaModeCode`, `ayaHomeKeyCode`,
+`ayaSlideRCode`, `ayaRollerIncrease`/`ayaRollerDecrease`/`ayaRollerPress`,
+`ayaKeyCode`/`ayaKeyCode2`, `magicTouchCode`, `ayaVolumeUp`/`ayaVolumeDown`
+— i.e. **exactly the AYA-specific extra hardware** (LC/RC back paddles,
+Mode button, Home button, a roller/slide control, one or two other
+AYA-specific buttons, a "magic touch" pad, hardware volume keys). **ABXY,
+D-pad, L1/R1/L2/R2 shoulder triggers, and Start/Select are not among
+these getters and are not checked anywhere in `OnKeyInterceptKt.b()`.**
+
+**Conclusion: writing a `CustomKeyItem` whose `KeyInfo.value` is an ABXY/
+DPAD/shoulder/Start-Select keycode via `SharedPrefsProvider` will parse
+successfully and register a live `CustomSingleKeyDetector` — but that
+detector will never fire**, because the `KeyEvent` for that button never
+reaches `onCheckCustomKey` in the first place. This is confirmed
+architecturally, independent of the separate, already-documented fact
+(section 7 below) that the analog sticks and — per this same routing
+logic — likely the main face buttons too may not even generate standard
+`KeyEvent`s reaching this accessibility callback at all (they may be
+injected directly into the focused app instead). Either way, the
+mechanism is a firm **no** for remapping ABXY-class buttons through this
+subsystem as currently wired. Only the extra/back/roller/mode/home/
+volume-class buttons are viable triggers.
+
+Corroborating, weaker evidence from the UI side: AYA Settings' actual
+editor for this feature, `CustomKeyDetailFragment`
+(`research/ayaspace-teardown/ayasettings_decompiled/sources/com/ayaneo/settings/ui/controller/customkey/CustomKeyDetailFragment.java`),
+navigates to two separate key-picker screens for choosing a trigger
+(`rlBut`/`rlButMode` rows at `:485-500`, navigating to `R.id.z7`/`R.id.J7`)
+— not traced further this pass, but consistent with the UI steering users
+toward a constrained picker rather than a raw keycode field, matching the
+code-level restriction found above.
+
+### 4g. `appWhite` confirmed: a per-foreground-package allowlist, not something else
+
+`CustomKeyItem.appWhite` (`evidence/customkey/CustomKeyItem.java:24,102-104`)
+is a `List<AppInfo>`; `hasAppWhiteList` (`:29,230`) is simply
+`!appWhite.isEmpty()`. The check happens in
+`CustomSingleKeyDetector.dispatchKeyEvent`
+(`evidence/customkey/CustomSingleKeyDetector.java:63-78`): on every key
+event, before any click/hold logic runs, it reads the current foreground
+task's package/activity name (`TaskStackObserverKt.f5350a.f5327a`) and, if
+`customKeyItem.getHasAppWhiteList()` is true, calls
+`customKeyItem.isInAppWhite(str, str2)`
+(`evidence/customkey/CustomKeyItem.java:138-154`) — which loops
+`appWhite` and returns true only if `AppInfo.getPackageName()` matches the
+current foreground package (the `activityName` parameter is accepted but
+never actually compared — dead parameter, worth flagging as a minor bug in
+AYA's own code). If there's no match, the detector calls `c()` (resets
+click-tracking state) and returns `0` (event not consumed / binding does
+not fire) — `CustomSingleKeyDetector.java:75-78`.
+
+**Confirmed answer**: `appWhite` is exactly what it looks like — a binding
+with a non-empty `appWhite` list is **scoped to fire only while one of the
+listed packages is in the foreground**; an empty list (the default) means
+the binding is always active regardless of foreground app. This is a
+real, usable "only remap this key while playing Game X" mechanism, not
+some other kind of allowlist (e.g. it does not gate config *visibility* or
+*write access* — only whether the trigger fires at runtime).
+
+### 4h. Trigger keycode enumeration — names exist, literal values are device-specific
+
+`IAyaDeviceKey`
+(`aya-gamewindow-decompiled/sources/com/ayaneo/devices/IAyaDeviceKey.java:7,15-66`)
+enumerates the **names** of every AYA-specific extra-button keycode the
+whole device abstraction layer knows about:
+`ayaHomeKeyCode, ayaKeyCode, ayaKeyCode2, ayaLBRes, ayaLBWhiteRes,
+ayaLCCode, ayaLTRes, ayaLTWhiteRes, ayaModeCode, ayaRBRes, ayaRBWhiteRes,
+ayaRCCode, ayaRTRes, ayaRTWhiteRes, ayaRollerDecrease, ayaRollerIncrease,
+ayaRollerPress, ayaSelectRes, ayaSelectWhiteRes, ayaSlideRCode,
+ayaStartRes, ayaStartWhiteRes, ayaVolumeDown, ayaVolumeUp, magicTouchCode,
+needSwitchLR`. This is the authoritative "what extra buttons does this
+device family have" list, and (per 4f) the authoritative list of what can
+ever be a working `CustomKeyItem` trigger.
+
+**However, the literal integer keycode value for each of these, on this
+specific Pocket FIT unit, is not resolved by this pass.** The interface
+only declares the properties; the actual values live in a concrete
+`IAyaDevices` implementation class (candidate: `AR13`, per section 3/6's
+finding that `AR13`/`AR03` are the leading match for this hardware's fan
+path — not confirmed as the *key-code* implementation too), and JADX
+renders those overridden getters with single-letter obfuscated names
+(e.g. the `CustomKeyDispatch.b()` helper at
+`evidence/customkey/CustomKeyDispatch.java:59-85` resolves `"LC"` to
+`AyaDevicesKt.f4814a.getF4854d()`, `"RC"` to `.getM()`, etc.) that can't be
+mapped back to the semantic `IAyaDeviceKey` names by static text search
+alone — doing so would require either deeper cross-referencing of the
+compiled interface vtable order (not attempted this pass) or just reading
+the values live, which is exactly what the `adb shell content query`
+already recommended in **4d** gives you directly and unambiguously. Left
+as-is rather than guessed at.
 
 ## 5. RGB control — sticks confirmed real and controllable, no fan-RGB found
 
@@ -542,6 +864,151 @@ compiling into feedback for AYA directly, independent of anything `apl`
 does. If AYA ever exposes a real curve/deadzone-radius control (or better,
 raw pre-processed stick data) this whole limitation disappears without any
 work on our end.
+
+## 8. Gyroscope access — real hardware, but not a real Android `Sensor`
+
+Nothing in this repo had looked at motion-sensor access before this pass.
+Investigated both decompiled trees end-to-end
+(`aya-gamewindow-decompiled/` and
+`research/ayaspace-teardown/ayasettings_decompiled/`) for
+`gyro|Gyroscope|SensorManager|TYPE_GYROSCOPE|MotionSensor|SensorEventListener`.
+
+### 8a. The device has a gyro capability flag, and GameWindow does use it — for controller gyro-aim, in its own in-game overlay
+
+`IAyaDevices` declares a `hasGyro: Boolean` capability property
+(`aya-gamewindow-decompiled/sources/com/ayaneo/devices/IAyaDevices.java:41`,
+in the class's Kotlin reflection metadata — `getHasGyro`/`hasGyro` appears
+alongside `hasEqualizer`, `hasBypassPowerSupply`, etc.). Both `AR13`
+(`aya-gamewindow-decompiled/sources/com/ayaneo/devices/ar13/AR13.java:22`)
+and `AR14`
+(`aya-gamewindow-decompiled/sources/com/ayaneo/devices/ar14/AR14.java:34`)
+redeclare `hasGyro` in their own class metadata — i.e. these device
+families override the interface default rather than inheriting it as-is.
+**Not resolved this pass**: the literal `true`/`false` value for our
+specific Pocket FIT unit — same obfuscated-getter problem as section 4h,
+the override body isn't textually present, only the property name in
+metadata.
+
+Gyro is a real, user-facing feature in GameWindow's in-game controller
+settings panel ("other" controller variant — `ControllerHolder`/
+`OtherControllerViewModel`, the same subsystem section 7 already covered
+for joystick sensitivity). The UI binding
+(`aya-gamewindow-decompiled/sources/com/ayaneo/gamewindow/ui/window/controller/other/ControllerHolder$bindGyro$4.java:74-94`)
+shows: an on/off checkbox, a sensitivity seekbar (shown only when gyro is
+on), and a radio button choosing which shoulder button (LB or LT,
+`R.id.civ_lb`/`R.id.civ_lt`) acts as the gyro-activation "hold to aim"
+trigger — a standard "gyro-while-holding-a-button" scheme, same concept as
+many third-party controllers.
+
+### 8b. Gyro is driven over the same proprietary controller serial link as joystick sensitivity — not a standard Android `Sensor`
+
+`OtherControllerViewModel.switchGyro` / `setGyroSensitivity` are the entry
+points. Full trace of the "turn gyro on" path
+(`aya-gamewindow-decompiled/sources/com/ayaneo/gamewindow/ui/window/controller/other/OtherControllerViewModel$switchGyro$1.java`,
+full 188-line file):
+1. Reads persisted config from a plain **file**, `aya_gyro.conf`, via
+   `AyaShareConfUtilKt.d(AyaShareConfUtilKt.c("aya_gyro.conf"), "10")`
+   (`switchGyro$1.java:73`).
+2. Updates in-memory `UiState.gyroSensitivity`
+   (`OtherControllerViewModel.java:1487`, the `GyroSensitivity` data class
+   at `:580-635` — fields `isOn: Boolean`, `which: Int` [LB=0/LT=1
+   trigger], `level: Int` [sensitivity step]).
+3. After a 100ms UI-settle delay, calls
+   `otherControllerSerialManager.g(iD, i3, this)`
+   (`switchGyro$1.java:97-99`) — a suspend call into
+   `com.ayaneo.gamewindow.utils.newserial.other.OtherControllerSerialManager`,
+   the **same serial-link manager class** section 7a already traced for
+   joystick sensitivity gain/deadzone bytes. Turning gyro off
+   (`switchGyro$1.java:102-142`) similarly writes the file, updates
+   `UiState`, then calls
+   `otherControllerSerialManager2.c(this)` after mutating
+   `otherControllerSerialManager2.f6017a` via
+   `NewControllerSerialManagerKt.b(...)` — the same low-level
+   buffer-byte-patching helper (`NewControllerSerialManagerKt.b(buffer,
+   commandIndex, byteValue)`) already documented in section 7a for the
+   stick-sensitivity command bytes.
+4. `ConfigGyroSensitivity`/`SwitchGyro` are modeled as first-class
+   `UiAction`s (`OtherControllerViewModel.java:1001-1032` and
+   `:1368-1391`), wired at `:1837-1849` — confirming this is a deliberate,
+   maintained feature, not incidental code.
+
+**Config persistence is a third mechanism, distinct from both this repo's
+previously-documented ones.** `AyaShareConfUtilKt.a(String)`
+(`aya-gamewindow-decompiled/sources/com/ayaneo/gamewindow/utils/system/AyaShareConfUtilKt.java:23-26`)
+builds a plain **file path** —
+`(AyaDevicesUtilKt.r ? "/sdcard/.aya/" : "/data/system/aya/") + name` —
+guarded by a `ReentrantLock`-protected file observer
+(`AyaShareObserver`, referenced at `AyaShareConfUtilKt.java:37-38`). This
+is neither the `SharedPrefsProvider` `ContentProvider` (section 4) nor the
+`Settings.System ayaneo/share/*` mechanism (section 5's RGB) — it's a
+third, plain-file-based shared-config channel, apparently reserved for
+this class of controller/serial-adjacent settings (`AYA_DEVICES_GYRO_CONFIG`
+is one of ~50 named constants in this same file's reflection metadata,
+`AyaShareConfUtilKt.java:19`). Not investigated further — out of scope for
+this pass, flagged for whoever next touches serial-controller config.
+
+### 8c. Confirmed: no standard `SensorManager`/`Sensor.TYPE_GYROSCOPE` usage anywhere in either app's own code
+
+Grepped both full decompiled trees for any `SensorManager`/
+`TYPE_GYROSCOPE`/`android.hardware.Sensor` usage:
+```
+aya-gamewindow-decompiled: only hits are ContextCompat.java (AndroidX
+  library, generic), SphericalGLSurfaceView.java + OrientationListener.java
+  (bundled ExoPlayer library), and ContextUtilKt.java.
+ayasettings_decompiled: only ContextCompat.java (AndroidX library).
+```
+- The **only** place a real `Sensor` is actually registered anywhere in
+  either app is `com.google.android.exoplayer2.video.spherical.SphericalGLSurfaceView`
+  (`aya-gamewindow-decompiled/sources/com/google/android/exoplayer2/video/spherical/SphericalGLSurfaceView.java:270-273,204,206`)
+  — bundled ExoPlayer library code for 360°/VR video playback, using
+  `Sensor.TYPE_GAME_ROTATION_VECTOR` (15) / `TYPE_ROTATION_VECTOR` (11),
+  **completely unrelated to controller gyro** and not written by AYANEO.
+- `ContextUtilKt.java`
+  (`aya-gamewindow-decompiled/sources/com/ayaneo/gamewindow/utils/ContextUtilKt.java:28`)
+  declares a generic `Context.sensorManager` extension property
+  (`android.hardware.SensorManager`, alongside ~25 other similar
+  `getSystemService(...)` convenience wrappers for `WifiManager`,
+  `PowerManager`, etc.) — but grepping the whole tree for any caller
+  (`getSensorManager(`/`ContextUtilKt.getSensorManager`) found **zero
+  invocations**. It's declared but dead — never actually used to read a
+  real sensor anywhere in AYA's own code.
+- No `gyro`/`Gyro` hit anywhere at all in the entire AYA Settings
+  decompiled tree (`grep -rli gyro` returned empty) — the feature is
+  GameWindow-only, not surfaced in the standalone settings app.
+- No gyro-related entry in either app's AIDL command catalog:
+  `aya-gamewindow-decompiled/sources/com/ayaneo/gamewindow/utils/aidl/AidlConstants.java`
+  and
+  `research/ayaspace-teardown/ayasettings_decompiled/sources/com/ayaneo/settings/utils/aidl/AidlConstants.java`
+  both have zero `gyro` hits — gyro calibration/sensitivity/enable is not
+  reachable over the cross-app AIDL bus documented in section 1, only from
+  GameWindow's own in-process controller UI.
+
+### 8d. Implication — same "AYA hogs the resource" shape as the analog sticks, worse
+
+Section 7 already established the analog sticks are read out-of-band over
+serial and synthesized into the focused app via privileged
+`injectInputEvent`, bypassing the normal Android input stack entirely —
+meaning a third-party app (e.g. a Moonlight/Artemis/Sunshine-style
+streaming client) cannot read raw stick position itself; it can only
+receive whatever GameWindow chooses to inject.
+
+**Gyro is the same story, and arguably a harder wall**: there is no
+evidence anywhere in either decompiled tree of gyro data being
+synthesized into standard Android input events (`MotionEvent`/`KeyEvent`)
+at all — the gyro pipeline traced in 8b only ever configures the physical
+sensor's *behavior* (on/off, sensitivity, which trigger button arms it)
+over the serial link; where the resulting motion *data* actually goes
+(consumed natively inside GameWindow's own process for its own gyro-aim
+overlay feature, most likely, given the `.so`-boundary precedent from
+section 7b) was not traced this pass. Either way: **there is no standard
+`SensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)` path available to
+any third-party app on this device today.** A game-streaming client
+wanting gyro input would face the same fundamental problem section 7
+already documented for the sticks — the real sensor is not exposed as a
+normal Android input source, and GameWindow's own consumption of it is
+opaque native code, not a resource a second reader could straightforwardly
+share or intercept. This is a "for later" flag, per the task that
+prompted this pass, not something resolved or actioned here.
 
 ## Implications for `apl`
 

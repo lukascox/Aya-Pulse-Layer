@@ -34,6 +34,68 @@ evidence and detail below.
    which we have **not** decompiled yet (see "Open question / next step"
    below).
 
+## Addendum (2026-07-29): the native Custom fan-curve editor is a full AIDL surface, not just `com_set_performance_fan`
+
+Follow-up triggered by screenshots of AYA's native "Fan Settings" UI (a
+draggable temp→duty curve editor with a Linear/Step-Based toggle) — traced
+exactly how it's wired, since `com_set_performance_fan:<mode>` (the only
+fan AIDL command previously confirmed in this file's command catalog) only
+covers the discrete OFF/MUTE/BALANCE/TURBO/CUSTOM mode, not the curve
+itself.
+
+`FanViewModel.java`
+(`ayasettings_decompiled/sources/com/ayaneo/settings/ui/device/fan/FanViewModel.java`)
+sends two more AIDL commands, same `AyaAidlManager` channel as everything
+else in this file:
+
+```java
+// :445 -- discrete mode switch (already known)
+AyaAidlManager.f17275a.k(MSG_TYPE_PERFORMANCE, "com_set_performance_fan:" + fanMode);
+
+// :454 -- RPM Algorithm toggle (Linear / Step-Based in the screenshots)
+AyaAidlManager.f17275a.k(MSG_TYPE_PERFORMANCE, "com_set_fan_speed_is_linear:" + mode.name());
+
+// :460 -- the WHOLE curve, replaced in one call
+AyaAidlManager.f17275a.k(MSG_TYPE_PERFORMANCE,
+    "com_set_fan_speed_strategy:" + mode + "-" + new FanSpeedConfig().h(strategy));
+```
+
+`FanSpeedConfig.h()`
+(`ayasettings_decompiled/.../ui/device/fan/FanSpeedConfig.java:159-162`)
+serializes the point list as `temp,duty|temp,duty|...` (e.g.
+`50,10|60,20|70,35|80,50|85,70|95,90` — matches the exact points visible in
+the screenshots). One real per-device default exists,
+`AyaDevicesKt.a().i1()`/`.O()`/`.j()` (device-specific curve tables per
+fan mode, not yet extracted — same class of per-device lookup as
+`IAyaDevice.N()` for `ModeConfiguration` above), used only when no
+user-edited curve has been saved yet for that mode. **Notable, not
+previously known**: MUTE/BALANCE/TURBO each have their *own* independently
+editable/persisted curve too, not just CUSTOM — only OFF has a fixed empty
+curve (`closeStrategy`, `FanSpeedConfig.kt:37`).
+
+**Implication for `apl`/`pulse-for-aya`'s fan-control question**: this
+supersedes the "AIDL fan control = one discrete mode command" framing
+elsewhere in this repo (`pulse-glue-assessment/FINDINGS.md`,
+`aya-gamewindows-teardown/FINDINGS.md` section 6). The full curve —
+exactly the lever `pulse`'s own `FanCurve.kt`/`FanTempController.kt`
+already model in software — is settable over the same no-root, already-
+proven-live AIDL channel, no sysfs write needed at all. Concretely, this
+opens a path that wasn't visible before: a controller (like a ported
+`FanTempController` PI loop) could compute a target duty and express it as
+a temporary single/flat-point strategy override via
+`com_set_fan_speed_strategy`, then restore the user's saved curve
+afterward — closed-loop fan control without ever touching sysfs or racing
+the vendor daemon's own re-pinning behavior.
+
+**Not yet confirmed live** — unlike `com_set_performance_mode` (proven
+end-to-end in `research/aidl-bind-spike/FINDINGS.md`),
+`com_set_fan_speed_strategy` and `com_set_fan_speed_is_linear` have never
+actually been sent from a probe app and observed to take effect. Same
+mechanism, same confidence level as the mode-switch spike, but still an
+assumption until tested — the natural next step is a small follow-up spike
+exactly like `aidl-bind-spike`'s original one, exercising these two
+commands specifically.
+
 ## Why this app doesn't need `xsu` at all
 
 `AndroidManifest.xml` declares `android:sharedUserId="android.uid.system"`
