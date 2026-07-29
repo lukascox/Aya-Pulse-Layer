@@ -573,20 +573,24 @@ gap to a real 1:1 port is visible at a glance.
   pass.
 
 **Confirmed a real, currently unaddressed gap:**
-- **Fan control — the big one.** `FanController.kt` is fully stubbed
+- **Fan control — the big one, partially closed as of 2026-07-29.**
+  `FanController.kt` is still fully stubbed in code
   (`setMode()` always `false`, `customFanAvailable()` always `false`) —
   upstream's two fan mechanisms (`gpio5_pwm2` PWM, `Settings.System
   fan_mode`) are confirmed dead on this device
-  (`pulse-glue-assessment/FINDINGS.md`). **Now has a validated way
-  forward, not a dead end**: AYA's own native fan-curve editor is driven
-  by undocumented-but-real AIDL commands (`com_set_performance_fan`,
-  `com_set_fan_speed_strategy`, `com_set_fan_speed_is_linear` —
-  `research/ayaspace-teardown/FINDINGS.md`, "Addendum"), the same no-root
-  channel already proven live for performance-mode switching
-  (`research/aidl-bind-spike/FINDINGS.md`). Porting upstream's own
+  (`pulse-glue-assessment/FINDINGS.md`). **Discrete fan-mode control
+  (OFF/MUTE/BALANCE/TURBO) is now confirmed working live, no root** —
+  `com_set_performance_fan` over the same no-root AIDL channel already
+  proven for performance-mode switching, verified two independent ways
+  (real PWM duty changes, AND the vendor's own unsolicited state callback
+  echoing the exact mode back) — see `research/aidl-fan-spike/FINDINGS.md`.
+  **The full curve write (`com_set_fan_speed_strategy`, the actual
+  PI-controller/spline-curve replacement) is still unconfirmed** — same
+  spike's step 2 was inconclusive, needs a better-instrumented follow-up
+  (see that FINDINGS.md's "Not yet done"). Porting upstream's own
   `FanTempController.kt` (PI controller) /`FanCurve.kt` (spline curve
-  editor) logic to drive that channel instead of raw sysfs is the
-  concrete next step — not yet tried on-device (see "Next: fan control via
+  editor) logic to drive that channel instead of raw sysfs remains the
+  end goal — not yet wired into `pulse-for-aya` itself (see "Next: fan control via
   AIDL" below).
 - **RGB — smaller, same shape of gap.** Upstream's own RGB mechanism
   (`joystick_led_light_picker_color`) is confirmed dead here too, but
@@ -613,23 +617,30 @@ touches day to day. RGB and the sleep-monitor unknown are real but small
 remaining items, worth closing before calling this a true 1:1 port, not
 before calling it *usable*.
 
-## Next: fan control via AIDL (probe built, not yet run on-device)
+## Fan control via AIDL — run1 complete (2026-07-29): mode switching confirmed, curve write open
 
-**`research/aidl-fan-spike/` now exists and builds clean** — a small,
-isolated probe, same shape as `research/aidl-bind-spike/` did for
-performance-mode: sends `com_set_performance_fan:<mode>` (discrete modes,
-staged as "step 1") and `com_set_fan_speed_strategy:FAN_MODE_CUSTOM-...`
-(a real curve write, "step 2"), then objectively verifies via the
-confirmed-readable `pwm-fan` hwmon node whether AYA's native fan actually
-changed — the same empirical standard `aidl-bind-spike` used to confirm
-`com_set_performance_mode` earlier in this project. See that project's own
-`README.md` for the full protocol, staged test order, and exact
-success/failure signatures.
+`research/aidl-fan-spike/` (same shape as `research/aidl-bind-spike/`) has
+now actually been run on-device by the user. Result, full detail in that
+project's `FINDINGS.md`:
 
-**This still requires touching the physical device and has not been run**
-— per this repo's own hard rule, that needs an explicit plain-language
-explanation and sign-off first, each time, not assumed from earlier
-conversation.
+- **Step 1 (discrete `com_set_performance_fan:<mode>`) — confirmed
+  working, strong evidence.** Real PWM duty tracked the requested mode
+  (OFF→0, MUTE→76 perfectly repeatable), AND — independently —
+  gamewindow's own unsolicited state callback echoed the exact mode back,
+  every single send, zero misses, across 14 commands. Not a fluke.
+- **Step 2 (`com_set_fan_speed_strategy`, the real curve write) —
+  inconclusive.** The mode-switch to CUSTOM was confirmed, but the
+  resulting duty reading didn't clearly match the test curve — three open
+  explanations (temp-dependent hold-flat behavior, a wrong string-format
+  guess, or coincidence), not yet distinguished. See that FINDINGS.md's
+  "Not yet done" for the concrete follow-up (log actual SoC temp, or test
+  an unambiguous all-100% curve).
+
+**Practical upshot**: a real, usable discrete fan-mode toggle for
+`FanController.kt` is achievable today with high confidence. The full
+PI-controller/spline-curve replacement (the actual upstream-parity goal)
+still needs one more, better-instrumented on-device round before it's
+either confirmed or ruled out.
 
 ## Build / install
 
