@@ -6,6 +6,60 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## Unsupervised session analyzed (2026-07-29): self-kill fix holding, one new kernel-level anomaly found
+
+First real, fully unsupervised pull since the self-kill fix — no one
+watching logs live, just normal play. Full raw logs + deterministic
+`SUMMARY.md` reorganized into
+`research/ab-logger/results/unsupervised_session_2026-07-29/` (index in
+that folder's `NOTES.md`, don't duplicate the analysis there). 4 sessions
+today: `151428` (~61min, Eden + brief RetroArch), `161522` (instant false
+start, <1s), `161552` (32s idle false start), `161822` (~3h20m, Eden, the
+real continuation).
+
+**Confirmed still holding, nothing regressed**:
+- Self-kill `pkill -f` bug (fixed 2026-07-28) has **not** recurred — 1088
+  cap writes via daemon vs. only 25 xsu fallback in the `161822` session,
+  274 vs. 12 in `151428`. No `xsu_conn_handler` crash signature anywhere.
+- `com.qti.diagservices` ANR-loop still chronic, unchanged, ~every 20s
+  continuously — same pre-existing device condition documented earlier in
+  this file, not a regression.
+- Eden/AutoTDP FPS tracking looked notably healthier than the previously
+  documented "stuck ~30fps" thread — `fps=90.0` against `tgt=90` hit
+  exactly at one point in `151428`, wide 24-90 range, `fps=-` unreadable
+  only 3-8 times total (transitions, not sustained). Likely session/scene
+  variance on the same known issue, not a fix — that thread stays open,
+  just noted as a data point.
+
+**New finding, not documented anywhere before this pull**: a kernel-level
+**haptic-driver + GPU AHB-bus-error storm** — `kgsl kgsl-3d0: CP: AHB bus
+error` and `hid_aya_haptic_play`/`aya_haptic_hid_report_work` lines exist
+at low background rate all day (~0.83 AHB errors/min baseline), but spike
+to **300 AHB errors + 6360 haptic "enter" events in ~150 kernel-seconds**
+(kernel uptime 3705.67s→3855.53s) — exactly the gap between the two false-
+start sessions (`161522`→`161552`). A `gen7_err_callback: 1159 callbacks
+suppressed` line confirms the real error rate was even higher than what
+made it into the log. Purely kernel/HAL-level — confirmed invisible to
+logcat (`161522`'s and `161552`'s logcat dumps are byte-for-byte identical
+per `diff -q`, meaning nothing about this storm ever reached userspace
+logs). Plausible but unconfirmed theory: a stuck-stick/controller rumble
+storm hammering the haptic HID driver, coincidentally or causally
+stressing the GPU command processor at the same moment the two AutoTDP
+sessions aborted near-instantly. **Not root-caused, no action taken** —
+flagging for next session, since this is exactly the kind of thing
+supervised testing would never have caught (both false-start sessions
+were too short and too quiet in the app's own log to have drawn attention
+without the raw dmesg cross-check).
+
+The two false-start sessions' near-empty `.log` files (124B, 1048B) are
+NOT cleanup candidates despite their size — they're now understood to be
+the actual evidence window for the finding above, kept as-is.
+
+**Bottom line**: clean, healthy unsupervised session overall — the thing
+this whole day's `xsu`/self-kill investigation was ultimately for — with
+one genuinely new, unexplained anomaly surfaced specifically because this
+was real unsupervised play rather than a supervised smoke test.
+
 ## `research/aidl-fan-spike/` built (2026-07-29): probe ready, not yet run on-device
 
 Built the concrete next step flagged in the entry below: a throwaway probe

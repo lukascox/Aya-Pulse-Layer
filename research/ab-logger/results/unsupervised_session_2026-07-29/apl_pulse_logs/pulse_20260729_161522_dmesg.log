@@ -1,0 +1,492 @@
+[ 3676.803842] init: Untracked pid 6477 exited with status 143
+[ 3676.803867] init: Untracked pid 6477 did not have an associated service entry and will not be reaped
+[ 3676.987936] audit: audit_lost=127509 audit_rate_limit=5 audit_backlog_limit=64
+[ 3676.987945] audit: rate limit exceeded
+[ 3677.607800] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3677.656983] init: Untracked pid 6560 exited with status 143
+[ 3677.657188] init: Untracked pid 6560 did not have an associated service entry and will not be reaped
+[ 3678.323140] audit: audit_lost=127638 audit_rate_limit=5 audit_backlog_limit=64
+[ 3678.323146] audit: rate limit exceeded
+[ 3678.609552] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3679.611175] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3679.687005] type=1400 audit(1785334525.790:140606): avc:  denied  { search } for  comm="cat" name="battery" dev="sysfs" ino=141926 scontext=u:r:xsud:s0 tcontext=u:object_r:vendor_sysfs_battery_supply:s0 tclass=dir permissive=1
+[ 3679.696941] type=1400 audit(1785334525.798:140607): avc:  denied  { append } for  comm="sh" name="pulse_20260729_161522_cap_poll.log" dev="fuse" ino=335406 scontext=u:r:xsud:s0 tcontext=u:object_r:fuse:s0 tclass=file permissive=1
+[ 3679.697636] type=1400 audit(1785334525.798:140608): avc:  denied  { open } for  comm="sh" path="/storage/emulated/0/apl_pulse_logs/pulse_20260729_161522_cap_poll.log" dev="fuse" ino=335406 scontext=u:r:xsud:s0 tcontext=u:object_r:fuse:s0 tclass=file permissive=1
+[ 3679.700127] audit: audit_lost=127659 audit_rate_limit=5 audit_backlog_limit=64
+[ 3679.700130] audit: rate limit exceeded
+[ 3679.700323] type=1400 audit(1785334525.802:140609): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_srvctracker_default:s0 tclass=file permissive=1
+[ 3679.700542] type=1400 audit(1785334525.802:140610): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_trustedui_qti:s0 tclass=file permissive=1
+[ 3680.611544] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3680.641220] gen7_err_callback: 984 callbacks suppressed
+[ 3680.641237] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3680.641264] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3680.645563] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3680.646173] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3680.646199] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3680.646424] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3680.646450] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3680.646518] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3680.646914] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3680.646976] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3680.702751] type=1400 audit(1785334526.806:140631): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_sensorscalibrate_qti_default:s0 tclass=file permissive=1
+[ 3680.704575] type=1400 audit(1785334526.806:140632): avc:  denied  { getattr } for  comm="top" path="/proc/1077" dev="proc" ino=2848507 scontext=u:r:system_app:s0 tcontext=u:r:vendor_sec_nvm:s0 tclass=dir permissive=1
+[ 3680.704651] type=1400 audit(1785334526.806:140633): avc:  denied  { search } for  comm="top" name="1077" dev="proc" ino=2848507 scontext=u:r:system_app:s0 tcontext=u:r:vendor_sec_nvm:s0 tclass=dir permissive=1
+[ 3680.707904] type=1400 audit(1785334526.810:140634): avc:  denied  { open } for  comm="top" path="/proc/1481/stat" dev="proc" ino=2839055 scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_sensorscalibrate_qti_default:s0 tclass=file permissive=1
+[ 3680.964500] audit: audit_lost=127679 audit_rate_limit=5 audit_backlog_limit=64
+[ 3680.964510] audit: rate limit exceeded
+[ 3680.964614] type=1400 audit(1785334527.066:140635): avc:  denied  { getattr } for  comm="top" path="/proc/1076" dev="proc" ino=2848506 scontext=u:r:system_app:s0 tcontext=u:r:vendor_spdaemon:s0 tclass=dir permissive=1
+[ 3681.612930] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3682.613929] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3682.686940] audit: audit_lost=127687 audit_rate_limit=5 audit_backlog_limit=64
+[ 3682.686945] audit: rate limit exceeded
+[ 3683.615226] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3683.954192] audit: audit_lost=127697 audit_rate_limit=5 audit_backlog_limit=64
+[ 3683.954196] audit: rate limit exceeded
+[ 3684.616884] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3685.620427] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3685.654415] gen7_err_callback: 1511 callbacks suppressed
+[ 3685.654429] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3685.654465] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3685.659469] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3685.660062] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3685.660093] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3685.670089] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3685.670144] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3685.675124] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3685.675782] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3685.675804] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3686.137768] type=1400 audit(1785334532.242:140679): avc:  denied  { getattr } for  comm="DefaultDispatch" path="/dev/ttyHS5" dev="tmpfs" ino=1086 scontext=u:r:system_app:s0 tcontext=u:object_r:device:s0 tclass=chr_file permissive=1
+[ 3686.168440] servicemanager: Found vendor.qti.hardware.perf2.IPerf/default in device VINTF manifest.
+[ 3686.623851] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3686.674457] type=1400 audit(1785334532.778:140680): avc:  denied  { read } for  comm="Performance-Tim" name="pwm1" dev="sysfs" ino=117406 scontext=u:r:system_app:s0 tcontext=u:object_r:sysfs:s0 tclass=file permissive=1
+[ 3686.675310] type=1400 audit(1785334532.778:140681): avc:  denied  { open } for  comm="Performance-Tim" path="/sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1" dev="sysfs" ino=117406 scontext=u:r:system_app:s0 tcontext=u:object_r:sysfs:s0 tclass=file permissive=1
+[ 3686.675813] type=1400 audit(1785334532.778:140682): avc:  denied  { getattr } for  comm="Performance-Tim" path="/sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1" dev="sysfs" ino=117406 scontext=u:r:system_app:s0 tcontext=u:object_r:sysfs:s0 tclass=file permissive=1
+[ 3686.684097] audit: audit_lost=127712 audit_rate_limit=5 audit_backlog_limit=64
+[ 3686.684105] audit: rate limit exceeded
+[ 3686.684736] type=1400 audit(1785334532.786:140683): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_keymint_qti:s0 tclass=file permissive=1
+[ 3687.624641] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3687.671045] type=1400 audit(1785334533.774:140841): avc:  denied  { write } for  comm="sh" name="pwm1" dev="sysfs" ino=117406 scontext=u:r:xsud:s0 tcontext=u:object_r:sysfs:s0 tclass=file permissive=1
+[ 3687.671348] type=1400 audit(1785334533.774:140842): avc:  denied  { open } for  comm="sh" path="/sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1" dev="sysfs" ino=117406 scontext=u:r:xsud:s0 tcontext=u:object_r:sysfs:s0 tclass=file permissive=1
+[ 3687.688383] type=1400 audit(1785334533.790:140843): avc:  denied  { read } for  comm="top" name="pid_max" dev="proc" ino=2848501 scontext=u:r:system_app:s0 tcontext=u:object_r:proc_pid_max:s0 tclass=file permissive=1
+[ 3687.688712] type=1400 audit(1785334533.790:140844): avc:  denied  { open } for  comm="top" path="/proc/sys/kernel/pid_max" dev="proc" ino=2848501 scontext=u:r:system_app:s0 tcontext=u:object_r:proc_pid_max:s0 tclass=file permissive=1
+[ 3687.688724] audit: audit_lost=127869 audit_rate_limit=5 audit_backlog_limit=64
+[ 3687.688726] audit: rate limit exceeded
+[ 3687.688929] type=1400 audit(1785334533.790:140845): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:hal_vibrator_default:s0 tclass=file permissive=1
+[ 3688.637189] servicemanager: Found vendor.qti.hardware.perf2.IPerf/default in device VINTF manifest.
+[ 3688.644090] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3688.644587] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3688.689336] audit: audit_lost=127946 audit_rate_limit=5 audit_backlog_limit=64
+[ 3688.689342] audit: rate limit exceeded
+[ 3689.648836] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3689.712094] audit: audit_lost=128085 audit_rate_limit=5 audit_backlog_limit=64
+[ 3689.712099] audit: rate limit exceeded
+[ 3690.648494] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3690.657492] gen7_err_callback: 1219 callbacks suppressed
+[ 3690.657509] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3690.666662] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3690.666886] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3690.675415] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3690.675590] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3690.682102] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3690.682162] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3690.689729] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3690.689750] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3690.693296] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3691.649352] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3691.678615] audit: audit_lost=128142 audit_rate_limit=5 audit_backlog_limit=64
+[ 3691.678621] audit: rate limit exceeded
+[ 3691.679375] type=1400 audit(1785334537.782:141132): avc:  denied  { read } for  comm="top" name="pid_max" dev="proc" ino=2848501 scontext=u:r:system_app:s0 tcontext=u:object_r:proc_pid_max:s0 tclass=file permissive=1
+[ 3691.680125] type=1400 audit(1785334537.782:141133): avc:  denied  { open } for  comm="top" path="/proc/sys/kernel/pid_max" dev="proc" ino=2848501 scontext=u:r:system_app:s0 tcontext=u:object_r:proc_pid_max:s0 tclass=file permissive=1
+[ 3691.933164] type=1400 audit(1785334538.034:141144): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_spdaemon:s0 tclass=file permissive=1
+[ 3691.933905] type=1400 audit(1785334538.034:141145): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_dpmQmiMgr:s0 tclass=file permissive=1
+[ 3691.934070] type=1400 audit(1785334538.038:141146): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_soter_qti:s0 tclass=file permissive=1
+[ 3691.934188] type=1400 audit(1785334538.038:141147): avc:  denied  { open } for  comm="top" path="/proc/1076/stat" dev="proc" ino=2850967 scontext=u:r:system_app:s0 tcontext=u:r:vendor_spdaemon:s0 tclass=file permissive=1
+[ 3691.935230] type=1400 audit(1785334538.038:141148): avc:  denied  { open } for  comm="top" path="/proc/1827/stat" dev="proc" ino=2839099 scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_dpmQmiMgr:s0 tclass=file permissive=1
+[ 3692.652188] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3692.713312] audit: audit_lost=128153 audit_rate_limit=5 audit_backlog_limit=64
+[ 3692.713316] audit: rate limit exceeded
+[ 3692.933532] type=1400 audit(1785334539.038:141165): avc:  denied  { open } for  comm="top" path="/proc/1982/stat" dev="proc" ino=2839127 scontext=u:r:system_app:s0 tcontext=u:r:vendor_trusteduilistener:s0 tclass=file permissive=1
+[ 3693.287789] type=1400 audit(1785334539.390:141166): avc:  denied  { read } for  comm="dmesg" name="kmsg" dev="tmpfs" ino=5 scontext=u:r:xsud:s0 tcontext=u:object_r:kmsg_device:s0 tclass=chr_file permissive=1
+[ 3693.288028] type=1400 audit(1785334539.390:141167): avc:  denied  { open } for  comm="dmesg" path="/dev/kmsg" dev="tmpfs" ino=5 scontext=u:r:xsud:s0 tcontext=u:object_r:kmsg_device:s0 tclass=chr_file permissive=1
+[ 3693.652000] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3694.653291] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3695.654017] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3695.669904] gen7_err_callback: 1156 callbacks suppressed
+[ 3695.669915] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3695.669938] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3695.674308] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3695.674905] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3695.674929] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3695.686140] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3695.686162] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3695.690565] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3695.691154] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3695.691195] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3696.259572] servicemanager: Found vendor.qti.hardware.perf2.IPerf/default in device VINTF manifest.
+[ 3696.299907] audit: audit_lost=128168 audit_rate_limit=5 audit_backlog_limit=64
+[ 3696.299911] audit: rate limit exceeded
+[ 3696.323744] servicemanager: Found vendor.qti.hardware.perf2.IPerf/default in device VINTF manifest.
+[ 3696.336248] servicemanager: Found vendor.qti.hardware.perf2.IPerf/default in device VINTF manifest.
+[ 3696.657266] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3697.659619] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3697.664792] type=1400 audit(1785334543.766:141398): avc:  denied  { read } for  comm="Performance-Tim" name="pwm1" dev="sysfs" ino=117406 scontext=u:r:system_app:s0 tcontext=u:object_r:sysfs:s0 tclass=file permissive=1
+[ 3697.665391] type=1400 audit(1785334543.766:141399): avc:  denied  { open } for  comm="Performance-Tim" path="/sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1" dev="sysfs" ino=117406 scontext=u:r:system_app:s0 tcontext=u:object_r:sysfs:s0 tclass=file permissive=1
+[ 3697.665511] type=1400 audit(1785334543.766:141400): avc:  denied  { getattr } for  comm="Performance-Tim" path="/sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1" dev="sysfs" ino=117406 scontext=u:r:system_app:s0 tcontext=u:object_r:sysfs:s0 tclass=file permissive=1
+[ 3697.678331] type=1400 audit(1785334543.782:141401): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_qspmsvc:s0 tclass=file permissive=1
+[ 3697.678382] audit: audit_lost=128391 audit_rate_limit=5 audit_backlog_limit=64
+[ 3697.678385] audit: rate limit exceeded
+[ 3697.679195] type=1400 audit(1785334543.782:141402): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:hal_ir_default:s0 tclass=file permissive=1
+[ 3698.660357] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3698.692833] type=1400 audit(1785334544.794:141421): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_spu_qti:s0 tclass=file permissive=1
+[ 3698.696660] type=1400 audit(1785334544.798:141422): avc:  denied  { open } for  comm="top" path="/proc/1406/stat" dev="proc" ino=2839011 scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_spu_qti:s0 tclass=file permissive=1
+[ 3699.024938] hid_aya_haptic_play: enter
+[ 3699.025540] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3699.026215] hid_aya_haptic_play: enter
+[ 3699.026559] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3699.037958] hid_aya_haptic_play: enter
+[ 3699.038209] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 25, right 25
+[ 3699.038562] hid_aya_haptic_play: enter
+[ 3699.039107] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 25, right 25
+[ 3699.055247] hid_aya_haptic_play: enter
+[ 3699.055395] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 58, right 58
+[ 3699.055708] hid_aya_haptic_play: enter
+[ 3699.056039] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 58, right 58
+[ 3699.071872] hid_aya_haptic_play: enter
+[ 3699.072067] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 62, right 62
+[ 3699.072371] hid_aya_haptic_play: enter
+[ 3699.073129] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 62, right 62
+[ 3699.090418] hid_aya_haptic_play: enter
+[ 3699.090573] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 39, right 39
+[ 3699.091015] hid_aya_haptic_play: enter
+[ 3699.091077] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 39, right 39
+[ 3699.107327] hid_aya_haptic_play: enter
+[ 3699.107596] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 22, right 22
+[ 3699.108134] hid_aya_haptic_play: enter
+[ 3699.108319] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 22, right 22
+[ 3699.124083] hid_aya_haptic_play: enter
+[ 3699.124248] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 15, right 15
+[ 3699.124550] hid_aya_haptic_play: enter
+[ 3699.125041] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 15, right 15
+[ 3699.140437] hid_aya_haptic_play: enter
+[ 3699.141349] hid_aya_haptic_play: enter
+[ 3699.141619] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 21, right 21
+[ 3699.156751] hid_aya_haptic_play: enter
+[ 3699.157185] hid_aya_haptic_play: enter
+[ 3699.157575] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 43, right 43
+[ 3699.173505] hid_aya_haptic_play: enter
+[ 3699.173833] hid_aya_haptic_play: enter
+[ 3699.173934] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 27, right 27
+[ 3699.189904] hid_aya_haptic_play: enter
+[ 3699.190186] hid_aya_haptic_play: enter
+[ 3699.190289] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 43, right 43
+[ 3699.206650] hid_aya_haptic_play: enter
+[ 3699.206825] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 24, right 24
+[ 3699.208042] hid_aya_haptic_play: enter
+[ 3699.208218] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 24, right 24
+[ 3699.221867] hid_aya_haptic_play: enter
+[ 3699.222032] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 21, right 21
+[ 3699.227482] hid_aya_haptic_play: enter
+[ 3699.227645] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 36, right 36
+[ 3699.238953] hid_aya_haptic_play: enter
+[ 3699.239203] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 38, right 38
+[ 3699.244789] hid_aya_haptic_play: enter
+[ 3699.245322] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 35, right 35
+[ 3699.255667] hid_aya_haptic_play: enter
+[ 3699.256002] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 47, right 47
+[ 3699.261218] hid_aya_haptic_play: enter
+[ 3699.261484] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 37, right 37
+[ 3699.272110] hid_aya_haptic_play: enter
+[ 3699.272470] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 29, right 29
+[ 3699.278074] hid_aya_haptic_play: enter
+[ 3699.278529] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 24, right 24
+[ 3699.288860] hid_aya_haptic_play: enter
+[ 3699.290091] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 25, right 25
+[ 3699.295217] hid_aya_haptic_play: enter
+[ 3699.295534] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 33, right 33
+[ 3699.306347] hid_aya_haptic_play: enter
+[ 3699.307354] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 27, right 27
+[ 3699.311563] hid_aya_haptic_play: enter
+[ 3699.311855] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 30, right 30
+[ 3699.322740] hid_aya_haptic_play: enter
+[ 3699.323043] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 40, right 40
+[ 3699.328910] hid_aya_haptic_play: enter
+[ 3699.329342] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 33, right 33
+[ 3699.341201] hid_aya_haptic_play: enter
+[ 3699.341586] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 17, right 17
+[ 3699.359180] hid_aya_haptic_play: enter
+[ 3699.359361] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 15, right 15
+[ 3699.359788] hid_aya_haptic_play: enter
+[ 3699.360030] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 11, right 11
+[ 3699.371916] hid_aya_haptic_play: enter
+[ 3699.372114] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 13, right 13
+[ 3699.376657] hid_aya_haptic_play: enter
+[ 3699.376905] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 19, right 19
+[ 3699.387779] hid_aya_haptic_play: enter
+[ 3699.387903] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 26, right 26
+[ 3699.393047] hid_aya_haptic_play: enter
+[ 3699.393410] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 37, right 37
+[ 3699.404154] hid_aya_haptic_play: enter
+[ 3699.404309] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 18, right 18
+[ 3699.409540] hid_aya_haptic_play: enter
+[ 3699.409759] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 14, right 14
+[ 3699.421167] hid_aya_haptic_play: enter
+[ 3699.421398] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 14, right 14
+[ 3699.426542] hid_aya_haptic_play: enter
+[ 3699.426712] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 11, right 11
+[ 3699.438545] hid_aya_haptic_play: enter
+[ 3699.438730] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 14, right 14
+[ 3699.444181] hid_aya_haptic_play: enter
+[ 3699.444425] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 19, right 19
+[ 3699.455646] hid_aya_haptic_play: enter
+[ 3699.455821] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 30, right 30
+[ 3699.460991] hid_aya_haptic_play: enter
+[ 3699.461204] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 26, right 26
+[ 3699.472127] hid_aya_haptic_play: enter
+[ 3699.472305] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 29, right 29
+[ 3699.480254] hid_aya_haptic_play: enter
+[ 3699.482683] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 29, right 29
+[ 3699.490789] hid_aya_haptic_play: enter
+[ 3699.491097] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 15, right 15
+[ 3699.494681] hid_aya_haptic_play: enter
+[ 3699.494910] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 18, right 18
+[ 3699.505871] hid_aya_haptic_play: enter
+[ 3699.506067] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 21, right 21
+[ 3699.511664] hid_aya_haptic_play: enter
+[ 3699.511998] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 14, right 14
+[ 3699.522901] hid_aya_haptic_play: enter
+[ 3699.523169] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 29, right 29
+[ 3699.528320] hid_aya_haptic_play: enter
+[ 3699.528549] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 22, right 22
+[ 3699.539819] hid_aya_haptic_play: enter
+[ 3699.540137] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 17, right 17
+[ 3699.544565] hid_aya_haptic_play: enter
+[ 3699.544799] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 12, right 12
+[ 3699.555701] hid_aya_haptic_play: enter
+[ 3699.555936] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 18, right 18
+[ 3699.561032] hid_aya_haptic_play: enter
+[ 3699.561440] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 19, right 19
+[ 3699.571911] hid_aya_haptic_play: enter
+[ 3699.572080] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 23, right 23
+[ 3699.577513] hid_aya_haptic_play: enter
+[ 3699.577705] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 20, right 20
+[ 3699.588710] hid_aya_haptic_play: enter
+[ 3699.588914] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 11, right 11
+[ 3699.593958] hid_aya_haptic_play: enter
+[ 3699.594118] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 13, right 13
+[ 3699.607522] hid_aya_haptic_play: enter
+[ 3699.607787] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 17, right 17
+[ 3699.612514] hid_aya_haptic_play: enter
+[ 3699.612785] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 12, right 12
+[ 3699.625857] hid_aya_haptic_play: enter
+[ 3699.626141] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 15, right 15
+[ 3699.630783] hid_aya_haptic_play: enter
+[ 3699.631018] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 12, right 12
+[ 3699.643641] hid_aya_haptic_play: enter
+[ 3699.644270] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 19, right 19
+[ 3699.648485] hid_aya_haptic_play: enter
+[ 3699.648795] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 17, right 17
+[ 3699.661115] hid_aya_haptic_play: enter
+[ 3699.661231] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 19, right 19
+[ 3699.662860] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3699.667163] hid_aya_haptic_play: enter
+[ 3699.667423] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 16, right 16
+[ 3699.680387] hid_aya_haptic_play: enter
+[ 3699.682359] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 10, right 10
+[ 3699.686644] hid_aya_haptic_play: enter
+[ 3699.686763] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 14, right 14
+[ 3699.688922] type=1400 audit(1785334545.790:141423): avc:  denied  { getattr } for  comm="top" path="/proc/1384" dev="proc" ino=2848510 scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_identity_qti:s0 tclass=dir permissive=1
+[ 3699.689718] type=1400 audit(1785334545.790:141424): avc:  denied  { search } for  comm="top" name="1384" dev="proc" ino=2848510 scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_identity_qti:s0 tclass=dir permissive=1
+[ 3699.699964] hid_aya_haptic_play: enter
+[ 3699.700154] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 10, right 10
+[ 3699.706003] hid_aya_haptic_play: enter
+[ 3699.706231] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 11, right 11
+[ 3699.717915] hid_aya_haptic_play: enter
+[ 3699.718083] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 9, right 9
+[ 3699.723287] hid_aya_haptic_play: enter
+[ 3699.723433] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 7, right 7
+[ 3699.734849] hid_aya_haptic_play: enter
+[ 3699.735069] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 9, right 9
+[ 3699.740862] hid_aya_haptic_play: enter
+[ 3699.741114] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 11, right 11
+[ 3699.757582] hid_aya_haptic_play: enter
+[ 3699.757704] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 11, right 11
+[ 3699.762653] hid_aya_haptic_play: enter
+[ 3699.762719] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 13, right 13
+[ 3699.775215] hid_aya_haptic_play: enter
+[ 3699.775420] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 9, right 9
+[ 3699.781238] hid_aya_haptic_play: enter
+[ 3699.781425] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 9, right 9
+[ 3699.794540] hid_aya_haptic_play: enter
+[ 3699.794767] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 11, right 11
+[ 3699.800056] hid_aya_haptic_play: enter
+[ 3699.800305] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 12, right 12
+[ 3699.812566] hid_aya_haptic_play: enter
+[ 3699.812755] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 5, right 5
+[ 3699.818182] hid_aya_haptic_play: enter
+[ 3699.818757] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 4, right 4
+[ 3699.829152] hid_aya_haptic_play: enter
+[ 3699.829421] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 4, right 4
+[ 3699.834261] hid_aya_haptic_play: enter
+[ 3699.834518] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 4, right 4
+[ 3699.845244] hid_aya_haptic_play: enter
+[ 3699.845423] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 7, right 7
+[ 3699.851817] hid_aya_haptic_play: enter
+[ 3699.852042] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 9, right 9
+[ 3699.862977] hid_aya_haptic_play: enter
+[ 3699.863171] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 3, right 3
+[ 3699.867572] hid_aya_haptic_play: enter
+[ 3699.867672] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 4, right 4
+[ 3699.878482] hid_aya_haptic_play: enter
+[ 3699.878816] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 4, right 4
+[ 3699.884681] hid_aya_haptic_play: enter
+[ 3699.884917] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 6, right 6
+[ 3699.894830] hid_aya_haptic_play: enter
+[ 3699.894875] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 4, right 4
+[ 3699.899371] hid_aya_haptic_play: enter
+[ 3699.899579] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 3, right 3
+[ 3699.912117] hid_aya_haptic_play: enter
+[ 3699.912771] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 2, right 2
+[ 3699.921884] hid_aya_haptic_play: enter
+[ 3699.922176] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 4, right 4
+[ 3699.926531] hid_aya_haptic_play: enter
+[ 3699.926647] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 5, right 5
+[ 3699.931936] hid_aya_haptic_play: enter
+[ 3699.932083] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 6, right 6
+[ 3699.941883] type=1400 audit(1785334546.046:141425): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_perf_qesdk:s0 tclass=file permissive=1
+[ 3699.944783] hid_aya_haptic_play: enter
+[ 3699.944903] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 3, right 3
+[ 3699.954671] hid_aya_haptic_play: enter
+[ 3699.954833] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 2, right 2
+[ 3699.960905] hid_aya_haptic_play: enter
+[ 3699.961174] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 3, right 3
+[ 3699.971053] hid_aya_haptic_play: enter
+[ 3699.971388] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 3, right 3
+[ 3699.976824] hid_aya_haptic_play: enter
+[ 3699.976992] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3699.988372] hid_aya_haptic_play: enter
+[ 3699.988531] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 2, right 2
+[ 3699.994097] hid_aya_haptic_play: enter
+[ 3699.994224] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.004974] hid_aya_haptic_play: enter
+[ 3700.005167] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.010512] hid_aya_haptic_play: enter
+[ 3700.010636] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.021840] hid_aya_haptic_play: enter
+[ 3700.021981] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.027396] hid_aya_haptic_play: enter
+[ 3700.027524] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.038158] hid_aya_haptic_play: enter
+[ 3700.038284] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.043761] hid_aya_haptic_play: enter
+[ 3700.043916] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.054798] hid_aya_haptic_play: enter
+[ 3700.054850] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.060057] hid_aya_haptic_play: enter
+[ 3700.060144] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.070993] hid_aya_haptic_play: enter
+[ 3700.071181] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.076503] hid_aya_haptic_play: enter
+[ 3700.076635] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.088361] hid_aya_haptic_play: enter
+[ 3700.088566] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.095196] hid_aya_haptic_play: enter
+[ 3700.095338] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.106175] hid_aya_haptic_play: enter
+[ 3700.106329] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.112079] hid_aya_haptic_play: enter
+[ 3700.112246] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.123173] hid_aya_haptic_play: enter
+[ 3700.123346] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.128176] hid_aya_haptic_play: enter
+[ 3700.128348] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.139129] hid_aya_haptic_play: enter
+[ 3700.139610] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.144264] hid_aya_haptic_play: enter
+[ 3700.144501] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.156579] hid_aya_haptic_play: enter
+[ 3700.156771] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.161105] hid_aya_haptic_play: enter
+[ 3700.161321] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.171891] hid_aya_haptic_play: enter
+[ 3700.172024] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.177635] hid_aya_haptic_play: enter
+[ 3700.177747] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.188708] hid_aya_haptic_play: enter
+[ 3700.188814] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.194893] hid_aya_haptic_play: enter
+[ 3700.195014] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.206082] hid_aya_haptic_play: enter
+[ 3700.206270] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.212358] hid_aya_haptic_play: enter
+[ 3700.212489] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.225264] hid_aya_haptic_play: enter
+[ 3700.225411] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.230668] hid_aya_haptic_play: enter
+[ 3700.230788] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.241724] hid_aya_haptic_play: enter
+[ 3700.241878] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.248073] hid_aya_haptic_play: enter
+[ 3700.248183] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.259710] hid_aya_haptic_play: enter
+[ 3700.259854] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.265981] hid_aya_haptic_play: enter
+[ 3700.266159] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.277097] hid_aya_haptic_play: enter
+[ 3700.277235] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.283954] hid_aya_haptic_play: enter
+[ 3700.284070] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.294936] hid_aya_haptic_play: enter
+[ 3700.295060] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.300691] hid_aya_haptic_play: enter
+[ 3700.300834] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.311404] hid_aya_haptic_play: enter
+[ 3700.311539] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.318352] hid_aya_haptic_play: enter
+[ 3700.318470] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.329534] hid_aya_haptic_play: enter
+[ 3700.329669] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.335144] hid_aya_haptic_play: enter
+[ 3700.335273] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.346137] hid_aya_haptic_play: enter
+[ 3700.346349] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.352017] hid_aya_haptic_play: enter
+[ 3700.352132] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.380262] hid_aya_haptic_play: enter
+[ 3700.380381] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.383180] hid_aya_haptic_play: enter
+[ 3700.383634] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 1, right 1
+[ 3700.433129] hid_aya_haptic_play: enter
+[ 3700.433352] aya_haptic 0003:4001:0428.0001: aya_haptic_hid_report_work: left 0, right 0
+[ 3700.664213] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3700.673904] gen7_err_callback: 1240 callbacks suppressed
+[ 3700.673929] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3700.673968] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3700.678409] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3700.678996] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3700.679029] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3700.679374] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3700.679405] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3700.688084] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3700.688169] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3700.706314] kgsl kgsl-3d0: CP: AHB bus error, CP_RL_ERROR_DETAILS_0:0x10008e07 CP_RL_ERROR_DETAILS_1:0x12144
+[ 3701.665297] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3701.712989] audit: audit_lost=128409 audit_rate_limit=5 audit_backlog_limit=64
+[ 3701.712995] audit: rate limit exceeded
+[ 3702.666705] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3702.678529] type=1400 audit(1785334548.782:141439): avc:  denied  { getattr } for  comm="top" path="/proc/3487" dev="proc" ino=2838955 scontext=u:r:system_app:s0 tcontext=u:r:vendor_qspmsvc:s0 tclass=dir permissive=1
+[ 3702.678647] type=1400 audit(1785334548.782:141440): avc:  denied  { search } for  comm="top" name="3487" dev="proc" ino=2838955 scontext=u:r:system_app:s0 tcontext=u:r:vendor_qspmsvc:s0 tclass=dir permissive=1
+[ 3703.026116] type=1400 audit(1785334549.130:141441): avc:  denied  { syslog } for  comm="dmesg" capability=34  scontext=u:r:xsud:s0 tcontext=u:r:xsud:s0 tclass=capability2 permissive=1
+[ 3703.669922] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3703.687737] type=1400 audit(1785334549.790:141442): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_poweroptservice_qti:s0 tclass=file permissive=1
+[ 3703.688078] type=1400 audit(1785334549.790:141443): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_qesdsect:s0 tclass=file permissive=1
+[ 3703.688219] type=1400 audit(1785334549.790:141444): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:hal_fingerprint_default:s0 tclass=file permissive=1
+[ 3703.688402] type=1400 audit(1785334549.790:141445): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_qwesd:s0 tclass=file permissive=1
+[ 3703.688572] type=1400 audit(1785334549.790:141446): avc:  denied  { read } for  comm="top" scontext=u:r:system_app:s0 tcontext=u:r:vendor_feature_enabler_client:s0 tclass=file permissive=1
+[ 3703.688812] type=1400 audit(1785334549.790:141447): avc:  denied  { getattr } for  comm="top" path="/proc/906" dev="proc" ino=2848504 scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_keymint_qti:s0 tclass=dir permissive=1
+[ 3703.688844] audit: audit_lost=128412 audit_rate_limit=5 audit_backlog_limit=64
+[ 3703.688849] audit: rate limit exceeded
+[ 3703.688951] type=1400 audit(1785334549.790:141448): avc:  denied  { search } for  comm="top" name="906" dev="proc" ino=2848504 scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_keymint_qti:s0 tclass=dir permissive=1
+[ 3704.383903] binder: 6709:6717 ioctl c0306201 77f548fa78 returned -14
+[ 3704.671974] init: Control message: Could not find 'vendor.qti.diaghal@1.0::Idiag/default' for ctl.interface_start from pid: 785 (/system/bin/hwservicemanager)
+[ 3704.929913] audit: audit_lost=128470 audit_rate_limit=5 audit_backlog_limit=64
+[ 3704.929919] audit: rate limit exceeded
