@@ -86,6 +86,40 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:textSize="11sp"
+        android:text="Step 3 -- run1/2/3's string format guess is confirmed not applying. These try alternate formats (each auto-resets to BALANCE after):" />
+
+    <Button
+        android:id="@+id/btnGuessSwapOrder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:enabled="false"
+        android:textSize="11sp"
+        android:text="Guess A: swap to duty,temp order" />
+
+    <Button
+        android:id="@+id/btnGuessSemicolon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:enabled="false"
+        android:textSize="11sp"
+        android:text="Guess B: semicolon pair separator" />
+
+    <Button
+        android:id="@+id/btnGuessNoPrefix"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:enabled="false"
+        android:textSize="11sp"
+        android:text="Guess C: no FAN_MODE_CUSTOM- prefix" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textSize="11sp"
         android:text="Read-only, safe anytime (even before connecting):" />
 
     <Button

@@ -34,18 +34,39 @@ pan out.
 
 **Step 2 — the real question.** "Send test curve (CUSTOM)" sends
 `com_set_performance_fan:FAN_MODE_CUSTOM`, waits 500ms, then
-`com_set_fan_speed_strategy:FAN_MODE_CUSTOM-50,12|65,32|78,68|85,95|95,100`
-— a moderate, deliberately-chosen-not-extreme test curve (the same
-"ramp harder, sooner" shape discussed as a sensible improvement earlier in
-this project's fan-safety conversation, not a random or aggressive value).
+`com_set_fan_speed_strategy:FAN_MODE_CUSTOM-30,100|50,100|70,100|85,100|95,100`
+(flat 100% duty at every temp point — unambiguous regardless of actual SoC
+temp, since real temps during testing are always above the lowest point).
+**Runs 1-3 (see `FINDINGS.md`) confirmed this exact format does not work**
+— 6 attempts, 0 with duty anywhere near 255.
+
+**Step 3 — alternate string-format guesses (added for run4+).** Since the
+original format is now a confirmed dead end, three more Buttons try
+different guesses at the `mode-pairs` string, each still using the same
+flat-100% shape so a hit is just as unambiguous:
+- **Guess A** — swap pair order to `duty,temp` instead of `temp,duty`.
+- **Guess B** — `;` as the pair separator instead of `|`.
+- **Guess C** — drop the `FAN_MODE_CUSTOM-` prefix entirely (mode is
+  already set by the preceding `com_set_performance_fan` call — maybe the
+  prefix itself breaks the parser).
+
+Each guess button does the same mode→CUSTOM, wait, send-strategy,
+read-back sequence as Step 2, then **automatically resets to BALANCE
+mode** afterward — so leftover duty from one guess can't bleed into the
+next guess's reading, and the device is never left mid-experiment even if
+you stop after just one tap.
+
+**Beyond the three built-in guesses**, any string can be tried without a
+rebuild via an Intent extra — see "Quick test loop" below.
 
 **Every send is followed by an objective read-back**, not just trusting
 that the Binder `transact()` didn't throw: `XsuShell` reads the confirmed
 `pwm-fan` hwmon node (`fan_rpm_state` + `hwmon*/pwm1`, both readable
 without root even — `xsu` is used here only for consistency with the rest
-of this repo's probes) 1.5s after each send. A "Read fan state" button is
-always enabled (even before connecting) for manual checks, and one
-baseline read fires automatically on launch, before anything is touched.
+of this repo's probes) 1.5s after each send, plus real SoC temp (max
+across all `thermal_zone*` CPU zones). A "Read fan state" button is always
+enabled (even before connecting) for manual checks, and one baseline read
+fires automatically on launch, before anything is touched.
 
 ## Enum-string format — reconstructed, not confirmed, flagged honestly
 
@@ -77,9 +98,19 @@ confirms the bind mechanism still works (expected — `aidl-bind-spike`
 already proved this part; if it suddenly fails here, something changed on
 the device side since then, worth noting).
 
-**Recommended order**: tap one Step 1 button first (e.g. TURBO — should be
-audibly/RPM-obviously different from idle if it works at all), read the
-log, then try Step 2. Don't jump straight to the curve write untested.
+**Recommended order (run4)**: since step 1 and the original step-2 format
+are already confirmed (working / not working, respectively), you can go
+straight for the new material:
+1. Tap **Guess A** (swap order), read the log line, note the duty.
+2. Tap **Guess B** (semicolon), read, note the duty.
+3. Tap **Guess C** (no prefix), read, note the duty.
+4. If none of the three show duty near 255, try a couple of the ad hoc
+   strings from "Quick test loop" below (via adb, no rebuild needed) —
+   e.g. dropping the `50,` middle points, or trying `is_linear` first.
+
+Every guess already resets to BALANCE on its own — no manual cleanup
+needed between taps. All results land in the same log file/session, so
+one pull at the end covers everything tried.
 
 ## Quick test loop (for iterating without reinstalling each time)
 
@@ -96,8 +127,24 @@ adb logcat -c && adb logcat -s AIDL_FAN_SPIKE:D
 # (tap buttons on-device while this runs; Ctrl-C to stop watching)
 ```
 
-If you change the Kotlin source (e.g. to try a different test curve or a
-different enum-string guess), only then do you need the full
+**Trying an ad hoc string without tapping any button**: pass it as the
+`custom_command` extra — the app auto-sends it (through the same
+mode→CUSTOM → strategy → read → reset-to-BALANCE flow as the guess
+buttons) as soon as it connects, no source edit or reinstall needed:
+
+```bash
+adb shell am start -n pl.aidlfanspike.app/.MainActivity \
+  --es custom_command "com_set_fan_speed_strategy:FAN_MODE_CUSTOM-30,100:50,100:70,100:85,100:95,100"
+adb logcat -c && adb logcat -s AIDL_FAN_SPIKE:D
+```
+
+The extra's value is everything that goes after `msg_type_performance:` —
+so it can test a completely different command too, e.g.
+`--es custom_command "com_set_fan_speed_is_linear:true"` to finally
+exercise the third fan command that's never been tried in any run.
+
+If you change the Kotlin source itself (e.g. to hardcode a fourth guess
+button, or change `TEST_CURVE`), only then do you need the full
 `assembleDebug && adb install -r ...` step again.
 
 ## What a SUCCESS looks like
@@ -112,11 +159,10 @@ fan state [post-send, send_ok=true] (94ms): RPM=Current RPM 4200 | PWM_DUTY=210
 `xsu` write of our own anywhere in the *command* path (only in the
 read-back verification, exactly like `aidl-bind-spike`).
 
-For step 2, a successful curve write should show the duty settle near
-whatever `TEST_CURVE`'s value is for the device's *current* temperature
-(e.g. near 12% if the SoC is cool/idle) rather than jumping to 100% —
-that distinguishes "the curve was actually applied" from "CUSTOM mode
-alone just pins something else."
+For step 2/3, a successful curve write should show duty jump to ~255
+(100%) — the flat-everywhere test curve makes this unambiguous regardless
+of the device's actual temperature at test time, unlike run1's original
+moderate curve.
 
 ## What a FAILURE looks like, and what each one would mean
 
@@ -134,17 +180,19 @@ alone just pins something else."
   `com_set_performance_fan` the way `FanViewModel.java` assumes, or fan
   mode changes only apply on the *next* foreground-app/profile transition
   rather than instantly.
-- **Step 1 works but Step 2 (`com_set_fan_speed_strategy`) doesn't** —
-  narrows the problem to the curve-write path specifically, e.g. the
-  `mode-pairs` string format might need a different separator than
-  inferred, or `FanSpeedConfig.h()`'s exact serialization was
-  misread. Worth re-checking `research/ayaspace-teardown/
-  ayasettings_decompiled/sources/com/ayaneo/settings/ui/device/fan/
-  FanSpeedConfig.java` directly if this happens.
-- **Everything reports success and the read-back genuinely changes** —
-  the fan-control path for `pulse-for-aya` is real; next step is porting
-  `FanTempController.kt`/`FanCurve.kt`'s actual logic to drive this
-  channel instead of a one-shot test curve.
+- **Step 1 works but Step 2/3 (`com_set_fan_speed_strategy`) doesn't, for
+  every guess tried** — already the confirmed state as of run3 for the
+  original format; if Guesses A/B/C in run4 all fail too, that's strong
+  evidence the problem isn't the string format at all, and worth
+  re-checking `research/ayaspace-teardown/ayasettings_decompiled/sources/
+  com/ayaneo/settings/ui/device/fan/FanSpeedConfig.java` directly for
+  something structurally different (e.g. maybe the curve needs to be sent
+  as a different AIDL message type entirely, not `msg_type_performance`).
+- **One of the run4 guesses reports success and the read-back genuinely
+  jumps to ~255** — the fan-control path for `pulse-for-aya` is real;
+  next step is porting `FanTempController.kt`/`FanCurve.kt`'s actual logic
+  to drive this channel (using whichever guess worked) instead of a
+  one-shot test curve.
 
 Any outcome is a real, useful answer — same empirical standard as every
 other probe in this repo.

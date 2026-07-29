@@ -44,6 +44,21 @@ private const val MODE_CUSTOM = "FAN_MODE_CUSTOM"
 // "temp,duty").
 private const val TEST_CURVE = "30,100|50,100|70,100|85,100|95,100"
 
+// Runs 2-3 confirmed the above "FAN_MODE_CUSTOM-temp,duty|temp,duty|..." guess does not
+// change real fan behavior (6/6 attempts stayed well below the flat-100% curve's expected
+// duty=255, at temps comfortably inside its range -- see FINDINGS.md). These are the next
+// concrete format guesses to try, each still built around the same flat-100% shape so a
+// hit is just as unambiguous as before.
+private const val GUESS_SWAP_ORDER = "FAN_MODE_CUSTOM-100,30|100,50|100,70|100,85|100,95"
+private const val GUESS_SEMICOLON = "FAN_MODE_CUSTOM-30,100;50,100;70,100;85,100;95,100"
+private const val GUESS_NO_PREFIX = "30,100|50,100|70,100|85,100|95,100"
+
+// Lets any string be tried from adb without a rebuild: this is the exact suffix appended
+// after "msg_type_performance:" -- e.g.
+// `adb shell am start -n pl.aidlfanspike.app/.MainActivity --es custom_command
+// "com_set_fan_speed_strategy:FAN_MODE_CUSTOM-30,100:50,100:70,100:85,100:95,100"`
+private const val EXTRA_CUSTOM_COMMAND = "custom_command"
+
 // Confirmed live and real (research/aya-gamewindows-teardown/FINDINGS.md section 6):
 // standard Linux pwm-fan hwmon node, readable even without root. hwmon index globbed
 // rather than hardcoded to hwmon0, in case a firmware update ever shifts it.
@@ -59,11 +74,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnBalance: Button
     private lateinit var btnTurbo: Button
     private lateinit var btnSendCurve: Button
+    private lateinit var btnGuessSwapOrder: Button
+    private lateinit var btnGuessSemicolon: Button
+    private lateinit var btnGuessNoPrefix: Button
     private lateinit var btnReadFan: Button
     private val log = StringBuilder()
     private lateinit var localLogFile: File
     private var cpuTempPaths: List<String> = emptyList()
     private var zonesResolved = false
+    private var pendingCustomCommand: String? = null
 
     private var serviceBinder: IBinder? = null
     private var clientId: String? = null
@@ -114,6 +133,9 @@ class MainActivity : AppCompatActivity() {
         btnBalance = findViewById(R.id.btnBalance)
         btnTurbo = findViewById(R.id.btnTurbo)
         btnSendCurve = findViewById(R.id.btnSendCurve)
+        btnGuessSwapOrder = findViewById(R.id.btnGuessSwapOrder)
+        btnGuessSemicolon = findViewById(R.id.btnGuessSemicolon)
+        btnGuessNoPrefix = findViewById(R.id.btnGuessNoPrefix)
         btnReadFan = findViewById(R.id.btnReadFan)
         localLogFile = File(filesDir, RESULT_FILE_NAME)
         localLogFile.writeText("")
@@ -122,13 +144,19 @@ class MainActivity : AppCompatActivity() {
         appendLog("time=${Date()} applicationId=${BuildConfig.APPLICATION_ID}")
         appendLog("Target: ${AidlProtocol.SERVICE_PACKAGE}/${AidlProtocol.SERVICE_CLASS}")
         appendLog("Test curve (temp,duty pairs): $TEST_CURVE")
+
+        pendingCustomCommand = intent?.getStringExtra(EXTRA_CUSTOM_COMMAND)
+        pendingCustomCommand?.let { appendLog("custom_command extra present: \"$it\" -- will auto-send once connected") }
         appendLog("")
 
         btnOff.setOnClickListener { sendFanMode(MODE_OFF, "OFF") }
         btnMute.setOnClickListener { sendFanMode(MODE_MUTE, "MUTE") }
         btnBalance.setOnClickListener { sendFanMode(MODE_BALANCE, "BALANCE") }
         btnTurbo.setOnClickListener { sendFanMode(MODE_TURBO, "TURBO") }
-        btnSendCurve.setOnClickListener { sendTestCurve() }
+        btnSendCurve.setOnClickListener { sendCurveGuess("original (temp,duty | pipe, CUSTOM- prefix)", MODE_CUSTOM + "-" + TEST_CURVE) }
+        btnGuessSwapOrder.setOnClickListener { sendCurveGuess("guessA swap-order", GUESS_SWAP_ORDER) }
+        btnGuessSemicolon.setOnClickListener { sendCurveGuess("guessB semicolon", GUESS_SEMICOLON) }
+        btnGuessNoPrefix.setOnClickListener { sendCurveGuess("guessC no-prefix", GUESS_NO_PREFIX) }
         btnReadFan.setOnClickListener { Thread { readFanState(tag = "manual") }.start() }
 
         // Baseline read on launch, before anything is touched -- so the very first log
@@ -174,6 +202,10 @@ class MainActivity : AppCompatActivity() {
                 txtStatus.text = "READY -- connected, clientId=$clientId"
                 setModeButtonsEnabled(true)
             }
+            pendingCustomCommand?.let { cmd ->
+                pendingCustomCommand = null
+                sendCustomCommand(cmd)
+            }
         }
         syncToSdcard()
     }
@@ -184,6 +216,9 @@ class MainActivity : AppCompatActivity() {
         btnBalance.isEnabled = enabled
         btnTurbo.isEnabled = enabled
         btnSendCurve.isEnabled = enabled
+        btnGuessSwapOrder.isEnabled = enabled
+        btnGuessSemicolon.isEnabled = enabled
+        btnGuessNoPrefix.isEnabled = enabled
         // btnReadFan intentionally NOT gated -- it's a pure xsu read, safe and useful
         // even while disconnected (e.g. to capture a true pre-connection baseline).
     }
@@ -207,19 +242,21 @@ class MainActivity : AppCompatActivity() {
         }.start()
     }
 
-    /** Step 2 test: the actual curve write -- switches to CUSTOM, then pushes
-     *  TEST_CURVE via `com_set_fan_speed_strategy`. This is the real question this
-     *  whole spike exists to answer. */
-    private fun sendTestCurve() {
+    /** Step 2/3 test: the actual curve write -- switches to CUSTOM, then pushes
+     *  [strategySuffix] (everything after "com_set_fan_speed_strategy:") via
+     *  `com_set_fan_speed_strategy`. [label] is just for the log, to tell guesses apart.
+     *  Always ends with [resetToKnownState] so one guess's leftover duty can't bleed into
+     *  the read for the next one, and the device isn't left mid-experiment. */
+    private fun sendCurveGuess(label: String, strategySuffix: String) {
         val binder = serviceBinder
         val id = clientId
         if (binder == null || id == null) {
-            appendLog("Cannot send test curve: not connected/registered yet")
+            appendLog("Cannot send guess [$label]: not connected/registered yet")
             return
         }
         setModeButtonsEnabled(false)
         Thread {
-            appendLog("--- sending test curve (CUSTOM mode + strategy) ---")
+            appendLog("--- guess [$label]: mode->CUSTOM then strategy ---")
 
             val modeMsg = "$id:msg_type_performance:com_set_performance_fan:$MODE_CUSTOM"
             appendLog("send(\"$modeMsg\")")
@@ -234,12 +271,46 @@ class MainActivity : AppCompatActivity() {
 
             Thread.sleep(500)
 
-            val strategyMsg = "$id:msg_type_performance:com_set_fan_speed_strategy:$MODE_CUSTOM-$TEST_CURVE"
+            val strategyMsg = "$id:msg_type_performance:com_set_fan_speed_strategy:$strategySuffix"
             appendLog("send(\"$strategyMsg\")")
-            sendAndVerify(binder, strategyMsg, extraNote = "mode-switch send_ok=$modeOk")
+            sendAndVerify(binder, strategyMsg, extraNote = "guess=$label mode-switch send_ok=$modeOk")
 
+            resetToKnownState(binder, id)
             runOnUiThread { setModeButtonsEnabled(true) }
         }.start()
+    }
+
+    /** Sends the exact command suffix passed via the `custom_command` intent extra --
+     *  the adb-drivable escape hatch for trying a format guess without a rebuild. Also
+     *  resets to BALANCE afterward, same as [sendCurveGuess]. */
+    private fun sendCustomCommand(command: String) {
+        val binder = serviceBinder
+        val id = clientId
+        if (binder == null || id == null) {
+            appendLog("Cannot send custom command: not connected/registered yet")
+            return
+        }
+        setModeButtonsEnabled(false)
+        Thread {
+            appendLog("--- custom command (from intent extra) ---")
+            val message = "$id:msg_type_performance:$command"
+            appendLog("send(\"$message\")")
+            sendAndVerify(binder, message, extraNote = "source=intent_extra")
+            resetToKnownState(binder, id)
+            runOnUiThread { setModeButtonsEnabled(true) }
+        }.start()
+    }
+
+    /** Leaves the fan in a known, sane state after any curve-write attempt -- BALANCE
+     *  rather than OFF, so a test session never ends with no active cooling. Also gives
+     *  every guess in a multi-guess session a clean, comparable starting point instead of
+     *  letting the previous guess's leftover duty bleed into the next one's read. */
+    private fun resetToKnownState(binder: IBinder, id: String) {
+        Thread.sleep(300)
+        appendLog("--- reset to BALANCE after guess ---")
+        val resetMsg = "$id:msg_type_performance:com_set_performance_fan:$MODE_BALANCE"
+        appendLog("send(\"$resetMsg\")")
+        sendAndVerify(binder, resetMsg)
     }
 
     /** Sends [message], then waits and reads back real fan state via xsu -- the
