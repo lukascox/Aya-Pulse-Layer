@@ -613,18 +613,23 @@ touches day to day. RGB and the sleep-monitor unknown are real but small
 remaining items, worth closing before calling this a true 1:1 port, not
 before calling it *usable*.
 
-## Next: fan control via AIDL (planned, not yet attempted on-device)
+## Next: fan control via AIDL (probe built, not yet run on-device)
 
-The concrete next step, once approved: a small, isolated spike — same
-shape as `research/aidl-bind-spike/` did for performance-mode — that
-sends `com_set_performance_fan:CUSTOM` followed by a
-`com_set_fan_speed_strategy:...` curve write from a throwaway probe (or a
-debug hook in `pulse-for-aya` itself) and confirms live whether AYA's
-native fan curve actually changes, the same way `aidl-bind-spike`
-confirmed `com_set_performance_mode` earlier in this project. **This
-requires touching the physical device and has not been done** — per this repo's
-own hard rule, that needs an explicit plain-language explanation and
-sign-off first, each time, not assumed from earlier conversation.
+**`research/aidl-fan-spike/` now exists and builds clean** — a small,
+isolated probe, same shape as `research/aidl-bind-spike/` did for
+performance-mode: sends `com_set_performance_fan:<mode>` (discrete modes,
+staged as "step 1") and `com_set_fan_speed_strategy:FAN_MODE_CUSTOM-...`
+(a real curve write, "step 2"), then objectively verifies via the
+confirmed-readable `pwm-fan` hwmon node whether AYA's native fan actually
+changed — the same empirical standard `aidl-bind-spike` used to confirm
+`com_set_performance_mode` earlier in this project. See that project's own
+`README.md` for the full protocol, staged test order, and exact
+success/failure signatures.
+
+**This still requires touching the physical device and has not been run**
+— per this repo's own hard rule, that needs an explicit plain-language
+explanation and sign-off first, each time, not assumed from earlier
+conversation.
 
 ## Build / install
 

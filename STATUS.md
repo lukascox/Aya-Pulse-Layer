@@ -6,6 +6,39 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## `research/aidl-fan-spike/` built (2026-07-29): probe ready, not yet run on-device
+
+Built the concrete next step flagged in the entry below: a throwaway probe
+app, same shape/conventions as `research/aidl-bind-spike/` (copied
+`AidlProtocol.kt`'s bind/register/send mechanism, not shared — one-shot
+probes, not a library). Builds clean (`./gradlew assembleDebug`, verified
+via `grunt`, one unused-parameter warning found and fixed).
+
+Two staged tests: **step 1** sends discrete `com_set_performance_fan:
+FAN_MODE_<OFF|MUTE|BALANCE|TURBO>` only (isolates whether the simplest
+command does anything); **step 2** switches to CUSTOM and pushes a real
+test curve via `com_set_fan_speed_strategy:FAN_MODE_CUSTOM-50,12|65,32|
+78,68|85,95|95,100` (the same "ramp harder, sooner" shape discussed
+earlier this session as a sensible curve improvement, not a random or
+extreme value). Every send is followed by an objective read-back of the
+confirmed `pwm-fan` hwmon node (RPM + PWM duty), not just trusting that
+the Binder `transact()` didn't throw — same empirical standard as
+`aidl-bind-spike`'s cpufreq read-back.
+
+**One real unknown flagged honestly, not glossed over**: the exact enum
+string format (`FAN_MODE_CUSTOM` vs. just `CUSTOM`, etc.) sent to
+`com_set_performance_fan`/`com_set_fan_speed_strategy` is reconstructed
+from `FanSpeedConfig.java`'s decompiled `WhenMappings` block, not
+independently confirmed — this app is the first live test of whether that
+assumption holds. Full detail, exact commands, and the quick
+build/install/logcat test loop: `research/aidl-fan-spike/README.md`.
+
+**Not yet run on-device** — this requires the physical device and this
+repo's own hard rule (ELI5 + explicit sign-off before any device-touching
+command, every time). ELI5 already given in-session; actual install/run
+deferred since the user was using the device concurrently for their own
+log pull at the time this was built.
+
 ## Feature-parity checklist written (2026-07-29): fan is the last big gap, RGB + one unknown remain smaller
 
 End-of-session stocktake, prompted by the user asking whether fan control
