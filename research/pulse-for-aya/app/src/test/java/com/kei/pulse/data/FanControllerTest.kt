@@ -61,6 +61,23 @@ class FanControllerAidlModeForTest {
         assertNull(FanController.aidlModeFor(FanController.CUSTOM))
         assertNull(FanController.aidlModeFor(999))
     }
+
+    @Test
+    fun modeForAidlRoundTripsEveryModeWeCanSend() {
+        for (mode in listOf(FanController.SILENT, FanController.SMART, FanController.SPORT)) {
+            assertEquals(mode, FanController.modeForAidl(FanController.aidlModeFor(mode)))
+        }
+    }
+
+    /** OFF/CUSTOM are real vendor states we can receive but never send -- both mean "not a mode PULSE
+     *  manages", which the arbiter must see as drift rather than as one of our own modes. */
+    @Test
+    fun vendorOnlyStatesAndGarbageMapToNull() {
+        assertNull(FanController.modeForAidl("FAN_MODE_OFF"))
+        assertNull(FanController.modeForAidl("FAN_MODE_CUSTOM"))
+        assertNull(FanController.modeForAidl(null))
+        assertNull(FanController.modeForAidl(""))
+    }
 }
 
 /**

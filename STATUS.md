@@ -6,6 +6,32 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## Fan mode readback fixed via the vendor's AIDL callback (2026-07-30) — a review pass caught the discrete-mode work being only half-live
+
+Found by reviewing the session's own output before any on-device test ran:
+the entire fan stack reads state through `FanController.readMode()`, which
+on this device always returns `null` (it reads the dead AYN Odin
+`Settings.System fan_mode` key — confirmed live, every `fan_mode=null` in
+the drift log quoted in `pulse-for-aya/README.md` is that read). That
+silently made `FanArbiter` unable to ever return `SetVendorMode`/
+`ReleaseToVendor` (both branches bail on a null read), so the release
+normalization it was written to fix stayed broken and two of the ten AIDL
+call sites wired earlier were dead code; it also blanked the Tuner's fan
+chip to `"—"` right after picking a mode.
+
+Fixed by using gamewindow's own unsolicited whole-profile callback — which
+`AyaAidlClient` already received and discarded — as the readback:
+`parseFanModeFromCallback` extracts `modeConfigurations[currentMode].fanMode`,
+`readMode()` prefers that cache over the dead key. **Known limit, stated
+rather than papered over**: the callback is confirmed only as an echo of
+our own sends; there is no `com_get_*` query command and no state dump on
+connect (so `null` now means "unknown", with callers falling back to the
+persisted `managedFanMode`), and whether it also fires on vendor-UI-initiated
+changes is **unconfirmed** — every callback is now logged so the next
+on-device session answers that for free. Build/test/lint clean (398 tests).
+Full writeup: `research/pulse-for-aya/README.md`, "Follow-up the same day:
+the readback was dead".
+
 ## Discrete fan mode (Silent/Smart/Sport) IMPLEMENTED (2026-07-30) — the deferred follow-up from the curve work, same day
 
 No new research needed — re-checked `aidl-fan-spike/FINDINGS.md`,

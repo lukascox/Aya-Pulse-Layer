@@ -867,6 +867,63 @@ not necessarily a mapping problem) — worth a quick listen-test per mode
 before trusting the Silent/Smart/Sport labels blindly. See the test
 procedure this hands off to the user.
 
+### Follow-up the same day: the readback was dead, and it broke more than it looked
+
+A review pass over the above (before any on-device test ran) found the
+discrete-mode work was only half-live, because **the whole fan
+architecture reads state through `FanController.readMode()`, which on this
+device always returns `null`** — it reads the AYN Odin `Settings.System
+fan_mode` key, dead here. This wasn't a hypothesis: every `fan_mode=null`
+in the drift-log excerpt quoted earlier in this file is that exact read,
+captured live. Three consequences, none of which had been noticed:
+
+1. **`FanArbiter` could never dispatch a discrete mode.** Both its
+   decision branches do `readLiveMode() ?: return FanAction.None`
+   (`model/FanArbiter.kt`), so with a `null` read it returned `None`
+   forever — `SetVendorMode` and `ReleaseToVendor` were unreachable, and
+   the two AIDL call sites wired for them were dead code. Notably that
+   also meant the managed→unmanaged **release normalization stayed
+   broken** — the specific bug `FanArbiter` was extracted to fix.
+2. **The Tuner's fan chip blanked to `"—"`** right after the user picked a
+   mode, and on every relaunch, since the UI state came from that read.
+3. Per-app profile snapshot/restore of a fan mode was a silent no-op.
+
+**Fix: use the vendor's own callback as the readback.** `AyaAidlClient`
+already received gamewindow's unsolicited whole-profile config dump and
+threw it away (`handleCallback`'s "any other message is ignored"). It now
+parses it — `parseFanModeFromCallback` selects `currentMode`, then
+`modeConfigurations[currentMode].fanMode` — and caches the result;
+`readMode()` prefers that cache and keeps the dead Settings read only as a
+fallback (so the fork stays diffable and still works where that key is
+live). `FanController.modeForAidl()` is the inverse of `aidlModeFor()`;
+`FAN_MODE_OFF`/`FAN_MODE_CUSTOM` map to `null` = "a state PULSE doesn't
+manage", which the arbiter correctly reads as drift.
+
+**What this does and does not buy, precisely** — the research behind it
+(`research/aidl-fan-spike`, `aidl-bind-spike`, `ayaspace-teardown`) is
+clear on the limits and they matter:
+- **Confirmed**: the callback fires as an echo of *our own* sends, every
+  send, zero misses. So after any set, the cache holds a vendor-confirmed
+  value → the chip is correct and `ReleaseToVendor` now genuinely fires.
+- **Confirmed absent**: any `com_get_*` query command, and any state dump
+  on connect. So the cache is empty until the first callback — `readMode()`
+  returning `null` now means "unknown", never "off", and callers that need
+  a value at startup fall back to PULSE's own persisted `managedFanMode`
+  (the same "trust what PULSE chose" path Custom already used).
+- **UNCONFIRMED, deliberately left open**: whether gamewindow also pushes
+  this callback when *its own* UI changes the fan. If it does, this is a
+  true drift detector; if it doesn't, it only ever confirms our own
+  writes. No probe has tested it. Rather than guess, `handleCallback` now
+  logs every callback it receives (`PulseFan: AIDL callback: …`) — so the
+  next on-device session answers the question for free: a callback
+  arriving with no preceding send of ours settles it.
+
+Also fixed in passing: `setFanMode()` no longer reads back immediately
+after sending. The AIDL send is fire-and-forget with the confirming
+callback landing asynchronously on a Binder thread, so the read raced it
+and usually lost — blanking the chip the user just tapped. It now reflects
+the chosen mode on success and only reads back when the send failed.
+
 ## Build / install
 
 ```bash

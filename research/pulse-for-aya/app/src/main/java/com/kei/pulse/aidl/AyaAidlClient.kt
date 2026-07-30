@@ -7,6 +7,11 @@ import android.content.ServiceConnection
 import android.os.Binder
 import android.os.IBinder
 import android.os.Parcel
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.int
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 /**
  * Hand-rolled reconstruction of `com.ayaneo.gamewindow`'s undocumented AIDL wire protocol --
@@ -124,6 +129,7 @@ class AyaAidlClient(private val context: Context) {
     private var clientId: String? = null
     private var callbackStub: AyaAidlCallbackStub? = null
     private var connection: ServiceConnection? = null
+    @Volatile private var lastFanMode: String? = null
 
     /**
      * Binds and registers our callback; [onReady] fires once (on whichever thread the callback
@@ -178,11 +184,27 @@ class AyaAidlClient(private val context: Context) {
             val id = msg.substringAfter("msg_type_register:")
             clientId = id
             onReady(BindResult.Ready(id))
+            return
         }
-        // Any other unsolicited message (whole-profile config dumps, etc. -- see
-        // aidl-bind-spike/FINDINGS.md's "richer than expected" callback payload) is ignored here;
-        // this client only cares about the registration handshake for now.
+        // Every other callback is logged in full-length-capped form (2026-07-30): gamewindow pushes a
+        // whole-profile config dump here, which is our ONLY readback channel for fan mode (there is no
+        // `com_get_*` query command -- confirmed absent from the full AIDL catalog in
+        // `research/ayaspace-teardown/FINDINGS.md`, and registering delivers no initial state dump).
+        // The log line is also a deliberate open-question probe: it is CONFIRMED this fires as an echo of
+        // our own sends, but UNCONFIRMED whether it also fires when the vendor's own UI changes the fan.
+        // If a session log ever shows one of these arriving without a preceding send of ours, that
+        // question is answered and [lastKnownFanMode] becomes a true drift detector rather than just a
+        // confirmation of our own writes. See `research/pulse-for-aya/README.md`'s "Discrete fan mode".
+        android.util.Log.d("PulseFan", "AIDL callback: ${msg.take(160)}")
+        parseFanModeFromCallback(msg)?.let { lastFanMode = it }
     }
+
+    /**
+     * The vendor's own last-reported fan mode as an AIDL `FAN_MODE_*` string, or `null` if gamewindow
+     * hasn't told us yet (nothing arrives on connect -- the cache stays empty until the first callback).
+     * `@Volatile` because it's written on a Binder thread pool thread and read from ours.
+     */
+    fun lastKnownFanMode(): String? = lastFanMode
 
     /**
      * `modeIndex`: 0=Eco, 1=Balanced, 2=Streaming, 3=Gaming, 4=Max (per
@@ -237,6 +259,40 @@ class AyaAidlClient(private val context: Context) {
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
+        }
+    }
+
+    companion object {
+        /** The one callback prefix that carries a whole-profile config dump (the only one that has ever
+         *  been observed carrying fan state -- `research/aidl-fan-spike/results/run1/`). */
+        private const val PERFORMANCE_CALLBACK_PREFIX = "msg_type_performance:com_set_performance_mode:"
+
+        /**
+         * Extracts the ACTIVE profile's fan mode from a raw callback message, or `null` for any message
+         * that doesn't carry one. The real observed payload (verbatim, trimmed --
+         * `research/aidl-fan-spike/results/run1/aidl_fan_spike_result.txt:16`) is:
+         *
+         * ```
+         * msg_type_performance:com_set_performance_mode:{"currentMode":3,"modeConfigurations":{
+         *   "0":{...,"fanMode":"FAN_MODE_OFF",...,"lastFanMode":"FAN_MODE_MUTE"},
+         *   "1":{...,"fanMode":"FAN_MODE_CUSTOM",...}, ...}}
+         * ```
+         *
+         * i.e. the dump carries ALL five profiles' settings, so the active one has to be selected via the
+         * top-level `currentMode` index (note the sibling `lastFanMode` key -- deliberately NOT read;
+         * `fanMode` is the live one). Total-function by construction: this runs on a Binder thread, where
+         * an exception would propagate into the vendor's own transact, so every parse failure (malformed
+         * JSON, missing/renamed key, unexpected type) returns `null` rather than throwing.
+         */
+        fun parseFanModeFromCallback(msg: String): String? {
+            if (!msg.startsWith(PERFORMANCE_CALLBACK_PREFIX)) return null
+            return runCatching {
+                val root = Json.parseToJsonElement(msg.substringAfter(PERFORMANCE_CALLBACK_PREFIX)).jsonObject
+                val current = root["currentMode"]?.jsonPrimitive?.int ?: return null
+                root["modeConfigurations"]?.jsonObject
+                    ?.get(current.toString())?.jsonObject
+                    ?.get("fanMode")?.jsonPrimitive?.contentOrNull
+            }.getOrNull()
         }
     }
 

@@ -581,7 +581,7 @@ class TunerViewModel(
             )
             val snap = withContext(Dispatchers.IO) {
                 Snap(
-                    mode = fanController.readMode(),
+                    mode = fanController.readMode(aidlClient = aidlClient),
                     native = displayController.readNative(),
                     gov = state.value.policies.firstOrNull { !it.isGpu }
                         ?.let { governorController.readGovernor(it) },
@@ -590,14 +590,19 @@ class TunerViewModel(
                 )
             }
             // Custom never writes a vendor fan_mode, so the readback can't show it — reflect the persisted
-            // Custom selection directly (Odin only) so the chip stays selected and the editor survives a
-            // relaunch. Everywhere else, trust the live vendor readback.
+            // Custom selection directly so the chip stays selected and the editor survives a relaunch.
+            // The same "trust what PULSE chose" fallback now also covers the discrete modes: on AYANEO the
+            // live readback is null until gamewindow pushes its first callback, and nothing arrives on
+            // connect (FanController.readMode's doc) — so a fresh launch would otherwise blank the chip to
+            // "—" even though PULSE has a perfectly good persisted selection. Live readback still wins
+            // whenever we actually have one, so a mode changed outside PULSE is not masked by a stale
+            // persisted value.
             _customFanSupported.value = snap.customFan
             _fanMode.value =
                 if (snap.customFan && settings.value.managedFanMode == FanController.CUSTOM) {
                     FanController.CUSTOM
                 } else {
-                    snap.mode
+                    snap.mode ?: settings.value.managedFanMode
                 }
             if (snap.native != null) _nativeDisplay.value = snap.native
             if (snap.gov != null) _governor.value = snap.gov
@@ -728,12 +733,15 @@ class TunerViewModel(
             } else {
                 withContext(Dispatchers.IO) { fanController.setMode(mode, aidlClient) }
             }
-            // Custom never writes a vendor fan_mode, so reflect the chosen mode directly -- reading back the
-            // live value would still show Smart/etc. and the chip wouldn't stick.
-            _fanMode.value = if (mode == FanController.CUSTOM) {
+            // Reflect the chosen mode directly on success, rather than reading back: Custom never writes a
+            // vendor fan_mode at all, and for the discrete modes the AIDL send is fire-and-forget with the
+            // confirming callback arriving asynchronously on a Binder thread -- reading here would race it
+            // and usually lose, blanking the chip the user just tapped. Only fall back to a live read when
+            // the send itself failed, where "what PULSE wanted" would be an actively wrong thing to show.
+            _fanMode.value = if (mode == FanController.CUSTOM || ok) {
                 mode
             } else {
-                withContext(Dispatchers.IO) { fanController.readMode() }
+                withContext(Dispatchers.IO) { fanController.readMode(aidlClient = aidlClient) }
             }
             // Remember it so the watcher re-asserts it against the system Fan tile; onSaved starts that watcher.
             settingsStorage.persistManagedFanMode(mode)

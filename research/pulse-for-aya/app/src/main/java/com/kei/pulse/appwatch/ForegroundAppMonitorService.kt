@@ -954,7 +954,7 @@ class ForegroundAppMonitorService : Service() {
             if (!customFanGate.active) {
                 if (customFanRunning) {
                     stopCustomFan(restoreVendor = true) // stop driving + hand the fan back to vendor Smart
-                } else if (fanController.readMode() != FanController.SMART) {
+                } else if (fanController.readMode(pulseDaemon, ayaAidlClient) != FanController.SMART) {
                     // Fresh/idle and the fan is NOT on Smart (e.g. a stranded fan_mode=6 from a prior kill) —
                     // restore Smart so the fan is quiet and vendor-regulated.
                     serviceScope.launch(Dispatchers.IO) { fanController.setMode(FanController.SMART, ayaAidlClient) }
@@ -1003,7 +1003,7 @@ class ForegroundAppMonitorService : Service() {
             customFanSupported = isCustomFanSupported(),
             releaseLatched = fanReleasedToVendor,
             releaseMode = DeviceProfiles.forSoc(container.repository.socModel()).fanReleaseMode,
-            readLiveMode = { fanController.readMode(pulseDaemon) },
+            readLiveMode = { fanController.readMode(pulseDaemon, ayaAidlClient) },
         )
         fanLog("arbiter=$action auto=$autoActive bound=$boundFan managed=${settings.managedFanMode} latched=$fanReleasedToVendor")
         when (action) {
@@ -1143,7 +1143,7 @@ class ForegroundAppMonitorService : Service() {
                             val now = android.os.SystemClock.elapsedRealtime()
                             if (now - lastDriftLogMs > 800) {
                                 lastDriftLogMs = now
-                                android.util.Log.d("PulseFan", "fast-loop drift: node=$live fan_mode=${fanController.readMode()} re-pinned=${fanCurveController.appliedPercent}%")
+                                android.util.Log.d("PulseFan", "fast-loop drift: node=$live fan_mode=${fanController.readMode(pulseDaemon, ayaAidlClient)} re-pinned=${fanCurveController.appliedPercent}%")
                             }
                         }
                         // Advance the smooth ramp on its own slower cadence so the fan-response-step tuning is
@@ -1511,7 +1511,7 @@ class ForegroundAppMonitorService : Service() {
                     values = container.repository.readCurrentValues(),
                     appliedDisplayProfileId = ProfileStateResolver.MANUAL_PROFILE_ID,
                     activeTierLabel = settings.activeTierLabel,
-                    fanMode = fanController.readMode(),
+                    fanMode = fanController.readMode(pulseDaemon, ayaAidlClient),
                     // AutoTDP always forces max refresh, so always capture the prior rate to restore.
                     refreshRateHz = refreshRateController.readPeak(),
                     governor = priorGovernor,
@@ -1941,7 +1941,7 @@ class ForegroundAppMonitorService : Service() {
                 values = container.repository.readCurrentValues(),
                 appliedDisplayProfileId = ProfileStateResolver.MANUAL_PROFILE_ID,
                 activeTierLabel = settings.activeTierLabel,
-                fanMode = if (config.fanMode != null) fanController.readMode() else null,
+                fanMode = if (config.fanMode != null) fanController.readMode(pulseDaemon, ayaAidlClient) else null,
                 refreshRateHz = if (config.refreshRateHz != null) refreshRateController.readPeak() else null,
                 // Tiers/Custom re-assert a governor on apply, so capture it to restore on exit.
                 governor = ensurePolicies().firstOrNull { !it.isGpu }?.let { governorController.readGovernor(it) },

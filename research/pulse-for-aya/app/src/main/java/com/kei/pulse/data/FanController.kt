@@ -28,15 +28,24 @@ import com.kei.pulse.root.RootSupport
 class FanController {
 
     /**
-     * `pulseDaemon` optional and defaults to `null` (raw `xsu`, the original behavior) so every existing
-     * call site keeps working unchanged. Routes through the daemon's `GETSETTING` (zero `xsu` calls) when
-     * available, falling back to the original raw `xsu` read otherwise -- same all-or-nothing-per-call
-     * contract as [PulseDaemon.readBatch]'s callers. Reads the (AYANEO-dead, see class doc) vendor
-     * `fan_mode` key -- kept as-is, not rewired to AIDL (out of scope for the curve work, see class doc).
+     * The live vendor fan mode, preferring [aidlClient]'s callback-cached value -- the ONLY real readback
+     * this device has. The Odin `Settings.System fan_mode` key below it is dead here and always reads
+     * `null`, confirmed live: every `fan_mode=null` in the drift-log excerpt quoted in
+     * `research/pulse-for-aya/README.md` is this read. It is kept as the fallback rather than deleted so
+     * the fork stays diffable against upstream and still works on hardware where that key IS live.
+     *
+     * **Returns `null` until gamewindow has pushed at least one callback** (nothing arrives on connect --
+     * `AyaAidlClient.parseFanModeFromCallback`'s doc). Callers that need a value at startup should fall
+     * back to PULSE's own persisted `managedFanMode`; a `null` here means "unknown", never "off".
+     *
+     * `pulseDaemon` routes the fallback read through the daemon's `GETSETTING` (zero `xsu` calls) when
+     * available -- same all-or-nothing-per-call contract as [PulseDaemon.readBatch]'s callers.
      */
-    fun readMode(pulseDaemon: PulseDaemon? = null): Int? =
-        (pulseDaemon?.readSetting("fan_mode") ?: RootSupport.runRootCommand("settings get system fan_mode"))
+    fun readMode(pulseDaemon: PulseDaemon? = null, aidlClient: AyaAidlClient? = null): Int? {
+        modeForAidl(aidlClient?.lastKnownFanMode())?.let { return it }
+        return (pulseDaemon?.readSetting("fan_mode") ?: RootSupport.runRootCommand("settings get system fan_mode"))
             ?.trim()?.toIntOrNull()
+    }
 
     /**
      * Prerequisite for the AYANEO duty node to respond: writes [FAN_POWER_PATH] = `1` (unlocking it first,
@@ -126,6 +135,20 @@ class FanController {
             SILENT -> "FAN_MODE_MUTE"
             SMART -> "FAN_MODE_BALANCE"
             SPORT -> "FAN_MODE_TURBO"
+            else -> null
+        }
+
+        /**
+         * Inverse of [aidlModeFor], for reading gamewindow's callback state back into our mode ints.
+         * `FAN_MODE_OFF` and `FAN_MODE_CUSTOM` are real vendor states we can RECEIVE but deliberately
+         * never send (OFF has no slot in [MODES]; CUSTOM is the vendor's own curve mode, unrelated to
+         * PULSE's [CUSTOM] which drives the PWM node directly) -- both map to `null` = "a mode PULSE
+         * doesn't manage", which the arbiter correctly treats as drift away from whatever it wanted.
+         */
+        fun modeForAidl(aidlMode: String?): Int? = when (aidlMode) {
+            "FAN_MODE_MUTE" -> SILENT
+            "FAN_MODE_BALANCE" -> SMART
+            "FAN_MODE_TURBO" -> SPORT
             else -> null
         }
 
