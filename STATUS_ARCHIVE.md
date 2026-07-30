@@ -1340,7 +1340,7 @@ per `CLAUDE.md`'s fan hard rule). Checked all three levels:
    decompiled `PerformanceViewModel`/Settings fragments.
 2. **No disableable component** — the actual hook,
    `com.ayaneo.gamewindow.observer.AyaTaskStackSubscriber` (verified
-   directly, `aya-gamewindow-decompiled/sources/com/ayaneo/gamewindow/
+   directly, `aya-gamewindows-decompiled/sources/com/ayaneo/gamewindow/
    observer/AyaTaskStackSubscriber.java`), is not a manifest-declared
    `<receiver>`/`<service>` — it's a plain object registered at runtime via
    the privileged `ActivityManager.registerTaskStackListener()` call in

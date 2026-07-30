@@ -531,12 +531,12 @@ registered (`CustomKeyDispatch.java:124`).
 
 **The real gate is downstream, in event routing, and it *is* restrictive.**
 `WindowKeyEventService` (an `AccessibilityService`,
-`aya-gamewindow-decompiled/sources/com/ayaneo/gamewindow/service/WindowKeyEventService.java:28,157-181`)
+`aya-gamewindows-decompiled/sources/com/ayaneo/gamewindow/service/WindowKeyEventService.java:28,157-181`)
 implements `onKeyEvent(KeyEvent)` — Android's global, system-wide key
 interception callback for accessibility services — and forwards every key
 event to `OnKeyInterceptKt.b(event)`
 (`WindowKeyEventService.java:180`). That function
-(`aya-gamewindow-decompiled/sources/com/ayaneo/gamewindow/custom/keydetector/OnKeyInterceptKt.java:40-154`)
+(`aya-gamewindows-decompiled/sources/com/ayaneo/gamewindow/custom/keydetector/OnKeyInterceptKt.java:40-154`)
 is a long chain of `if (keyCode == iAyaDevices.get<X>())` checks against a
 **fixed, small set of getters on `IAyaDeviceKey`** — and only when the
 incoming keycode matches one of those does it call `onCheckCustomKey`
@@ -553,7 +553,7 @@ passes the event through untouched otherwise. It never reaches
 The specific `IAyaDeviceKey` getters checked in `OnKeyInterceptKt.b()`
 (`:51,54,58,62,66,70,74,80,86,108`) correspond, by cross-referencing
 `IAyaDeviceKey`'s own property list
-(`aya-gamewindow-decompiled/sources/com/ayaneo/devices/IAyaDeviceKey.java:7,15-66`),
+(`aya-gamewindows-decompiled/sources/com/ayaneo/devices/IAyaDeviceKey.java:7,15-66`),
 to: `ayaLCCode`, `ayaRCCode`, `ayaModeCode`, `ayaHomeKeyCode`,
 `ayaSlideRCode`, `ayaRollerIncrease`/`ayaRollerDecrease`/`ayaRollerPress`,
 `ayaKeyCode`/`ayaKeyCode2`, `magicTouchCode`, `ayaVolumeUp`/`ayaVolumeDown`
@@ -616,7 +616,7 @@ some other kind of allowlist (e.g. it does not gate config *visibility* or
 ### 4h. Trigger keycode enumeration — names exist, literal values are device-specific
 
 `IAyaDeviceKey`
-(`aya-gamewindow-decompiled/sources/com/ayaneo/devices/IAyaDeviceKey.java:7,15-66`)
+(`aya-gamewindows-decompiled/sources/com/ayaneo/devices/IAyaDeviceKey.java:7,15-66`)
 enumerates the **names** of every AYA-specific extra-button keycode the
 whole device abstraction layer knows about:
 `ayaHomeKeyCode, ayaKeyCode, ayaKeyCode2, ayaLBRes, ayaLBWhiteRes,
@@ -869,19 +869,19 @@ work on our end.
 
 Nothing in this repo had looked at motion-sensor access before this pass.
 Investigated both decompiled trees end-to-end
-(`aya-gamewindow-decompiled/` and
+(`aya-gamewindows-decompiled/` and
 `research/ayaspace-teardown/ayasettings_decompiled/`) for
 `gyro|Gyroscope|SensorManager|TYPE_GYROSCOPE|MotionSensor|SensorEventListener`.
 
 ### 8a. The device has a gyro capability flag, and GameWindow does use it — for controller gyro-aim, in its own in-game overlay
 
 `IAyaDevices` declares a `hasGyro: Boolean` capability property
-(`aya-gamewindow-decompiled/sources/com/ayaneo/devices/IAyaDevices.java:41`,
+(`aya-gamewindows-decompiled/sources/com/ayaneo/devices/IAyaDevices.java:41`,
 in the class's Kotlin reflection metadata — `getHasGyro`/`hasGyro` appears
 alongside `hasEqualizer`, `hasBypassPowerSupply`, etc.). Both `AR13`
-(`aya-gamewindow-decompiled/sources/com/ayaneo/devices/ar13/AR13.java:22`)
+(`aya-gamewindows-decompiled/sources/com/ayaneo/devices/ar13/AR13.java:22`)
 and `AR14`
-(`aya-gamewindow-decompiled/sources/com/ayaneo/devices/ar14/AR14.java:34`)
+(`aya-gamewindows-decompiled/sources/com/ayaneo/devices/ar14/AR14.java:34`)
 redeclare `hasGyro` in their own class metadata — i.e. these device
 families override the interface default rather than inheriting it as-is.
 **Not resolved this pass**: the literal `true`/`false` value for our
@@ -893,7 +893,7 @@ Gyro is a real, user-facing feature in GameWindow's in-game controller
 settings panel ("other" controller variant — `ControllerHolder`/
 `OtherControllerViewModel`, the same subsystem section 7 already covered
 for joystick sensitivity). The UI binding
-(`aya-gamewindow-decompiled/sources/com/ayaneo/gamewindow/ui/window/controller/other/ControllerHolder$bindGyro$4.java:74-94`)
+(`aya-gamewindows-decompiled/sources/com/ayaneo/gamewindow/ui/window/controller/other/ControllerHolder$bindGyro$4.java:74-94`)
 shows: an on/off checkbox, a sensitivity seekbar (shown only when gyro is
 on), and a radio button choosing which shoulder button (LB or LT,
 `R.id.civ_lb`/`R.id.civ_lt`) acts as the gyro-activation "hold to aim"
@@ -904,7 +904,7 @@ many third-party controllers.
 
 `OtherControllerViewModel.switchGyro` / `setGyroSensitivity` are the entry
 points. Full trace of the "turn gyro on" path
-(`aya-gamewindow-decompiled/sources/com/ayaneo/gamewindow/ui/window/controller/other/OtherControllerViewModel$switchGyro$1.java`,
+(`aya-gamewindows-decompiled/sources/com/ayaneo/gamewindow/ui/window/controller/other/OtherControllerViewModel$switchGyro$1.java`,
 full 188-line file):
 1. Reads persisted config from a plain **file**, `aya_gyro.conf`, via
    `AyaShareConfUtilKt.d(AyaShareConfUtilKt.c("aya_gyro.conf"), "10")`
@@ -934,7 +934,7 @@ full 188-line file):
 
 **Config persistence is a third mechanism, distinct from both this repo's
 previously-documented ones.** `AyaShareConfUtilKt.a(String)`
-(`aya-gamewindow-decompiled/sources/com/ayaneo/gamewindow/utils/system/AyaShareConfUtilKt.java:23-26`)
+(`aya-gamewindows-decompiled/sources/com/ayaneo/gamewindow/utils/system/AyaShareConfUtilKt.java:23-26`)
 builds a plain **file path** —
 `(AyaDevicesUtilKt.r ? "/sdcard/.aya/" : "/data/system/aya/") + name` —
 guarded by a `ReentrantLock`-protected file observer
@@ -952,19 +952,19 @@ this pass, flagged for whoever next touches serial-controller config.
 Grepped both full decompiled trees for any `SensorManager`/
 `TYPE_GYROSCOPE`/`android.hardware.Sensor` usage:
 ```
-aya-gamewindow-decompiled: only hits are ContextCompat.java (AndroidX
+aya-gamewindows-decompiled: only hits are ContextCompat.java (AndroidX
   library, generic), SphericalGLSurfaceView.java + OrientationListener.java
   (bundled ExoPlayer library), and ContextUtilKt.java.
 ayasettings_decompiled: only ContextCompat.java (AndroidX library).
 ```
 - The **only** place a real `Sensor` is actually registered anywhere in
   either app is `com.google.android.exoplayer2.video.spherical.SphericalGLSurfaceView`
-  (`aya-gamewindow-decompiled/sources/com/google/android/exoplayer2/video/spherical/SphericalGLSurfaceView.java:270-273,204,206`)
+  (`aya-gamewindows-decompiled/sources/com/google/android/exoplayer2/video/spherical/SphericalGLSurfaceView.java:270-273,204,206`)
   — bundled ExoPlayer library code for 360°/VR video playback, using
   `Sensor.TYPE_GAME_ROTATION_VECTOR` (15) / `TYPE_ROTATION_VECTOR` (11),
   **completely unrelated to controller gyro** and not written by AYANEO.
 - `ContextUtilKt.java`
-  (`aya-gamewindow-decompiled/sources/com/ayaneo/gamewindow/utils/ContextUtilKt.java:28`)
+  (`aya-gamewindows-decompiled/sources/com/ayaneo/gamewindow/utils/ContextUtilKt.java:28`)
   declares a generic `Context.sensorManager` extension property
   (`android.hardware.SensorManager`, alongside ~25 other similar
   `getSystemService(...)` convenience wrappers for `WifiManager`,
@@ -976,7 +976,7 @@ ayasettings_decompiled: only ContextCompat.java (AndroidX library).
   decompiled tree (`grep -rli gyro` returned empty) — the feature is
   GameWindow-only, not surfaced in the standalone settings app.
 - No gyro-related entry in either app's AIDL command catalog:
-  `aya-gamewindow-decompiled/sources/com/ayaneo/gamewindow/utils/aidl/AidlConstants.java`
+  `aya-gamewindows-decompiled/sources/com/ayaneo/gamewindow/utils/aidl/AidlConstants.java`
   and
   `research/ayaspace-teardown/ayasettings_decompiled/sources/com/ayaneo/settings/utils/aidl/AidlConstants.java`
   both have zero `gyro` hits — gyro calibration/sensitivity/enable is not
@@ -1009,6 +1009,61 @@ normal Android input source, and GameWindow's own consumption of it is
 opaque native code, not a resource a second reader could straightforwardly
 share or intercept. This is a "for later" flag, per the task that
 prompted this pass, not something resolved or actioned here.
+
+## 9. `com_set_fan_speed_strategy` AIDL command is a stub — logs, never applies (2026-07-30)
+
+`research/aidl-fan-spike/` (a separate probe app, see its own `FINDINGS.md`)
+spent 4 on-device runs trying to make this AIDL command actually write a
+custom fan curve, with every reasonably-guessed string format failing —
+including one crash. Reading `AYAAidlManager$dealMsg$1.invokeSuspend()`
+(the AIDL message dispatcher) settles why, definitively, at the bytecode
+level. **jadx's default pass silently fails to decompile this specific
+method** — it's a large Kotlin coroutine state machine JADX can't fully
+reconstruct, and it just emits `throw new UnsupportedOperationException
+("Method not decompiled...")` in place of a real body (the previous,
+now-replaced `aya-gamewindow-decompiled` output had this gap; the current
+`aya-gamewindows-decompiled` tree was re-generated with `jadx
+--comments-level debug`, which recovers a raw Dalvik-register instruction
+dump instead — harder to read than clean Java, but complete). Curated
+excerpt of the three fan-relevant `when(command)` branches:
+`evidence/aidl/AYAAidlManager_dealMsg_fan_excerpt.txt`.
+
+The three fan AIDL commands behave completely differently from each
+other:
+
+- **`com_set_performance_fan`** — `FAN_MODE.valueOf(payload)` called
+  directly on the whole payload (no splitting), then handed to
+  `PerformanceManager.g(mode, ...)`, a real functional call. Matches every
+  empirical result from `aidl-fan-spike` step 1 exactly (confirmed
+  working, live).
+- **`com_set_fan_speed_strategy`** — splits the payload on `"-"`,
+  `FAN_MODE.valueOf()`s element `[0]` (this is exactly what threw in
+  `aidl-fan-spike` run4 when the prefix was missing — the whole string
+  became element `[0]`), takes element `[1]` as one opaque string, then
+  **just logs both via Timber** (`"更新风扇策略 mode = <mode> | json =
+  <rest>"` — "Update fan strategy mode = ... | json = ...") and returns.
+  **No write to any curve store, no call into a fan controller, no
+  persistence, no hardware effect of any kind.** This is a genuine stub in
+  this build — not a string-format problem on our end, and not something
+  any format guess could ever have fixed. (The log label "json" is also a
+  real clue that the *intended* payload shape is JSON, not the
+  `temp,duty|temp,duty` shape reconstructed from `FanSpeedConfig.java` —
+  moot either way, since nothing downstream reads it regardless of shape.)
+- **`com_set_fan_speed_is_linear`** — persists via
+  `AyaShareConfUtilKt.e("aya_fan_table_is_linear.conf", payload)`, a real
+  `ContentProvider`-backed config write (same class of mechanism as other
+  AYA settings, per the Addendum in `research/ayaspace-teardown/
+  FINDINGS.md`), then reads it back and logs. Actually does something —
+  untested live so far (see `aidl-fan-spike/FINDINGS.md`'s "Not yet done"),
+  but structurally nothing like the strategy command's dead end.
+
+**Bottom line: the AIDL route to a custom fan curve is closed in this app
+build.** No further string-format guessing against
+`com_set_fan_speed_strategy` is worth attempting — the handler doesn't
+act on its input regardless of shape. Section 6 above's plain-sysfs
+`pwm-fan` write path (`AR03.t1(int)`, still untested live) remains the
+only other lead for a real curve, and doesn't depend on this AIDL surface
+at all.
 
 ## Implications for `apl`
 

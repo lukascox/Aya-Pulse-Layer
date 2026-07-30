@@ -585,19 +585,21 @@ gap to a real 1:1 port is visible at a glance.
   (real PWM duty changes, AND the vendor's own unsolicited state callback
   echoing the exact mode back) — see `research/aidl-fan-spike/FINDINGS.md`.
   **The full curve write (`com_set_fan_speed_strategy`, the actual
-  PI-controller/spline-curve replacement) is now a confirmed *negative*
-  result, and one malformed variant crashed `com.ayaneo.gamewindow`
-  outright (device reboot required).** After 4 test rounds (8 curve-write
-  attempts with real SoC temp logged, across 4 different string-format
-  guesses), duty never once tracked a sent curve. One guess (dropping the
-  mandatory `FAN_MODE_CUSTOM-` prefix) hit an unhandled exception in
-  AYA's own message handler and killed the whole `gamewindow` process —
-  confirming the prefix is mandatory, but also a concrete reminder that
-  probing this specific command is not risk-free the way the discrete-mode
-  probing has been. Porting upstream's own `FanTempController.kt` (PI
-  controller) /`FanCurve.kt` (spline curve editor) logic to drive this
-  channel isn't viable until the correctly-formatted case is root-caused
-  (see `research/aidl-fan-spike/FINDINGS.md`'s "Not yet done").
+  PI-controller/spline-curve replacement) is a confirmed dead end, root
+  cause found.** After 4 test rounds (8 curve-write attempts, one crashing
+  `com.ayaneo.gamewindow` outright and requiring a device reboot — see
+  INCIDENT #4 in `STATUS.md`), reading the actual AIDL message-dispatch
+  bytecode (`research/aya-gamewindows-teardown/FINDINGS.md` section 9)
+  confirmed why: the handler splits the payload, parses out the mode, and
+  then just **logs** the rest — no write, no persistence, no hardware
+  effect, regardless of format. Not fixable by guessing a different
+  string. Porting upstream's own `FanTempController.kt` (PI controller)
+  /`FanCurve.kt` (spline curve editor) logic needs a different mechanism
+  entirely — the strongest remaining lead is the plain `pwm-fan` sysfs
+  write path (`research/aya-gamewindows-teardown/FINDINGS.md` section 6),
+  untested live so far but structurally identical to how `pulse-for-aya`
+  already talks to CPU/GPU sysfs, and independent of `com.ayaneo.gamewindow`
+  entirely (see `research/aidl-fan-spike/FINDINGS.md`'s "Not yet done").
 - **RGB — smaller, same shape of gap.** Upstream's own RGB mechanism
   (`joystick_led_light_picker_color`) is confirmed dead here too, but
   self-gates off safely (no crash, just inert — `RgbController.kt` is
@@ -623,7 +625,7 @@ touches day to day. RGB and the sleep-monitor unknown are real but small
 remaining items, worth closing before calling this a true 1:1 port, not
 before calling it *usable*.
 
-## Fan control via AIDL — runs 1-4 complete (2026-07-29/30): mode switching confirmed, curve write confirmed not working, one guess crashed gamewindow
+## Fan control via AIDL — runs 1-4 complete, root cause found (2026-07-29/30): mode switching works, curve write is a confirmed dead end
 
 `research/aidl-fan-spike/` (same shape as `research/aidl-bind-spike/`) has
 now been run on-device four times by the user. Result, full detail in
@@ -634,32 +636,29 @@ that project's `FINDINGS.md`:
   (OFF→0, MUTE→76 perfectly repeatable across all runs), AND —
   independently — gamewindow's own unsolicited state callback echoed the
   exact mode back, every single send, zero misses. Not a fluke.
-- **Step 2/3 (`com_set_fan_speed_strategy`, the real curve write) —
-  confirmed *not* working, after 8 attempts across runs 2-4 with 4
-  different string-format guesses.** Runs 2/3 switched to an unambiguous
-  flat-100%-everywhere test curve and started logging real SoC temp on
-  every read. Across every attempt, at CPU temps of 38-48°C (comfortably
-  above the curve's lowest 30°C point, which would force duty≈255 if
-  applied), **duty never once reached anywhere near 255**. Mode-switch to
-  CUSTOM itself still confirmed working via callback; it's specifically
-  the curve *content* that isn't landing.
-- **Run4 also produced a real crash**: one format guess (dropping the
-  `FAN_MODE_CUSTOM-` prefix) hit an unvalidated `FAN_MODE.valueOf(...)`
-  call in AYA's own `AYAAidlManager.dealMsg` and threw an uncaught
-  exception, killing `com.ayaneo.gamewindow` twice and requiring a device
-  reboot to fully recover. This does confirm the prefix is mandatory
-  (not just inferred), but is also a concrete data point that this
-  specific command is not as low-risk to probe as discrete mode-switching
-  has been — see `research/aidl-fan-spike/FINDINGS.md`'s run4 section.
+- **Step 2/3 (`com_set_fan_speed_strategy`, the real curve write) — a
+  confirmed dead end, root cause found by reading the actual dispatch
+  bytecode.** 8 attempts across runs 2-4 with 4 different string-format
+  guesses never once moved duty near the expected value, and one guess
+  (dropping the mandatory `FAN_MODE_CUSTOM-` prefix) crashed
+  `com.ayaneo.gamewindow` twice via an unvalidated `FAN_MODE.valueOf(...)`
+  call, requiring a device reboot (INCIDENT #4, `STATUS.md`). The *why*
+  is now settled for good: `research/aya-gamewindows-teardown/
+  FINDINGS.md` section 9 shows the handler splits the payload, parses the
+  mode, and **only logs** the rest — no write, no persistence, no
+  hardware effect, for any format. Mode-switch to CUSTOM itself remains
+  confirmed working via callback; it's specifically this command's curve
+  *content* that was never going to do anything.
 
 **Practical upshot**: a real, usable discrete fan-mode toggle for
 `FanController.kt` is achievable today with high confidence. The full
 PI-controller/spline-curve replacement (the actual upstream-parity goal)
-is blocked until the curve-write path is root-caused, and any further
-live probing of it should stay conservative (always keep the confirmed
-prefix) — see
-`research/aidl-fan-spike/FINDINGS.md`'s "Not yet done" for the next
-things to try.
+needs a different mechanism than this AIDL command — the strongest
+remaining lead is the plain `pwm-fan` sysfs write path
+(`research/aya-gamewindows-teardown/FINDINGS.md` section 6), untested
+live so far but independent of `com.ayaneo.gamewindow` entirely, and
+structurally identical to how `pulse-for-aya` already talks to CPU/GPU
+sysfs — see `research/aidl-fan-spike/FINDINGS.md`'s "Not yet done".
 
 ## Build / install
 

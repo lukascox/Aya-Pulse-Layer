@@ -4,11 +4,13 @@
 fan, no root, over the same plain Binder connection `aidl-bind-spike`
 already proved for performance-mode.** The discrete-mode half of this
 spike (step 1) is a clean, repeatable success. The curve-write half
-(step 2/3, `com_set_fan_speed_strategy`) is a **strong negative result**
-for every format tried across four runs — none actually applied the
-curve content sent, and one format guess (a malformed one, run4) crashed
-`com.ayaneo.gamewindow` outright, requiring a device reboot. Raw logs:
-`results/run1/` through `results/run4/` (each with
+(step 2/3, `com_set_fan_speed_strategy`) is **definitively a dead end,
+not an open question** — reading the actual dispatch bytecode (see "Root
+cause found" below) confirms its handler never applies the payload
+regardless of format; no format tried across four runs worked, and one
+guess (a malformed one, run4) crashed `com.ayaneo.gamewindow` outright,
+requiring a device reboot. Raw logs: `results/run1/` through
+`results/run4/` (each with
 `aidl_fan_spike_result.txt` + `aidl_fan_spike_logcat_dump.txt`; run4 adds
 `gamewindow_crash_excerpt.log` for the crash).
 
@@ -151,52 +153,80 @@ kept in `results/run4/gamewindow_crash_excerpt.log` (trimmed from a
 confirmed by the vendor's own code, not just inferred.** It also
 confirms the enum type really is `com.ayaneo.gamewindow.utils.FAN_MODE`
 (not just our reconstructed guess) and pinpoints the exact handler
-(`AYAAidlManager.dealMsg`, decompiles to `AYAAidlManager.kt`). It does
-**not** explain why Guess A/B (both correctly prefixed) still don't
-change real duty — that mystery is now narrower (something in how the
-*post-prefix* substring gets parsed/applied) but still open. The
+(`AYAAidlManager.dealMsg`, decompiles to `AYAAidlManager.kt`). The
 no-prefix guess button has been **removed from the app** (was never a
 live hypothesis to retry — it's now a confirmed crash trigger, not
 something to tap again).
+
+## Root cause found: `com_set_fan_speed_strategy` is a stub, not a format bug (2026-07-30)
+
+The mystery of why even correctly-prefixed guesses (Guess A/B, and the
+original format in runs 1-3) never changed real duty is now **fully and
+definitively closed** — not by more live guessing, but by reading the
+actual message-dispatch bytecode. `research/aya-gamewindows-teardown/`'s
+decompile of this exact method had previously failed silently (JADX
+couldn't reconstruct this specific Kotlin-coroutine state machine); a
+re-decompile with `jadx --comments-level debug` recovered a raw
+instruction dump instead, which — while harder to read than clean Java —
+is complete and unambiguous. Full detail, including the curated
+instruction-dump excerpt of all three fan-related command branches:
+`research/aya-gamewindows-teardown/FINDINGS.md` section 9 and
+`research/aya-gamewindows-teardown/evidence/aidl/
+AYAAidlManager_dealMsg_fan_excerpt.txt`.
+
+**The short version: `com_set_fan_speed_strategy`'s handler splits the
+payload on `-`, parses the mode from element `[0]` (which is exactly what
+crashed on the no-prefix guess), and then does nothing with element `[1]`
+except log it via Timber (labeled `"| json = "` in the log line — a real
+hint the intended payload was JSON, not our reconstructed
+`temp,duty|temp,duty` shape) — no write, no persistence, no hardware
+effect of any kind.** It's a genuine stub/dead code path in this app
+build, full stop. No string format could ever have made it work — the
+handler doesn't act on its input regardless of shape. For contrast,
+`com_set_performance_fan` (which does work) calls straight into
+`PerformanceManager.g(mode, ...)`, and `com_set_fan_speed_is_linear`
+(untested live, but structurally real) persists via a `ContentProvider`
+write (`AyaShareConfUtilKt.e(...)`).
 
 ## What this means for `pulse-for-aya`
 
 **Step 1 alone is already a usable, real feature** — a discrete
 OFF/MUTE/BALANCE/TURBO fan-mode toggle via this AIDL channel could be
-wired into `FanController.kt` today with high confidence, independent of
-whether the curve-write mechanism ever pans out. This closes a meaningful
-slice of the fan-control gap in
+wired into `FanController.kt` today with high confidence. This closes a
+meaningful slice of the fan-control gap in
 `research/pulse-for-aya/README.md`'s "Feature parity vs upstream" section
 by itself.
 
-**The curve write (needed for a real PI-controller/spline-curve port) is
-not currently usable.** Porting `FanTempController.kt`/`FanCurve.kt`'s
-actual temperature-responsive logic into `pulse-for-aya` via this AIDL
-channel isn't viable until `com_set_fan_speed_strategy` either starts
-showing an effect or a different invocation (different string format,
-different command name entirely) is found.
+**The curve write via this AIDL channel is a closed dead end, not an open
+question.** `com_set_fan_speed_strategy` cannot be made to work by
+guessing a different string format — the handler ignores its payload
+entirely. Porting `FanTempController.kt`/`FanCurve.kt`'s actual
+temperature-responsive logic into `pulse-for-aya` needs a different
+mechanism entirely — the most promising lead is the plain `pwm-fan`
+sysfs write path documented in
+`research/aya-gamewindows-teardown/FINDINGS.md` section 6
+(`AR03.t1(int)`, 0-255 duty via `/sys/devices/platform/soc/soc:pwm-fan/
+hwmon/hwmon0/pwm1`, structurally identical to how `pulse-for-aya` already
+talks to CPU/GPU sysfs) — untested live so far, but doesn't depend on
+this AIDL surface or `com.ayaneo.gamewindow` at all.
 
 ## Not yet done
 
-- **Root-causing why the curve write doesn't take effect even with a
-  correctly-prefixed string** (Guess A/B in run4, plus the original
-  format in runs 1-3, all with `FAN_MODE_CUSTOM-` present). The mandatory
-  prefix question is now closed (see run4) — remaining open ideas: find
-  and read `AYAAidlManager.kt`'s `dealMsg` around line 922 directly
-  (would need decompiling `com.ayaneo.gamewindow`'s APK — not yet present
-  on disk anywhere in this repo, unlike `ayasettings_decompiled`) to see
-  exactly how the post-prefix substring is parsed, rather than continuing
-  to guess blindly; or try smaller variations that keep the prefix (e.g.
-  a single-point curve instead of 5, or a different pair separator like
-  `:` or a literal space).
-- Testing `com_set_fan_speed_is_linear` at all (not exercised in any run)
-  — possible via the `custom_command` intent extra without a rebuild, see
-  `README.md`.
-- Confirming whether a `com_set_fan_speed_strategy` write is transient or
-  persists into the user's saved settings (flagged as a real risk in the
-  original ELI5 before run1 — worth checking AYA's native Fan Settings
-  screen to see whether the CUSTOM curve there still shows the user's own
-  values, now that we know the write likely isn't landing anyway).
+- ~~Root-causing why the curve write doesn't take effect~~ — **done, see
+  above.** The AIDL curve-write path is closed; any further fan-curve
+  work should target the sysfs `pwm-fan` write path instead (see
+  `research/aya-gamewindows-teardown/FINDINGS.md` section 6), not more
+  guesses against `com_set_fan_speed_strategy`.
+- Testing `com_set_fan_speed_is_linear` — still a live, worthwhile probe
+  (unlike the strategy command, its handler genuinely persists a value via
+  `AyaShareConfUtilKt.e(...)`, per
+  `research/aya-gamewindows-teardown/FINDINGS.md` section 9). Not
+  exercised in any run yet; possible via the `custom_command` intent extra
+  without a rebuild, see `README.md`.
+- Live-testing the plain sysfs `pwm-fan` write path
+  (`research/aya-gamewindows-teardown/FINDINGS.md` section 6,
+  `AR03.t1(int)`) as the real replacement plan for a custom curve, now
+  that the AIDL route is confirmed closed.
 - **Any further live guessing should stay conservative given run4's
   crash**: always keep the confirmed-mandatory `FAN_MODE_CUSTOM-` prefix,
   and treat every new guess as a potential crash until proven otherwise,

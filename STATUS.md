@@ -6,7 +6,7 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
-## Fan control via AIDL — runs 1-4 complete (2026-07-29/30): discrete mode CONFIRMED working, curve write CONFIRMED not working, INCIDENT #4 (crash, device reboot required)
+## Fan control via AIDL — CLOSED (2026-07-30): discrete mode CONFIRMED working, curve write CONFIRMED dead (root cause found), INCIDENT #4 (crash, device reboot required)
 
 User ran `research/aidl-fan-spike/` four times. Full writeup:
 `research/aidl-fan-spike/FINDINGS.md`; feature-parity checklist updated in
@@ -52,13 +52,27 @@ dead end, not a live hypothesis). This does settle one open question for
 good: the `FAN_MODE_CUSTOM-` prefix is mandatory, confirmed by the
 vendor's own code, not just inferred.
 
-**Next step, not yet done**: root-cause why even correctly-prefixed
-guesses don't change real duty — ideally by decompiling
-`com.ayaneo.gamewindow`'s APK to read `AYAAidlManager.dealMsg` directly
-(not yet on disk anywhere in this repo), rather than continuing to guess
-blindly; any further live guessing must keep the now-confirmed-mandatory
-prefix. See `research/aidl-fan-spike/FINDINGS.md`'s "Not yet done" for
-the full list.
+**Root cause of the curve-write dead end, found (2026-07-30) without any
+further on-device risk**: `com.ayaneo.gamewindow`'s decompiled sources
+already existed locally in `research/aya-gamewindows-teardown/` (a prior
+"not present on disk" claim above was wrong — corrected here), but the
+crash-site method (`AYAAidlManager$dealMsg$1.invokeSuspend`, a Kotlin
+coroutine state machine) had silently failed to decompile with plain
+`jadx`. Re-running `jadx --comments-level debug` recovered a full raw
+instruction dump instead, which settles it for good:
+**`com_set_fan_speed_strategy`'s handler parses out the mode, then just
+logs the rest of the payload via Timber — no write, no persistence, no
+hardware effect, for any string format.** `com_set_performance_fan`
+(works) and `com_set_fan_speed_is_linear` (untested, but does persist for
+real) both call into real code paths by contrast. Full writeup:
+`research/aya-gamewindows-teardown/FINDINGS.md` section 9, curated
+bytecode excerpt in `evidence/aidl/AYAAidlManager_dealMsg_fan_excerpt.txt`
+there. **The AIDL route to a custom fan curve is closed — no further
+string-format guessing is worthwhile.** The remaining lead for a real
+curve is the plain `pwm-fan` sysfs write path documented in that same
+project's FINDINGS.md section 6 (`AR03.t1(int)`), untested live so far,
+independent of `com.ayaneo.gamewindow` entirely. See
+`research/aidl-fan-spike/FINDINGS.md`'s "Not yet done" for what's left.
 
 ## Unsupervised session analyzed (2026-07-29): self-kill fix holding, one new kernel-level anomaly found
 

@@ -1,0 +1,100 @@
+// Curated excerpt from AYAAidlManager$dealMsg$1.invokeSuspend()'s message-dispatch
+// when(command)-block, decompiled with `jadx --comments-level debug` (the default
+// jadx pass fails on this specific method -- a Kotlin coroutine state machine JADX
+// can't fully reconstruct -- and only emits a raw Dalvik-register instruction dump
+// instead of clean Java; kept here verbatim, register-soup and all, because it's
+// still fully readable for what matters: which command actually does something vs.
+// which one is a no-op).
+//
+// Traced from `research/aidl-fan-spike`'s run4 crash (java.lang.IllegalArgumentException
+// at AYAAidlManager.kt:922, com.ayaneo.gamewindow.utils.FAN_MODE.valueOf on an
+// unprefixed curve string) -- this is the code that crashed, and, more importantly,
+// the code that explains why runs 1-4's correctly-prefixed curve writes never had any
+// effect either. See research/aidl-fan-spike/FINDINGS.md and this project's own
+// FINDINGS.md for the full narrative.
+//
+// r1 = the AIDL payload string after "msg_type_performance:" and after the command
+// name is stripped off (i.e. everything after the second ':'). r12 = the command name
+// itself, already matched against a hashCode-based switch (omitted here) that jumps to
+// one of these labels.
+
+// ---- com_set_performance_fan: works, calls into PerformanceManager ----
+L22f:
+    java.lang.String r11 = "com_set_performance_fan"
+    boolean r11 = r12.equals(r11)
+    if (r11 != 0) goto L239
+    goto L514
+L239:
+    com.ayaneo.gamewindow.ui.window.performance.util.PerformanceManager r11 = com.ayaneo.gamewindow.ui.window.performance.util.PerformanceManager.f5864a
+    com.ayaneo.gamewindow.utils.FAN_MODE r12 = com.ayaneo.gamewindow.utils.FAN_MODE.valueOf(r1)
+    r0 = 5
+    com.ayaneo.gamewindow.ui.window.performance.util.PerformanceManager.g(r11, r12, r8, r0)
+    goto L514
+    // r1 here is the whole payload -- just the mode name, e.g. "FAN_MODE_TURBO", no
+    // "-" splitting at all. FAN_MODE.valueOf(r1) is called directly on the full
+    // string, then handed to PerformanceManager.g() -- a real functional call.
+    // Matches every empirical result from aidl-fan-spike's step 1 exactly.
+
+// ---- com_set_fan_speed_strategy: THE BUG -- parses, then only logs, never applies ----
+L37f:
+    java.lang.String r11 = "com_set_fan_speed_strategy"
+    boolean r11 = r12.equals(r11)
+    if (r11 != 0) goto L389
+    goto L514
+L389:
+    java.lang.String r11 = "-"
+    java.lang.String[] r11 = new java.lang.String[]{r11}
+    java.util.List r11 = kotlin.text.StringsKt.O(r1, r11, r8, r0)   // r1.split("-")
+    java.lang.Object r12 = r11.get(r8)                              // r8 == 0
+    java.lang.String r12 = (java.lang.String) r12
+    com.ayaneo.gamewindow.utils.FAN_MODE r12 = com.ayaneo.gamewindow.utils.FAN_MODE.valueOf(r12)
+    // ^ this is exactly what threw in run4: split(r1, "-")[0] fed straight into
+    //   FAN_MODE.valueOf() with zero validation. Drop the "-" separator (or the
+    //   FAN_MODE_CUSTOM- prefix) and the WHOLE string becomes [0], and valueOf()
+    //   throws an uncaught IllegalArgumentException -- crashing the whole process.
+    java.lang.Object r11 = r11.get(r5)                              // r5 == 1: everything after the first "-"
+    java.lang.String r11 = (java.lang.String) r11
+    timber.log.Timber$Forest r0 = timber.log.Timber.f11226a
+    java.lang.StringBuilder r1 = new java.lang.StringBuilder
+    java.lang.String r2 = "更新风扇策略 mode = "     // "Update fan strategy mode = "
+    r1.<init>(r2)
+    r1.append(r12)
+    java.lang.String r12 = " | json = "
+    r1.append(r12)
+    r1.append(r11)
+    java.lang.String r11 = r1.toString()
+    java.lang.Object[] r12 = new java.lang.Object[r8]
+    r0.f(r11, r12)               // Timber.d(logString) -- a debug log call
+    goto L514
+    // *** THAT'S THE ENTIRE HANDLER. *** Parse the mode (only to put it in the log
+    // line), grab the rest of the string as one opaque blob labeled "json" in the
+    // log message (a real clue: it expects real JSON, not our temp,duty|temp,duty
+    // format), log both -- and nothing else. No write to any curve store, no call
+    // into FanTempController/FanCurve-equivalent, no persistence, no hardware
+    // effect whatsoever. This confirms, definitively, that com_set_fan_speed_strategy
+    // is a stub/no-op in this build of com.ayaneo.gamewindow -- not a string-format
+    // problem, and not fixable by guessing a different format. Compare the real
+    // native fan-curve editor UI's actual write path if you need one (not yet traced
+    // -- almost certainly goes through PerformanceManager or a ContentProvider write
+    // like com_set_fan_speed_is_linear below, not this AIDL command).
+
+// ---- com_set_fan_speed_is_linear: works, persists via a ContentProvider write ----
+L44e:
+    java.lang.String r11 = "com_set_fan_speed_is_linear"
+    boolean r11 = r12.equals(r11)
+    if (r11 != 0) goto L458
+    goto L514
+L458:
+    java.lang.String r11 = "aya_fan_table_is_linear.conf"
+    com.ayaneo.gamewindow.utils.system.AyaShareConfUtilKt.e(r11, r1)   // real persistence
+    timber.log.Timber$Forest r12 = timber.log.Timber.f11226a
+    com.ayaneo.gamewindow.utils.ChartMode r0 = com.ayaneo.gamewindow.utils.ChartMode.LINEAR
+    // ... (reads the just-written value back, logs it in Chinese as
+    // "更新风扇策略模式 action = " ["Update fan strategy mode, action = "]) ...
+    goto L514
+    // Unlike the strategy command, this one genuinely writes somewhere real
+    // (AyaShareConfUtilKt.e(), a ContentProvider-backed config write -- the same
+    // mechanism research/ayaspace-teardown's Addendum already identified for other
+    // AYA settings). Not yet tested live in aidl-fan-spike (still on the "Not yet
+    // done" list) -- but at least this command's handler *does something*, unlike
+    // fan_speed_strategy.
