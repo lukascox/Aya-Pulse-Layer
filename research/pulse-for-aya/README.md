@@ -596,11 +596,11 @@ gap to a real 1:1 port is visible at a glance.
   RPM-confirmed (2961→4780). **This means a real
   PI-controller/spline-curve port (`FanCurve.kt`/`FanTempController.kt`,
   which are pure math models with no I/O of their own and are portable
-  as-is) is achievable on this device** — the remaining work is a
-  device-specific I/O layer for that sysfs path, plus resolving whether
-  the vendor's own fan daemon (confirmed to re-pin values within 1-2
-  minutes) fights a sustained controller — not yet built, deferred. See
-  `research/aidl-fan-spike/FINDINGS.md` for the full trail.
+  as-is) is achievable on this device.** The vendor daemon's reassert
+  cadence (does it fight a sustained controller?) was measured precisely
+  (17 samples, 1-112s range, ~10s reassert loop preempts it 94% of the
+  time) — no open questions remain. **Ready to build**, not yet started.
+  See `research/aidl-fan-spike/FINDINGS.md` for the full trail.
 - **RGB — smaller, same shape of gap.** Upstream's own RGB mechanism
   (`joystick_led_light_picker_color`) is confirmed dead here too, but
   self-gates off safely (no crash, just inert — `RgbController.kt` is
@@ -663,22 +663,31 @@ Full detail in that project's `FINDINGS.md`:
     tried on the fan nodes, fixed it immediately. **Confirmed live, same
     day**: `chmod 666` + write moved RPM from ~2960 to 4780, user
     independently heard the fan spin up. The vendor's own fan daemon
-    reasserted the old value on its own within 1-2 minutes (no lasting
-    side effect, confirms a reassert loop exists here too, same class of
-    behavior `pulse`'s own fan-reassert logic was built to fight on the
-    Odin).
+    reasserted the old value on its own, confirming a reassert loop
+    exists here too, same class of behavior `pulse`'s own fan-reassert
+    logic was built to fight on the Odin — **precisely measured
+    afterward** (see below), not just observed once.
+
+**Reassert cadence measured (2026-07-30, later the same day)**: two small
+on-device scripts (`research/aidl-fan-spike/scripts/fan_reassert_probe*.sh`)
+logged duty at 1s resolution across 9 runs, 17 write→reassert
+measurements: **range 1-112s, mean ≈50s, median 54s, no fixed period.**
+Every reassert corrected to exactly duty=76. Sending `FAN_MODE_CUSTOM` via
+AIDL first made no measurable difference. Only 1 of 17 measurements fell
+under 10 seconds — a **~10s periodic reassert loop** in the real
+controller would preempt the vendor's correction 94% of the time, far
+lighter than upstream `pulse`'s 120ms Odin-reassert loop.
 
 **Practical upshot**: discrete fan-mode toggle for `FanController.kt` is
 ready to ship. **A real PI-controller/spline-curve replacement
 (`FanTempController.kt`/`FanCurve.kt`) is achievable, not closed** — those
 files are pure math/state models with no I/O of their own
 (`pulse-glue-assessment/FINDINGS.md`), so they're portable as-is; the
-remaining work is a device-specific I/O layer (chmod-unlock + write to
-`hwmon0/pwm1`/`fan_power_state`) and confirming whether a sustained
-controller can out-pace the vendor daemon's reassert cadence. Not yet
-built — deferred to a later session per the user's request (2026-07-30).
-See `research/aidl-fan-spike/FINDINGS.md` for the complete trail,
-including the correction.
+remaining work is a device-specific I/O layer (chmod-unlock + ~10s
+reassert loop writing to `hwmon0/pwm1`/`fan_power_state`). **No open
+questions remain — ready to design and build.** Not yet started, deferred
+to a later session per the user's request. See
+`research/aidl-fan-spike/FINDINGS.md` for the complete trail.
 
 ## Build / install
 

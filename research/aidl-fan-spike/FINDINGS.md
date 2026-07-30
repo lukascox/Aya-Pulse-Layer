@@ -336,6 +336,86 @@ own codebase, not found sooner because the CPU/GPU precedent wasn't
 cross-checked against the fan investigation before writing the "closed"
 verdict.
 
+## Vendor daemon reassert cadence measured — no fixed period, range 1-112s (2026-07-30)
+
+The open question from the previous section (does the vendor's fan daemon
+fight a sustained manual duty write, and how often) was measured directly
+instead of guessed at. Manual `adb shell` timing turned out too imprecise
+for this (confirmed by two earlier by-hand attempts that gave
+inconsistent-looking results) — two small on-device scripts were used
+instead, both logging at 1s resolution with real timestamps to
+`/sdcard/apl_pulse_logs/`:
+
+- [`scripts/fan_reassert_probe.sh`](scripts/fan_reassert_probe.sh) — write
+  duty=150 once, poll every 1s for 180s, record when (if) it reverts.
+- [`scripts/fan_reassert_probe2.sh`](scripts/fan_reassert_probe2.sh) —
+  same, but auto-detects the first reversion, immediately re-writes
+  duty=150, and keeps watching to see if the *second* write also gets
+  reverted (and after how long).
+
+First attempt at the launcher script failed silently (no output at all,
+even in the foreground) — root-caused to relying on `${1:-default}`
+positional-parameter expansion, which this device's minimal `sh` likely
+doesn't support cleanly, plus depending on the launching `xsu -c`
+invocation's stdout redirect to capture output. Fixed by hardcoding the
+constants (no positional-parameter defaulting) and having the script
+write directly to its own log file under `/sdcard/apl_pulse_logs/`
+(the same directory `pulse-for-aya`'s own session logs already use,
+confirmed accessible with no special setup) instead of relying on an
+external redirect.
+
+**9 runs, 17 write→reassert measurements, raw data in
+`results/run5/*.log`:**
+
+```
+1, 18, 19, 34, 41, 42, 47, 52, 54, 54, 55, 55, 57, 57, 57, 103, 112  (seconds)
+```
+
+- **Range: 1-112 seconds. Mean ≈ 50s, median = 54s.** No fixed period —
+  ruled out definitively (a 1s and a 112s result exist in the same
+  9-run sample).
+- **First-write delay** (n=9, one per script run): mean ≈ 34s, range
+  1-54s.
+- **Second-write delay** (n=8, immediately after the first correction
+  already landed): mean ≈ 69s, range 54-112s — consistently higher than
+  the first-write delay across every run that measured both. Possibly a
+  backoff/debounce after a correction fires, possibly coincidence at
+  this sample size — not confirmed, flagged for anyone who wants more
+  data later, not chased further here.
+- **Every single reassert corrected to exactly duty=76** — same value
+  confirmed elsewhere as `FAN_MODE_MUTE`'s exact duty and this device's
+  apparent idle/rest target, regardless of which of the two writes
+  triggered it.
+- **Sending `FAN_MODE_CUSTOM` via AIDL first does not disable or slow
+  this reassert** — tested directly (custom_command intent extra sending
+  `com_set_performance_fan:FAN_MODE_CUSTOM` before writing) — no
+  detectable difference from not sending it. The "maybe CUSTOM mode is a
+  polite hand-off signal" hypothesis is ruled out.
+
+**Practical implication for a real curve controller**: only 1 of the 17
+measurements (the single 1s outlier) fell under 10 seconds — writing the
+target duty on a **~10s cadence** would preempt the vendor's correction in
+16/17 (94%) of observed cases, with the rare exception producing at most
+one brief, self-correcting blip rather than a sustained fight. This is a
+dramatically lighter requirement than upstream `pulse`'s own 120ms
+Odin-reassert loop — comfortably inside `xsu`'s established ~100ms
+per-call floor with enormous margin, and far below the call-frequency
+range this repo's own findings already ruled out as a meaningful crash
+trigger (`STATUS_ARCHIVE.md`: "call frequency/concurrency confirmed a much
+weaker `xsud` crash trigger than command length"). **A ~10s periodic
+reassert loop, analogous in shape to `pulse`'s existing one but far less
+demanding, is the concrete design for `FanController.kt`'s real curve
+write.**
+
+**One more practical note, not yet directly re-tested but logically
+likely**: the `chmod 666` unlock could not be reverted back to the
+original mode earlier (`Operation not permitted`, see above) — meaning
+the fan sysfs nodes are very likely still unlocked right now. A real
+implementation's reassert loop probably only needs to `chmod` once at
+startup (or not at all, if it's confirmed still unlocked), then do a
+plain `echo $duty > $path` on every tick — cheaper than a full
+chmod+write cycle every ~10s.
+
 ## What this means for `pulse-for-aya`
 
 **Step 1 alone is already a usable, real feature** — a discrete
@@ -363,12 +443,14 @@ were never the blocker. What was missing is a device-specific I/O layer
 targeting the confirmed AYANEO path (`soc:pwm-fan/hwmon0/pwm1`, not
 upstream's Odin-specific `gpio5_pwm2`) with the chmod-unlock step folded
 in, mirroring `PerformanceCommandBuilder.kt`'s existing shape for CPU/GPU.
-**Not yet resolved, the concrete next step before building this for
-real**: whether the vendor's own fan daemon (confirmed to re-pin `pwm1`
-back to its own value within 1-2 minutes of our manual write, see above)
-fights a sustained curve controller the same way the Odin's daemon fought
-upstream `pulse`'s reassert loop — needs an on-device timing test, not
-attempted yet.
+**The reassert-cadence question is now resolved (see "Vendor daemon
+reassert cadence measured" above)**: the vendor daemon does fight a
+sustained write, on an irregular 1-112s cycle (measured across 17
+samples) — but a simple ~10s periodic re-write loop, much lighter than
+upstream `pulse`'s own 120ms Odin-reassert loop, preempts it in the
+overwhelming majority of cases. **Ready to design and build the real
+`FanController.kt` curve path** — no further open questions block
+starting that work.
 
 ## Not yet done
 
@@ -384,13 +466,16 @@ attempted yet.
   in any run yet; possible via the `custom_command` intent extra without a
   rebuild, see `README.md`.
 - Building the real `FanController.kt` curve controller against the
-  confirmed sysfs path (temp-polling loop, duty write via chmod-unlock,
-  reused `FanCurve.kt`/`FanTempController.kt` math from upstream) — not
-  started, deferred to a later session per the user's request.
-- Whether the vendor daemon's reassert cadence (confirmed to re-pin
-  within 1-2 minutes) fights a sustained curve controller, and whether
-  switching to `FAN_MODE_CUSTOM` via AIDL first makes it back off — not
-  tested, the key open question before building the real controller.
+  confirmed sysfs path (~10s temp-polling/reassert loop, duty write via
+  chmod-unlock, reused `FanCurve.kt`/`FanTempController.kt` math from
+  upstream) — not started, deferred to a later session per the user's
+  request. This is now the only remaining item that isn't a low-priority
+  curiosity.
+- ~~Whether the vendor daemon's reassert cadence fights a sustained curve
+  controller, and whether switching to `FAN_MODE_CUSTOM` via AIDL first
+  makes it back off~~ — **done, see "Vendor daemon reassert cadence
+  measured" above.** Irregular 1-112s cycle, mean ~50s; `FAN_MODE_CUSTOM`
+  confirmed to make no difference.
 - The chmod-back-to-original-mode `EPERM` oddity and the mount-namespace
   anomaly that might explain it — low priority, no safety impact,
   optional curiosity for later.

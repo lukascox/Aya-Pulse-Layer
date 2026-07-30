@@ -1,0 +1,202 @@
+write #1: duty=150 at t=0
+t=0s ts=1785425554 rpm=Current RPM 2729 duty=150
+t=1s ts=1785425555 rpm=Current RPM 3339 duty=150
+t=2s ts=1785425556 rpm=Current RPM 4687 duty=150
+t=3s ts=1785425557 rpm=Current RPM 4775 duty=150
+t=4s ts=1785425558 rpm=Current RPM 4775 duty=150
+t=5s ts=1785425559 rpm=Current RPM 4833 duty=150
+t=6s ts=1785425561 rpm=Current RPM 4804 duty=150
+t=7s ts=1785425562 rpm=Current RPM 4809 duty=150
+t=8s ts=1785425563 rpm=Current RPM 4809 duty=150
+t=9s ts=1785425564 rpm=Current RPM 4809 duty=150
+t=10s ts=1785425565 rpm=Current RPM 4829 duty=150
+t=11s ts=1785425566 rpm=Current RPM 4833 duty=150
+t=12s ts=1785425567 rpm=Current RPM 4843 duty=150
+t=13s ts=1785425568 rpm=Current RPM 4868 duty=150
+t=14s ts=1785425569 rpm=Current RPM 4858 duty=150
+t=15s ts=1785425570 rpm=Current RPM 4863 duty=150
+t=16s ts=1785425571 rpm=Current RPM 4868 duty=150
+t=17s ts=1785425572 rpm=Current RPM 4887 duty=150
+t=18s ts=1785425573 rpm=Current RPM 4892 duty=150
+t=19s ts=1785425575 rpm=Current RPM 4897 duty=150
+t=20s ts=1785425576 rpm=Current RPM 4892 duty=150
+t=21s ts=1785425577 rpm=Current RPM 4902 duty=150
+t=22s ts=1785425578 rpm=Current RPM 4921 duty=150
+t=23s ts=1785425579 rpm=Current RPM 4897 duty=150
+t=24s ts=1785425580 rpm=Current RPM 4887 duty=150
+t=25s ts=1785425581 rpm=Current RPM 4921 duty=150
+t=26s ts=1785425582 rpm=Current RPM 4926 duty=150
+t=27s ts=1785425583 rpm=Current RPM 4892 duty=150
+t=28s ts=1785425584 rpm=Current RPM 4951 duty=150
+t=29s ts=1785425585 rpm=Current RPM 4912 duty=150
+t=30s ts=1785425586 rpm=Current RPM 4936 duty=150
+t=31s ts=1785425587 rpm=Current RPM 4892 duty=150
+t=32s ts=1785425588 rpm=Current RPM 4960 duty=150
+t=33s ts=1785425589 rpm=Current RPM 4917 duty=150
+t=34s ts=1785425591 rpm=Current RPM 4931 duty=150
+t=35s ts=1785425592 rpm=Current RPM 4921 duty=150
+t=36s ts=1785425593 rpm=Current RPM 4946 duty=150
+t=37s ts=1785425594 rpm=Current RPM 4926 duty=150
+t=38s ts=1785425595 rpm=Current RPM 4936 duty=150
+t=39s ts=1785425596 rpm=Current RPM 4936 duty=150
+t=40s ts=1785425597 rpm=Current RPM 4921 duty=150
+t=41s ts=1785425598 rpm=Current RPM 4956 duty=150
+t=42s ts=1785425599 rpm=Current RPM 4917 duty=150
+t=43s ts=1785425600 rpm=Current RPM 4956 duty=150
+t=44s ts=1785425601 rpm=Current RPM 4990 duty=150
+t=45s ts=1785425602 rpm=Current RPM 4951 duty=150
+t=46s ts=1785425603 rpm=Current RPM 4926 duty=150
+t=47s ts=1785425604 rpm=Current RPM 4975 duty=150
+t=48s ts=1785425605 rpm=Current RPM 4921 duty=150
+t=49s ts=1785425606 rpm=Current RPM 4956 duty=150
+t=50s ts=1785425607 rpm=Current RPM 4956 duty=150
+t=51s ts=1785425608 rpm=Current RPM 4956 duty=150
+t=52s ts=1785425609 rpm=Current RPM 4951 duty=150
+t=53s ts=1785425610 rpm=Current RPM 4956 duty=150
+t=54s ts=1785425612 rpm=Current RPM 4403 duty=76
+REASSERT #1 detected at t=54s (duty now 76)
+write #2: duty=150 at t=54s (right after reassert #1)
+post2 t=0s ts=1785425612 rpm=Current RPM 4403 duty=150
+post2 t=1s ts=1785425613 rpm=Current RPM 3724 duty=150
+post2 t=2s ts=1785425614 rpm=Current RPM 4863 duty=150
+post2 t=3s ts=1785425615 rpm=Current RPM 4951 duty=150
+post2 t=4s ts=1785425616 rpm=Current RPM 4951 duty=150
+post2 t=5s ts=1785425617 rpm=Current RPM 4960 duty=150
+post2 t=6s ts=1785425618 rpm=Current RPM 4951 duty=150
+post2 t=7s ts=1785425619 rpm=Current RPM 4956 duty=150
+post2 t=8s ts=1785425620 rpm=Current RPM 4980 duty=150
+post2 t=9s ts=1785425621 rpm=Current RPM 4951 duty=150
+post2 t=10s ts=1785425622 rpm=Current RPM 4926 duty=150
+post2 t=11s ts=1785425623 rpm=Current RPM 4990 duty=150
+post2 t=12s ts=1785425624 rpm=Current RPM 4946 duty=150
+post2 t=13s ts=1785425625 rpm=Current RPM 4951 duty=150
+post2 t=14s ts=1785425626 rpm=Current RPM 4965 duty=150
+post2 t=15s ts=1785425627 rpm=Current RPM 4975 duty=150
+post2 t=16s ts=1785425628 rpm=Current RPM 4951 duty=150
+post2 t=17s ts=1785425629 rpm=Current RPM 4951 duty=150
+post2 t=18s ts=1785425630 rpm=Current RPM 4985 duty=150
+post2 t=19s ts=1785425631 rpm=Current RPM 4951 duty=150
+post2 t=20s ts=1785425632 rpm=Current RPM 4951 duty=150
+post2 t=21s ts=1785425633 rpm=Current RPM 4985 duty=150
+post2 t=22s ts=1785425634 rpm=Current RPM 4960 duty=150
+post2 t=23s ts=1785425635 rpm=Current RPM 4951 duty=150
+post2 t=24s ts=1785425637 rpm=Current RPM 4970 duty=150
+post2 t=25s ts=1785425638 rpm=Current RPM 4985 duty=150
+post2 t=26s ts=1785425639 rpm=Current RPM 4956 duty=150
+post2 t=27s ts=1785425640 rpm=Current RPM 4980 duty=150
+post2 t=28s ts=1785425641 rpm=Current RPM 4956 duty=150
+post2 t=29s ts=1785425642 rpm=Current RPM 4980 duty=150
+post2 t=30s ts=1785425643 rpm=Current RPM 4951 duty=150
+post2 t=31s ts=1785425644 rpm=Current RPM 4985 duty=150
+post2 t=32s ts=1785425645 rpm=Current RPM 4990 duty=150
+post2 t=33s ts=1785425646 rpm=Current RPM 4951 duty=150
+post2 t=34s ts=1785425647 rpm=Current RPM 4980 duty=150
+post2 t=35s ts=1785425648 rpm=Current RPM 4980 duty=150
+post2 t=36s ts=1785425649 rpm=Current RPM 4960 duty=150
+post2 t=37s ts=1785425650 rpm=Current RPM 4975 duty=150
+post2 t=38s ts=1785425651 rpm=Current RPM 4980 duty=150
+post2 t=39s ts=1785425652 rpm=Current RPM 4985 duty=150
+post2 t=40s ts=1785425653 rpm=Current RPM 4960 duty=150
+post2 t=41s ts=1785425654 rpm=Current RPM 4985 duty=150
+post2 t=42s ts=1785425655 rpm=Current RPM 4985 duty=150
+post2 t=43s ts=1785425656 rpm=Current RPM 4985 duty=150
+post2 t=44s ts=1785425657 rpm=Current RPM 4980 duty=150
+post2 t=45s ts=1785425658 rpm=Current RPM 4980 duty=150
+post2 t=46s ts=1785425659 rpm=Current RPM 4980 duty=150
+post2 t=47s ts=1785425660 rpm=Current RPM 4951 duty=150
+post2 t=48s ts=1785425661 rpm=Current RPM 4975 duty=150
+post2 t=49s ts=1785425663 rpm=Current RPM 4990 duty=150
+post2 t=50s ts=1785425664 rpm=Current RPM 4980 duty=150
+post2 t=51s ts=1785425665 rpm=Current RPM 4980 duty=150
+post2 t=52s ts=1785425666 rpm=Current RPM 4990 duty=150
+post2 t=53s ts=1785425667 rpm=Current RPM 4965 duty=150
+post2 t=54s ts=1785425668 rpm=Current RPM 4980 duty=150
+post2 t=55s ts=1785425669 rpm=Current RPM 4990 duty=150
+post2 t=56s ts=1785425670 rpm=Current RPM 4965 duty=150
+post2 t=57s ts=1785425671 rpm=Current RPM 4985 duty=76
+REASSERT #2 detected at post2 t=57s (duty now 76)
+post2 t=58s ts=1785425672 rpm=Current RPM 3687 duty=76
+REASSERT #2 detected at post2 t=58s (duty now 76)
+post2 t=59s ts=1785425673 rpm=Current RPM 2929 duty=76
+REASSERT #2 detected at post2 t=59s (duty now 76)
+post2 t=60s ts=1785425674 rpm=Current RPM 2903 duty=76
+REASSERT #2 detected at post2 t=60s (duty now 76)
+post2 t=61s ts=1785425675 rpm=Current RPM 2873 duty=76
+REASSERT #2 detected at post2 t=61s (duty now 76)
+post2 t=62s ts=1785425676 rpm=Current RPM 2900 duty=76
+REASSERT #2 detected at post2 t=62s (duty now 76)
+post2 t=63s ts=1785425677 rpm=Current RPM 2873 duty=76
+REASSERT #2 detected at post2 t=63s (duty now 76)
+post2 t=64s ts=1785425678 rpm=Current RPM 2876 duty=76
+REASSERT #2 detected at post2 t=64s (duty now 76)
+post2 t=65s ts=1785425679 rpm=Current RPM 2903 duty=76
+REASSERT #2 detected at post2 t=65s (duty now 76)
+post2 t=66s ts=1785425680 rpm=Current RPM 2871 duty=76
+REASSERT #2 detected at post2 t=66s (duty now 76)
+post2 t=67s ts=1785425682 rpm=Current RPM 2841 duty=76
+REASSERT #2 detected at post2 t=67s (duty now 76)
+post2 t=68s ts=1785425683 rpm=Current RPM 2839 duty=76
+REASSERT #2 detected at post2 t=68s (duty now 76)
+post2 t=69s ts=1785425684 rpm=Current RPM 2850 duty=76
+REASSERT #2 detected at post2 t=69s (duty now 76)
+post2 t=70s ts=1785425685 rpm=Current RPM 2839 duty=76
+REASSERT #2 detected at post2 t=70s (duty now 76)
+post2 t=71s ts=1785425686 rpm=Current RPM 2847 duty=76
+REASSERT #2 detected at post2 t=71s (duty now 76)
+post2 t=72s ts=1785425687 rpm=Current RPM 2812 duty=76
+REASSERT #2 detected at post2 t=72s (duty now 76)
+post2 t=73s ts=1785425688 rpm=Current RPM 2841 duty=76
+REASSERT #2 detected at post2 t=73s (duty now 76)
+post2 t=74s ts=1785425689 rpm=Current RPM 2815 duty=76
+REASSERT #2 detected at post2 t=74s (duty now 76)
+post2 t=75s ts=1785425690 rpm=Current RPM 2818 duty=76
+REASSERT #2 detected at post2 t=75s (duty now 76)
+post2 t=76s ts=1785425691 rpm=Current RPM 2780 duty=76
+REASSERT #2 detected at post2 t=76s (duty now 76)
+post2 t=77s ts=1785425692 rpm=Current RPM 2815 duty=76
+REASSERT #2 detected at post2 t=77s (duty now 76)
+post2 t=78s ts=1785425694 rpm=Current RPM 2809 duty=76
+REASSERT #2 detected at post2 t=78s (duty now 76)
+post2 t=79s ts=1785425695 rpm=Current RPM 2785 duty=76
+REASSERT #2 detected at post2 t=79s (duty now 76)
+post2 t=80s ts=1785425696 rpm=Current RPM 2788 duty=150
+post2 t=81s ts=1785425697 rpm=Current RPM 3482 duty=150
+post2 t=82s ts=1785425698 rpm=Current RPM 4780 duty=150
+post2 t=83s ts=1785425699 rpm=Current RPM 4868 duty=150
+post2 t=84s ts=1785425700 rpm=Current RPM 4863 duty=150
+post2 t=85s ts=1785425701 rpm=Current RPM 4863 duty=150
+post2 t=86s ts=1785425702 rpm=Current RPM 4872 duty=150
+post2 t=87s ts=1785425703 rpm=Current RPM 4853 duty=150
+post2 t=88s ts=1785425704 rpm=Current RPM 4902 duty=150
+post2 t=89s ts=1785425705 rpm=Current RPM 4863 duty=150
+post2 t=90s ts=1785425706 rpm=Current RPM 4887 duty=150
+post2 t=91s ts=1785425708 rpm=Current RPM 4897 duty=150
+post2 t=92s ts=1785425709 rpm=Current RPM 4897 duty=150
+post2 t=93s ts=1785425710 rpm=Current RPM 4902 duty=150
+post2 t=94s ts=1785425711 rpm=Current RPM 4887 duty=150
+post2 t=95s ts=1785425712 rpm=Current RPM 4892 duty=150
+post2 t=96s ts=1785425713 rpm=Current RPM 4902 duty=150
+post2 t=97s ts=1785425714 rpm=Current RPM 4892 duty=150
+post2 t=98s ts=1785425715 rpm=Current RPM 4917 duty=150
+post2 t=99s ts=1785425716 rpm=Current RPM 4921 duty=150
+post2 t=100s ts=1785425717 rpm=Current RPM 4897 duty=150
+post2 t=101s ts=1785425718 rpm=Current RPM 4926 duty=150
+post2 t=102s ts=1785425719 rpm=Current RPM 4921 duty=150
+post2 t=103s ts=1785425720 rpm=Current RPM 4926 duty=150
+post2 t=104s ts=1785425721 rpm=Current RPM 4926 duty=150
+post2 t=105s ts=1785425722 rpm=Current RPM 4917 duty=150
+post2 t=106s ts=1785425723 rpm=Current RPM 4902 duty=150
+post2 t=107s ts=1785425724 rpm=Current RPM 4951 duty=150
+post2 t=108s ts=1785425725 rpm=Current RPM 4917 duty=150
+post2 t=109s ts=1785425726 rpm=Current RPM 4926 duty=150
+post2 t=110s ts=1785425727 rpm=Current RPM 4926 duty=150
+post2 t=111s ts=1785425728 rpm=Current RPM 4946 duty=150
+post2 t=112s ts=1785425729 rpm=Current RPM 4921 duty=150
+post2 t=113s ts=1785425730 rpm=Current RPM 4956 duty=150
+post2 t=114s ts=1785425731 rpm=Current RPM 4633 duty=150
+post2 t=115s ts=1785425733 rpm=Current RPM 4335 duty=150
+post2 t=116s ts=1785425734 rpm=Current RPM 4931 duty=150
+post2 t=117s ts=1785425735 rpm=Current RPM 4921 duty=150
+post2 t=118s ts=1785425736 rpm=Current RPM 4951 duty=150
+post2 t=119s ts=1785425737 rpm=Current RPM 4931 duty=150
+probe2 done

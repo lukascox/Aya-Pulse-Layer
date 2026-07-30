@@ -6,7 +6,7 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
-## Fan control — discrete mode + AIDL curve CLOSED, raw sysfs curve write CONFIRMED WORKING same day (2026-07-30): INCIDENT #4 (crash, device reboot required)
+## Fan control — discrete mode + AIDL curve CLOSED, raw sysfs curve write CONFIRMED WORKING, ready to build (2026-07-30): INCIDENT #4 (crash, device reboot required)
 
 User ran `research/aidl-fan-spike/` four times. Full writeup:
 `research/aidl-fan-spike/FINDINGS.md`; feature-parity checklist updated in
@@ -102,8 +102,24 @@ target this confirmed path instead of upstream's dead Odin-specific one.
 Open question before building it for real: whether the vendor daemon's
 reassert cadence fights a sustained curve controller the way the Odin's
 daemon fought upstream `pulse`'s own reassert loop — not yet tested,
-deferred to a later session per the user's request. Full trail (including
-the correction) in `research/aidl-fan-spike/FINDINGS.md`.
+deferred to a later session per the user's request.
+
+**That open question is now answered too, same day (2026-07-30,
+later still): the vendor daemon's reassert cadence was precisely
+measured** with two small on-device scripts logging at 1s resolution
+(manual `adb shell` timing had proven too imprecise) — 9 runs, 17
+write→reassert measurements: **range 1-112 seconds, mean ≈50s, median
+54s, no fixed period.** Every reassert corrected to exactly duty=76.
+Sending `FAN_MODE_CUSTOM` via AIDL first makes no measurable difference
+(rules out the "polite mode-switch hand-off" idea). Practical upshot: a
+**~10s periodic reassert loop** in the real `FanController.kt` would
+preempt the vendor's correction in 16/17 (94%) of observed cases —
+dramatically lighter than upstream `pulse`'s own 120ms Odin-reassert
+loop, well inside `xsu`'s established safety margins. **No open questions
+remain blocking the real curve-controller implementation** — full data
+table and design recommendation in `research/aidl-fan-spike/FINDINGS.md`
+("Vendor daemon reassert cadence measured" section); raw logs +
+measurement scripts in that project's `results/run5/` and `scripts/`.
 
 ## Unsupervised session analyzed (2026-07-29): self-kill fix holding, one new kernel-level anomaly found
 
