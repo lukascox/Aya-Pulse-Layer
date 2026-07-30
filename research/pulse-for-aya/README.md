@@ -573,8 +573,8 @@ gap to a real 1:1 port is visible at a glance.
   pass.
 
 **Confirmed a real, currently unaddressed gap:**
-- **Fan control — the big one, partially closed as of 2026-07-30.**
-  `FanController.kt` is still fully stubbed in code
+- **Fan control — the big one, permanently partially-closed as of
+  2026-07-30.** `FanController.kt` is still fully stubbed in code
   (`setMode()` always `false`, `customFanAvailable()` always `false`) —
   upstream's two fan mechanisms (`gpio5_pwm2` PWM, `Settings.System
   fan_mode`) are confirmed dead on this device
@@ -584,22 +584,22 @@ gap to a real 1:1 port is visible at a glance.
   proven for performance-mode switching, verified two independent ways
   (real PWM duty changes, AND the vendor's own unsolicited state callback
   echoing the exact mode back) — see `research/aidl-fan-spike/FINDINGS.md`.
-  **The full curve write (`com_set_fan_speed_strategy`, the actual
-  PI-controller/spline-curve replacement) is a confirmed dead end, root
-  cause found.** After 4 test rounds (8 curve-write attempts, one crashing
-  `com.ayaneo.gamewindow` outright and requiring a device reboot — see
-  INCIDENT #4 in `STATUS.md`), reading the actual AIDL message-dispatch
-  bytecode (`research/aya-gamewindows-teardown/FINDINGS.md` section 9)
-  confirmed why: the handler splits the payload, parses out the mode, and
-  then just **logs** the rest — no write, no persistence, no hardware
-  effect, regardless of format. Not fixable by guessing a different
-  string. Porting upstream's own `FanTempController.kt` (PI controller)
-  /`FanCurve.kt` (spline curve editor) logic needs a different mechanism
-  entirely — the strongest remaining lead is the plain `pwm-fan` sysfs
-  write path (`research/aya-gamewindows-teardown/FINDINGS.md` section 6),
-  untested live so far but structurally identical to how `pulse-for-aya`
-  already talks to CPU/GPU sysfs, and independent of `com.ayaneo.gamewindow`
-  entirely (see `research/aidl-fan-spike/FINDINGS.md`'s "Not yet done").
+  **The full curve write (the actual PI-controller/spline-curve
+  replacement) is a confirmed dead end via both channels investigated —
+  not an open question, a documented limitation of this device/firmware.**
+  AIDL (`com_set_fan_speed_strategy`): dead code, its handler parses the
+  mode and just logs the rest, proven by reading the dispatch bytecode
+  (`research/aya-gamewindows-teardown/FINDINGS.md` section 9) — no string
+  format fixes it. One crash-triggering guess required a device reboot
+  (INCIDENT #4, `STATUS.md`). Raw sysfs (`hwmon0/pwm1`): tested live too —
+  blocked even for confirmed genuine root, with SELinux confirmed
+  non-enforcing and zero audit trail; the actual blocker was not
+  identified without kernel-driver-level reverse engineering, which is
+  out of scope as a casual follow-up. **A real editable curve is off the
+  table on this device unless someone picks up that kernel-level
+  investigation as its own dedicated effort** — see
+  `research/aidl-fan-spike/FINDINGS.md` for the full trail of both
+  investigations.
 - **RGB — smaller, same shape of gap.** Upstream's own RGB mechanism
   (`joystick_led_light_picker_color`) is confirmed dead here too, but
   self-gates off safely (no crash, just inert — `RgbController.kt` is
@@ -625,40 +625,48 @@ touches day to day. RGB and the sleep-monitor unknown are real but small
 remaining items, worth closing before calling this a true 1:1 port, not
 before calling it *usable*.
 
-## Fan control via AIDL — runs 1-4 complete, root cause found (2026-07-29/30): mode switching works, curve write is a confirmed dead end
+## Fan control — CLOSED (2026-07-29/30): mode switching works, a real curve is off the table on this device
 
 `research/aidl-fan-spike/` (same shape as `research/aidl-bind-spike/`) has
-now been run on-device four times by the user. Result, full detail in
-that project's `FINDINGS.md`:
+now been run on-device four times by the user, followed by a manual
+sysfs write investigation. Full detail in that project's `FINDINGS.md`:
 
-- **Step 1 (discrete `com_set_performance_fan:<mode>`) — confirmed
-  working, strong evidence.** Real PWM duty tracked the requested mode
-  (OFF→0, MUTE→76 perfectly repeatable across all runs), AND —
-  independently — gamewindow's own unsolicited state callback echoed the
-  exact mode back, every single send, zero misses. Not a fluke.
-- **Step 2/3 (`com_set_fan_speed_strategy`, the real curve write) — a
-  confirmed dead end, root cause found by reading the actual dispatch
-  bytecode.** 8 attempts across runs 2-4 with 4 different string-format
-  guesses never once moved duty near the expected value, and one guess
-  (dropping the mandatory `FAN_MODE_CUSTOM-` prefix) crashed
-  `com.ayaneo.gamewindow` twice via an unvalidated `FAN_MODE.valueOf(...)`
-  call, requiring a device reboot (INCIDENT #4, `STATUS.md`). The *why*
-  is now settled for good: `research/aya-gamewindows-teardown/
-  FINDINGS.md` section 9 shows the handler splits the payload, parses the
-  mode, and **only logs** the rest — no write, no persistence, no
-  hardware effect, for any format. Mode-switch to CUSTOM itself remains
-  confirmed working via callback; it's specifically this command's curve
-  *content* that was never going to do anything.
+- **Discrete mode (`com_set_performance_fan:<mode>`) — confirmed working,
+  strong evidence.** Real PWM duty tracked the requested mode (OFF→0,
+  MUTE→76 perfectly repeatable across all runs), AND — independently —
+  gamewindow's own unsolicited state callback echoed the exact mode back,
+  every single send, zero misses. Not a fluke.
+- **The real curve write — a confirmed dead end via both channels
+  investigated, root cause found for one, a hard wall for the other.**
+  - **AIDL** (`com_set_fan_speed_strategy`): 8 attempts across runs 2-4
+    with 4 different string-format guesses never once moved duty near the
+    expected value, and one guess (dropping the mandatory
+    `FAN_MODE_CUSTOM-` prefix) crashed `com.ayaneo.gamewindow` twice via
+    an unvalidated `FAN_MODE.valueOf(...)` call, requiring a device
+    reboot (INCIDENT #4, `STATUS.md`). The *why* is settled for good:
+    `research/aya-gamewindows-teardown/FINDINGS.md` section 9 shows the
+    handler splits the payload, parses the mode, and **only logs** the
+    rest — no write, no persistence, no hardware effect, for any format.
+    `FanViewModel.java` (AYA Settings' own native curve editor) sends the
+    identical command through the identical channel — meaning AYA's own
+    UI likely doesn't apply the curve either.
+  - **Raw sysfs** (`hwmon0/pwm1`, `research/aya-gamewindows-teardown/
+    FINDINGS.md` section 6): tried live, by hand — blocked even with
+    confirmed genuine root (`uid=0`) and SELinux confirmed non-enforcing
+    (Permissive, zero audit trail for the failed writes). The actual
+    blocker (likely the kernel driver's own access check, or a
+    non-SELinux protection mechanism) wasn't identified without deeper
+    kernel-level reverse engineering — out of scope as a casual
+    follow-up.
 
 **Practical upshot**: a real, usable discrete fan-mode toggle for
-`FanController.kt` is achievable today with high confidence. The full
-PI-controller/spline-curve replacement (the actual upstream-parity goal)
-needs a different mechanism than this AIDL command — the strongest
-remaining lead is the plain `pwm-fan` sysfs write path
-(`research/aya-gamewindows-teardown/FINDINGS.md` section 6), untested
-live so far but independent of `com.ayaneo.gamewindow` entirely, and
-structurally identical to how `pulse-for-aya` already talks to CPU/GPU
-sysfs — see `research/aidl-fan-spike/FINDINGS.md`'s "Not yet done".
+`FanController.kt` is achievable today with high confidence — ship that.
+A real PI-controller/spline-curve replacement
+(`FanTempController.kt`/`FanCurve.kt`, the actual upstream-parity goal)
+is **not achievable on this device via any channel found so far** — a
+documented limitation, not an open lead, unless someone picks up the
+kernel-driver investigation as its own dedicated effort. See
+`research/aidl-fan-spike/FINDINGS.md` for the complete trail.
 
 ## Build / install
 

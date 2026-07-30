@@ -68,11 +68,24 @@ real) both call into real code paths by contrast. Full writeup:
 `research/aya-gamewindows-teardown/FINDINGS.md` section 9, curated
 bytecode excerpt in `evidence/aidl/AYAAidlManager_dealMsg_fan_excerpt.txt`
 there. **The AIDL route to a custom fan curve is closed — no further
-string-format guessing is worthwhile.** The remaining lead for a real
-curve is the plain `pwm-fan` sysfs write path documented in that same
-project's FINDINGS.md section 6 (`AR03.t1(int)`), untested live so far,
-independent of `com.ayaneo.gamewindow` entirely. See
-`research/aidl-fan-spike/FINDINGS.md`'s "Not yet done" for what's left.
+string-format guessing is worthwhile.** `FanViewModel.java` (AYA
+Settings' own native curve editor) sends the identical command through
+the identical channel, per `research/ayaspace-teardown/FINDINGS.md`'s
+Addendum (corrected 2026-07-30) — so AYA's own UI likely doesn't apply
+the curve either, not just our probe.
+
+**The remaining lead (plain `pwm-fan` sysfs write, `AR03.t1(int)`) was
+also tested live by hand (2026-07-30) — also blocked.** `echo 180 > .../
+hwmon0/pwm1` (and the `fan_power_state` write `AR13.n1()` does first)
+both failed with `Permission denied`, despite confirmed genuine root
+(`xsu`'s `id` → `uid=0(root)`) and SELinux confirmed `Permissive`
+(non-enforcing) with zero matching `avc: denied` entries for either
+write. **Both investigated channels for a real fan curve are now
+confirmed closed.** `FanController.kt` should ship with the discrete-mode
+toggle only; a real PI-controller/spline-curve port is off the table on
+this device unless someone picks up kernel-driver-level reverse
+engineering as its own dedicated effort — not a casual follow-up. Full
+trail in `research/aidl-fan-spike/FINDINGS.md`.
 
 ## Unsupervised session analyzed (2026-07-29): self-kill fix holding, one new kernel-level anomaly found
 

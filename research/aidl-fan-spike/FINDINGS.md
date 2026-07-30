@@ -1,18 +1,27 @@
-# FINDINGS — AIDL fan spike, runs 1-4 (2026-07-29 / 2026-07-30)
+# FINDINGS — AIDL fan spike + sysfs follow-up, CLOSED (2026-07-29 / 2026-07-30)
 
 **Confirmed on-device: `com_set_performance_fan` genuinely drives the real
 fan, no root, over the same plain Binder connection `aidl-bind-spike`
 already proved for performance-mode.** The discrete-mode half of this
-spike (step 1) is a clean, repeatable success. The curve-write half
-(step 2/3, `com_set_fan_speed_strategy`) is **definitively a dead end,
-not an open question** — reading the actual dispatch bytecode (see "Root
-cause found" below) confirms its handler never applies the payload
-regardless of format; no format tried across four runs worked, and one
-guess (a malformed one, run4) crashed `com.ayaneo.gamewindow` outright,
-requiring a device reboot. Raw logs: `results/run1/` through
-`results/run4/` (each with
-`aidl_fan_spike_result.txt` + `aidl_fan_spike_logcat_dump.txt`; run4 adds
-`gamewindow_crash_excerpt.log` for the crash).
+spike (step 1) is a clean, repeatable success — a real, shippable feature.
+
+**A real, editable fan curve (the actual upstream-`pulse`-parity goal) is
+NOT achievable on this device today, via either channel investigated —
+both are definitively closed, not open questions:**
+1. **AIDL** (`com_set_fan_speed_strategy`) — dead code, proven by reading
+   the dispatch bytecode: the handler parses the mode then just logs the
+   rest, no format tried across four runs worked, and one malformed guess
+   crashed `com.ayaneo.gamewindow` outright, requiring a device reboot.
+2. **Raw sysfs** (`hwmon0/pwm1`) — blocked even for confirmed genuine
+   root, with SELinux confirmed non-enforcing (Permissive) and zero audit
+   trail; root cause not identified without deeper kernel-driver-level
+   analysis.
+
+See "Root cause found" and "The sysfs `pwm-fan` write path is ALSO
+blocked" below for both investigations in full. Raw logs: `results/run1/`
+through `results/run4/` (each with `aidl_fan_spike_result.txt` +
+`aidl_fan_spike_logcat_dump.txt`; run4 adds `gamewindow_crash_excerpt.log`
+for the crash).
 
 ## Step 1 — discrete fan mode: confirmed, strong evidence, not just plausible
 
@@ -188,6 +197,47 @@ handler doesn't act on its input regardless of shape. For contrast,
 (untested live, but structurally real) persists via a `ContentProvider`
 write (`AyaShareConfUtilKt.e(...)`).
 
+## The sysfs `pwm-fan` write path is ALSO blocked — real root, no SELinux involvement (2026-07-30)
+
+Following the AIDL dead end, the plain `pwm-fan` sysfs write
+(`research/aya-gamewindows-teardown/FINDINGS.md` section 6, `AR03.t1(int)`)
+was tried live, by hand, via a few one-off `adb shell xsu -c "..."`
+commands (no probe app needed — this is just a kernel file). Result:
+**also blocked, and not for an obvious reason.**
+
+- `echo 180 > .../hwmon0/pwm1` → `Permission denied`, even after first
+  writing `fan_power_state=1` (the exact sequence `AR13.n1()` — the
+  device-specific class *confirmed live on this exact hardware* — uses
+  before its own `t1()` write, per `evidence/fan/AR13_fan_excerpt.java`).
+  Both the `fan_power_state` and `pwm1` writes failed the same way.
+- The file is `-rw-r--r-- root root` — a completely ordinary,
+  root-writable-looking mode.
+- `xsu` confirmed genuine `uid=0(root) gid=0(root)` (`id` output) — this
+  is real root, not a partial/fake elevation.
+- `getenforce` → `Permissive` — SELinux is not enforcing anything system-
+  wide right now.
+- `dmesg` around the failed writes shows **zero matching `avc: denied`
+  entries** for either `fan_power_state` or `pwm1` (the only denials
+  present are unrelated — `dmesg`'s own syslog access, and a `cat` read
+  of `fan_rpm_state` that "denied" in the log but **succeeded** in
+  practice, exactly as expected under Permissive).
+- `/sys/kernel/security/lsm` (would list all active Linux Security
+  Modules, if `securityfs` exposes it) returned empty — inconclusive, but
+  rules out an easy "oh, there's a second LSM stacked with SELinux and
+  *that one's* enforcing" answer via the standard mechanism.
+
+**Genuine root, ordinary file mode, SELinux confirmed non-enforcing, zero
+audit trail — and the write still fails.** The most likely explanation is
+that the kernel driver behind this specific `pwm-fan` sysfs attribute
+enforces its own access check inside its `store()` callback (independent
+of standard Unix permissions and independent of SELinux), or that some
+other protection mechanism is involved that doesn't register through the
+usual channels checked here (e.g. something TrustZone/TEE-adjacent).
+Confirming exactly which would require decompiling/analyzing the actual
+kernel driver binary — a materially bigger undertaking than the
+adb-one-liner probing this whole `aidl-fan-spike` project has used so
+far, and out of scope unless deliberately picked up as its own effort.
+
 ## What this means for `pulse-for-aya`
 
 **Step 1 alone is already a usable, real feature** — a discrete
@@ -197,37 +247,38 @@ meaningful slice of the fan-control gap in
 `research/pulse-for-aya/README.md`'s "Feature parity vs upstream" section
 by itself.
 
-**The curve write via this AIDL channel is a closed dead end, not an open
-question.** `com_set_fan_speed_strategy` cannot be made to work by
-guessing a different string format — the handler ignores its payload
-entirely. Porting `FanTempController.kt`/`FanCurve.kt`'s actual
-temperature-responsive logic into `pulse-for-aya` needs a different
-mechanism entirely — the most promising lead is the plain `pwm-fan`
-sysfs write path documented in
-`research/aya-gamewindows-teardown/FINDINGS.md` section 6
-(`AR03.t1(int)`, 0-255 duty via `/sys/devices/platform/soc/soc:pwm-fan/
-hwmon/hwmon0/pwm1`, structurally identical to how `pulse-for-aya` already
-talks to CPU/GPU sysfs) — untested live so far, but doesn't depend on
-this AIDL surface or `com.ayaneo.gamewindow` at all.
+**A real, PULSE-style editable fan curve is not achievable on this device
+today, via any channel investigated.** Both routes are closed, for
+different and independently-confirmed reasons:
+- **AIDL** (`com_set_fan_speed_strategy`) — the handler is dead code, logs
+  and returns, proven by reading the dispatch bytecode. No format guess
+  can fix it.
+- **Raw sysfs** (`pwm-fan`/`hwmon0/pwm1`) — blocked even for confirmed
+  real root, with no SELinux involvement, for a reason not yet
+  identified without deeper kernel-level reverse engineering.
+
+This is a genuine, documented limitation of this device/firmware
+combination, not an unexplored lead. `FanController.kt` should ship with
+the discrete-mode toggle only; a real spline-curve/PI-controller port
+(`FanTempController.kt`/`FanCurve.kt`) is off the table unless someone
+picks up the kernel-driver-level investigation as a dedicated effort.
 
 ## Not yet done
 
-- ~~Root-causing why the curve write doesn't take effect~~ — **done, see
-  above.** The AIDL curve-write path is closed; any further fan-curve
-  work should target the sysfs `pwm-fan` write path instead (see
-  `research/aya-gamewindows-teardown/FINDINGS.md` section 6), not more
-  guesses against `com_set_fan_speed_strategy`.
+- ~~Root-causing why the AIDL curve write doesn't take effect~~ — **done,
+  see above.** Confirmed dead code, not a format problem.
+- ~~Testing the plain sysfs `pwm-fan` write path~~ — **done, see above.**
+  Also blocked, root cause not yet identified (would need kernel-driver-
+  level analysis, a materially bigger effort).
 - Testing `com_set_fan_speed_is_linear` — still a live, worthwhile probe
-  (unlike the strategy command, its handler genuinely persists a value via
-  `AyaShareConfUtilKt.e(...)`, per
-  `research/aya-gamewindows-teardown/FINDINGS.md` section 9). Not
+  in its own right (unlike the strategy command, its handler genuinely
+  persists a value via `AyaShareConfUtilKt.e(...)`, per
+  `research/aya-gamewindows-teardown/FINDINGS.md` section 9), though it
+  wouldn't unlock a real curve on its own (there's still no confirmed
+  mechanism that reads a persisted curve back and applies it). Not
   exercised in any run yet; possible via the `custom_command` intent extra
   without a rebuild, see `README.md`.
-- Live-testing the plain sysfs `pwm-fan` write path
-  (`research/aya-gamewindows-teardown/FINDINGS.md` section 6,
-  `AR03.t1(int)`) as the real replacement plan for a custom curve, now
-  that the AIDL route is confirmed closed.
-- **Any further live guessing should stay conservative given run4's
-  crash**: always keep the confirmed-mandatory `FAN_MODE_CUSTOM-` prefix,
-  and treat every new guess as a potential crash until proven otherwise,
-  not just a potential no-op.
+- Identifying exactly what blocks the sysfs `pwm-fan` write for real root
+  (kernel driver's own access check vs. a non-SELinux protection
+  mechanism) — would need decompiling/analyzing the actual kernel driver,
+  a dedicated effort of its own, not casual follow-up.
