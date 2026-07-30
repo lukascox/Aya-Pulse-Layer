@@ -33,23 +33,29 @@ full reasoning behind each)
   even though `executeAsRoot()` itself doesn't consult this cache and kept
   working fine underneath. Same fix `RgbController.available()` already
   applies elsewhere in this codebase; missed here originally.
-- **`root/RootSupport.kt`** — `runGeneratedScript` simplified to call
-  `runRootCommand(scriptContents)` directly instead of writing a
-  world-readable/-executable file to app storage first. That dance existed
-  because PServer ran scripts as root from a different UID and had to read
-  the file off disk; `xsu -c` takes the script text directly as its
-  argument, so the file (and the local-exposure risk that came with making
-  it world-readable) is gone.
-- **`data/FanController.kt`** — `setMode()`, `ensureManualMode()`, and
-  `customFanAvailable()` stubbed to no-ops/`false`. Confirmed on-device
-  (2026-07-25) that neither of upstream's two fan mechanisms (the
-  `gpio5_pwm2` PWM path, and the `Settings.System fan_mode` key read by
-  `com.odin.settings`) exist here — native AyaSettings owns fan control on
-  this device and does it well; the plan is a dedicated AIDL-based fan loop
-  later (`research/aidl-bind-spike`), not this port. Stubbed at this single
-  choke point rather than editing every call site, since several call sites
-  wrote `fan_mode` unconditionally (not gated behind `customFanAvailable()`)
-  — see `pulse-glue-assessment/FINDINGS.md`'s "Important gap" section.
+- **`root/RootSupport.kt`** — `runGeneratedScript` was initially simplified
+  to pass the script text straight to `runRootCommand`, dropping upstream's
+  world-readable-file dance (which existed only because PServer ran scripts
+  as root from a different UID). **That simplification was REVERTED
+  2026-07-28** and the file-based approach restored: this device's `xsud`
+  crashes on a single `-c` argument past ~1000-1200 characters
+  (`research/xsu-capability-probe/FINDINGS.md`), which a generated script
+  comfortably exceeds. `sh '<path>'` keeps the argument short regardless of
+  script length. See the in-file comment for the full reasoning.
+- **`data/FanController.kt`** — **originally stubbed** (`setMode()`,
+  `ensureManualMode()` and `customFanAvailable()` as no-ops/`false`),
+  because on-device testing (2026-07-25) confirmed neither of upstream's
+  two fan mechanisms (the `gpio5_pwm2` PWM path, and the `Settings.System
+  fan_mode` key read by `com.odin.settings`) exists here. Stubbed at this
+  single choke point rather than at every call site, since several call
+  sites wrote `fan_mode` unconditionally, not gated behind
+  `customFanAvailable()` — see `pulse-glue-assessment/FINDINGS.md`'s
+  "Important gap" section. **All three are now real (2026-07-30)**: the
+  duty node was found and the curve controller ported, and discrete modes
+  were rewired onto AYANEO's AIDL command. See the three fan sections near
+  the end of this file for the whole trail. `readMode()` is the one piece
+  still pointed at the dead Odin key, deliberately, as a fallback behind
+  the AIDL callback readback.
 - **RGB (`data/RgbController.kt`) — NOT patched, left as upstream.**
   Confirmed on-device (`xsu -c "settings get system
   joystick_led_light_picker_color"` → `null`) that its vendor key doesn't
@@ -566,25 +572,33 @@ gap to a real 1:1 port is visible at a glance.
   Minecraft, `retrohrai` (`STATUS.md`, "Per-app profile testing").
 - **Live telemetry HUD/OSD** — CPU/GPU/thermal readings confirmed over
   `xsu`/the FIFO daemon.
-- **Quick Settings tile, autostart, themes** — inherited byte-identical
-  from upstream (see "What's patched" above — none of these files were
-  touched), no device-specific dependency in any of them, no reason to
-  doubt they work; not yet independently exercised in a dedicated test
-  pass.
+- **Quick Settings tile, autostart, themes** — inherited essentially
+  unchanged from upstream, no device-specific dependency in any of them, no
+  reason to doubt they work; not yet independently exercised in a dedicated
+  test pass. (`TileControlActivity.kt` did pick up a one-line change on
+  2026-07-30 — a `context` argument threaded into the ViewModel factory —
+  so "byte-identical" no longer holds literally, but nothing about the
+  tile's own behavior was touched.)
 
-**Confirmed working, built this session (2026-07-30):**
-- **Fan control — both mechanisms now implemented and wired.** Custom fan
-  curve (PI/spline, `FanCurveController` routed through `PulseDaemon`'s
-  FIFO) confirmed live on real hardware under real thermal load — see
-  "Fan curve implementation plan" below. Discrete vendor mode
+**Built this session (2026-07-30) — curve confirmed live, discrete modes
+built but NOT yet on-device tested:**
+- **Fan control — both mechanisms now implemented and wired.** The Custom
+  fan curve (PI/spline, `FanCurveController` routed through `PulseDaemon`'s
+  FIFO) is **confirmed live on real hardware** under real thermal load —
+  see "Fan curve implementation plan" below. Discrete vendor mode
   (Silent/Smart/Sport) now drives the real AIDL mechanism
-  (`com_set_performance_fan`, proven two independent ways — real PWM duty
-  tracking the requested mode, and the vendor's own unsolicited state
-  callback echoing it back) instead of the dead Odin `Settings.System
-  fan_mode` key — see "Discrete fan mode implementation plan" below.
-  `FAN_MODE_OFF` (a 4th mode with no slot in the current 3-mode UI) is the
-  one deliberately excluded piece, not a gap. Not yet independently
-  listen-tested on-device.
+  (`com_set_performance_fan`) instead of the dead Odin `Settings.System
+  fan_mode` key — see "Discrete fan mode implementation plan" below —
+  but is **written, not yet verified on-device**. What the earlier probe
+  work actually established, stated precisely: the *command* reaches the
+  vendor and is acted on (`FAN_MODE_OFF`→duty 0 and `FAN_MODE_MUTE`→duty 76
+  are exactly repeatable, and gamewindow echoes every mode back over its
+  callback). What it did NOT establish is that our
+  Silent→MUTE / Smart→BALANCE / Sport→TURBO *labelling* is right —
+  BALANCE/TURBO produced noisier duty readings, so the mapping wants a
+  listen-test per mode before it's trusted. `FAN_MODE_OFF` (a 4th vendor
+  mode with no slot in the current 3-mode UI) is deliberately excluded,
+  not a gap.
 
 **Confirmed a real, currently unaddressed gap:**
 - **RGB — smaller, same shape of gap.** Upstream's own RGB mechanism
@@ -806,11 +820,17 @@ see "Discrete fan mode implementation plan" below.**
 The one remaining fan gap after the curve work above. Re-checked before
 starting whether this needed more research (re-read `aidl-fan-spike/
 FINDINGS.md`, `pulse-glue-assessment/FINDINGS.md`, and the last 6 commits)
-— **it didn't**: `com_set_performance_fan` was already proven working
-(Step 1, two independent signals — real PWM duty tracking the requested
-mode, and the vendor's own unsolicited state callback echoing it back),
-and `AyaAidlClient.sendFanMode(mode: String)` already existed and worked,
-just unused outside `MainActivity`'s debug-only bind-verification harness.
+— **it didn't**: `com_set_performance_fan` was already proven to reach the
+vendor and be acted on (Step 1, two independent signals — real PWM duty
+tracking the requested mode, and the vendor's own unsolicited state
+callback echoing it back), and `AyaAidlClient.sendFanMode(mode: String)`
+already existed and worked, just unused outside `MainActivity`'s
+debug-only bind-verification harness. **What that does not settle is the
+label mapping**: only `FAN_MODE_OFF` (duty 0) and `FAN_MODE_MUTE` (duty 76)
+had exactly-repeatable duty readings; `BALANCE`/`TURBO` were noisier, so
+whether Silent/Smart/Sport line up with MUTE/BALANCE/TURBO the way a user
+expects is a listen-test question, not a settled one. `aidlModeFor`'s doc
+says the same at the call site.
 Tracing every `fanController.setMode(...)` call site (`FanArbiter.decide`
 already returns `SetVendorMode`/`ReleaseToVendor` for non-Custom modes,
 and `ForegroundAppMonitorService`/`TunerViewModel` already call

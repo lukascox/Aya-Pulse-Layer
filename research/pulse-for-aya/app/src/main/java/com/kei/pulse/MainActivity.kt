@@ -6,9 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
-import com.kei.pulse.aidl.AyaAidlClient
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.result.contract.ActivityResultContracts
@@ -83,10 +81,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /** AIDL migration step 1 (`STATUS.md`, 2026-07-27) -- bind-only verification, see
-     * [verifyAyaAidlBindOnDebugBuild]'s doc comment. `null` unless a debug build actually ran it. */
-    private var aidlVerifyClient: AyaAidlClient? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Visual build check on every launch: versionName/versionCode follow upstream's own scheme and
@@ -94,13 +88,18 @@ class MainActivity : ComponentActivity() {
         // build, see app/build.gradle.kts) is what actually tells two builds of the same versionName
         // apart -- added after a suspected regression turned out to need "is this really the patched
         // build" ruled out first (STATUS.md, 2026-07-28). The same label is also the first line of every
-        // /sdcard session log (PulseDaemon.kt), so a pulled log is self-identifying too.
-        Toast.makeText(
-            applicationContext,
-            "PULSE ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) built ${BuildConfig.BUILD_TIMESTAMP}",
-            Toast.LENGTH_LONG,
-        ).show()
-        verifyAyaAidlBindOnDebugBuild()
+        // /sdcard session log (PulseDaemon.kt), so a pulled log is self-identifying too -- which is why
+        // this is gated to debug builds (2026-07-30): the log line already covers the "which build is
+        // this" question for any pulled session, so a release build has no reason to greet the user with
+        // a build stamp on every single launch. FLAG_DEBUGGABLE rather than BuildConfig.DEBUG to match
+        // how the rest of this fork gates debug-only behavior.
+        if ((applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
+            Toast.makeText(
+                applicationContext,
+                "PULSE ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) built ${BuildConfig.BUILD_TIMESTAMP}",
+                Toast.LENGTH_LONG,
+            ).show()
+        }
         enableEdgeToEdge()
         maybeRequestQuickSettingsTileOnFirstRun()
         maybePromptBatteryExemption()
@@ -641,237 +640,6 @@ class MainActivity : ComponentActivity() {
             return
         }
         SleepProfileMonitorService.start(this)
-    }
-
-    /**
-     * AIDL migration step 1 (`STATUS.md`, 2026-07-27 Minecraft-crash investigation): verifies
-     * `AyaAidlClient` can bind to `com.ayaneo.gamewindow`'s `AyaAidlService` and complete the
-     * registration handshake **from pulse-for-aya's own signed/packaged context** -- the one thing
-     * `research/aidl-bind-spike`'s throwaway app couldn't tell us, since it's a different
-     * `applicationId`. Debug builds only (checked via `FLAG_DEBUGGABLE`, not `BuildConfig.DEBUG` --
-     * this module doesn't have `buildFeatures.buildConfig` enabled). The bind+register step itself
-     * never changes device state, so it's safe to run automatically on every debug-build launch;
-     * see [maybeRunSchedulerSendTest] for the one thing this DOES trigger, and why that one needs
-     * an explicit opt-in instead. Toasts + logs the result (tag `AidlVerify`); remove this whole
-     * call once step 2 lands and the bind path is exercised for real instead.
-     */
-    private fun verifyAyaAidlBindOnDebugBuild() {
-        val debuggable = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
-        if (!debuggable) return
-        val client = AyaAidlClient(this)
-        aidlVerifyClient = client
-        client.bind { result ->
-            when (result) {
-                is AyaAidlClient.BindResult.Ready -> {
-                    val msg = "AIDL bind OK, clientId=${result.clientId}"
-                    Log.d("AidlVerify", msg)
-                    runOnUiThread { Toast.makeText(this, msg, Toast.LENGTH_LONG).show() }
-                    maybeRunSchedulerSendTest(client)
-                    maybeRunCpuFrequencyTest(client, cpuId = 0, policyId = 0) // shares policy0 with cpu1 -- confirmed no-op
-                    maybeRunCpuFrequencyTest(client, cpuId = 7, policyId = 7) // sole member of policy7 -- confirmed works
-                    maybeRunCpuGroupFrequencyTest(client)
-                    maybeRunGpuFrequencyTest(client)
-                }
-                is AyaAidlClient.BindResult.Failed -> {
-                    val msg = "AIDL bind FAILED: ${result.reason}"
-                    Log.w("AidlVerify", msg)
-                    runOnUiThread { Toast.makeText(this, msg, Toast.LENGTH_LONG).show() }
-                }
-            }
-        }
-    }
-
-    /**
-     * Opt-in test of [AyaAidlClient.sendScheduler] -- unlike the bind check above, this DOES
-     * change device state (sets the CPU governor for real), so it must never fire just because a
-     * debug build launched. Gated on a marker file the tester creates deliberately over their
-     * existing root shell: `xsu -c "touch /sdcard/apl_test_aidl_scheduler.txt"`. Checked (and
-     * removed, so it only fires once) via `RootSupport.runRootCommand`, not a plain `File` check --
-     * `/sdcard` isn't reliably reachable through this app's own file APIs under scoped storage, same
-     * reason every other probe in this repo goes through `xsu` for `/sdcard` (see e.g.
-     * `research/ab-logger/README.md`'s Permissions section). On trigger: sends
-     * `com_set_performance_scheduler:BALANCED`, waits 1.5s, then reads back
-     * `scaling_governor` on policy0 via `xsu` -- same empirical-verification pattern
-     * `research/aidl-bind-spike/app/.../MainActivity.kt` already used for `com_set_performance_mode`.
-     * Expect `schedutil` if this works (native `BALANCED` on this SoC, confirmed in
-     * `diagnostics/docs/HARDWARE_PROFILE.md` / `aya-gamewindows-teardown/FINDINGS.md`).
-     */
-    private fun maybeRunSchedulerSendTest(client: AyaAidlClient) {
-        val marker = "/sdcard/apl_test_aidl_scheduler.txt"
-        Thread {
-            val exists = com.kei.pulse.root.RootSupport.runRootCommand("test -f $marker && echo yes")?.trim() == "yes"
-            if (!exists) return@Thread
-            com.kei.pulse.root.RootSupport.runRootCommand("rm -f $marker")
-            val sendResult = client.sendScheduler("BALANCED")
-            Log.d("AidlVerify", "sendScheduler(BALANCED) result=$sendResult")
-            Thread.sleep(1500)
-            val readback = com.kei.pulse.root.RootSupport.runRootCommand(
-                "cat /sys/devices/system/cpu/cpufreq/policy0/scaling_governor",
-            )?.trim()
-            val msg = "scheduler test: send=$sendResult readback(policy0 governor)=$readback"
-            Log.d("AidlVerify", msg)
-            runOnUiThread { Toast.makeText(this, msg, Toast.LENGTH_LONG).show() }
-        }.start()
-    }
-
-    /**
-     * Opt-in test of [AyaAidlClient.sendCpuFrequency], gated on a per-`cpuId` marker file (same
-     * reasoning as [maybeRunSchedulerSendTest]). First run (`cpuId=0`, shares `policy0` with
-     * `cpu1`) sent successfully (no exception) but the value **never actually changed**, read back
-     * from both the policy-level and per-cpu sysfs nodes -- ruling out a symlink/path mismatch as
-     * the explanation (`STATUS.md`/`research/pulse-for-aya/README.md`, 2026-07-27). New hypothesis
-     * to test with a second `cpuId`: this device's cores that SHARE a cpufreq policy (a real
-     * hardware frequency domain, not just a software grouping) may not be independently settable
-     * via this AIDL command, while `cpu7` -- the sole member of `policy7`, a genuinely independent
-     * domain -- might behave differently. `testFreqKhz` defaults to `787200`, confirmed present in
-     * both `policy0` and `policy7`'s OPP tables (`diagnostics/docs/HARDWARE_PROFILE.md`), so the
-     * same test value is valid for either target.
-     *
-     * **Self-restoring**: reads the per-cpu node's current `scaling_max_freq` before touching
-     * anything, applies the test value, reads back (both nodes) to confirm the change landed, then
-     * re-sends the AIDL command with the ORIGINAL value and reads back again -- doesn't rely on
-     * `com_set_performance_reset` (format confirmed, behavior not yet understood) to clean up.
-     */
-    private fun maybeRunCpuFrequencyTest(client: AyaAidlClient, cpuId: Int, policyId: Int, testFreqKhz: Int = 787200) {
-        val marker = "/sdcard/apl_test_aidl_cpu$cpuId.txt"
-        val policyPath = "/sys/devices/system/cpu/cpufreq/policy$policyId/scaling_max_freq"
-        val perCpuPath = "/sys/devices/system/cpu/cpu$cpuId/cpufreq/scaling_max_freq"
-        fun readBoth(): String {
-            val p = com.kei.pulse.root.RootSupport.runRootCommand("cat $policyPath")?.trim()
-            val c = com.kei.pulse.root.RootSupport.runRootCommand("cat $perCpuPath")?.trim()
-            return "policy$policyId=$p cpu$cpuId=$c"
-        }
-        Thread {
-            val exists = com.kei.pulse.root.RootSupport.runRootCommand("test -f $marker && echo yes")?.trim() == "yes"
-            if (!exists) return@Thread
-            com.kei.pulse.root.RootSupport.runRootCommand("rm -f $marker")
-
-            val original = com.kei.pulse.root.RootSupport.runRootCommand("cat $perCpuPath")?.trim()?.toIntOrNull()
-            if (original == null) {
-                val msg = "cpu$cpuId freq test: aborted, couldn't read original $perCpuPath"
-                Log.w("AidlVerify", msg)
-                runOnUiThread { Toast.makeText(this, msg, Toast.LENGTH_LONG).show() }
-                return@Thread
-            }
-            val before = readBoth()
-
-            val sendResult = client.sendCpuFrequency(cpuId, testFreqKhz)
-            Thread.sleep(1500)
-            val afterTest = readBoth()
-
-            val restoreResult = client.sendCpuFrequency(cpuId, original)
-            Thread.sleep(1500)
-            val afterRestore = readBoth()
-
-            val msg = "cpu$cpuId freq test: original=$original before=[$before] " +
-                "send($testFreqKhz)=$sendResult after=[$afterTest] " +
-                "restore($original)=$restoreResult after=[$afterRestore]"
-            Log.d("AidlVerify", msg)
-            runOnUiThread { Toast.makeText(this, msg, Toast.LENGTH_LONG).show() }
-        }.start()
-    }
-
-    /**
-     * Opt-in test of [AyaAidlClient.sendCpuFrequency] against BOTH members of a shared policy
-     * (`cpu0` and `cpu1`, `policy0`) back-to-back with the same value, gated on
-     * `/sdcard/apl_test_aidl_cpu_group.txt`. [maybeRunCpuFrequencyTest] already showed a lone
-     * `cpuId` within this shared policy is a silent no-op -- this tests whether the receiving side
-     * actually requires every constituent core of a policy to report the same target before
-     * committing the write (plausible: `PerformanceViewModel`'s own per-core JSON model treats each
-     * `cpuId` independently even though `aya-gamewindows-teardown/FINDINGS.md` section 2 already
-     * showed policy-mates always end up reporting identical `selectedFrequency` in practice -- maybe
-     * that convergence is enforced receiver-side by waiting for all of them). Same self-restoring
-     * pattern as [maybeRunCpuFrequencyTest], just driving two `cpuId`s per phase instead of one.
-     */
-    private fun maybeRunCpuGroupFrequencyTest(client: AyaAidlClient) {
-        val marker = "/sdcard/apl_test_aidl_cpu_group.txt"
-        val testFreqKhz = 787200
-        val policyPath = "/sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq"
-        val cpu0Path = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq"
-        val cpu1Path = "/sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq"
-        fun readAll(): String {
-            val p = com.kei.pulse.root.RootSupport.runRootCommand("cat $policyPath")?.trim()
-            val c0 = com.kei.pulse.root.RootSupport.runRootCommand("cat $cpu0Path")?.trim()
-            val c1 = com.kei.pulse.root.RootSupport.runRootCommand("cat $cpu1Path")?.trim()
-            return "policy0=$p cpu0=$c0 cpu1=$c1"
-        }
-        Thread {
-            val exists = com.kei.pulse.root.RootSupport.runRootCommand("test -f $marker && echo yes")?.trim() == "yes"
-            if (!exists) return@Thread
-            com.kei.pulse.root.RootSupport.runRootCommand("rm -f $marker")
-
-            val original = com.kei.pulse.root.RootSupport.runRootCommand("cat $cpu0Path")?.trim()?.toIntOrNull()
-            if (original == null) {
-                val msg = "cpu group freq test: aborted, couldn't read original $cpu0Path"
-                Log.w("AidlVerify", msg)
-                runOnUiThread { Toast.makeText(this, msg, Toast.LENGTH_LONG).show() }
-                return@Thread
-            }
-            val before = readAll()
-
-            val send0 = client.sendCpuFrequency(0, testFreqKhz)
-            val send1 = client.sendCpuFrequency(1, testFreqKhz)
-            Thread.sleep(1500)
-            val afterTest = readAll()
-
-            val restore0 = client.sendCpuFrequency(0, original)
-            val restore1 = client.sendCpuFrequency(1, original)
-            Thread.sleep(1500)
-            val afterRestore = readAll()
-
-            val msg = "cpu group freq test: original=$original before=[$before] " +
-                "send($testFreqKhz)=[$send0,$send1] after=[$afterTest] " +
-                "restore($original)=[$restore0,$restore1] after=[$afterRestore]"
-            Log.d("AidlVerify", msg)
-            runOnUiThread { Toast.makeText(this, msg, Toast.LENGTH_LONG).show() }
-        }.start()
-    }
-
-    /**
-     * Opt-in test of [AyaAidlClient.sendGpuFrequency], gated on
-     * `/sdcard/apl_test_aidl_gpu.txt`. Tests `366000000` Hz (also a raw value already seen live in
-     * real `ab-logger` captures, known-valid). Reads back `kgsl-3d0/devfreq/max_freq` -- the node
-     * `AyaDevicesUtil$applyGPUFrequency$1` is confirmed to write on the receiving side
-     * (`aya-gamewindows-teardown/FINDINGS.md` section 2) -- **not** `max_pwrlevel` (an index, not a
-     * frequency, and a different node than what this AIDL command appears to target). Same
-     * self-restoring pattern as [maybeRunCpuFrequencyTest].
-     */
-    private fun maybeRunGpuFrequencyTest(client: AyaAidlClient) {
-        val marker = "/sdcard/apl_test_aidl_gpu.txt"
-        val testFreqHz = 366000000
-        Thread {
-            val exists = com.kei.pulse.root.RootSupport.runRootCommand("test -f $marker && echo yes")?.trim() == "yes"
-            if (!exists) return@Thread
-            com.kei.pulse.root.RootSupport.runRootCommand("rm -f $marker")
-
-            val path = "/sys/class/kgsl/kgsl-3d0/devfreq/max_freq"
-            val original = com.kei.pulse.root.RootSupport.runRootCommand("cat $path")?.trim()?.toIntOrNull()
-            if (original == null) {
-                val msg = "gpu freq test: aborted, couldn't read original $path"
-                Log.w("AidlVerify", msg)
-                runOnUiThread { Toast.makeText(this, msg, Toast.LENGTH_LONG).show() }
-                return@Thread
-            }
-
-            val sendResult = client.sendGpuFrequency(testFreqHz)
-            Thread.sleep(1500)
-            val afterTest = com.kei.pulse.root.RootSupport.runRootCommand("cat $path")?.trim()
-
-            val restoreResult = client.sendGpuFrequency(original)
-            Thread.sleep(1500)
-            val afterRestore = com.kei.pulse.root.RootSupport.runRootCommand("cat $path")?.trim()
-
-            val msg = "gpu freq test: original=$original send($testFreqHz)=$sendResult " +
-                "readback=$afterTest restore($original)=$restoreResult readback=$afterRestore"
-            Log.d("AidlVerify", msg)
-            runOnUiThread { Toast.makeText(this, msg, Toast.LENGTH_LONG).show() }
-        }.start()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        aidlVerifyClient?.unbind()
-        aidlVerifyClient = null
     }
 
     private fun maybeRequestQuickSettingsTileOnFirstRun() {

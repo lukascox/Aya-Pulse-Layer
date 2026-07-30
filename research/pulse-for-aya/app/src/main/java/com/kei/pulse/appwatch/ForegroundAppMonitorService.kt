@@ -965,10 +965,10 @@ class ForegroundAppMonitorService : Service() {
             }
         }
 
-        // Active cooling: drive the Custom fan. Writing fan_mode=6 RESETS the Odin's duty to a ~50% mode-init
-        // default, so pin our current intended duty in the SAME command (read-first → only on drift).
-        val intendedDuty = FanCurve.percentToDuty(fanCurveController.appliedPercent, fanCurveController.period)
-        fanController.ensureManualMode(intendedDuty, pulseDaemon)
+        // Active cooling: drive the Custom fan. On AYANEO this just asserts the fan_power_state=1
+        // prerequisite (idempotent, cheap every tick) — unlike the Odin, there's no mode write that resets
+        // the duty, so there's no intended-duty to pin alongside it. See FanController.ensureManualMode.
+        fanController.ensureManualMode(pulseDaemon)
         if (settings.fanSmartEnabled) {
             fanCurveController.setTargetPercent(targetPercent)
         } else {

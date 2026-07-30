@@ -53,7 +53,7 @@ deliberately excluded (no slot in the 3-mode UI). Build/test/lint clean.
 `research/pulse-for-aya/README.md`'s "Discrete fan mode implementation
 plan" section.
 
-## Fan curve controller BUILT and CONFIRMED LIVE (2026-07-30) — the whole fan-control gap is now closed
+## Fan curve controller BUILT and CONFIRMED LIVE (2026-07-30) — the curve half of the fan-control gap is closed
 
 Same day as the reassert-cadence measurement below: found the existing
 `FanCurveController`/`FanArbiter`/`FanCurve`/`FanTempController` stack
@@ -81,11 +81,14 @@ correcting every one, live, zero raw `xsu` calls, no crashes. This is
 full end-to-end validation of the architecture the reassert-cadence
 measurement below only predicted would work.
 
-**This closes the fan-control gap in `pulse-for-aya` entirely**: discrete
-mode (AIDL, proven 2026-07-29) is a smaller separate follow-up still not
-wired in, but the actual upstream-parity goal — a real, editable,
-temperature-responsive fan curve — is now built, tested, and working on
-real hardware, not just a documented possibility.
+**This closes the BIG half of the fan-control gap**: the actual
+upstream-parity goal — a real, editable, temperature-responsive fan curve
+— is built, tested, and working on real hardware, not just a documented
+possibility. Discrete mode (AIDL, proven 2026-07-29) was still a separate
+follow-up at the time of writing; it was implemented later the same day,
+see the two sections above. (The heading of this section originally
+claimed the whole gap was closed — corrected here, it was only ever about
+the curve.)
 
 ## Fan control — discrete mode + AIDL curve CLOSED, raw sysfs curve write CONFIRMED WORKING, ready to build (2026-07-30): INCIDENT #4 (crash, device reboot required)
 

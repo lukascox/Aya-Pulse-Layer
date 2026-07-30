@@ -49,16 +49,16 @@ class FanController {
 
     /**
      * Prerequisite for the AYANEO duty node to respond: writes [FAN_POWER_PATH] = `1` (unlocking it first,
-     * same `chmod 666` pattern as every other sysfs write in this app). Unlike the Odin (whose
-     * `fan_mode=6` write this replaces also reset the duty to a ~50% default, hence the now-unused
-     * [reassertDuty] param this signature keeps for call-site compatibility), AYANEO has no "enter manual
-     * mode" handshake to negotiate -- confirmed live that sending `FAN_MODE_CUSTOM` via AIDL first makes no
-     * measurable difference to the vendor daemon's reassert behavior
-     * (`research/aidl-fan-spike/FINDINGS.md`) -- so this is just the power-state prerequisite, safe and
-     * cheap to call every tick (idempotent). Routes through [pulseDaemon] when available, same fallback
-     * contract as [readMode]. Always returns `true` -- there's no real "entry can fail" concept here.
+     * same `chmod 666` pattern as every other sysfs write in this app). Unlike the Odin -- whose
+     * `fan_mode=6` write this replaces also reset the duty to a ~50% default, so the caller had to pin its
+     * intended duty in the same command -- AYANEO has no "enter manual mode" handshake to negotiate at
+     * all: confirmed live that sending `FAN_MODE_CUSTOM` via AIDL first makes no measurable difference to
+     * the vendor daemon's reassert behavior (`research/aidl-fan-spike/FINDINGS.md`). So this is only the
+     * power-state prerequisite, safe and cheap to call every tick (idempotent), and takes no duty
+     * argument. Routes through [pulseDaemon] when available, same fallback contract as [readMode].
+     * Always returns `true` -- there's no real "entry can fail" concept here.
      */
-    fun ensureManualMode(reassertDuty: Int? = null, pulseDaemon: PulseDaemon? = null): Boolean {
+    fun ensureManualMode(pulseDaemon: PulseDaemon? = null): Boolean {
         if (pulseDaemon?.setCap(FAN_POWER_PATH, "666", "1") != true) {
             RootSupport.runRootCommand("chmod 666 $FAN_POWER_PATH 2>/dev/null; echo 1 > $FAN_POWER_PATH")
         }
@@ -84,14 +84,6 @@ class FanController {
         const val SPORT = 5
         /** Silent (low fan) — the quiet bounce mode when re-applying Smart so the fan dips instead of revving. */
         const val SILENT = 1
-
-        /**
-         * The intermediate mode [setMode] bounces through to force the stock controller to reload [target]
-         * (it caches the active mode and won't re-apply the same one). Must differ from [target]. Reaching
-         * SMART routes through SILENT (low fan) rather than SPORT (high fan), so handing the fan back to Smart
-         * — e.g. when AutoTDP restores it on game-exit — dips quietly instead of audibly revving the fan.
-         */
-        fun bounceModeFor(target: Int): Int = if (target == SMART) SILENT else SMART
 
         /**
          * PULSE-driven custom fan curve. Not a stock fan_mode — when selected, the service drives the fan
