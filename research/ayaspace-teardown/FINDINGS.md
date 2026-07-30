@@ -104,9 +104,13 @@ value, see the same FINDINGS.md section 9 — so the Linear/Step-Based
 toggle plausibly does work even if the curve *shape* itself doesn't
 stick.) This retracts this Addendum's original optimistic framing: the
 AIDL route to a real fan curve is closed, not "a path that wasn't visible
-before." The next real lever is the plain `pwm-fan` sysfs write
+before." The next real lever, the plain `pwm-fan` sysfs write
 (`research/aya-gamewindows-teardown/FINDINGS.md` section 6,
-`AR03.t1(int)`), untested live so far.
+`AR03.t1(int)`), was tested live later the same day and **confirmed
+working** once unlocked with a `chmod 666` step (the same pattern
+`pulse-for-aya`'s `PerformanceCommandBuilder.kt` already uses for CPU/GPU)
+— RPM-confirmed duty change, 2961→4780. Full trail:
+`research/aidl-fan-spike/FINDINGS.md`.
 
 ## Why this app doesn't need `xsu` at all
 

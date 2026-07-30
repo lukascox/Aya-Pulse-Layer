@@ -506,14 +506,21 @@ AutoTDP/per-app-profiles/HUD-overlay/QS-tile/boot-autostart: this looks
 like the right call over rewriting from scratch there, and (aside from the
 unread `sleep/` package) this is now a whole-module-level assessment, not a
 sample. **Fan control is the one exception**, confirmed on-device
-(2026-07-25): both of `pulse`'s fan mechanisms are vendor-specific to AYN
-hardware and inert on AYANEO — that piece isn't "glue a transport layer,"
-it's "build fan control
-separately," most likely on top of the already-proven AIDL bind to
-`com.ayaneo.gamewindow`. The 120ms cadence-vs-`xsu` question that motivated
-this pass no longer applies to `pulse`'s own fan code (it self-gates off),
-but the same class of question (timing/reliability of whatever actuation
-path drives fan control) will resurface once that separate AIDL-based fan
-work is scoped. Actual patch-writing (fork `pulse-upstream`, replace
-`RootExec.kt`, add the `SG8350P` `DeviceProfile` entry, and scope fan
-control as a distinct follow-up) is deferred to a later session.
+(2026-07-25): both of `pulse`'s own fan mechanisms are vendor-specific to
+AYN hardware and inert on AYANEO — that piece isn't "glue a transport
+layer," it's "build fan control separately." **Update (2026-07-30)**: the
+separate mechanism is now identified and confirmed working —
+`research/aidl-fan-spike/FINDINGS.md` ruled out the AIDL route this
+section originally pointed to (`com_set_fan_speed_strategy` turned out to
+be dead/stub code, confirmed by reading the dispatch bytecode) but
+confirmed the plain `pwm-fan` sysfs write (`hwmon0/pwm1` +
+`fan_power_state`) works once unlocked with the same `chmod 666` pattern
+already used for CPU/GPU by `PerformanceCommandBuilder.kt` in this same
+file's section 1 — i.e. the real fan-control mechanism turns out to be
+the *same* transport-layer pattern already proven here, not a new AIDL
+surface. `FanCurve.kt`/`FanTempController.kt` (confirmed pure math/state
+models, no I/O of their own, per "Control-loop logic read" above) are
+portable as-is against that sysfs path. Not yet built — deferred to a
+later session. Actual patch-writing (fork `pulse-upstream`, replace
+`RootExec.kt`, add the `SG8350P` `DeviceProfile` entry, and build the fan
+I/O layer as a distinct follow-up) is deferred to a later session.

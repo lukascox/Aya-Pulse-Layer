@@ -573,8 +573,9 @@ gap to a real 1:1 port is visible at a glance.
   pass.
 
 **Confirmed a real, currently unaddressed gap:**
-- **Fan control — the big one, permanently partially-closed as of
-  2026-07-30.** `FanController.kt` is still fully stubbed in code
+- **Fan control — the big one, discrete mode done, curve control path
+  found and confirmed working (2026-07-30), implementation not yet
+  built.** `FanController.kt` is still fully stubbed in code
   (`setMode()` always `false`, `customFanAvailable()` always `false`) —
   upstream's two fan mechanisms (`gpio5_pwm2` PWM, `Settings.System
   fan_mode`) are confirmed dead on this device
@@ -584,22 +585,22 @@ gap to a real 1:1 port is visible at a glance.
   proven for performance-mode switching, verified two independent ways
   (real PWM duty changes, AND the vendor's own unsolicited state callback
   echoing the exact mode back) — see `research/aidl-fan-spike/FINDINGS.md`.
-  **The full curve write (the actual PI-controller/spline-curve
-  replacement) is a confirmed dead end via both channels investigated —
-  not an open question, a documented limitation of this device/firmware.**
-  AIDL (`com_set_fan_speed_strategy`): dead code, its handler parses the
-  mode and just logs the rest, proven by reading the dispatch bytecode
-  (`research/aya-gamewindows-teardown/FINDINGS.md` section 9) — no string
-  format fixes it. One crash-triggering guess required a device reboot
-  (INCIDENT #4, `STATUS.md`). Raw sysfs (`hwmon0/pwm1`): tested live too —
-  blocked even for confirmed genuine root, with SELinux confirmed
-  non-enforcing and zero audit trail; the actual blocker was not
-  identified without kernel-driver-level reverse engineering, which is
-  out of scope as a casual follow-up. **A real editable curve is off the
-  table on this device unless someone picks up that kernel-level
-  investigation as its own dedicated effort** — see
-  `research/aidl-fan-spike/FINDINGS.md` for the full trail of both
-  investigations.
+  **The full curve write: AIDL is a confirmed dead end, but raw sysfs is
+  confirmed working.** `com_set_fan_speed_strategy` is genuine dead code
+  (proven by reading the dispatch bytecode,
+  `research/aya-gamewindows-teardown/FINDINGS.md` section 9; one
+  crash-triggering guess required a device reboot, INCIDENT #4,
+  `STATUS.md`), but the plain `hwmon0/pwm1`/`fan_power_state` sysfs write
+  works once unlocked with the same `chmod 666` pattern this fork already
+  uses for CPU/GPU (`PerformanceCommandBuilder.kt`) — live, audible,
+  RPM-confirmed (2961→4780). **This means a real
+  PI-controller/spline-curve port (`FanCurve.kt`/`FanTempController.kt`,
+  which are pure math models with no I/O of their own and are portable
+  as-is) is achievable on this device** — the remaining work is a
+  device-specific I/O layer for that sysfs path, plus resolving whether
+  the vendor's own fan daemon (confirmed to re-pin values within 1-2
+  minutes) fights a sustained controller — not yet built, deferred. See
+  `research/aidl-fan-spike/FINDINGS.md` for the full trail.
 - **RGB — smaller, same shape of gap.** Upstream's own RGB mechanism
   (`joystick_led_light_picker_color`) is confirmed dead here too, but
   self-gates off safely (no crash, just inert — `RgbController.kt` is
@@ -625,19 +626,20 @@ touches day to day. RGB and the sleep-monitor unknown are real but small
 remaining items, worth closing before calling this a true 1:1 port, not
 before calling it *usable*.
 
-## Fan control — CLOSED (2026-07-29/30): mode switching works, a real curve is off the table on this device
+## Fan control — discrete mode CLOSED (works), curve control UNBLOCKED (2026-07-29/30): AIDL is dead, raw sysfs works
 
 `research/aidl-fan-spike/` (same shape as `research/aidl-bind-spike/`) has
-now been run on-device four times by the user, followed by a manual
-sysfs write investigation. Full detail in that project's `FINDINGS.md`:
+now been run on-device four times by the user, followed by a manual sysfs
+write investigation that was initially wrong and corrected the same day.
+Full detail in that project's `FINDINGS.md`:
 
 - **Discrete mode (`com_set_performance_fan:<mode>`) — confirmed working,
   strong evidence.** Real PWM duty tracked the requested mode (OFF→0,
   MUTE→76 perfectly repeatable across all runs), AND — independently —
   gamewindow's own unsolicited state callback echoed the exact mode back,
-  every single send, zero misses. Not a fluke.
-- **The real curve write — a confirmed dead end via both channels
-  investigated, root cause found for one, a hard wall for the other.**
+  every single send, zero misses. Not a fluke. **Ship this in
+  `FanController.kt` today.**
+- **The real curve write — AIDL is dead, raw sysfs works.**
   - **AIDL** (`com_set_fan_speed_strategy`): 8 attempts across runs 2-4
     with 4 different string-format guesses never once moved duty near the
     expected value, and one guess (dropping the mandatory
@@ -649,24 +651,34 @@ sysfs write investigation. Full detail in that project's `FINDINGS.md`:
     rest — no write, no persistence, no hardware effect, for any format.
     `FanViewModel.java` (AYA Settings' own native curve editor) sends the
     identical command through the identical channel — meaning AYA's own
-    UI likely doesn't apply the curve either.
-  - **Raw sysfs** (`hwmon0/pwm1`, `research/aya-gamewindows-teardown/
-    FINDINGS.md` section 6): tried live, by hand — blocked even with
-    confirmed genuine root (`uid=0`) and SELinux confirmed non-enforcing
-    (Permissive, zero audit trail for the failed writes). The actual
-    blocker (likely the kernel driver's own access check, or a
-    non-SELinux protection mechanism) wasn't identified without deeper
-    kernel-level reverse engineering — out of scope as a casual
-    follow-up.
+    UI likely doesn't apply the curve either. **This channel is closed,
+    not worth revisiting.**
+  - **Raw sysfs** (`hwmon0/pwm1` + `fan_power_state`,
+    `research/aya-gamewindows-teardown/FINDINGS.md` section 6): an
+    initial by-hand test looked blocked (`Permission denied` even under
+    confirmed genuine root with SELinux Permissive) — but that
+    investigation missed a step already established elsewhere in this
+    codebase. `PerformanceCommandBuilder.kt` already unlocks CPU/GPU
+    sysfs nodes with `chmod 666` before writing; the same trick, never
+    tried on the fan nodes, fixed it immediately. **Confirmed live, same
+    day**: `chmod 666` + write moved RPM from ~2960 to 4780, user
+    independently heard the fan spin up. The vendor's own fan daemon
+    reasserted the old value on its own within 1-2 minutes (no lasting
+    side effect, confirms a reassert loop exists here too, same class of
+    behavior `pulse`'s own fan-reassert logic was built to fight on the
+    Odin).
 
-**Practical upshot**: a real, usable discrete fan-mode toggle for
-`FanController.kt` is achievable today with high confidence — ship that.
-A real PI-controller/spline-curve replacement
-(`FanTempController.kt`/`FanCurve.kt`, the actual upstream-parity goal)
-is **not achievable on this device via any channel found so far** — a
-documented limitation, not an open lead, unless someone picks up the
-kernel-driver investigation as its own dedicated effort. See
-`research/aidl-fan-spike/FINDINGS.md` for the complete trail.
+**Practical upshot**: discrete fan-mode toggle for `FanController.kt` is
+ready to ship. **A real PI-controller/spline-curve replacement
+(`FanTempController.kt`/`FanCurve.kt`) is achievable, not closed** — those
+files are pure math/state models with no I/O of their own
+(`pulse-glue-assessment/FINDINGS.md`), so they're portable as-is; the
+remaining work is a device-specific I/O layer (chmod-unlock + write to
+`hwmon0/pwm1`/`fan_power_state`) and confirming whether a sustained
+controller can out-pace the vendor daemon's reassert cadence. Not yet
+built — deferred to a later session per the user's request (2026-07-30).
+See `research/aidl-fan-spike/FINDINGS.md` for the complete trail,
+including the correction.
 
 ## Build / install
 

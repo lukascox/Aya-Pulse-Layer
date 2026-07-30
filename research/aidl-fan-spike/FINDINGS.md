@@ -1,4 +1,4 @@
-# FINDINGS — AIDL fan spike + sysfs follow-up, CLOSED (2026-07-29 / 2026-07-30)
+# FINDINGS — AIDL fan spike + sysfs follow-up (2026-07-29 / 2026-07-30)
 
 **Confirmed on-device: `com_set_performance_fan` genuinely drives the real
 fan, no root, over the same plain Binder connection `aidl-bind-spike`
@@ -6,22 +6,30 @@ already proved for performance-mode.** The discrete-mode half of this
 spike (step 1) is a clean, repeatable success — a real, shippable feature.
 
 **A real, editable fan curve (the actual upstream-`pulse`-parity goal) is
-NOT achievable on this device today, via either channel investigated —
-both are definitively closed, not open questions:**
+NOT achievable via AIDL — that channel is definitively closed. But raw
+sysfs IS achievable — an earlier "also blocked" verdict was wrong,
+root-caused and fixed the same day:**
 1. **AIDL** (`com_set_fan_speed_strategy`) — dead code, proven by reading
    the dispatch bytecode: the handler parses the mode then just logs the
    rest, no format tried across four runs worked, and one malformed guess
    crashed `com.ayaneo.gamewindow` outright, requiring a device reboot.
-2. **Raw sysfs** (`hwmon0/pwm1`) — blocked even for confirmed genuine
-   root, with SELinux confirmed non-enforcing (Permissive) and zero audit
-   trail; root cause not identified without deeper kernel-driver-level
-   analysis.
+2. **Raw sysfs** (`hwmon0/pwm1`, `fan_power_state`) — ~~blocked even for
+   confirmed genuine root~~ **CONFIRMED WORKING (2026-07-30, later same
+   day)**: the "Permission denied" result below was never a hard block —
+   it was the same `chmod 666` unlock step this repo already uses for
+   CPU/GPU (`PerformanceCommandBuilder.kt`), simply never tried on the fan
+   nodes. `chmod 666` + `echo` landed a real, audible, RPM-confirmed duty
+   change (2961→4780 RPM). See "Raw sysfs write CONFIRMED WORKING" below —
+   supersedes "The sysfs `pwm-fan` write path is ALSO blocked" further
+   down, kept for the record with a correction notice rather than deleted.
 
-See "Root cause found" and "The sysfs `pwm-fan` write path is ALSO
-blocked" below for both investigations in full. Raw logs: `results/run1/`
-through `results/run4/` (each with `aidl_fan_spike_result.txt` +
+See "Root cause found" (AIDL) and "Raw sysfs write CONFIRMED WORKING"
+below for both investigations in full. Raw logs: `results/run1/` through
+`results/run4/` (each with `aidl_fan_spike_result.txt` +
 `aidl_fan_spike_logcat_dump.txt`; run4 adds `gamewindow_crash_excerpt.log`
-for the crash).
+for the crash). The sysfs follow-up (both the original "blocked" finding
+and the 2026-07-30 correction) was done by hand via one-off `adb shell xsu
+-c` commands, no probe-app rebuild needed — no new `results/` folder.
 
 ## Step 1 — discrete fan mode: confirmed, strong evidence, not just plausible
 
@@ -197,7 +205,7 @@ handler doesn't act on its input regardless of shape. For contrast,
 (untested live, but structurally real) persists via a `ContentProvider`
 write (`AyaShareConfUtilKt.e(...)`).
 
-## The sysfs `pwm-fan` write path is ALSO blocked — real root, no SELinux involvement (2026-07-30)
+## Raw sysfs write initially looked blocked — SUPERSEDED, see next section (2026-07-30, morning)
 
 Following the AIDL dead end, the plain `pwm-fan` sysfs write
 (`research/aya-gamewindows-teardown/FINDINGS.md` section 6, `AR03.t1(int)`)
@@ -238,6 +246,96 @@ kernel driver binary — a materially bigger undertaking than the
 adb-one-liner probing this whole `aidl-fan-spike` project has used so
 far, and out of scope unless deliberately picked up as its own effort.
 
+**Correction (2026-07-30, later same day): the framing above was an
+overreach — see the next section.** The actual fix took one shell command
+already sitting in this repo's own codebase.
+
+## Raw sysfs write CONFIRMED WORKING — the missing step was chmod-unlock (2026-07-30, later same day)
+
+The "blocked" verdict above was wrong — not a wrong observation (the
+writes genuinely failed as reported), but an incomplete investigation.
+This repo already has a working precedent for exactly this class of
+problem:
+[`PerformanceCommandBuilder.kt`](../pulse-for-aya/app/src/main/java/com/kei/pulse/root/PerformanceCommandBuilder.kt:5)
+generates `chmod 666 $path; echo $value > $path; chmod $mode $path` for
+CPU/GPU cap writes on this exact device — an "unlock, write, relock" dance
+that was never tried on the fan sysfs nodes during the morning
+investigation above. It was the missing step.
+
+**Live test, by hand, via `adb shell xsu -c`:**
+
+```
+$ xsu -c "ls -la /sys/devices/platform/soc/soc:pwm-fan/"
+-rw-rw-r-- 1 root root 4096 ... fan_power_state
+-r--r--r-- 1 root root 4096 ... fan_rpm_state   (read-only, expected)
+
+$ xsu -c "chmod 666 .../fan_power_state .../hwmon0/pwm1; \
+          echo 1 > .../fan_power_state; \
+          echo 180 > .../hwmon0/pwm1; \
+          sleep 2; cat .../fan_rpm_state; cat .../hwmon0/pwm1"
+Current RPM 4780
+180
+```
+
+Baseline RPM immediately before this test was 2961-2666 (multiple reads).
+**RPM jumped to 4780 and the user independently heard the fan audibly spin
+up** — two independent confirmations (sysfs read-back + physical/audible),
+same evidentiary standard already used for the AIDL discrete-mode result
+above.
+
+**The system reasserts control on its own, fairly quickly.** A follow-up
+read-only check ~1-2 minutes later (fan mode was never switched away from
+BALANCE during this test) showed RPM already back down to 2663-2666 and
+`pwm1` back to 76 — the vendor's own fan-control daemon overwrote our
+manual value without any action on our part. This is good news for safety
+(nothing was left stuck in a forced state) and confirms the same "vendor
+daemon re-pins the value" behavior `pulse-glue-assessment/FINDINGS.md`'s
+risk-assessment section flagged as a real possibility (mirroring the
+Odin's behavior `pulse`'s own reassert loop was built to fight). **Open
+question for actual `FanController.kt` implementation**: a real curve
+controller will need to either out-pace this reassert cadence (same
+`FAN_RECHECK_MS`-style loop `pulse` already has) or get the vendor daemon
+to relinquish control first (untested whether switching to
+`FAN_MODE_CUSTOM` via the already-proven AIDL discrete command stops the
+daemon's own writes to `pwm1`) — not yet tested, next concrete step for
+whenever this feature is actually built.
+
+**One loose end, low priority, not a safety concern**: `chmod`-ing the
+files back down to their original mode (644 for `pwm1`, 664 for
+`fan_power_state`, the same values `ls -la` showed before the test) failed
+with `Operation not permitted` (`EPERM`) — asymmetric with the unlock
+direction, which worked without issue. Both nodes are currently left more
+permissive (666) than their stock mode. Not believed to be a safety or
+stability risk (sysfs attribute files are typically re-created by the
+driver at boot with their default mode, so a reboot most likely restores
+it on its own), and doesn't block using the unlock pattern going forward
+(the unlock step is what matters for writing). Possibly related to the
+mount-namespace anomaly noted below — not chased further this session,
+flagged for whenever the real curve controller gets built.
+
+**Also noted in passing, not chased further**: `readlink
+/proc/self/ns/mnt` for the `xsu` shell returned a mount-namespace ID
+distinct from what would be expected for a shell sharing PID 1's default
+namespace (output was ambiguous/truncated in the terminal capture, only
+one line of a multi-path `readlink` request printed cleanly) — consistent
+with `xsu` running its shell in its own mount namespace, which could
+explain permission asymmetries like the chmod-back failure above. Not
+confirmed, not investigated further. `CapEff` for the `xsu` shell was
+confirmed full (`000001ffffffffff`), so this isn't a capability-dropping
+issue.
+
+**Correction to the morning's dead-end framing**: SELinux Permissive
+mode, genuine root (confirmed `uid=0`), and ordinary-looking file mode
+were all real observations — they just didn't rule out the one thing that
+actually mattered (whether the file's own mode bits were gating the write
+at the kernel's standard permission-check layer, independent of the
+process's identity). The "would need kernel-driver-level reverse
+engineering" framing from the morning session was an overreach — the
+actual fix was a two-line shell command already sitting in this repo's
+own codebase, not found sooner because the CPU/GPU precedent wasn't
+cross-checked against the fan investigation before writing the "closed"
+verdict.
+
 ## What this means for `pulse-for-aya`
 
 **Step 1 alone is already a usable, real feature** — a discrete
@@ -247,38 +345,55 @@ meaningful slice of the fan-control gap in
 `research/pulse-for-aya/README.md`'s "Feature parity vs upstream" section
 by itself.
 
-**A real, PULSE-style editable fan curve is not achievable on this device
-today, via any channel investigated.** Both routes are closed, for
-different and independently-confirmed reasons:
+**A real, PULSE-style editable fan curve is achievable — via raw sysfs,
+not AIDL.** The two channels ended up in very different places:
 - **AIDL** (`com_set_fan_speed_strategy`) — the handler is dead code, logs
   and returns, proven by reading the dispatch bytecode. No format guess
-  can fix it.
-- **Raw sysfs** (`pwm-fan`/`hwmon0/pwm1`) — blocked even for confirmed
-  real root, with no SELinux involvement, for a reason not yet
-  identified without deeper kernel-level reverse engineering.
+  can fix it. Closed, not worth revisiting.
+- **Raw sysfs** (`fan_power_state` + `hwmon0/pwm1`) — **confirmed
+  working** once unlocked with the same `chmod 666`/write/`chmod`-back
+  pattern this repo already uses for CPU/GPU
+  (`PerformanceCommandBuilder.kt`). Live, audible, RPM-confirmed duty
+  change achieved.
 
-This is a genuine, documented limitation of this device/firmware
-combination, not an unexplored lead. `FanController.kt` should ship with
-the discrete-mode toggle only; a real spline-curve/PI-controller port
-(`FanTempController.kt`/`FanCurve.kt`) is off the table unless someone
-picks up the kernel-driver-level investigation as a dedicated effort.
+Upstream `pulse`'s own `FanCurve.kt`/`FanTempController.kt` are pure
+math/state models with no I/O of their own
+(`pulse-glue-assessment/FINDINGS.md`, "Control-loop logic read") — they
+were never the blocker. What was missing is a device-specific I/O layer
+targeting the confirmed AYANEO path (`soc:pwm-fan/hwmon0/pwm1`, not
+upstream's Odin-specific `gpio5_pwm2`) with the chmod-unlock step folded
+in, mirroring `PerformanceCommandBuilder.kt`'s existing shape for CPU/GPU.
+**Not yet resolved, the concrete next step before building this for
+real**: whether the vendor's own fan daemon (confirmed to re-pin `pwm1`
+back to its own value within 1-2 minutes of our manual write, see above)
+fights a sustained curve controller the same way the Odin's daemon fought
+upstream `pulse`'s reassert loop — needs an on-device timing test, not
+attempted yet.
 
 ## Not yet done
 
 - ~~Root-causing why the AIDL curve write doesn't take effect~~ — **done,
   see above.** Confirmed dead code, not a format problem.
 - ~~Testing the plain sysfs `pwm-fan` write path~~ — **done, see above.**
-  Also blocked, root cause not yet identified (would need kernel-driver-
-  level analysis, a materially bigger effort).
+  Confirmed working with the `chmod 666` unlock step.
 - Testing `com_set_fan_speed_is_linear` — still a live, worthwhile probe
   in its own right (unlike the strategy command, its handler genuinely
   persists a value via `AyaShareConfUtilKt.e(...)`, per
-  `research/aya-gamewindows-teardown/FINDINGS.md` section 9), though it
-  wouldn't unlock a real curve on its own (there's still no confirmed
-  mechanism that reads a persisted curve back and applies it). Not
-  exercised in any run yet; possible via the `custom_command` intent extra
-  without a rebuild, see `README.md`.
-- Identifying exactly what blocks the sysfs `pwm-fan` write for real root
-  (kernel driver's own access check vs. a non-SELinux protection
-  mechanism) — would need decompiling/analyzing the actual kernel driver,
-  a dedicated effort of its own, not casual follow-up.
+  `research/aya-gamewindows-teardown/FINDINGS.md` section 9), though it's
+  now lower priority since the sysfs path doesn't need it. Not exercised
+  in any run yet; possible via the `custom_command` intent extra without a
+  rebuild, see `README.md`.
+- Building the real `FanController.kt` curve controller against the
+  confirmed sysfs path (temp-polling loop, duty write via chmod-unlock,
+  reused `FanCurve.kt`/`FanTempController.kt` math from upstream) — not
+  started, deferred to a later session per the user's request.
+- Whether the vendor daemon's reassert cadence (confirmed to re-pin
+  within 1-2 minutes) fights a sustained curve controller, and whether
+  switching to `FAN_MODE_CUSTOM` via AIDL first makes it back off — not
+  tested, the key open question before building the real controller.
+- The chmod-back-to-original-mode `EPERM` oddity and the mount-namespace
+  anomaly that might explain it — low priority, no safety impact,
+  optional curiosity for later.
+- Identifying exactly why the chmod-unlock step is necessary for genuine
+  root in the first place (bypassing `CAP_DAC_OVERRIDE` isn't supposed to
+  need it) — academic at this point, not blocking any real work.

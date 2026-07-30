@@ -6,7 +6,7 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
-## Fan control via AIDL — CLOSED (2026-07-30): discrete mode CONFIRMED working, curve write CONFIRMED dead (root cause found), INCIDENT #4 (crash, device reboot required)
+## Fan control — discrete mode + AIDL curve CLOSED, raw sysfs curve write CONFIRMED WORKING same day (2026-07-30): INCIDENT #4 (crash, device reboot required)
 
 User ran `research/aidl-fan-spike/` four times. Full writeup:
 `research/aidl-fan-spike/FINDINGS.md`; feature-parity checklist updated in
@@ -80,12 +80,30 @@ hwmon0/pwm1` (and the `fan_power_state` write `AR13.n1()` does first)
 both failed with `Permission denied`, despite confirmed genuine root
 (`xsu`'s `id` → `uid=0(root)`) and SELinux confirmed `Permissive`
 (non-enforcing) with zero matching `avc: denied` entries for either
-write. **Both investigated channels for a real fan curve are now
-confirmed closed.** `FanController.kt` should ship with the discrete-mode
-toggle only; a real PI-controller/spline-curve port is off the table on
-this device unless someone picks up kernel-driver-level reverse
-engineering as its own dedicated effort — not a casual follow-up. Full
-trail in `research/aidl-fan-spike/FINDINGS.md`.
+write. **Correction, same day, a few hours later: the sysfs channel was NOT
+actually closed — the "blocked" result above was an incomplete
+investigation, not a hard wall.** This repo already had the fix sitting in
+its own codebase: `PerformanceCommandBuilder.kt`'s `chmod 666`/write/
+`chmod`-back "unlock" pattern for CPU/GPU nodes had never been tried on
+the fan sysfs nodes. Tried by hand: `chmod 666` on `fan_power_state` +
+`hwmon0/pwm1`, then the same write sequence as before — **RPM jumped
+2961→4780, user independently confirmed audibly.** The vendor's own fan
+daemon reasserted the old value on its own within 1-2 minutes (good news
+for safety — nothing was left stuck manually overridden). One loose end:
+chmod'ing the files back to their original mode afterward failed with
+`Operation not permitted` (asymmetric with the unlock direction) — not a
+safety issue, not yet explained, possibly related to a mount-namespace
+anomaly also spotted this session (`xsu`'s shell resolves a different
+`ns/mnt` than expected). **Net effect: a real, PULSE-style editable fan
+curve IS achievable on this device after all — via raw sysfs, not AIDL.**
+`FanCurve.kt`/`FanTempController.kt` (upstream's pure math/curve models,
+no I/O of their own) are portable as-is; only the I/O layer needs to
+target this confirmed path instead of upstream's dead Odin-specific one.
+Open question before building it for real: whether the vendor daemon's
+reassert cadence fights a sustained curve controller the way the Odin's
+daemon fought upstream `pulse`'s own reassert loop — not yet tested,
+deferred to a later session per the user's request. Full trail (including
+the correction) in `research/aidl-fan-spike/FINDINGS.md`.
 
 ## Unsupervised session analyzed (2026-07-29): self-kill fix holding, one new kernel-level anomaly found
 
