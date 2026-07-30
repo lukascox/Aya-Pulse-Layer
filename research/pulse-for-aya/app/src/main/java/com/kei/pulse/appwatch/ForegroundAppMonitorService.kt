@@ -1003,7 +1003,9 @@ class ForegroundAppMonitorService : Service() {
             customFanSupported = isCustomFanSupported(),
             releaseLatched = fanReleasedToVendor,
             releaseMode = DeviceProfiles.forSoc(container.repository.socModel()).fanReleaseMode,
-            readLiveMode = { fanController.readMode(pulseDaemon, ayaAidlClient) },
+            // NOT readMode(): a vendor state PULSE doesn't manage (notably OFF) must read as drift
+            // here, not as "unknown" — see FanController.arbitrationModeFor.
+            readLiveMode = { fanController.readModeForArbitration(pulseDaemon, ayaAidlClient) },
         )
         fanLog("arbiter=$action auto=$autoActive bound=$boundFan managed=${settings.managedFanMode} latched=$fanReleasedToVendor")
         when (action) {

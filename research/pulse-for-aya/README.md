@@ -965,6 +965,52 @@ in `aidl-fan-spike/results/run1` re-parsed to check — each one shows the
 mode just sent, with the previous one moved into the sibling `lastFanMode`
 key). So the field this parses is the right one.
 
+### Two findings from that same session (2026-07-31)
+
+**1. The discrete modes are indistinguishable at idle — and that is the fan
+whine's actual cause.** The user reported Silent sounding identical to
+Smart. Correlating `cap_poll`'s `fan_duty`/`fan_rpm` (added 2026-07-30)
+against the mode changes in the logcat confirms it — duty tracked
+*temperature*, not the requested mode:
+
+| window | duty | RPM | CPU temp | modes active in the window |
+|---|---|---|---|---|
+| 00:17:31–00:18:10 | 79 | ~2660 | 36–42°C | (before any PULSE change) |
+| 00:18:11–00:18:15 | 81 | ~2870 | **45–48°C** | (brief load spike) |
+| 00:18:16–00:18:40 | 76 | ~2750 | 37–40°C | SILENT **and** SPORT |
+| 00:18:41–00:20:03 | 79 | ~2780 | 36–41°C | SMART, SILENT, SMART |
+
+Silent and Sport both sat at 76; Smart and Silent both sat at 79; the only
+real excursion (81) lines up exactly with the 48°C spike. So at idle every
+vendor mode converges on ~76–81/255 = **30–32% duty, ~2750 RPM** — the
+modes presumably only diverge under sustained thermal load. **Caveat: the
+modes were switched every 3–5s, faster than the vendor settles and faster
+than the 1Hz sampling resolves, so this is strong but not conclusive.** A
+clean test is one mode, 60s, record, repeat.
+
+*Practical consequence*: that fixed ~30% idle point is where the fan's
+resonant whine lives, and no discrete mode escapes it because they all land
+there. The Custom curve is the only way off it — `percentToDuty` is
+`255 × percent`, floor `MIN_PERCENT = 20`, so 25% → duty 63 and 35% → duty
+89 both sit clear of the vendor's 76–81. Nothing in this fork sets the
+discrete modes' speeds (we send a mode *name* over AIDL; the vendor
+computes the duty), so shifting Silent/Smart by ±5% is not something the
+app can do — the curve is the supported answer.
+
+**2. Fan OFF set in native AyaSettings was never corrected — real bug,
+fixed.** `FAN_MODE_OFF` and `FAN_MODE_CUSTOM` have no PULSE equivalent, and
+`modeForAidl` mapped them to `null` — but `FanArbiter` treats a `null` live
+mode as "unreadable, skip the tick", not as drift. So PULSE went
+permanently hands-off while believing it managed Smart, and a fan switched
+off stayed off. OFF is the one vendor state that leaves the device with no
+active cooling, which makes this the worst possible state to ignore.
+`FanController.arbitrationModeFor` now separates "we don't know yet"
+(`null`, still skips) from "a vendor state we don't manage"
+(`VENDOR_UNMANAGED`, always compares as drift), used by the arbiter's
+`readLiveMode` only — it never reaches the UI or a persisted snapshot.
+Regression-covered at both levels (`FanControllerArbitrationModeTest`, and
+a `FanArbiterTest` case proving OFF produces `SetVendorMode`).
+
 **Operational note for any future fan debugging**: `pulse_daemon.sh`'s
 detached logcat is deliberately filtered to crash tags only
 (`AndroidRuntime:E libc:F DEBUG:F …`) to avoid ring-buffer overflow on a

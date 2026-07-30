@@ -43,9 +43,20 @@ class FanController {
      */
     fun readMode(pulseDaemon: PulseDaemon? = null, aidlClient: AyaAidlClient? = null): Int? {
         modeForAidl(aidlClient?.lastKnownFanMode())?.let { return it }
-        return (pulseDaemon?.readSetting("fan_mode") ?: RootSupport.runRootCommand("settings get system fan_mode"))
-            ?.trim()?.toIntOrNull()
+        return readModeFromSettings(pulseDaemon)
     }
+
+    /**
+     * Drift-detection counterpart to [readMode] for `FanArbiter`'s `readLiveMode` — see
+     * [arbitrationModeFor] for why the two must differ. Falls back to the (AYANEO-dead) Settings key
+     * only when the vendor has told us nothing at all yet.
+     */
+    fun readModeForArbitration(pulseDaemon: PulseDaemon? = null, aidlClient: AyaAidlClient? = null): Int? =
+        arbitrationModeFor(aidlClient?.lastKnownFanMode()) { readModeFromSettings(pulseDaemon) }
+
+    private fun readModeFromSettings(pulseDaemon: PulseDaemon?): Int? =
+        (pulseDaemon?.readSetting("fan_mode") ?: RootSupport.runRootCommand("settings get system fan_mode"))
+            ?.trim()?.toIntOrNull()
 
     /**
      * Prerequisite for the AYANEO duty node to respond: writes [FAN_POWER_PATH] = `1` (unlocking it first,
@@ -134,8 +145,10 @@ class FanController {
          * Inverse of [aidlModeFor], for reading gamewindow's callback state back into our mode ints.
          * `FAN_MODE_OFF` and `FAN_MODE_CUSTOM` are real vendor states we can RECEIVE but deliberately
          * never send (OFF has no slot in [MODES]; CUSTOM is the vendor's own curve mode, unrelated to
-         * PULSE's [CUSTOM] which drives the PWM node directly) -- both map to `null` = "a mode PULSE
-         * doesn't manage", which the arbiter correctly treats as drift away from whatever it wanted.
+         * PULSE's [CUSTOM] which drives the PWM node directly) -- they return `null` here, meaning
+         * "not one of ours". Callers deciding whether the fan has DRIFTED must not treat that `null`
+         * as "unknown" -- see [arbitrationModeFor], which exists precisely because conflating the two
+         * was a real bug (2026-07-31).
          */
         fun modeForAidl(aidlMode: String?): Int? = when (aidlMode) {
             "FAN_MODE_MUTE" -> SILENT
@@ -143,6 +156,30 @@ class FanController {
             "FAN_MODE_TURBO" -> SPORT
             else -> null
         }
+
+        /**
+         * Stands for "the vendor is in a state PULSE has no mode for" (`FAN_MODE_OFF` /
+         * `FAN_MODE_CUSTOM`). Deliberately outside the 1/4/5/6 range so it can never equal a mode the
+         * arbiter might want, i.e. it always compares as drift. Internal to arbitration -- never
+         * persisted, never sent, and never surfaced ([readMode] still reports `null` for these, so the
+         * Tuner falls back to PULSE's own persisted selection instead of showing "Mode -1").
+         */
+        const val VENDOR_UNMANAGED = -1
+
+        /**
+         * The arbiter's view of the live mode, kept separate from [readMode] because the two need
+         * OPPOSITE handling of a vendor state PULSE doesn't manage.
+         *
+         * A `null` from `readLiveMode` makes `FanArbiter.decide` bail out of the whole tick
+         * (`readLiveMode() ?: return FanAction.None`). That is right for "we genuinely don't know
+         * yet", and wrong for "the vendor is in a mode we don't manage": before this existed, setting
+         * the fan to OFF in native AyaSettings left PULSE permanently hands-off, so a fan someone had
+         * switched off was never corrected even with PULSE actively managing Smart. Found on-device
+         * 2026-07-31 by exactly that experiment. OFF is the one vendor state that leaves the device
+         * with no active cooling at all, which is what made this worth fixing rather than documenting.
+         */
+        fun arbitrationModeFor(aidlMode: String?, settingsFallback: () -> Int?): Int? =
+            if (aidlMode == null) settingsFallback() else (modeForAidl(aidlMode) ?: VENDOR_UNMANAGED)
 
         /**
          * Real probe (2026-07-30): available iff [FAN_DUTY_PATH] exists and reads as a plain integer.

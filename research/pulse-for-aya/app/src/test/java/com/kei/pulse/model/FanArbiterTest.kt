@@ -81,6 +81,25 @@ class FanArbiterTest {
         )
     }
 
+    /**
+     * The vendor sitting in a mode PULSE has no equivalent for — on AYANEO, `FAN_MODE_OFF` set from
+     * native AyaSettings — must be corrected like any other drift. Regression cover for a real
+     * on-device bug (2026-07-31): that state used to reach here as `null` (indistinguishable from "mode
+     * unreadable"), which made this whole decision bail out and left the fan switched OFF indefinitely
+     * while PULSE believed it was managing Smart. `FanController.arbitrationModeFor` now maps it to
+     * [FanController.VENDOR_UNMANAGED] so it lands in the drift branch below instead.
+     */
+    @Test
+    fun `vendor state PULSE does not manage (eg fan OFF) is corrected, not ignored`() {
+        assertEquals(
+            FanAction.SetVendorMode(FanController.SMART),
+            decide(
+                managedFanMode = FanController.SMART,
+                readLiveMode = { FanController.VENDOR_UNMANAGED },
+            ),
+        )
+    }
+
     @Test
     fun `bound per-app fan wins over the global managed mode`() {
         assertEquals(

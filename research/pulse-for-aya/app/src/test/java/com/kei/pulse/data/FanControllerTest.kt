@@ -1,7 +1,9 @@
 package com.kei.pulse.data
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.fail
 import org.junit.Test
 
 // Upstream's `bounceModeFor` (and the four tests that pinned its Odin semantics) was removed here
@@ -46,6 +48,42 @@ class FanControllerAidlModeForTest {
         assertNull(FanController.modeForAidl("FAN_MODE_CUSTOM"))
         assertNull(FanController.modeForAidl(null))
         assertNull(FanController.modeForAidl(""))
+    }
+}
+
+/**
+ * Regression cover for a real on-device bug (2026-07-31): the fan set to OFF in native AyaSettings
+ * left PULSE permanently hands-off, because "vendor is in a mode we don't manage" and "we don't know
+ * the mode yet" both came back as `null`, and `FanArbiter` skips the tick on `null`. Arbitration must
+ * keep those two apart — see [FanController.arbitrationModeFor].
+ */
+class FanControllerArbitrationModeTest {
+
+    @Test
+    fun vendorStatesWeDoNotManageReadAsDriftNotAsUnknown() {
+        for (vendorOnly in listOf("FAN_MODE_OFF", "FAN_MODE_CUSTOM", "FAN_MODE_SOMETHING_NEW")) {
+            val live = FanController.arbitrationModeFor(vendorOnly) { fail("must not fall back when the vendor told us"); null }
+            assertEquals(FanController.VENDOR_UNMANAGED, live)
+            // The point of the sentinel: it can never equal a mode the arbiter might want.
+            for (managed in listOf(FanController.SILENT, FanController.SMART, FanController.SPORT, FanController.CUSTOM)) {
+                assertNotEquals(managed, live)
+            }
+        }
+    }
+
+    @Test
+    fun modesWeDoManageMapThroughUnchanged() {
+        assertEquals(FanController.SILENT, FanController.arbitrationModeFor("FAN_MODE_MUTE") { null })
+        assertEquals(FanController.SMART, FanController.arbitrationModeFor("FAN_MODE_BALANCE") { null })
+        assertEquals(FanController.SPORT, FanController.arbitrationModeFor("FAN_MODE_TURBO") { null })
+    }
+
+    /** No callback yet = genuinely unknown; only then may it fall back, and a null fallback stays null
+     *  so the arbiter still skips the tick rather than inventing drift out of nothing. */
+    @Test
+    fun onlyFallsBackWhenTheVendorHasSaidNothing() {
+        assertEquals(FanController.SPORT, FanController.arbitrationModeFor(null) { FanController.SPORT })
+        assertNull(FanController.arbitrationModeFor(null) { null })
     }
 }
 

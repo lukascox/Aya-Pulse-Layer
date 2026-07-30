@@ -23,9 +23,31 @@ was reverting us instead). Also re-verified from the archived probe data
 that `modeConfigurations[currentMode].fanMode` tracks every send exactly —
 the parser reads the right field.
 
-**Still open**: the listen-test. Silent→MUTE / Smart→BALANCE / Sport→TURBO
-is an inferred labelling; only OFF and MUTE ever had exactly-repeatable
-duty readings, so whether the labels match what the ear expects is unverified.
+**Listen-test done, with an unexpected answer**: Silent sounds identical to
+Smart because at idle it *is* identical — correlating `cap_poll`'s fan
+duty/RPM against the logcat mode changes shows duty tracking temperature,
+not the requested mode (Silent and Sport both at duty 76; Smart and Silent
+both at 79; the only real excursion, 81, matches a 48°C spike). All vendor
+modes converge on ~30-32% duty / ~2750 RPM at idle; they presumably only
+diverge under load. Not conclusive — modes were switched every 3-5s, faster
+than the vendor settles — but it explains the ear. **Consequence**: that
+fixed idle point is where the fan's resonant whine sits and no discrete mode
+escapes it; the Custom curve is the only way off (25% → duty 63, 35% → 89,
+vs the vendor's 76-81). Nothing in this fork sets the discrete modes' speeds
+— we send a mode name, the vendor computes duty — so nudging Silent/Smart
+by a few percent is not something the app can do.
+
+**Real bug found and fixed the same session: fan OFF set in native
+AyaSettings was never corrected.** `FAN_MODE_OFF`/`FAN_MODE_CUSTOM` mapped
+to `null`, and `FanArbiter` reads a `null` live mode as "unreadable, skip
+the tick" rather than as drift — so PULSE went permanently hands-off while
+believing it managed Smart, leaving the fan off indefinitely. Introduced by
+the readback fix below the day before (its doc comment wrongly claimed the
+arbiter would see it as drift). `FanController.arbitrationModeFor` now
+separates "don't know yet" from "vendor state we don't manage"; regression
+tests at both the mapping and arbiter levels. OFF is the one vendor state
+that leaves the device with no active cooling, so this mattered more than
+its corner-case framing suggested.
 
 **Operational gotcha worth remembering**: `pulse_daemon.sh`'s detached
 logcat is filtered to crash tags only (deliberately, to avoid ring-buffer
