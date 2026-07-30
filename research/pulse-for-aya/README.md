@@ -688,7 +688,33 @@ reassert loop writing to `hwmon0/pwm1`/`fan_power_state`). **No open
 questions remain — ready to design and build.** Implemented 2026-07-30,
 see "Fan curve implementation plan" below.
 
-## Fan curve implementation plan (2026-07-30) — IMPLEMENTED
+## Fan curve implementation plan (2026-07-30) — IMPLEMENTED AND CONFIRMED LIVE
+
+**Confirmed working end-to-end on-device the same day**, via `adb logcat -s
+PulseFan:D` while toggling Custom fan mode + AutoTDP:
+```
+CUSTOM fan running (autoTdp=true smart=true temp=48 applied=20% target=20)
+fast-loop drift: node=94 fan_mode=null re-pinned=20%
+fast-loop drift: node=89 fan_mode=null re-pinned=20%
+fast-loop drift: node=84 fan_mode=null re-pinned=20%
+```
+The `fast-loop drift` lines are the proof: the vendor daemon tried to
+reclaim the duty node multiple times in a row (each to a *different*
+value — 94, 89, 84, not the fixed ~76 idle duty seen in the isolated
+`aidl-fan-spike` probe tests, suggesting it's computing something more
+dynamic under real thermal load rather than just resetting to one fixed
+idle point) and the daemon-routed reassert loop caught and corrected
+every single one, live, with zero raw `xsu` calls. Also confirmed working
+correctly: the idle-on-Smart gate (at rest, ~38-40°C, the curve/PI wants
+only the floor, so the loop correctly stands down to vendor Smart instead
+of needlessly fighting over the node — many `CUSTOM idle → vendor Smart`
+lines before AutoTDP engaged), and the arbiter dispatch
+(`arbiter=RunCustomLoop`). No crashes, no stuck states — the fan audibly
+quieted back down once the AutoTDP session that triggered the active
+branch ended.
+
+Original plan, written before this implementation, kept below for the
+reasoning trail:
 
 Before writing code, the existing (currently Odin-only, unreachable on
 this fork since `customFanAvailable()` is hardcoded `false`) fan-curve

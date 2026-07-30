@@ -6,6 +6,40 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## Fan curve controller BUILT and CONFIRMED LIVE (2026-07-30) — the whole fan-control gap is now closed
+
+Same day as the reassert-cadence measurement below: found the existing
+`FanCurveController`/`FanArbiter`/`FanCurve`/`FanTempController` stack
+(inherited from upstream, previously unreachable since
+`customFanAvailable()` was hardcoded `false`) was already a complete,
+mature control system needing only a device-I/O-layer swap, not a
+rewrite. Repointed it at AYANEO's confirmed sysfs path, added
+`FAN_POWER_PATH`/RPM-format parsing, and — the one real architectural
+change — routed the existing 120ms reassert loop through `PulseDaemon`'s
+FIFO (`setCap`/`readBatch`, already-generic verbs, zero
+`pulse_daemon.sh` changes) instead of a raw `xsu` connection every tick.
+Build/test/lint clean (commit `39c937b`). Full plan and diff summary:
+`research/pulse-for-aya/README.md`'s "Fan curve implementation plan"
+section.
+
+**Confirmed live the same session** via `adb logcat -s PulseFan:D`: the
+arbiter correctly dispatches to the Custom loop, the idle-on-Smart gate
+correctly stands down at rest instead of fighting the vendor over the
+node, and — the key proof — multiple `"fast-loop drift: node=... 
+re-pinned=..."` lines show the vendor daemon trying to reclaim the duty
+node (to several different values, not the fixed idle duty seen in
+isolated probe testing — plausibly something more dynamic under real
+thermal load) and the daemon-routed reassert loop catching and
+correcting every one, live, zero raw `xsu` calls, no crashes. This is
+full end-to-end validation of the architecture the reassert-cadence
+measurement below only predicted would work.
+
+**This closes the fan-control gap in `pulse-for-aya` entirely**: discrete
+mode (AIDL, proven 2026-07-29) is a smaller separate follow-up still not
+wired in, but the actual upstream-parity goal — a real, editable,
+temperature-responsive fan curve — is now built, tested, and working on
+real hardware, not just a documented possibility.
+
 ## Fan control — discrete mode + AIDL curve CLOSED, raw sysfs curve write CONFIRMED WORKING, ready to build (2026-07-30): INCIDENT #4 (crash, device reboot required)
 
 User ran `research/aidl-fan-spike/` four times. Full writeup:
