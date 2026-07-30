@@ -1,0 +1,455 @@
+===== CRASH #1 (first GuessC 'no-prefix' send, ~02:04:16) =====
+07-30 02:03:49.344  2257  2616 D UsbHostManager: USB device attached: vidpid 4001:0428 mfg/product/ver/serial /AYANEO Controller/1.00/USB HID hasAudio/HID/Storage: false/true/false
+07-30 02:03:49.413  2257  2616 D UsbHostManager: Added device UsbDevice[mName=/dev/bus/usb/001/006,mVendorId=16385,mProductId=1064,mClass=0,mSubclass=0,mProtocol=0,mManufacturerName=,mProductName=AYANEO Controller,mVersion=1.00,mSerialNumberReader=com.android.server.usb.UsbSerialReader@6e38d9d, mHasAudioPlayback=false, mHasAudioCapture=false, mHasMidi=false, mHasVideoCapture=false, mHasVideoPlayback=false, mConfigurations=[
+07-30 02:03:49.413  2257  2616 D UsbHostManager: UsbConfiguration[mId=1,mName=null,mAttributes=128,mMaxPower=10,mInterfaces=[
+07-30 02:03:49.413  2257  2616 D UsbHostManager: UsbInterface[mId=0,mAlternateSetting=0,mName=null,mClass=3,mSubclass=0,mProtocol=0,mEndpoints=[
+07-30 02:03:49.413  2257  2616 D UsbHostManager: UsbEndpoint[mAddress=132,mAttributes=3,mMaxPacketSize=32,mInterval=1]
+07-30 02:03:49.413  2257  2616 D UsbHostManager: UsbEndpoint[mAddress=5,mAttributes=3,mMaxPacketSize=32,mInterval=1]]]]
+07-30 02:03:49.417  2257  2320 D ActivityManager: sync unfroze 6272 com.cxinventor.file.explorer for 3
+07-30 02:03:49.419  2257  2320 D ActivityManager: sync unfroze 5268 com.google.android.apps.nbu.files for 3
+07-30 02:03:49.419  2257  2616 E UsbAlsaManager: usbDeviceAdded(): cannot find sound card for /dev/bus/usb/001/006
+07-30 02:03:49.599  2257  2312 I WindowOrientationListener: Finalize report rotation to ROTATION_90(1), new rotation to ROTATION_90(1)
+07-30 02:03:50.149  2257  2343 D ShellUtil: lsusb command completed with exit code: 0, and result: Bus 001 Device 001: ID 1d6b:0002  
+07-30 02:03:50.149  2257  2343 D ShellUtil: Bus 002 Device 001: ID 1d6b:0003  
+07-30 02:03:50.149  2257  2343 D ShellUtil: Bus 001 Device 006: ID 4001:0428  
+07-30 02:03:53.307  2257  4579 I GameManagerService: Package Name: pl.aidlfanspike.app FPS: 0 Scaling: -1.0
+07-30 02:03:53.307  2257  4579 D GameManagerService: No-op for attempt to set game mode for non-game app: pl.aidlfanspike.app
+07-30 02:03:58.659  1083  9743 I keystore2: system/security/keystore2/src/watchdog.rs:319 - Watchdog thread idle -> terminating. Have a great day.
+07-30 02:03:59.458  2257  2463 D ActivityManager: freezing 5268 com.google.android.apps.nbu.files
+07-30 02:03:59.460  2257  2463 D ActivityManager: freezing 6272 com.cxinventor.file.explorer
+07-30 02:04:00.001  2257  2468 V AlarmManager: set(android) : type=3 triggerAtTime=2026-07-30 02:05:00 win=0 maxElapsed=2439706 interval=0 flags=0x9 callingUid=1000
+07-30 02:04:03.814  2257  4578 W ProcessStats: Tracking association SourceState{c731346 com.google.android.gms.persistent/10097 BFgs #4503} whose proc state 4 is better than process ProcessState{14d49bf com.google.android.gms/10097 pkg=com.google.android.gms} proc state 8 (66 skipped)
+07-30 02:04:13.860  2257  2463 D ActivityManager: freezing 3629 com.google.android.gms
+07-30 02:04:15.033  2257  2468 D ActivityManager: sync unfroze 3629 com.google.android.gms for 6
+07-30 02:04:15.055  2257  4579 V AlarmManager: set(PendingIntent{70e3ce6: PendingIntentRecord{7823227 com.google.android.gms/com.google.android.gms.container startService}}) : type=3 triggerAtTime=2036-07-27 02:04:15 win=3600000 maxElapsed=315365994761 interval=0 flags=0x0 callingUid=10097
+07-30 02:04:16.531  2257  4578 D CompatibilityChangeReporter: Compat change id reported: 178209446; UID 1000; state: ENABLED
+07-30 02:04:16.531  2257  4578 D CompatibilityChangeReporter: Compat change id reported: 178209446; UID 1000; state: DISABLED
+--------- beginning of crash
+07-30 02:04:16.542  4122 11283 E AndroidRuntime: FATAL EXCEPTION: DefaultDispatcher-worker-10
+07-30 02:04:16.542  4122 11283 E AndroidRuntime: Process: com.ayaneo.gamewindow, PID: 4122
+07-30 02:04:16.542  4122 11283 E AndroidRuntime: java.lang.IllegalArgumentException: No enum constant com.ayaneo.gamewindow.utils.FAN_MODE.30,100|50,100|70,100|85,100|95,100
+07-30 02:04:16.542  4122 11283 E AndroidRuntime: 	at java.lang.Enum.valueOf(Enum.java:300)
+07-30 02:04:16.542  4122 11283 E AndroidRuntime: 	at com.ayaneo.gamewindow.utils.FAN_MODE.valueOf(SettingsUtil.kt:3)
+07-30 02:04:16.542  4122 11283 E AndroidRuntime: 	at com.ayaneo.gamewindow.utils.aidl.AYAAidlManager$dealMsg$1.invokeSuspend(AYAAidlManager.kt:922)
+07-30 02:04:16.542  4122 11283 E AndroidRuntime: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:8)
+07-30 02:04:16.542  4122 11283 E AndroidRuntime: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:123)
+07-30 02:04:16.542  4122 11283 E AndroidRuntime: 	at kotlinx.coroutines.internal.LimitedDispatcher.run(LimitedDispatcher.kt:13)
+07-30 02:04:16.542  4122 11283 E AndroidRuntime: 	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:3)
+07-30 02:04:16.542  4122 11283 E AndroidRuntime: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:82)
+07-30 02:04:16.542  4122 11283 E AndroidRuntime: 	Suppressed: kotlinx.coroutines.DiagnosticCoroutineContextException: [StandaloneCoroutine{Cancelled}@210fd30, Dispatchers.IO]
+07-30 02:04:16.545  2257 12042 I DropBoxManagerService: add tag=system_app_crash isTagEnabled=true flags=0x2
+07-30 02:04:16.567  2257  2681 W WindowMagnificationMgr: requestConnection duplicated request: connect=false, mConnectionState=DISCONNECTED
+07-30 02:04:16.567  2257  4579 I ActivityManager: Process com.ayaneo.gamewindow (pid 4122) has died: psvc BTOP
+07-30 02:04:16.569  2257  4579 W ActivityManager: Scheduling restart of crashed service com.ayaneo.gamewindow/.service.WindowKeyEventService in 1000ms for connection
+07-30 02:04:16.570  2257  4579 W ActivityManager: Scheduling restart of crashed service com.ayaneo.gamewindow/.service.NotificationService in 11000ms for start-requested
+07-30 02:04:16.570  2257  4579 W ActivityManager: Scheduling restart of crashed service com.ayaneo.gamewindow/.utils.aidl.AyaAidlService in 21000ms for connection
+07-30 02:04:16.576  2257  2257 D BatterySaverPolicy: accessibility changed to false, updating policy.
+07-30 02:04:17.057  2257  4579 V AlarmManager: set(PendingIntent{c56a0ed: PendingIntentRecord{a38eb22 com.google.android.gms/com.google.android.gms.container startService}}) : type=3 triggerAtTime=2036-07-27 02:04:17 win=3600000 maxElapsed=315365996763 interval=0 flags=0x0 callingUid=10097
+07-30 02:04:17.071  2257  7780 W ProcessStats: Tracking association SourceState{c731346 com.google.android.gms.persistent/10097 BFgs #4521} whose proc state 4 is better than process ProcessState{14d49bf com.google.android.gms/10097 pkg=com.google.android.gms} proc state 8 (0 skipped)
+07-30 02:04:17.574  2257  2320 I ActivityManager: com.ayaneo.gamewindow is exempt from freezer
+07-30 02:04:17.576  2257  2320 D CompatibilityChangeReporter: Compat change id reported: 135634846; UID 1000; state: DISABLED
+07-30 02:04:17.577  2257  2320 D CompatibilityChangeReporter: Compat change id reported: 177438394; UID 1000; state: DISABLED
+07-30 02:04:17.577  2257  2320 D CompatibilityChangeReporter: Compat change id reported: 135772972; UID 1000; state: DISABLED
+07-30 02:04:17.577  2257  2320 D CompatibilityChangeReporter: Compat change id reported: 135754954; UID 1000; state: ENABLED
+07-30 02:04:17.601  2257  2321 I ActivityManager: Start proc 12103:com.ayaneo.gamewindow/1000 for service {com.ayaneo.gamewindow/com.ayaneo.gamewindow.service.WindowKeyEventService}
+07-30 02:04:17.647  2257  3195 D CompatibilityChangeReporter: Compat change id reported: 271850009; UID 1000; state: ENABLED
+07-30 02:04:17.647  2257  3195 D CompatibilityChangeReporter: Compat change id reported: 271850009; UID 1000; state: DISABLED
+07-30 02:04:17.653  2257  3195 D CompatibilityChangeReporter: Compat change id reported: 161145287; UID 1000; state: ENABLED
+07-30 02:04:17.653  2257  3195 D CompatibilityChangeReporter: Compat change id reported: 161145287; UID 1000; state: DISABLED
+07-30 02:04:17.699 12103 12103 W ContextImpl: Calling a method in the system process without a qualified user: android.app.ContextImpl.startService:1899 android.content.ContextWrapper.startService:825 com.ayaneo.gamewindow.LauncherApp.onCreate:551 android.app.Instrumentation.callApplicationOnCreate:1317 android.app.ActivityThread.handleBindApplication:7017 
+07-30 02:04:17.701 12103 12103 W ContextImpl: Calling a method in the system process without a qualified user: android.app.ContextImpl.startService:1899 android.content.ContextWrapper.startService:825 com.ayaneo.gamewindow.utils.ContextUtilKt.k:23 com.ayaneo.gamewindow.LauncherApp.onCreate:588 android.app.Instrumentation.callApplicationOnCreate:1317 
+07-30 02:04:17.712 12103 12103 W ContextImpl: Calling a method in the system process without a qualified user: android.app.ContextImpl.bindService:1988 android.content.ContextWrapper.bindService:861 com.ayaneo.gamewindow.LauncherApp.onCreate:696 android.app.Instrumentation.callApplicationOnCreate:1317 android.app.ActivityThread.handleBindApplication:7017 
+07-30 02:04:17.712  2257  3195 D CompatibilityChangeReporter: Compat change id reported: 261072174; UID 1000; state: DISABLED
+--------- beginning of main
+07-30 02:04:17.776 12163 12163 E libsigchain:   #04 pc 0006e5a4  /apex/com.android.runtime/lib64/bionic/libc.so (system+428) (BuildId: 50118287324a156bc7be11d3d940c7be)
+07-30 02:04:17.776 12163 12163 E libsigchain:   #05 pc 00073374  /data/app/~~9AOXzEe4Z9yrF28U7iAXzQ==/com.ayaneo.gamewindow-RboygvfjNNIFYhX2hG_H2A==/base.apk (InputReader::readEvent(ReadEvent&)+128) (BuildId: 518b8cec88b00c889753b8c5feca87559b6252a1)
+07-30 02:04:17.776 12163 12163 E libsigchain:   #06 pc 00073260  /data/app/~~9AOXzEe4Z9yrF28U7iAXzQ==/com.ayaneo.gamewindow-RboygvfjNNIFYhX2hG_H2A==/base.apk (+0) (BuildId: 518b8cec88b00c889753b8c5feca87559b6252a1)
+07-30 02:04:17.776 12163 12163 E libsigchain:   #07 pc 000c3644  /apex/com.android.runtime/lib64/bionic/libc.so (__pthread_start(void*)+208) (BuildId: 50118287324a156bc7be11d3d940c7be)
+07-30 02:04:17.776 12163 12163 E libsigchain:   #08 pc 0005cfa4  /apex/com.android.runtime/lib64/bionic/libc.so (__start_thread+68) (BuildId: 50118287324a156bc7be11d3d940c7be)
+07-30 02:04:17.777 12164 12164 I xsu     : sending cmd:chown -R system:system /dev/ttyHS5
+07-30 02:04:17.777 12164 12164 I xsu     : sending cmd end:chown -R system:system /dev/ttyHS5
+07-30 02:04:17.777 12164 12164 I xsu     : free cmd end
+07-30 02:04:17.777 12164 12164 I xsu     : xsu_recv cmd before
+
+===== CRASH #2 (second GuessC 'no-prefix' send after respawn, ~02:05:35) =====
+07-30 02:05:34.517 16663 16663 I xsu_api : xsu_recv type and len end
+07-30 02:05:34.517 16663 16663 I xsu     : xsu_recv cmd end
+07-30 02:05:34.517 16663 16663 I xsu     : end session!
+07-30 02:05:34.559  4347  5312 D PulseFps: pkg=pl.aidlfanspike.app raw=FR 9 AF 19.29 WORST 78 SLOW 4 LF 1 LAF 2.50
+07-30 02:05:34.683  4347  5312 D PulseDaemon: cap write via daemon (7 node(s))
+07-30 02:05:34.706  4347  5312 D PulseAutoTdp: tgt=90 fps=19.3 jank=4 tail=78ms act=TRIM bn=- cpuB=16 cpuPk=46 primePk=8 io=0 gpuB=8 gpuL=1 capped=0 prk=0 stl=0 draw=4.19W cT=38 gT=36 caps%[0:95,2:95,5:100,7:100,-100:95] curMHz[0:2150,2:499,5:2956,7:480] gpu=231 gcap=1050[0/13] lrn=100
+07-30 02:05:34.713  4347  5312 D PulseDaemon: cap write via daemon (2 node(s))
+07-30 02:05:34.743  4347  5312 D PulseDaemon: cap write via daemon (1 node(s))
+07-30 02:05:34.803  4347  5312 D PulseDaemon: cap write via daemon (2 node(s))
+07-30 02:05:34.888  1355  1436 I minksocket: MinkIPC MESSAGE: ( 1355:1436 ) MinkIPC_QRTR_Service:351 minkipc = 0xb40000743b42e2d0 sock = 18, client with node 1 port 4327 went down
+07-30 02:05:34.889  1355  1457 I minksocket: MinkIPC MESSAGE: ( 1355:1457 ) MinkIPC_QRTR_Service:351 minkipc = 0xb40000743b431030 sock = 35, client with node 1 port 4327 went down
+07-30 02:05:34.889  1355  1436 I minksocket: MinkIPC MESSAGE: ( 1355:1436 ) MinkIPC_QRTR_Service:351 minkipc = 0xb40000743b42e2d0 sock = 18, client with node 1 port 4328 went down
+07-30 02:05:34.890  1355  1457 I minksocket: MinkIPC MESSAGE: ( 1355:1457 ) MinkIPC_QRTR_Service:351 minkipc = 0xb40000743b431030 sock = 35, client with node 1 port 4328 went down
+07-30 02:05:34.892  1355  1457 I minksocket: MinkIPC MESSAGE: ( 1355:1457 ) MinkIPC_QRTR_Service:351 minkipc = 0xb40000743b431030 sock = 35, client with node 1 port 4329 went down
+07-30 02:05:34.892  1355  1436 I minksocket: MinkIPC MESSAGE: ( 1355:1436 ) MinkIPC_QRTR_Service:351 minkipc = 0xb40000743b42e2d0 sock = 18, client with node 1 port 4329 went down
+07-30 02:05:34.931 16731 16731 I top     : type=1400 audit(0.0:26955): avc:  denied  { read } for  scontext=u:r:system_app:s0 tcontext=u:r:vendor_qesdsect:s0 tclass=file permissive=1
+07-30 02:05:34.931 16731 16731 I top     : type=1400 audit(0.0:26956): avc:  denied  { read } for  scontext=u:r:system_app:s0 tcontext=u:r:hal_light_default:s0 tclass=file permissive=1
+07-30 02:05:34.931 16731 16731 I top     : type=1400 audit(0.0:26957): avc:  denied  { getattr } for  path="/proc/560" dev="proc" ino=24293 scontext=u:r:system_app:s0 tcontext=u:r:hwservicemanager:s0 tclass=dir permissive=1
+07-30 02:05:34.931 16731 16731 I top     : type=1400 audit(0.0:26958): avc:  denied  { search } for  name="560" dev="proc" ino=24293 scontext=u:r:system_app:s0 tcontext=u:r:hwservicemanager:s0 tclass=dir permissive=1
+07-30 02:05:34.931 16731 16731 I top     : type=1400 audit(0.0:26959): avc:  denied  { getattr } for  path="/proc/1080" dev="proc" ino=39201 scontext=u:r:system_app:s0 tcontext=u:r:vendor_sec_nvm:s0 tclass=dir permissive=1
+07-30 02:05:35.139 12103 15535 E AndroidRuntime: FATAL EXCEPTION: DefaultDispatcher-worker-9
+07-30 02:05:35.139 12103 15535 E AndroidRuntime: Process: com.ayaneo.gamewindow, PID: 12103
+07-30 02:05:35.139 12103 15535 E AndroidRuntime: java.lang.IllegalArgumentException: No enum constant com.ayaneo.gamewindow.utils.FAN_MODE.30,100|50,100|70,100|85,100|95,100
+07-30 02:05:35.139 12103 15535 E AndroidRuntime: 	at java.lang.Enum.valueOf(Enum.java:300)
+07-30 02:05:35.139 12103 15535 E AndroidRuntime: 	at com.ayaneo.gamewindow.utils.FAN_MODE.valueOf(SettingsUtil.kt:3)
+07-30 02:05:35.139 12103 15535 E AndroidRuntime: 	at com.ayaneo.gamewindow.utils.aidl.AYAAidlManager$dealMsg$1.invokeSuspend(AYAAidlManager.kt:922)
+07-30 02:05:35.139 12103 15535 E AndroidRuntime: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:8)
+07-30 02:05:35.139 12103 15535 E AndroidRuntime: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:123)
+07-30 02:05:35.139 12103 15535 E AndroidRuntime: 	at kotlinx.coroutines.internal.LimitedDispatcher.run(LimitedDispatcher.kt:13)
+07-30 02:05:35.139 12103 15535 E AndroidRuntime: 	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:3)
+07-30 02:05:35.139 12103 15535 E AndroidRuntime: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:82)
+07-30 02:05:35.139 12103 15535 E AndroidRuntime: 	Suppressed: kotlinx.coroutines.DiagnosticCoroutineContextException: [StandaloneCoroutine{Cancelled}@76caa26, Dispatchers.IO]
+07-30 02:05:35.145  2257 16732 I DropBoxManagerService: add tag=system_app_crash isTagEnabled=true flags=0x2
+07-30 02:05:35.147  2257  2312 I ActivityManager: Showing crash dialog for package com.ayaneo.gamewindow u0
+07-30 02:05:35.159  2257  2312 D CompatibilityChangeReporter: Compat change id reported: 210923482; UID 1000; state: ENABLED
+07-30 02:05:35.161  2257  2312 D CompatibilityChangeReporter: Compat change id reported: 171228096; UID 1000; state: ENABLED
+07-30 02:05:35.170  2257  2312 W WindowManager: Failed looking up window session=Session{3430762 2257:1000} callers=com.android.server.wm.WindowManagerService.windowForClientLocked:6067 com.android.server.wm.Session.updateRequestedVisibleTypes:690 android.view.ViewRootInsetsControllerHost.updateRequestedVisibleTypes:159 
+07-30 02:05:35.172  2257  2312 D CompatibilityChangeReporter: Compat change id reported: 168419799; UID 1000; state: DISABLED
+07-30 02:05:35.172  2257  2312 D CompatibilityChangeReporter: Compat change id reported: 273564678; UID 1000; state: DISABLED
+07-30 02:05:35.178  2257  2312 D CoreBackPreview: Window{9ae5829 u0 Application Error: com.ayaneo.gamewindow}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.WindowOnBackInvokedDispatcher$OnBackInvokedCallbackWrapper@cb09d99, mPriority=0, mIsAnimationCallback=false}
+07-30 02:05:35.185  1491  1610 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-30 02:05:35.185  1491  1610 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-30 02:05:35.186  1491  1754 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-30 02:05:35.186  1491  1754 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-30 02:05:35.187  1491  1610 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-30 02:05:35.188  1491  1610 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-30 02:05:35.189  1491  1610 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-30 02:05:35.189  2257  8826 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+07-30 02:05:35.189  1491  1610 W qdgralloc: Failed to open smmu proxy node = /dev/qti-smmu-proxy, error = No such file or directory
+07-30 02:05:35.198  2257  7778 D InputDispatcher: onFocusChangedLocked
+07-30 02:05:35.233  2257  8826 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+07-30 02:05:35.239  2257  8826 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+07-30 02:05:35.251  2257  8826 W qdgralloc: getInterlacedFlag: getMetaData returned 3, defaulting to interlaced_flag = 0
+07-30 02:05:35.267  2257  7778 D InputDispatcher: onFocusChangedLocked
+07-30 02:05:35.332 16738 16738 I xsu     : sending cmd:echo RPM=$(cat /sys/devices/platform/soc/soc:pwm-fan/fan_rpm_state 2>/dev/null); echo PWM_DUTY=$(cat /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon*/pwm1 2>/dev/null); echo CPU_TEMP_RAW=$(cat /sys/class/thermal/thermal_zone10/temp /sys/class/thermal/thermal_zone11/temp /sys/class/thermal/thermal_zone12/temp /sys/class/thermal/thermal_zone13/temp /sys/class/thermal/thermal_zone14/temp /sys/class/thermal/thermal_zone15/temp /sys/class/thermal/thermal_zone16/temp /sys/class/thermal/thermal_zone17/temp /sys/class/thermal/thermal_zone18/temp /sys/class/thermal/thermal_zone19/temp /sys/class/thermal/thermal_zone20/temp /sys/class/thermal/thermal_zone21/temp /sys/class/thermal/thermal_zone22/temp /sys/class/thermal/thermal_zone23/temp /sys/class/thermal/thermal_zone25/temp /sys/class/thermal/thermal_zone26/temp /sys/class/thermal/thermal_zone27/temp /sys/class/thermal/thermal_zone28/temp /sys/class/thermal/thermal_zone29/temp 2>/dev/null | tr '\n' ',')
+07-30 02:05:35.333 16738 16738 I xsu     : sending cmd end:echo RPM=$(cat /sys/devices/platform/soc/soc:pwm-fan/fan_rpm_state 2>/dev/null); echo PWM_DUTY=$(cat /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon*/pwm1 2>/dev/null); echo CPU_TEMP_RAW=$(cat /sys/class/thermal/thermal_zone10/temp /sys/class/thermal/thermal_zone11/temp /sys/class/thermal/thermal_zone12/temp /sys/class/thermal/thermal_zone13/temp /sys/class/thermal/thermal_zone14/temp /sys/class/thermal/thermal_zone15/temp /sys/class/thermal/thermal_zone16/temp /sys/class/thermal/thermal_zone17/temp /sys/class/thermal/thermal_zone18/temp /sys/class/thermal/thermal_zone19/temp /sys/class/thermal/thermal_zone20/temp /sys/class/thermal/thermal_zone21/temp /sys/class/thermal/thermal_zone22/temp /sys/class/thermal/thermal_zone23/temp /sys/class/thermal/thermal_zone25/temp /sys/class/thermal/thermal_zone26/temp /sys/class/thermal/thermal_zone27/temp /sys/class/thermal/thermal_zone28/temp /sys/class/thermal/thermal_zone29/temp 2>/dev/null | tr '\n' ',')
+07-30 02:05:35.333 16738 16738 I xsu     : free cmd end
+07-30 02:05:35.333 16738 16738 I xsu     : xsu_recv cmd before
+07-30 02:05:35.333 16738 16738 I xsu_api : xsu_recv memset enter
+07-30 02:05:35.333 16738 16738 I xsu_api : xsu_recv memset end
+07-30 02:05:35.333  1585 16741 I xsu_api : xsu_recv memset enter
+07-30 02:05:35.333  1585 16741 I xsu_api : xsu_recv memset end
+07-30 02:05:35.333  1585 16741 I xsu_api : xsu_recv retry end
+07-30 02:05:35.333  1585 16741 I xsu_api : ret=4, version=200, type=0, payload_size=966
+07-30 02:05:35.333  1585 16741 I xsu_api : xsu_recv type and len
+07-30 02:05:35.333  1585 16741 I xsu_api : header.type=0, header.payload_size=966, xsu_header_t=4
+07-30 02:05:35.333  1585 16741 I xsu_api : xsu_recv type and len end
+07-30 02:05:35.333  1585 16741 I xsud    : handle comming cmd:echo RPM=$(cat /sys/devices/platform/soc/soc:pwm-fan/fan_rpm_state 2>/dev/null); echo PWM_DUTY=$(cat /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon*/pwm1 2>/dev/null); echo CPU_TEMP_RAW=$(cat /sys/class/thermal/thermal_zone10/temp /sys/class/thermal/thermal_zone11/temp /sys/class/thermal/thermal_zone12/temp /sys/class/thermal/thermal_zone13/temp /sys/class/thermal/thermal_zone14/temp /sys/class/thermal/thermal_zone15/temp /sys/class/thermal/thermal_zone16/temp /sys/class/thermal/thermal_zone17/temp /sys/class/thermal/thermal_zone18/temp /sys/class/thermal/thermal_zone19/temp /sys/class/thermal/thermal_zone20/temp /sys/class/thermal/thermal_zone21/temp /sys/class/thermal/thermal_zone22/temp /sys/class/thermal/thermal_zone23/temp /sys/class/thermal/thermal_zone25/temp /sys/class/thermal/thermal_zone26/temp /sys/class/thermal/thermal_zone27/temp /sys/class/thermal/thermal_zone28/temp /sys/class/thermal/thermal_zone29/temp 2>/dev/null | tr '\n' ',')
+07-30 02:05:35.372 16738 16738 I xsu_api : xsu_recv retry end
+07-30 02:05:35.372 16738 16738 I xsu_api : ret=4, version=200, type=1, payload_size=165
+07-30 02:05:35.372 16738 16738 I xsu_api : xsu_recv type and len
+07-30 02:05:35.372 16738 16738 I xsu_api : header.type=1, header.payload_size=165, xsu_header_t=4
+07-30 02:05:35.372 16738 16738 I xsu_api : xsu_recv type and len end
+07-30 02:05:35.372 16738 16738 I xsu     : xsu_recv cmd end
+07-30 02:05:35.372 16738 16738 I xsu     : xsu_recv cmd before
+07-30 02:05:35.372 16738 16738 I xsu_api : xsu_recv memset enter
+07-30 02:05:35.372 16738 16738 I xsu_api : xsu_recv memset end
+07-30 02:05:35.372 16738 16738 I xsu_api : xsu_recv retry end
+07-30 02:05:35.372 16738 16738 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-30 02:05:35.372 16738 16738 I xsu_api : xsu_recv type and len
+07-30 02:05:35.372 16738 16738 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-30 02:05:35.372 16738 16738 I xsu_api : xsu_recv type and len end
+07-30 02:05:35.372 16738 16738 I xsu     : xsu_recv cmd end
+07-30 02:05:35.372 16738 16738 I xsu     : end session!
+07-30 02:05:35.432  9725 16296 D AIDL_FAN_SPIKE: fan state [post-send, send_ok=true] (103ms): RPM=Current RPM 2932 | PWM_DUTY=86 | CPU_TEMP_RAW=38700,38700,39100,39900,38000,37600,38000,38000,39100,38400,43400,45700,40700,41500,39900,38400,39200,40700,40700, | CPU_TEMP_MAX=45.7C
+07-30 02:05:35.433  9725 16296 D AIDL_FAN_SPIKE: 
+07-30 02:05:35.441 16747 16747 I xsu     : sending cmd:cat '/data/user/0/pl.aidlfanspike.app/files/aidl_fan_spike_result.txt' > /sdcard/aidl_fan_spike_result.txt
+07-30 02:05:35.441 16747 16747 I xsu     : sending cmd end:cat '/data/user/0/pl.aidlfanspike.app/files/aidl_fan_spike_result.txt' > /sdcard/aidl_fan_spike_result.txt
+07-30 02:05:35.441 16747 16747 I xsu     : free cmd end
+07-30 02:05:35.441 16747 16747 I xsu     : xsu_recv cmd before
+07-30 02:05:35.441 16747 16747 I xsu_api : xsu_recv memset enter
+07-30 02:05:35.441 16747 16747 I xsu_api : xsu_recv memset end
+07-30 02:05:35.442  1585 16750 I xsu_api : xsu_recv memset enter
+07-30 02:05:35.442  1585 16750 I xsu_api : xsu_recv memset end
+07-30 02:05:35.442  1585 16750 I xsu_api : xsu_recv retry end
+07-30 02:05:35.442  1585 16750 I xsu_api : ret=4, version=200, type=0, payload_size=110
+07-30 02:05:35.442  1585 16750 I xsu_api : xsu_recv type and len
+07-30 02:05:35.442  1585 16750 I xsu_api : header.type=0, header.payload_size=110, xsu_header_t=4
+07-30 02:05:35.442  1585 16750 I xsu_api : xsu_recv type and len end
+07-30 02:05:35.442  1585 16750 I xsud    : handle comming cmd:cat '/data/user/0/pl.aidlfanspike.app/files/aidl_fan_spike_result.txt' > /sdcard/aidl_fan_spike_result.txt
+07-30 02:05:35.469 16747 16747 I xsu_api : xsu_recv retry end
+07-30 02:05:35.469 16747 16747 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-30 02:05:35.469 16747 16747 I xsu_api : xsu_recv type and len
+07-30 02:05:35.469 16747 16747 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-30 02:05:35.469 16747 16747 I xsu_api : xsu_recv type and len end
+07-30 02:05:35.469 16747 16747 I xsu     : xsu_recv cmd end
+07-30 02:05:35.469 16747 16747 I xsu     : end session!
+07-30 02:05:35.563  1495  1668 I SDM     : DisplayBase::CommitThread: Received idle timeout, panel: video, timeout: 70000 us
+07-30 02:05:35.585  1495  1668 I SDM     : HWDeviceDRM::SetupConcurrentWriteback: Tear down the Concurrent Writeback topology
+07-30 02:05:35.663  2257  2684 V AlarmManager: set(PendingIntent{b8edbe: PendingIntentRecord{6214e1f com.google.android.gms/com.google.android.gms.container startService}}) : type=3 triggerAtTime=2036-07-27 02:05:35 win=3600000 maxElapsed=315366075368 interval=0 flags=0x0 callingUid=10097
+07-30 02:05:35.674  1527  1527 I vendor.qti.hardware.servicetrackeraidl-service: bindService is called for service : com.google.android.gms/.chimera.PersistentDirectBootAwareApiService and for client com.google.android.gms.persistent
+07-30 02:05:35.675  1527  1527 I vendor.qti.hardware.servicetrackeraidl-service: total connections for service : com.google.android.gms/.chimera.PersistentDirectBootAwareApiServiceare :9
+07-30 02:05:35.675  1527  1527 I vendor.qti.hardware.servicetrackeraidl-service: total connections for client : com.google.android.gms.persistentare :5
+07-30 02:05:35.676  3363 16756 I DropBoxUtil: (REDACTED) Reading dropbox entry with tag %s and timestamp %d
+07-30 02:05:35.679  1527  1527 I vendor.qti.hardware.servicetrackeraidl-service: destroyService is called for service : com.google.android.gms/.stats.service.DropBoxEntryAddedService
+07-30 02:05:35.747  1495  1668 I SDM     : DisplayBase::CommitThread: Received idle timeout, panel: video, timeout: 70000 us
+07-30 02:05:35.775  1495  1668 I SDM     : HWDeviceDRM::SetupConcurrentWriteback: Tear down the Concurrent Writeback topology
+07-30 02:05:35.846  1495  1668 I SDM     : DisplayBase::CommitThread: Received idle timeout, panel: video, timeout: 70000 us
+07-30 02:05:36.039  5725  5725 I sh      : type=1400 audit(0.0:27063): avc:  denied  { write } for  name="pulse_fifo_out" dev="dm-53" ino=339427 scontext=u:r:xsud:s0 tcontext=u:object_r:app_data_file:s0 tclass=fifo_file permissive=1
+07-30 02:05:36.044  4347  5314 D PulseDaemon: telemetry read via daemon (16 path(s))
+07-30 02:05:36.039  4347  4347 I Thread-4008: type=1400 audit(0.0:27064): avc:  denied  { write } for  name="pulse_fifo_in" dev="dm-53" ino=339407 scontext=u:r:untrusted_app:s0:c183,c256,c512,c768 tcontext=u:object_r:app_data_file:s0 tclass=fifo_file permissive=1 app=com.kei.pulse
+07-30 02:05:36.039  4347  4347 I DefaultDispatch: type=1400 audit(0.0:27065): avc:  denied  { open } for  path="/proc/stat" dev="proc" ino=4026532011 scontext=u:r:untrusted_app:s0:c183,c256,c512,c768 tcontext=u:object_r:proc_stat:s0 tclass=file permissive=1 app=com.kei.pulse
+07-30 02:05:36.039  4347  4347 I DefaultDispatch: type=1400 audit(0.0:27066): avc:  denied  { getattr } for  path="/proc/stat" dev="proc" ino=4026532011 scontext=u:r:untrusted_app:s0:c183,c256,c512,c768 tcontext=u:object_r:proc_stat:s0 tclass=file permissive=1 app=com.kei.pulse
+07-30 02:05:36.066 16795 16795 I xsu     : sending cmd:sh '/data/user/0/com.kei.pulse/files/fps-probe.sh'
+07-30 02:05:36.067  1585 16798 I xsu_api : xsu_recv memset enter
+07-30 02:05:36.067  1585 16798 I xsu_api : xsu_recv memset end
+07-30 02:05:36.067 16795 16795 I xsu     : sending cmd end:sh '/data/user/0/com.kei.pulse/files/fps-probe.sh'
+07-30 02:05:36.067  1585 16798 I xsu_api : xsu_recv retry end
+07-30 02:05:36.067  1585 16798 I xsu_api : ret=4, version=200, type=0, payload_size=54
+07-30 02:05:36.067  1585 16798 I xsu_api : xsu_recv type and len
+07-30 02:05:36.067  1585 16798 I xsu_api : header.type=0, header.payload_size=54, xsu_header_t=4
+07-30 02:05:36.067  1585 16798 I xsu_api : xsu_recv type and len end
+07-30 02:05:36.067  1585 16798 I xsud    : handle comming cmd:sh '/data/user/0/com.kei.pulse/files/fps-probe.sh'
+07-30 02:05:36.067 16795 16795 I xsu     : free cmd end
+07-30 02:05:36.067 16795 16795 I xsu     : xsu_recv cmd before
+07-30 02:05:36.067 16795 16795 I xsu_api : xsu_recv memset enter
+07-30 02:05:36.067 16795 16795 I xsu_api : xsu_recv memset end
+07-30 02:05:36.079 16801 16801 I sh      : type=1400 audit(0.0:27067): avc:  denied  { execute_no_trans } for  path="/system/bin/dumpsys" dev="dm-9" ino=355 scontext=u:r:xsud:s0 tcontext=u:object_r:system_file:s0 tclass=file permissive=1
+07-30 02:05:36.098  1578  2843 D TimeStats: Dumping TimeStats as text
+07-30 02:05:36.117  1578  2843 D TimeStats: Cleared global stats
+07-30 02:05:36.117  1578  2843 D TimeStats: Cleared layer stats
+07-30 02:05:36.119 16795 16795 I xsu_api : xsu_recv retry end
+07-30 02:05:36.119 16795 16795 I xsu_api : ret=4, version=200, type=1, payload_size=51
+07-30 02:05:36.119 16795 16795 I xsu_api : xsu_recv type and len
+07-30 02:05:36.119 16795 16795 I xsu_api : header.type=1, header.payload_size=51, xsu_header_t=4
+07-30 02:05:36.119 16795 16795 I xsu_api : xsu_recv type and len end
+07-30 02:05:36.119 16795 16795 I xsu     : xsu_recv cmd end
+07-30 02:05:36.119 16795 16795 I xsu     : xsu_recv cmd before
+07-30 02:05:36.119 16795 16795 I xsu_api : xsu_recv memset enter
+07-30 02:05:36.119 16795 16795 I xsu_api : xsu_recv memset end
+07-30 02:05:36.120 16795 16795 I xsu_api : xsu_recv retry end
+07-30 02:05:36.120 16795 16795 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-30 02:05:36.120 16795 16795 I xsu_api : xsu_recv type and len
+07-30 02:05:36.120 16795 16795 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-30 02:05:36.120 16795 16795 I xsu_api : xsu_recv type and len end
+07-30 02:05:36.120 16795 16795 I xsu     : xsu_recv cmd end
+07-30 02:05:36.120 16795 16795 I xsu     : end session!
+07-30 02:05:36.153  4347  5314 D PulseFps: pkg=pl.aidlfanspike.app raw=FR 41 AF 66.67 WORST 78 SLOW 2 LF 18 LAF 38.71
+07-30 02:05:37.107  5914  5914 I sh      : type=1400 audit(0.0:27092): avc:  denied  { read } for  name="primary" dev="tmpfs" ino=42 scontext=u:r:xsud:s0 tcontext=u:object_r:mnt_user_file:s0 tclass=lnk_file permissive=1
+07-30 02:05:37.255 16829 16829 I cat     : type=1400 audit(0.0:27093): avc:  denied  { read } for  name="devfreq" dev="sysfs" ino=127908 scontext=u:r:xsud:s0 tcontext=u:object_r:vendor_sysfs_kgsl:s0 tclass=lnk_file permissive=1
+07-30 02:05:37.416  4347  5321 D PulseDaemon: telemetry read via daemon (16 path(s))
+07-30 02:05:37.419  5725  5725 I sh      : type=1400 audit(0.0:27094): avc:  denied  { search } for  name="0" dev="tmpfs" ino=12 scontext=u:r:xsud:s0 tcontext=u:object_r:mnt_user_file:s0 tclass=dir permissive=1
+07-30 02:05:37.435 16842 16842 I xsu     : sending cmd:sh '/data/user/0/com.kei.pulse/files/fps-probe.sh'
+07-30 02:05:37.435 16842 16842 I xsu     : sending cmd end:sh '/data/user/0/com.kei.pulse/files/fps-probe.sh'
+07-30 02:05:37.435 16842 16842 I xsu     : free cmd end
+07-30 02:05:37.435 16842 16842 I xsu     : xsu_recv cmd before
+07-30 02:05:37.435 16842 16842 I xsu_api : xsu_recv memset enter
+07-30 02:05:37.435 16842 16842 I xsu_api : xsu_recv memset end
+07-30 02:05:37.435  1585 16845 I xsu_api : xsu_recv memset enter
+07-30 02:05:37.436  1585 16845 I xsu_api : xsu_recv memset end
+07-30 02:05:37.436  1585 16845 I xsu_api : xsu_recv retry end
+07-30 02:05:37.436  1585 16845 I xsu_api : ret=4, version=200, type=0, payload_size=54
+07-30 02:05:37.436  1585 16845 I xsu_api : xsu_recv type and len
+07-30 02:05:37.436  1585 16845 I xsu_api : header.type=0, header.payload_size=54, xsu_header_t=4
+07-30 02:05:37.436  1585 16845 I xsu_api : xsu_recv type and len end
+07-30 02:05:37.436  1585 16845 I xsud    : handle comming cmd:sh '/data/user/0/com.kei.pulse/files/fps-probe.sh'
+07-30 02:05:37.464  1578  2843 D TimeStats: Dumping TimeStats as text
+07-30 02:05:37.487  1578  2843 D TimeStats: Cleared global stats
+07-30 02:05:37.487  1578  2843 D TimeStats: Cleared layer stats
+07-30 02:05:37.490 16842 16842 I xsu_api : xsu_recv retry end
+07-30 02:05:37.490 16842 16842 I xsu_api : ret=4, version=200, type=1, payload_size=46
+07-30 02:05:37.490 16842 16842 I xsu_api : xsu_recv type and len
+07-30 02:05:37.490 16842 16842 I xsu_api : header.type=1, header.payload_size=46, xsu_header_t=4
+07-30 02:05:37.490 16842 16842 I xsu_api : xsu_recv type and len end
+07-30 02:05:37.490 16842 16842 I xsu     : xsu_recv cmd end
+07-30 02:05:37.490 16842 16842 I xsu     : xsu_recv cmd before
+07-30 02:05:37.490 16842 16842 I xsu_api : xsu_recv memset enter
+07-30 02:05:37.490 16842 16842 I xsu_api : xsu_recv memset end
+07-30 02:05:37.490 16842 16842 I xsu_api : xsu_recv retry end
+07-30 02:05:37.490 16842 16842 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-30 02:05:37.490 16842 16842 I xsu_api : xsu_recv type and len
+07-30 02:05:37.490 16842 16842 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-30 02:05:37.490 16842 16842 I xsu_api : xsu_recv type and len end
+07-30 02:05:37.490 16842 16842 I xsu     : xsu_recv cmd end
+07-30 02:05:37.490 16842 16842 I xsu     : end session!
+07-30 02:05:37.521  4347  5321 D PulseFps: pkg=pl.aidlfanspike.app raw=FR 0 AF 0.00 WORST 0 SLOW 0 LF 0 LAF 0.00
+07-30 02:05:37.615 16864 16864 I chmod   : type=1400 audit(0.0:27095): avc:  denied  { setattr } for  name="scaling_max_freq" dev="sysfs" ino=76474 scontext=u:r:xsud:s0 tcontext=u:object_r:sysfs_devices_system_cpu:s0 tclass=file permissive=1
+07-30 02:05:37.615  5725  5725 I sh      : type=1400 audit(0.0:27096): avc:  denied  { write } for  name="scaling_max_freq" dev="sysfs" ino=76474 scontext=u:r:xsud:s0 tcontext=u:object_r:sysfs_devices_system_cpu:s0 tclass=file permissive=1
+07-30 02:05:37.680  4347  5321 D PulseDaemon: cap write via daemon (7 node(s))
+07-30 02:05:37.707  4347  5321 D PulseAutoTdp: tgt=90 fps=66.7 jank=2 tail=78ms act=RAISE bn=- cpuB=6 cpuPk=26 primePk=0 io=0 gpuB=0 gpuL=0 capped=0 prk=0 stl=0 draw=2.15W cT=38 gT=36 caps%[0:95,2:95,5:100,7:100,-100:100] curMHz[0:2150,2:499,5:499,7:480] gpu=231 gcap=1000[1/13] lrn=100
+07-30 02:05:37.750  4347  5321 D PulseDaemon: cap write via daemon (2 node(s))
+07-30 02:05:37.787  4347  5321 D PulseDaemon: cap write via daemon (1 node(s))
+07-30 02:05:39.030  4347  5311 D PulseDaemon: telemetry read via daemon (16 path(s))
+07-30 02:05:39.050 16928 16928 I xsu     : sending cmd:sh '/data/user/0/com.kei.pulse/files/fps-probe.sh'
+07-30 02:05:39.051 16928 16928 I xsu     : sending cmd end:sh '/data/user/0/com.kei.pulse/files/fps-probe.sh'
+07-30 02:05:39.051 16928 16928 I xsu     : free cmd end
+07-30 02:05:39.051 16928 16928 I xsu     : xsu_recv cmd before
+07-30 02:05:39.051 16928 16928 I xsu_api : xsu_recv memset enter
+07-30 02:05:39.051 16928 16928 I xsu_api : xsu_recv memset end
+07-30 02:05:39.051  1585 16931 I xsu_api : xsu_recv memset enter
+07-30 02:05:39.051  1585 16931 I xsu_api : xsu_recv memset end
+07-30 02:05:39.051  1585 16931 I xsu_api : xsu_recv retry end
+07-30 02:05:39.051  1585 16931 I xsu_api : ret=4, version=200, type=0, payload_size=54
+07-30 02:05:39.051  1585 16931 I xsu_api : xsu_recv type and len
+07-30 02:05:39.051  1585 16931 I xsu_api : header.type=0, header.payload_size=54, xsu_header_t=4
+07-30 02:05:39.051  1585 16931 I xsu_api : xsu_recv type and len end
+07-30 02:05:39.051  1585 16931 I xsud    : handle comming cmd:sh '/data/user/0/com.kei.pulse/files/fps-probe.sh'
+07-30 02:05:39.086  1578  2843 D TimeStats: Dumping TimeStats as text
+07-30 02:05:39.089 16936 16936 I xsu     : sending cmd:echo 76 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+07-30 02:05:39.090 16936 16936 I xsu     : sending cmd end:echo 76 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+07-30 02:05:39.090 16936 16936 I xsu     : free cmd end
+07-30 02:05:39.090 16936 16936 I xsu     : xsu_recv cmd before
+07-30 02:05:39.090 16936 16936 I xsu_api : xsu_recv memset enter
+07-30 02:05:39.090 16936 16936 I xsu_api : xsu_recv memset end
+07-30 02:05:39.090  1585 16939 I xsu_api : xsu_recv memset enter
+07-30 02:05:39.090  1585 16939 I xsu_api : xsu_recv memset end
+07-30 02:05:39.090  1585 16939 I xsu_api : xsu_recv retry end
+07-30 02:05:39.090  1585 16939 I xsu_api : ret=4, version=200, type=0, payload_size=69
+07-30 02:05:39.090  1585 16939 I xsu_api : xsu_recv type and len
+07-30 02:05:39.090  1585 16939 I xsu_api : header.type=0, header.payload_size=69, xsu_header_t=4
+07-30 02:05:39.090  1585 16939 I xsu_api : xsu_recv type and len end
+07-30 02:05:39.090  1585 16939 I xsud    : handle comming cmd:echo 76 > /sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+07-30 02:05:39.096 16936 16936 I xsu_api : xsu_recv retry end
+07-30 02:05:39.091 16940 16940 I sh      : type=1400 audit(0.0:27099): avc:  denied  { write } for  name="pwm1" dev="sysfs" ino=111024 scontext=u:r:xsud:s0 tcontext=u:object_r:sysfs:s0 tclass=file permissive=1
+07-30 02:05:39.096 16936 16936 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-30 02:05:39.096 16936 16936 I xsu_api : xsu_recv type and len
+07-30 02:05:39.096 16936 16936 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-30 02:05:39.096 16936 16936 I xsu_api : xsu_recv type and len end
+07-30 02:05:39.096 16936 16936 I xsu     : xsu_recv cmd end
+07-30 02:05:39.096 16936 16936 I xsu     : end session!
+07-30 02:05:39.097  1578  2843 D TimeStats: Cleared global stats
+07-30 02:05:39.097  1578  2843 D TimeStats: Cleared layer stats
+07-30 02:05:39.091 16940 16940 I sh      : type=1400 audit(0.0:27100): avc:  denied  { open } for  path="/sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1" dev="sysfs" ino=111024 scontext=u:r:xsud:s0 tcontext=u:object_r:sysfs:s0 tclass=file permissive=1
+07-30 02:05:39.100 16928 16928 I xsu_api : xsu_recv retry end
+07-30 02:05:39.100 16928 16928 I xsu_api : ret=4, version=200, type=1, payload_size=46
+07-30 02:05:39.100 16928 16928 I xsu_api : xsu_recv type and len
+07-30 02:05:39.100 16928 16928 I xsu_api : header.type=1, header.payload_size=46, xsu_header_t=4
+07-30 02:05:39.100 16928 16928 I xsu_api : xsu_recv type and len end
+07-30 02:05:39.100 16928 16928 I xsu     : xsu_recv cmd end
+07-30 02:05:39.100 16928 16928 I xsu     : xsu_recv cmd before
+07-30 02:05:39.100 16928 16928 I xsu_api : xsu_recv memset enter
+07-30 02:05:39.100 16928 16928 I xsu_api : xsu_recv memset end
+07-30 02:05:39.100 16928 16928 I xsu_api : xsu_recv retry end
+07-30 02:05:39.100 16928 16928 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-30 02:05:39.100 16928 16928 I xsu_api : xsu_recv type and len
+07-30 02:05:39.100 16928 16928 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-30 02:05:39.100 16928 16928 I xsu_api : xsu_recv type and len end
+07-30 02:05:39.100 16928 16928 I xsu     : xsu_recv cmd end
+07-30 02:05:39.100 16928 16928 I xsu     : end session!
+07-30 02:05:39.147  4347  5311 D PulseFps: pkg=pl.aidlfanspike.app raw=FR 0 AF 0.00 WORST 0 SLOW 0 LF 0 LAF 0.00
+07-30 02:05:39.171 16915 16915 I top     : type=1400 audit(0.0:27101): avc:  denied  { read } for  scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_spu_qti:s0 tclass=file permissive=1
+07-30 02:05:39.171 16915 16915 I top     : type=1400 audit(0.0:27102): avc:  denied  { open } for  path="/proc/1413/stat" dev="proc" ino=53856 scontext=u:r:system_app:s0 tcontext=u:r:vendor_hal_spu_qti:s0 tclass=file permissive=1
+07-30 02:05:39.892  1355  1416 E sec_channel  : Modemcomm: Init Instance on handle:0 failed with -3 
+07-30 02:05:39.893  1355  1416 E sec_channel  : Modemcomm: Failed to get handle of SSGQMSCA service
+07-30 02:05:39.894  1355  1457 I minksocket: MinkIPC MESSAGE: ( 1355:1457 ) MinkIPC_QRTR_Service:351 minkipc = 0xb40000743b431030 sock = 35, client with node 1 port 432a went down
+07-30 02:05:39.895  1355  1436 I minksocket: MinkIPC MESSAGE: ( 1355:1436 ) MinkIPC_QRTR_Service:351 minkipc = 0xb40000743b42e2d0 sock = 18, client with node 1 port 432a went down
+07-30 02:05:39.896  1355  1436 I minksocket: MinkIPC MESSAGE: ( 1355:1436 ) MinkIPC_QRTR_Service:351 minkipc = 0xb40000743b42e2d0 sock = 18, client with node 1 port 432b went down
+07-30 02:05:39.896  1355  1457 I minksocket: MinkIPC MESSAGE: ( 1355:1457 ) MinkIPC_QRTR_Service:351 minkipc = 0xb40000743b431030 sock = 35, client with node 1 port 432b went down
+07-30 02:05:39.898  1355  1436 I minksocket: MinkIPC MESSAGE: ( 1355:1436 ) MinkIPC_QRTR_Service:351 minkipc = 0xb40000743b42e2d0 sock = 18, client with node 1 port 432c went down
+07-30 02:05:39.898  1355  1457 I minksocket: MinkIPC MESSAGE: ( 1355:1457 ) MinkIPC_QRTR_Service:351 minkipc = 0xb40000743b431030 sock = 35, client with node 1 port 432c went down
+07-30 02:05:40.381  4347  5318 D PulseDaemon: telemetry read via daemon (16 path(s))
+07-30 02:05:40.399 16978 16978 I xsu     : sending cmd:sh '/data/user/0/com.kei.pulse/files/fps-probe.sh'
+07-30 02:05:40.399 16978 16978 I xsu     : sending cmd end:sh '/data/user/0/com.kei.pulse/files/fps-probe.sh'
+07-30 02:05:40.399 16978 16978 I xsu     : free cmd end
+07-30 02:05:40.400 16978 16978 I xsu     : xsu_recv cmd before
+07-30 02:05:40.400  1585 16981 I xsu_api : xsu_recv memset enter
+07-30 02:05:40.400 16978 16978 I xsu_api : xsu_recv memset enter
+07-30 02:05:40.400 16978 16978 I xsu_api : xsu_recv memset end
+07-30 02:05:40.400  1585 16981 I xsu_api : xsu_recv memset end
+07-30 02:05:40.400  1585 16981 I xsu_api : xsu_recv retry end
+07-30 02:05:40.400  1585 16981 I xsu_api : ret=4, version=200, type=0, payload_size=54
+07-30 02:05:40.400  1585 16981 I xsu_api : xsu_recv type and len
+07-30 02:05:40.400  1585 16981 I xsu_api : header.type=0, header.payload_size=54, xsu_header_t=4
+07-30 02:05:40.400  1585 16981 I xsu_api : xsu_recv type and len end
+07-30 02:05:40.400  1585 16981 I xsud    : handle comming cmd:sh '/data/user/0/com.kei.pulse/files/fps-probe.sh'
+07-30 02:05:40.424  1578  2843 D TimeStats: Dumping TimeStats as text
+07-30 02:05:40.435  1578  2843 D TimeStats: Cleared global stats
+07-30 02:05:40.435  1578  2843 D TimeStats: Cleared layer stats
+07-30 02:05:40.437 16978 16978 I xsu_api : xsu_recv retry end
+07-30 02:05:40.437 16978 16978 I xsu_api : ret=4, version=200, type=1, payload_size=46
+07-30 02:05:40.437 16978 16978 I xsu_api : xsu_recv type and len
+07-30 02:05:40.437 16978 16978 I xsu_api : header.type=1, header.payload_size=46, xsu_header_t=4
+07-30 02:05:40.437 16978 16978 I xsu_api : xsu_recv type and len end
+07-30 02:05:40.437 16978 16978 I xsu     : xsu_recv cmd end
+07-30 02:05:40.437 16978 16978 I xsu     : xsu_recv cmd before
+07-30 02:05:40.437 16978 16978 I xsu_api : xsu_recv memset enter
+07-30 02:05:40.437 16978 16978 I xsu_api : xsu_recv memset end
+07-30 02:05:40.437 16978 16978 I xsu_api : xsu_recv retry end
+07-30 02:05:40.437 16978 16978 I xsu_api : ret=4, version=200, type=3, payload_size=0
+07-30 02:05:40.437 16978 16978 I xsu_api : xsu_recv type and len
+07-30 02:05:40.437 16978 16978 I xsu_api : header.type=3, header.payload_size=0, xsu_header_t=4
+07-30 02:05:40.437 16978 16978 I xsu_api : xsu_recv type and len end
+07-30 02:05:40.437 16978 16978 I xsu     : xsu_recv cmd end
+07-30 02:05:40.437 16978 16978 I xsu     : end session!
+07-30 02:05:40.489  4347  5318 D PulseFps: pkg=pl.aidlfanspike.app raw=FR 0 AF 0.00 WORST 0 SLOW 0 LF 0 LAF 0.00
+07-30 02:05:40.491  4347  5318 D PulseAutoTdp: tgt=90 fps=- jank=0 tail=-ms act=HOLD bn=- cpuB=8 cpuPk=29 primePk=2 io=0 gpuB=0 gpuL=0 capped=0 prk=0 stl=0 draw=2.06W cT=37 gT=35 caps%[0:95,2:95,5:100,7:100,-100:100] curMHz[0:2150,2:729,5:2572,7:480] gpu=231 gcap=1050[0/13] lrn=100
+07-30 02:05:40.528  4347  5318 D PulseDaemon: cap write via daemon (2 node(s))
+07-30 02:05:40.567  4347  5318 D PulseDaemon: cap write via daemon (1 node(s))
+07-30 02:05:41.209  2257  2257 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-30 02:05:41.209  2257  2257 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-30 02:05:41.210  2257  2257 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-30 02:05:41.212  2257  2257 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-30 02:05:41.213  2257  2257 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-30 02:05:41.213  2257  2257 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-30 02:05:41.218  2257  2257 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-30 02:05:41.218  2257  2257 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-30 02:05:41.218  2257  2257 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-30 02:05:41.221  2257  2257 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-30 02:05:41.222  2257  2257 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-30 02:05:41.222  2257  2257 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-30 02:05:41.229  2257  2257 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-30 02:05:41.229  2257  2257 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-30 02:05:41.229  2257  2257 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-30 02:05:41.232  2257  2257 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-30 02:05:41.232  2257  2257 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-30 02:05:41.232  2257  2257 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-30 02:05:41.240  2257  2257 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-30 02:05:41.240  2257  2257 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-30 02:05:41.240  2257  2257 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-30 02:05:41.243  2257  2257 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-30 02:05:41.243  2257  2257 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-30 02:05:41.243  2257  2257 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-30 02:05:41.251  2257  2257 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-30 02:05:41.251  2257  2257 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-30 02:05:41.251  2257  2257 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-30 02:05:41.266  2257  2257 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-30 02:05:41.266  2257  2257 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-30 02:05:41.266  2257  2257 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-30 02:05:41.273  2257  2257 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-30 02:05:41.274  2257  2257 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-30 02:05:41.274  2257  2257 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-30 02:05:41.285  2257  2257 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-30 02:05:41.285  2257  2257 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-30 02:05:41.285  2257  2257 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-30 02:05:41.296  2257  2257 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-30 02:05:41.296  2257  2257 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-30 02:05:41.296  2257  2257 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-30 02:05:41.300  2257  2257 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-30 02:05:41.300  2257  2257 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-30 02:05:41.300  2257  2257 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-30 02:05:41.307  2257  2257 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-30 02:05:41.307  2257  2257 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-30 02:05:41.307  2257  2257 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-30 02:05:41.311  2257  2257 D InputDispatcher: mergeMotionEntryLocked - original entry: MotionEvent
+07-30 02:05:41.311  2257  2257 D InputDispatcher: mergeMotionEntryLocked - mRealTouchInputDeviceId=5, mRealTouchInputSource=53250
+07-30 02:05:41.311  2257  2257 D InputDispatcher: mergeMotionEntryLocked - do not need merge
+07-30 02:05:41.312  2257  2257 D InputDispatcher: resetMergeMotionEntryLocked
+07-30 02:05:41.314  2257  2312 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@6246e0
+07-30 02:05:41.314  2257  2312 D CoreBackPreview: Window{9ae5829 u0 Application Error: com.ayaneo.gamewindow}: Setting back callback null
+07-30 02:05:41.315  2257  7779 I ActivityManager: Killing 12103:com.ayaneo.gamewindow/1000 (adj -700): crash
+07-30 02:05:41.318  2257  2327 I libprocessgroup: Successfully killed process cgroup uid 1000 pid 12103 in 0ms
+07-30 02:05:41.319  9725  9725 D AIDL_FAN_SPIKE: onServiceDisconnected: name=ComponentInfo{com.ayaneo.gamewindow/com.ayaneo.gamewindow.utils.aidl.AyaAidlService}
+07-30 02:05:41.320  2257  2257 W WindowMagnificationMgr: requestConnection duplicated request: connect=false, mConnectionState=DISCONNECTED
+07-30 02:05:41.320  1527  1527 I vendor.qti.hardware.servicetrackeraidl-service: killProcess is called for pid : 12103
+07-30 02:05:41.320  1527  1527 I vendor.qti.hardware.servicetrackeraidl-service: process with pid 12103 is service
+07-30 02:05:41.320  1527  1527 I vendor.qti.hardware.servicetrackeraidl-service: process with pid 12103 is service
+07-30 02:05:41.320  1527  1527 I vendor.qti.hardware.servicetrackeraidl-service: process with pid 12103 is service
+07-30 02:05:41.320  1527  1527 I vendor.qti.hardware.servicetrackeraidl-service: size of client connections for client: com.ayaneo.gamewindowafter removal is 0
+07-30 02:05:41.320  1527  1527 I vendor.qti.hardware.servicetrackeraidl-service: process with pid 12103 is client
+07-30 02:05:41.320  1527  1527 I vendor.qti.hardware.servicetrackeraidl-service: removing client with pid 12103process namecom.ayaneo.gamewindow
+07-30 02:05:41.320  1527  1527 I vendor.qti.hardware.servicetrackeraidl-service: destroyService is called for service : com.ayaneo.gamewindow/.service.WindowKeyEventService
+07-30 02:05:41.320  1527  1527 I vendor.qti.hardware.servicetrackeraidl-service: destroyService is called for service : com.ayaneo.gamewindow/.service.NotificationService
+07-30 02:05:41.320  1527  1527 I vendor.qti.hardware.servicetrackeraidl-service: destroyService is called for service : com.ayaneo.gamewindow/.utils.aidl.AyaAidlService
+07-30 02:05:41.326  2708  3373 D AccessibilitySourceService: enabled a11y services count 1
+07-30 02:05:41.329  2708  3373 D AccessibilitySourceService: a11y source sending 1 issue to sc
+07-30 02:05:41.329  2257  3195 D SafetySourceDataValidat: No cert check requested for package com.google.android.permissioncontroller
+07-30 02:05:41.330  2257  8826 D OpenGLRenderer: endAllActiveAnimators on 0xb4000076dc40d110 (RippleDrawable) with handle 0xb40000772c1e3300
+07-30 02:05:41.335  2257  2257 D BatterySaverPolicy: accessibility changed to false, updating policy.
+07-30 02:05:41.336  2257  2312 W InputManager-JNI: Input channel object '9ae5829 Application Error: com.ayaneo.gamewindow (client)' was disposed without first being removed with the input manager!
+07-30 02:05:41.343  2257  7779 D InputDispatcher: onFocusChangedLocked
+07-30 02:05:41.344  2257  2314 V WindowManager: Unknown focus tokens, dropping reportFocusChanged

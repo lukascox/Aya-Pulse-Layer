@@ -1,15 +1,16 @@
-# FINDINGS — AIDL fan spike, runs 1-3 (2026-07-29 / 2026-07-30)
+# FINDINGS — AIDL fan spike, runs 1-4 (2026-07-29 / 2026-07-30)
 
 **Confirmed on-device: `com_set_performance_fan` genuinely drives the real
 fan, no root, over the same plain Binder connection `aidl-bind-spike`
 already proved for performance-mode.** The discrete-mode half of this
 spike (step 1) is a clean, repeatable success. The curve-write half
-(step 2, `com_set_fan_speed_strategy`) is now a **strong negative
-result** after three runs — the command does not appear to actually
-apply the curve content sent. Raw logs: `results/run1/`, `results/run2/`,
-`results/run3/` (each with `aidl_fan_spike_result.txt` +
-`aidl_fan_spike_logcat_dump.txt`, redundant content, no errors in any of
-the three).
+(step 2/3, `com_set_fan_speed_strategy`) is a **strong negative result**
+for every format tried across four runs — none actually applied the
+curve content sent, and one format guess (a malformed one, run4) crashed
+`com.ayaneo.gamewindow` outright, requiring a device reboot. Raw logs:
+`results/run1/` through `results/run4/` (each with
+`aidl_fan_spike_result.txt` + `aidl_fan_spike_logcat_dump.txt`; run4 adds
+`gamewindow_crash_excerpt.log` for the crash).
 
 ## Step 1 — discrete fan mode: confirmed, strong evidence, not just plausible
 
@@ -106,6 +107,58 @@ with a legitimately temp-driven pre-existing curve" (hypothesis #3) is
 much weaker too, since 6 attempts across a real temp range never showed
 temp-correlated variation.
 
+## Run4 — three format guesses, one of them crashes `com.ayaneo.gamewindow`
+
+Run4 tried three alternate `mode-pairs` string formats (all still built on
+the same flat-100%-everywhere shape): swapped `duty,temp` order, `;` as
+the pair separator, and dropping the `FAN_MODE_CUSTOM-` prefix entirely.
+
+**Guess A (swap order) and Guess B (semicolon) — still no effect,
+consistent with runs 2-3.** Tried twice each (once before, once after the
+crash below, with a fresh `clientId`): duty read back as 25 or 76 both
+times, never near 255. Same pattern as before — mode-switch to CUSTOM
+confirmed via callback, curve content still not landing.
+
+**Guess C (no `FAN_MODE_CUSTOM-` prefix) crashed `com.ayaneo.gamewindow`
+outright — twice.** Full stack trace from `full_logcat.log`:
+
+```
+FATAL EXCEPTION: DefaultDispatcher-worker-10
+Process: com.ayaneo.gamewindow, PID: 4122
+java.lang.IllegalArgumentException: No enum constant com.ayaneo.gamewindow.utils.FAN_MODE.30,100|50,100|70,100|85,100|95,100
+	at java.lang.Enum.valueOf(Enum.java:300)
+	at com.ayaneo.gamewindow.utils.FAN_MODE.valueOf(SettingsUtil.kt:3)
+	at com.ayaneo.gamewindow.utils.aidl.AYAAidlManager$dealMsg$1.invokeSuspend(AYAAidlManager.kt:922)
+```
+
+This is a **real, reproducible, unprivileged crash bug in a vendor system
+service** — not a "nothing happened" result. `AYAAidlManager.dealMsg`
+evidently splits the `com_set_fan_speed_strategy` payload on the first
+`-` and feeds everything before it straight into
+`FAN_MODE.valueOf(...)` with no validation; when the prefix is missing,
+the *entire* curve string becomes the "enum name" and `valueOf()` throws
+an exception nothing catches, killing the whole `com.ayaneo.gamewindow`
+process (which also owns the game overlay, notifications, and
+`WindowKeyEventService`/key remapping). Android auto-restarted it after
+the first crash (silent), but the *second* identical crash (same guess,
+retried after reconnect with a new `clientId`) triggered Android's
+user-facing crash dialog instead and the service didn't cleanly come
+back — the user had to reboot the device to fully recover. Full context
+kept in `results/run4/gamewindow_crash_excerpt.log` (trimmed from a
+1.2MB full-system logcat dump to the ~450 lines around both crashes).
+
+**This settles the "is the prefix mandatory" question for good — yes,
+confirmed by the vendor's own code, not just inferred.** It also
+confirms the enum type really is `com.ayaneo.gamewindow.utils.FAN_MODE`
+(not just our reconstructed guess) and pinpoints the exact handler
+(`AYAAidlManager.dealMsg`, decompiles to `AYAAidlManager.kt`). It does
+**not** explain why Guess A/B (both correctly prefixed) still don't
+change real duty — that mystery is now narrower (something in how the
+*post-prefix* substring gets parsed/applied) but still open. The
+no-prefix guess button has been **removed from the app** (was never a
+live hypothesis to retry — it's now a confirmed crash trigger, not
+something to tap again).
+
 ## What this means for `pulse-for-aya`
 
 **Step 1 alone is already a usable, real feature** — a discrete
@@ -125,18 +178,26 @@ different command name entirely) is found.
 
 ## Not yet done
 
-- Root-causing *why* the curve write doesn't take effect: try a different
-  string format (e.g. swap `duty,temp` order, try `;` or `,` as the
-  pair-list separator instead of `|`, or drop the `FAN_MODE_CUSTOM-`
-  prefix in case the mode is implied by the preceding
-  `com_set_performance_fan` call and the prefix itself breaks parsing).
-- Testing `com_set_fan_speed_is_linear` at all (not exercised in any run).
-- Re-checking `FanSpeedConfig.java`'s exact serialization
-  (`research/ayaspace-teardown/ayasettings_decompiled/sources/com/ayaneo/
-  settings/ui/device/fan/FanSpeedConfig.java`) against what run2/3 sent,
-  in case the point-list format was misread the first time.
+- **Root-causing why the curve write doesn't take effect even with a
+  correctly-prefixed string** (Guess A/B in run4, plus the original
+  format in runs 1-3, all with `FAN_MODE_CUSTOM-` present). The mandatory
+  prefix question is now closed (see run4) — remaining open ideas: find
+  and read `AYAAidlManager.kt`'s `dealMsg` around line 922 directly
+  (would need decompiling `com.ayaneo.gamewindow`'s APK — not yet present
+  on disk anywhere in this repo, unlike `ayasettings_decompiled`) to see
+  exactly how the post-prefix substring is parsed, rather than continuing
+  to guess blindly; or try smaller variations that keep the prefix (e.g.
+  a single-point curve instead of 5, or a different pair separator like
+  `:` or a literal space).
+- Testing `com_set_fan_speed_is_linear` at all (not exercised in any run)
+  — possible via the `custom_command` intent extra without a rebuild, see
+  `README.md`.
 - Confirming whether a `com_set_fan_speed_strategy` write is transient or
   persists into the user's saved settings (flagged as a real risk in the
   original ELI5 before run1 — worth checking AYA's native Fan Settings
   screen to see whether the CUSTOM curve there still shows the user's own
   values, now that we know the write likely isn't landing anyway).
+- **Any further live guessing should stay conservative given run4's
+  crash**: always keep the confirmed-mandatory `FAN_MODE_CUSTOM-` prefix,
+  and treat every new guess as a potential crash until proven otherwise,
+  not just a potential no-op.

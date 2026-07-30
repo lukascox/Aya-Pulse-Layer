@@ -48,10 +48,13 @@ private const val TEST_CURVE = "30,100|50,100|70,100|85,100|95,100"
 // change real fan behavior (6/6 attempts stayed well below the flat-100% curve's expected
 // duty=255, at temps comfortably inside its range -- see FINDINGS.md). These are the next
 // concrete format guesses to try, each still built around the same flat-100% shape so a
-// hit is just as unambiguous as before.
+// hit is just as unambiguous as before. Both keep the "FAN_MODE_CUSTOM-" prefix -- run4
+// proved that part is mandatory: dropping it (a since-removed third guess) crashed
+// com.ayaneo.gamewindow outright (java.lang.IllegalArgumentException: No enum constant
+// ...FAN_MODE.<the whole curve string>, at AYAAidlManager.dealMsg, SettingsUtil.kt:3 /
+// AYAAidlManager.kt:922 -- see FINDINGS.md run4). Never re-add a guess without that prefix.
 private const val GUESS_SWAP_ORDER = "FAN_MODE_CUSTOM-100,30|100,50|100,70|100,85|100,95"
 private const val GUESS_SEMICOLON = "FAN_MODE_CUSTOM-30,100;50,100;70,100;85,100;95,100"
-private const val GUESS_NO_PREFIX = "30,100|50,100|70,100|85,100|95,100"
 
 // Lets any string be tried from adb without a rebuild: this is the exact suffix appended
 // after "msg_type_performance:" -- e.g.
@@ -76,7 +79,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnSendCurve: Button
     private lateinit var btnGuessSwapOrder: Button
     private lateinit var btnGuessSemicolon: Button
-    private lateinit var btnGuessNoPrefix: Button
     private lateinit var btnReadFan: Button
     private val log = StringBuilder()
     private lateinit var localLogFile: File
@@ -135,7 +137,6 @@ class MainActivity : AppCompatActivity() {
         btnSendCurve = findViewById(R.id.btnSendCurve)
         btnGuessSwapOrder = findViewById(R.id.btnGuessSwapOrder)
         btnGuessSemicolon = findViewById(R.id.btnGuessSemicolon)
-        btnGuessNoPrefix = findViewById(R.id.btnGuessNoPrefix)
         btnReadFan = findViewById(R.id.btnReadFan)
         localLogFile = File(filesDir, RESULT_FILE_NAME)
         localLogFile.writeText("")
@@ -156,7 +157,6 @@ class MainActivity : AppCompatActivity() {
         btnSendCurve.setOnClickListener { sendCurveGuess("original (temp,duty | pipe, CUSTOM- prefix)", MODE_CUSTOM + "-" + TEST_CURVE) }
         btnGuessSwapOrder.setOnClickListener { sendCurveGuess("guessA swap-order", GUESS_SWAP_ORDER) }
         btnGuessSemicolon.setOnClickListener { sendCurveGuess("guessB semicolon", GUESS_SEMICOLON) }
-        btnGuessNoPrefix.setOnClickListener { sendCurveGuess("guessC no-prefix", GUESS_NO_PREFIX) }
         btnReadFan.setOnClickListener { Thread { readFanState(tag = "manual") }.start() }
 
         // Baseline read on launch, before anything is touched -- so the very first log
@@ -218,7 +218,6 @@ class MainActivity : AppCompatActivity() {
         btnSendCurve.isEnabled = enabled
         btnGuessSwapOrder.isEnabled = enabled
         btnGuessSemicolon.isEnabled = enabled
-        btnGuessNoPrefix.isEnabled = enabled
         // btnReadFan intentionally NOT gated -- it's a pure xsu read, safe and useful
         // even while disconnected (e.g. to capture a true pre-connection baseline).
     }

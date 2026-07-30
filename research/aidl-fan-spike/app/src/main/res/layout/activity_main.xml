@@ -106,15 +106,6 @@
         android:textSize="11sp"
         android:text="Guess B: semicolon pair separator" />
 
-    <Button
-        android:id="@+id/btnGuessNoPrefix"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:enabled="false"
-        android:textSize="11sp"
-        android:text="Guess C: no FAN_MODE_CUSTOM- prefix" />
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

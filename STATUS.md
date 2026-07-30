@@ -6,9 +6,9 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
-## Fan control via AIDL — runs 1-3 complete (2026-07-29/30): discrete mode CONFIRMED working, curve write CONFIRMED not working
+## Fan control via AIDL — runs 1-4 complete (2026-07-29/30): discrete mode CONFIRMED working, curve write CONFIRMED not working, INCIDENT #4 (crash, device reboot required)
 
-User ran `research/aidl-fan-spike/` three times. Full writeup:
+User ran `research/aidl-fan-spike/` four times. Full writeup:
 `research/aidl-fan-spike/FINDINGS.md`; feature-parity checklist updated in
 `research/pulse-for-aya/README.md`.
 
@@ -23,26 +23,42 @@ claiming success. **This alone is a usable, real feature** — a discrete
 fan-mode toggle in `FanController.kt` is achievable now with high
 confidence, independent of the curve question below.
 
-**Step 2 (`com_set_fan_speed_strategy`, the real curve write) — confirmed
-NOT working, after 6 attempts across runs 2-3.** Run1 (moderate curve, no
-temp logging) was inconclusive: resulting duty (0, then 25 on recheck)
-didn't clearly match the sent curve, and "device was below the curve's
-lowest temp point" couldn't be ruled out. Runs 2-3 fixed both gaps: added
-real SoC temp logging to every read (via `ThermalZones.kt`, ported from
-`ab-logger`), and switched to a deliberately unambiguous test curve —
-100% duty at every defined point, including the lowest (30°C). Result:
-across 6 curve-write attempts, at CPU temps of 38-48°C (always well above
-the curve's 30°C floor, which should force duty≈255 unconditionally if
-applied), **duty never once reached anywhere near 255** — results only
-ever landed on two values (25, 76) already known to belong to other
-states, uncorrelated with the temp trend. Mode-switch to CUSTOM itself
-still confirmed working via callback every time; it's specifically the
-curve *content* that isn't landing. **Next step, not yet done**:
-root-cause why — try a different string-format guess (swap
-`duty,temp` order, different separator, drop the `FAN_MODE_CUSTOM-`
-prefix), re-check `FanSpeedConfig.java`'s exact serialization, or test
-`com_set_fan_speed_is_linear` (not exercised in any run so far). See
-`research/aidl-fan-spike/FINDINGS.md`'s "Not yet done" for the full list.
+**Step 2/3 (`com_set_fan_speed_strategy`, the real curve write) — confirmed
+NOT working for every format tried across 4 runs.** Run1 (moderate curve,
+no temp logging) was inconclusive. Runs 2-3 added real SoC temp logging
+and an unambiguous flat-100%-everywhere test curve: across 6 attempts at
+38-48°C (always above the curve's 30°C floor, which should force
+duty≈255 if applied), duty never once reached near 255. Run4 tried two
+more format guesses (swapped `duty,temp` order, `;` separator) — still no
+effect. Mode-switch to CUSTOM itself remains confirmed working via
+callback every time; specifically the curve *content* never lands.
+
+**INCIDENT #4 — run4's third format guess (dropping the mandatory
+`FAN_MODE_CUSTOM-` prefix) crashed `com.ayaneo.gamewindow` outright, twice,
+and the device needed a full reboot to recover.** Exact cause, from the
+crash stack trace: `AYAAidlManager.dealMsg` (in `AYAAidlManager.kt`)
+splits the strategy string on the first `-` and passes everything before
+it straight to `FAN_MODE.valueOf(...)` with no validation — with no `-`
+present, the whole curve string became the "enum name" and threw an
+uncaught `IllegalArgumentException`, killing the process (which also owns
+the game overlay, notifications, and key-remap service). First crash
+auto-restarted silently; the second identical crash (user re-tapped the
+same guess after reconnect) triggered Android's crash dialog and the
+service didn't fully recover, requiring a manual reboot. Full detail incl.
+stack trace: `research/aidl-fan-spike/FINDINGS.md` run4 section; trimmed
+crash log: `results/run4/gamewindow_crash_excerpt.log`. **The
+crash-triggering guess has been removed from the app** (confirmed
+dead end, not a live hypothesis). This does settle one open question for
+good: the `FAN_MODE_CUSTOM-` prefix is mandatory, confirmed by the
+vendor's own code, not just inferred.
+
+**Next step, not yet done**: root-cause why even correctly-prefixed
+guesses don't change real duty — ideally by decompiling
+`com.ayaneo.gamewindow`'s APK to read `AYAAidlManager.dealMsg` directly
+(not yet on disk anywhere in this repo), rather than continuing to guess
+blindly; any further live guessing must keep the now-confirmed-mandatory
+prefix. See `research/aidl-fan-spike/FINDINGS.md`'s "Not yet done" for
+the full list.
 
 ## Unsupervised session analyzed (2026-07-29): self-kill fix holding, one new kernel-level anomaly found
 

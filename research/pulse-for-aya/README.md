@@ -586,15 +586,18 @@ gap to a real 1:1 port is visible at a glance.
   echoing the exact mode back) — see `research/aidl-fan-spike/FINDINGS.md`.
   **The full curve write (`com_set_fan_speed_strategy`, the actual
   PI-controller/spline-curve replacement) is now a confirmed *negative*
-  result** — after 3 test rounds (6 curve-write attempts with real SoC
-  temp logged), duty never once tracked the sent curve, even with an
-  unambiguous flat-100%-everywhere test curve at temps well above its
-  lowest defined point. The command is likely rejected/ignored rather
-  than applied. Porting upstream's own `FanTempController.kt` (PI
+  result, and one malformed variant crashed `com.ayaneo.gamewindow`
+  outright (device reboot required).** After 4 test rounds (8 curve-write
+  attempts with real SoC temp logged, across 4 different string-format
+  guesses), duty never once tracked a sent curve. One guess (dropping the
+  mandatory `FAN_MODE_CUSTOM-` prefix) hit an unhandled exception in
+  AYA's own message handler and killed the whole `gamewindow` process —
+  confirming the prefix is mandatory, but also a concrete reminder that
+  probing this specific command is not risk-free the way the discrete-mode
+  probing has been. Porting upstream's own `FanTempController.kt` (PI
   controller) /`FanCurve.kt` (spline curve editor) logic to drive this
-  channel isn't viable until that's root-caused or a different
-  invocation is found (see `research/aidl-fan-spike/FINDINGS.md`'s "Not
-  yet done").
+  channel isn't viable until the correctly-formatted case is root-caused
+  (see `research/aidl-fan-spike/FINDINGS.md`'s "Not yet done").
 - **RGB — smaller, same shape of gap.** Upstream's own RGB mechanism
   (`joystick_led_light_picker_color`) is confirmed dead here too, but
   self-gates off safely (no crash, just inert — `RgbController.kt` is
@@ -620,33 +623,41 @@ touches day to day. RGB and the sleep-monitor unknown are real but small
 remaining items, worth closing before calling this a true 1:1 port, not
 before calling it *usable*.
 
-## Fan control via AIDL — runs 1-3 complete (2026-07-29/30): mode switching confirmed, curve write confirmed not working
+## Fan control via AIDL — runs 1-4 complete (2026-07-29/30): mode switching confirmed, curve write confirmed not working, one guess crashed gamewindow
 
 `research/aidl-fan-spike/` (same shape as `research/aidl-bind-spike/`) has
-now been run on-device three times by the user. Result, full detail in
+now been run on-device four times by the user. Result, full detail in
 that project's `FINDINGS.md`:
 
 - **Step 1 (discrete `com_set_performance_fan:<mode>`) — confirmed
   working, strong evidence.** Real PWM duty tracked the requested mode
-  (OFF→0, MUTE→76 perfectly repeatable across all three runs), AND —
+  (OFF→0, MUTE→76 perfectly repeatable across all runs), AND —
   independently — gamewindow's own unsolicited state callback echoed the
   exact mode back, every single send, zero misses. Not a fluke.
-- **Step 2 (`com_set_fan_speed_strategy`, the real curve write) —
-  confirmed *not* working, after 6 attempts across runs 2-3.** Runs 2/3
-  switched to an unambiguous flat-100%-everywhere test curve and started
-  logging real SoC temp on every read. Across 6 curve-write attempts at
-  CPU temps of 38-48°C (comfortably above the curve's lowest 30°C point,
-  which would force duty≈255 if applied), **duty never once reached
-  anywhere near 255** — results only ever landed on two values (25, 76)
-  already known to belong to other states, with no correlation to the
-  rising temp trend. Mode-switch to CUSTOM itself still confirmed working
-  via callback; it's specifically the curve *content* that isn't landing.
+- **Step 2/3 (`com_set_fan_speed_strategy`, the real curve write) —
+  confirmed *not* working, after 8 attempts across runs 2-4 with 4
+  different string-format guesses.** Runs 2/3 switched to an unambiguous
+  flat-100%-everywhere test curve and started logging real SoC temp on
+  every read. Across every attempt, at CPU temps of 38-48°C (comfortably
+  above the curve's lowest 30°C point, which would force duty≈255 if
+  applied), **duty never once reached anywhere near 255**. Mode-switch to
+  CUSTOM itself still confirmed working via callback; it's specifically
+  the curve *content* that isn't landing.
+- **Run4 also produced a real crash**: one format guess (dropping the
+  `FAN_MODE_CUSTOM-` prefix) hit an unvalidated `FAN_MODE.valueOf(...)`
+  call in AYA's own `AYAAidlManager.dealMsg` and threw an uncaught
+  exception, killing `com.ayaneo.gamewindow` twice and requiring a device
+  reboot to fully recover. This does confirm the prefix is mandatory
+  (not just inferred), but is also a concrete data point that this
+  specific command is not as low-risk to probe as discrete mode-switching
+  has been — see `research/aidl-fan-spike/FINDINGS.md`'s run4 section.
 
 **Practical upshot**: a real, usable discrete fan-mode toggle for
 `FanController.kt` is achievable today with high confidence. The full
 PI-controller/spline-curve replacement (the actual upstream-parity goal)
-is blocked until the curve-write path is root-caused (wrong string
-format vs. not wired to real PWM on this firmware) — see
+is blocked until the curve-write path is root-caused, and any further
+live probing of it should stay conservative (always keep the confirmed
+prefix) — see
 `research/aidl-fan-spike/FINDINGS.md`'s "Not yet done" for the next
 things to try.
 
