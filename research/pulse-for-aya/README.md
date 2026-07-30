@@ -572,35 +572,21 @@ gap to a real 1:1 port is visible at a glance.
   doubt they work; not yet independently exercised in a dedicated test
   pass.
 
+**Confirmed working, built this session (2026-07-30):**
+- **Fan control — both mechanisms now implemented and wired.** Custom fan
+  curve (PI/spline, `FanCurveController` routed through `PulseDaemon`'s
+  FIFO) confirmed live on real hardware under real thermal load — see
+  "Fan curve implementation plan" below. Discrete vendor mode
+  (Silent/Smart/Sport) now drives the real AIDL mechanism
+  (`com_set_performance_fan`, proven two independent ways — real PWM duty
+  tracking the requested mode, and the vendor's own unsolicited state
+  callback echoing it back) instead of the dead Odin `Settings.System
+  fan_mode` key — see "Discrete fan mode implementation plan" below.
+  `FAN_MODE_OFF` (a 4th mode with no slot in the current 3-mode UI) is the
+  one deliberately excluded piece, not a gap. Not yet independently
+  listen-tested on-device.
+
 **Confirmed a real, currently unaddressed gap:**
-- **Fan control — the big one, discrete mode done, curve control path
-  found and confirmed working (2026-07-30), implementation not yet
-  built.** `FanController.kt` is still fully stubbed in code
-  (`setMode()` always `false`, `customFanAvailable()` always `false`) —
-  upstream's two fan mechanisms (`gpio5_pwm2` PWM, `Settings.System
-  fan_mode`) are confirmed dead on this device
-  (`pulse-glue-assessment/FINDINGS.md`). **Discrete fan-mode control
-  (OFF/MUTE/BALANCE/TURBO) is confirmed working live, no root** —
-  `com_set_performance_fan` over the same no-root AIDL channel already
-  proven for performance-mode switching, verified two independent ways
-  (real PWM duty changes, AND the vendor's own unsolicited state callback
-  echoing the exact mode back) — see `research/aidl-fan-spike/FINDINGS.md`.
-  **The full curve write: AIDL is a confirmed dead end, but raw sysfs is
-  confirmed working.** `com_set_fan_speed_strategy` is genuine dead code
-  (proven by reading the dispatch bytecode,
-  `research/aya-gamewindows-teardown/FINDINGS.md` section 9; one
-  crash-triggering guess required a device reboot, INCIDENT #4,
-  `STATUS.md`), but the plain `hwmon0/pwm1`/`fan_power_state` sysfs write
-  works once unlocked with the same `chmod 666` pattern this fork already
-  uses for CPU/GPU (`PerformanceCommandBuilder.kt`) — live, audible,
-  RPM-confirmed (2961→4780). **This means a real
-  PI-controller/spline-curve port (`FanCurve.kt`/`FanTempController.kt`,
-  which are pure math models with no I/O of their own and are portable
-  as-is) is achievable on this device.** The vendor daemon's reassert
-  cadence (does it fight a sustained controller?) was measured precisely
-  (17 samples, 1-112s range, ~10s reassert loop preempts it 94% of the
-  time) — no open questions remain. **Ready to build**, not yet started.
-  See `research/aidl-fan-spike/FINDINGS.md` for the full trail.
 - **RGB — smaller, same shape of gap.** Upstream's own RGB mechanism
   (`joystick_led_light_picker_color`) is confirmed dead here too, but
   self-gates off safely (no crash, just inert — `RgbController.kt` is
@@ -619,12 +605,13 @@ gap to a real 1:1 port is visible at a glance.
   comparisons exist scattered through `STATUS.md`'s per-app testing
   entries, but nothing structured).
 
-**Bottom line**: fan control is the last *big* piece — closing it gets
-AutoTDP + manual control + profiles + telemetry + fan all genuinely
-working, which is the overwhelming majority of what a user actually
-touches day to day. RGB and the sleep-monitor unknown are real but small
-remaining items, worth closing before calling this a true 1:1 port, not
-before calling it *usable*.
+**Bottom line**: fan control — the last *big* piece — is now built and
+wired (curve confirmed live, discrete mode implemented, pending its own
+on-device listen-test). AutoTDP + manual control + profiles + telemetry +
+fan are all genuinely working, which is the overwhelming majority of what
+a user actually touches day to day. RGB and the sleep-monitor unknown are
+real but small remaining items, worth closing before calling this a true
+1:1 port, not before calling it *usable*.
 
 ## Fan control — discrete mode CLOSED (works), curve control UNBLOCKED (2026-07-29/30): AIDL is dead, raw sysfs works
 
@@ -811,7 +798,74 @@ effectively inert on this device) — wiring the discrete AIDL command is a
 separate, smaller, already-de-risked follow-up
 (`aidl-fan-spike/FINDINGS.md`'s Step 1), not bundled into this curve work
 to keep this change reviewable and scoped to what was actually
-investigated this session.
+investigated this session. **Update (2026-07-30, same day): implemented —
+see "Discrete fan mode implementation plan" below.**
+
+## Discrete fan mode implementation plan (2026-07-30) — IMPLEMENTED
+
+The one remaining fan gap after the curve work above. Re-checked before
+starting whether this needed more research (re-read `aidl-fan-spike/
+FINDINGS.md`, `pulse-glue-assessment/FINDINGS.md`, and the last 6 commits)
+— **it didn't**: `com_set_performance_fan` was already proven working
+(Step 1, two independent signals — real PWM duty tracking the requested
+mode, and the vendor's own unsolicited state callback echoing it back),
+and `AyaAidlClient.sendFanMode(mode: String)` already existed and worked,
+just unused outside `MainActivity`'s debug-only bind-verification harness.
+Tracing every `fanController.setMode(...)` call site (`FanArbiter.decide`
+already returns `SetVendorMode`/`ReleaseToVendor` for non-Custom modes,
+and `ForegroundAppMonitorService`/`TunerViewModel` already call
+`setMode()` at ~10 sites — AutoTDP start/stop, arbiter dispatch, per-app
+profile apply, snapshot restore, revert-to-stock, the Tuner UI's mode
+picker) confirmed the **entire decision/dispatch architecture was already
+built and correctly wired for this** — `setMode()`'s stubbed `false`
+return was the only real gap. This was a normal, scoped implementation
+task, not a research question.
+
+**Concrete changes:**
+1. **`FanController.kt`** — added `aidlModeFor(mode): String?` (companion,
+   unit-tested): `SILENT`→`FAN_MODE_MUTE`, `SMART`→`FAN_MODE_BALANCE`,
+   `SPORT`→`FAN_MODE_TURBO`, `CUSTOM`/unknown→`null` (Custom never goes
+   through AIDL — the service drives the PWM curve directly).
+   `setMode(mode: Int, aidlClient: AyaAidlClient? = null): Boolean` now
+   calls `aidlClient.sendFanMode(aidlModeFor(mode))` and returns the real
+   result, instead of always `false`. `readMode()` is unchanged (still
+   reads the dead Odin `Settings.System` key — no AIDL equivalent read
+   exists; the UI's `_fanMode` state is set directly from the mode just
+   requested, not read back, same as the curve work already relies on).
+2. **`ForegroundAppMonitorService.kt`** — added its own
+   `AyaAidlClient(this)` (`ayaAidlClient by lazy`, same shape as
+   `pulseDaemon`), bound once in `onCreate()` (async, non-blocking — a
+   `setMode()` landing before the bind callback fires just reports
+   "didn't happen," logged, no readiness gate needed), unbound in
+   `onDestroy()`. All 10 existing `fanController.setMode(...)` call sites
+   now pass `ayaAidlClient` through — no other logic changed.
+3. **`TunerViewModel.kt`** — this is where the user actually picks a mode
+   (the Tuner screen), and it runs its **own independent** `FanController`
+   instance with no channel to the service — so it needs its **own**
+   `AyaAidlClient` too. Added a `context: Context` constructor param
+   (stored as `context.applicationContext`, threaded through `factory()`
+   and both call sites — `MainActivity.kt`, `TileControlActivity.kt`),
+   bound in `init {}`, unbound in `onCleared()`. Two independent AIDL
+   binds to the same vendor service (one in the service, one in the
+   ViewModel) is normal multi-client Binder usage, not a conflict — each
+   is just a message-send channel, not an exclusive lock.
+4. **Toast message reverted to a real pass/fail** (`setFanMode()`): the
+   "(vendor default — direct switching not yet available)" wording added
+   earlier the same day (when `setMode()` was still a stub) is no longer
+   accurate now that it does something real — back to a plain "Fan set to
+   X" / "Couldn't change fan mode". Custom keeps its unconditional "Fan
+   set to Custom" (it never goes through AIDL, always succeeds).
+5. **Deliberately excluded**: `FAN_MODE_OFF` (fan fully off) has no slot
+   in the existing 3-mode UI (Silent/Smart/Sport) — left out of this pass
+   by explicit decision, not an oversight; would be a small, separate
+   follow-up if ever wanted.
+
+**Not yet done**: on-device verification. `FAN_MODE_OFF`/`MUTE` have
+clean, repeatable duty readings from `aidl-fan-spike` testing (0 and 76);
+`BALANCE`/`TURBO` tracked noisier there (real thermal load at the time,
+not necessarily a mapping problem) — worth a quick listen-test per mode
+before trusting the Silent/Smart/Sport labels blindly. See the test
+procedure this hands off to the user.
 
 ## Build / install
 

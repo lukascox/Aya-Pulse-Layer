@@ -1,5 +1,6 @@
 package com.kei.pulse.data
 
+import com.kei.pulse.aidl.AyaAidlClient
 import com.kei.pulse.root.PulseDaemon
 import com.kei.pulse.root.RootSupport
 
@@ -8,11 +9,12 @@ import com.kei.pulse.root.RootSupport
  *
  * 1. **Discrete vendor mode** (Silent/Smart/Sport) — upstream wrote this via the AYN Odin's
  *    `Settings.System fan_mode` key (`com.odin.settings` reads it). That key does not exist on
- *    AYANEO hardware (`pulse-glue-assessment/FINDINGS.md`) — [setMode]/[readMode] are left
- *    stubbed/inert here (they still target the dead key rather than being rewired) since the real
- *    AYANEO discrete-mode mechanism is a proven-working AIDL command
- *    (`com_set_performance_fan`, `research/aidl-fan-spike/FINDINGS.md` Step 1) that is a separate,
- *    smaller follow-up, not bundled into the curve work below.
+ *    AYANEO hardware (`pulse-glue-assessment/FINDINGS.md`), so [readMode] still targets it as-is
+ *    (dead, harmless read) — but [setMode] now drives the real AYANEO mechanism instead: the
+ *    proven-working AIDL command `com_set_performance_fan` (`research/aidl-fan-spike/FINDINGS.md`
+ *    Step 1), via an injected [AyaAidlClient] (see [aidlModeFor] for the mode-int → AIDL-string
+ *    mapping). Implemented 2026-07-30 — `research/pulse-for-aya/README.md`'s "Discrete fan mode
+ *    implementation plan" section has the full design.
  * 2. **Custom fan curve** (the actual upstream-parity goal, [FanCurveController]) — upstream wrote
  *    raw PWM duty to the Odin's `gpio5_pwm2` node (also absent on AYANEO). AYANEO's real duty node
  *    is [FAN_DUTY_PATH] below, confirmed live 2026-07-30 (`research/aidl-fan-spike/FINDINGS.md`):
@@ -54,9 +56,18 @@ class FanController {
         return true
     }
 
-    /** Stubbed no-op -- the vendor `fan_mode` key this would write is dead on AYANEO (see class doc);
-     *  the real discrete-mode mechanism (AIDL) is a separate, not-yet-wired follow-up. */
-    fun setMode(mode: Int): Boolean = false
+    /**
+     * Drives the real AYANEO discrete-mode mechanism (see class doc): [aidlModeFor] maps [mode] to an
+     * AIDL `FAN_MODE_*` string, sent via [aidlClient]. Returns `false` (no write attempted) when [mode]
+     * has no AIDL equivalent (CUSTOM -- the service drives that directly, never through here) or when
+     * [aidlClient] is `null`/not yet bound (the bind handshake is async; a call landing before it
+     * completes just reports "didn't happen", same as any other transient AIDL failure).
+     */
+    fun setMode(mode: Int, aidlClient: AyaAidlClient? = null): Boolean {
+        val aidlMode = aidlModeFor(mode) ?: return false
+        val client = aidlClient ?: return false
+        return client.sendFanMode(aidlMode).isSuccess
+    }
 
     companion object {
         /** Smart is the confirmed stock default and the safe fallback. */
@@ -101,6 +112,22 @@ class FanController {
 
         fun labelFor(mode: Int?): String =
             MODES.firstOrNull { it.value == mode }?.label ?: mode?.let { "Mode $it" } ?: "—"
+
+        /**
+         * [SILENT]/[SMART]/[SPORT] → the AIDL `FAN_MODE_*` string `com_set_performance_fan` expects
+         * (`AyaAidlClient.sendFanMode`, confirmed working `research/aidl-fan-spike/FINDINGS.md` Step 1).
+         * [CUSTOM] and any unrecognized mode return `null` -- Custom never goes through AIDL (the service
+         * drives the PWM curve directly). `FAN_MODE_MUTE`/`BALANCE`/`TURBO` are named for loudness, not
+         * 1:1 confirmed against our Silent/Smart/Sport labels beyond OFF/MUTE's clean duty readback (0/76)
+         * -- BALANCE/TURBO tracked noisier in testing (real thermal load, not a mapping error) -- worth a
+         * quick listen-test per mode once live (`README.md`'s implementation plan, test procedure).
+         */
+        fun aidlModeFor(mode: Int): String? = when (mode) {
+            SILENT -> "FAN_MODE_MUTE"
+            SMART -> "FAN_MODE_BALANCE"
+            SPORT -> "FAN_MODE_TURBO"
+            else -> null
+        }
 
         /**
          * Real probe (2026-07-30): available iff [FAN_DUTY_PATH] exists and reads as a plain integer.

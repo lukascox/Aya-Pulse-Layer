@@ -24,6 +24,7 @@ import androidx.core.content.getSystemService
 import com.kei.pulse.AppContainer
 import com.kei.pulse.MainActivity
 import com.kei.pulse.R
+import com.kei.pulse.aidl.AyaAidlClient
 import com.kei.pulse.data.AutoTuneController
 import com.kei.pulse.data.FanController
 import com.kei.pulse.data.FanCurveController
@@ -117,6 +118,13 @@ class ForegroundAppMonitorService : Service() {
     // process blocked on its FIFO read; harmless (near-zero CPU/memory, no further xsu calls) but
     // not yet actively cleaned up -- known limitation, not yet worth the extra machinery.
     private val pulseDaemon by lazy { PulseDaemon(this) }
+    // Discrete fan mode (2026-07-30): the only AIDL-reachable mechanism for Silent/Smart/Sport
+    // (`FanController.setMode`'s doc, `research/aidl-fan-spike/FINDINGS.md`). Bound once in
+    // onCreate(), unbound in onDestroy() -- same lifetime shape as pulseDaemon above, but this is a
+    // separate independent bind from TunerViewModel's own AyaAidlClient (the ViewModel has no
+    // channel to this service and already runs its own FanController instance; two simultaneous
+    // AIDL clients to the same vendor service is normal multi-client Binder usage, not a conflict).
+    private val ayaAidlClient by lazy { AyaAidlClient(this) }
     private val telemetryReader = TelemetryReader()
     private val fpsReader by lazy { FpsReader(this) }
     private val overlay by lazy { PerformanceOverlay(this) }
@@ -601,6 +609,11 @@ class ForegroundAppMonitorService : Service() {
             },
         )
         serviceScope.launch { pulseDaemon.start() }
+        // Bind once for the service's whole lifetime (mirrors pulseDaemon above) -- async, non-blocking;
+        // a setMode() call landing before the callback fires just reports "didn't happen" (see
+        // FanController.setMode's doc), same as any other transient AIDL failure, so no readiness gate
+        // is needed here beyond logging the outcome.
+        ayaAidlClient.bind { result -> android.util.Log.d("PulseFan", "fan AIDL client: $result") }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -644,9 +657,10 @@ class ForegroundAppMonitorService : Service() {
         // Safety net: if Custom was driving (vendor left in manual passthrough), hand the fan back to the Smart
         // auto-curve off-main so a teardown can't strand it in manual mode with no vendor thermal regulation.
         if (customFanRunning) {
-            Thread { runCatching { fanController.setMode(FanController.SMART) } }.start()
+            Thread { runCatching { fanController.setMode(FanController.SMART, ayaAidlClient) } }.start()
         }
         Thread { runCatching { pulseDaemon.stop() } }.start()
+        Thread { runCatching { ayaAidlClient.unbind() } }.start()
         serviceScope.cancel()
         super.onDestroy()
     }
@@ -943,7 +957,7 @@ class ForegroundAppMonitorService : Service() {
                 } else if (fanController.readMode() != FanController.SMART) {
                     // Fresh/idle and the fan is NOT on Smart (e.g. a stranded fan_mode=6 from a prior kill) —
                     // restore Smart so the fan is quiet and vendor-regulated.
-                    serviceScope.launch(Dispatchers.IO) { fanController.setMode(FanController.SMART) }
+                    serviceScope.launch(Dispatchers.IO) { fanController.setMode(FanController.SMART, ayaAidlClient) }
                 }
                 lastManagedFan = FanController.SMART
                 fanLog("CUSTOM idle → vendor Smart (target=$targetPercent floor=${FanCurve.MIN_PERCENT} temp=${sm.roundToInt()} idle=${customFanGate.idleTicks})")
@@ -998,14 +1012,14 @@ class ForegroundAppMonitorService : Service() {
                 // If the node vanished at runtime, never sit on a phantom Custom mode — fall back to Smart.
                 if (!runCustomFan(settings)) {
                     stopCustomFan()
-                    fanController.setMode(FanController.SMART)
+                    fanController.setMode(FanController.SMART, ayaAidlClient)
                 }
             }
             is FanAction.SetVendorMode -> {
                 stopCustomFan()
                 if (action.mode != lastManagedFan) { lastManagedFan = action.mode; fanOverrideNotified = false } // re-arm on change
                 android.util.Log.d("PulseFan", "fan_mode drifted, want=${action.mode} — re-applying")
-                fanController.setMode(action.mode)
+                fanController.setMode(action.mode, ayaAidlClient)
                 if (!fanOverrideNotified && container.perAppConfigStorage.switchNotices.first()) {
                     fanOverrideNotified = true
                     showToast("PULSE · system Fan tile changed the fan — re-applied ${FanController.labelFor(action.mode)}")
@@ -1018,7 +1032,7 @@ class ForegroundAppMonitorService : Service() {
                 lastManagedFan = null
                 fanReleasedToVendor = true
                 android.util.Log.d("PulseFan", "release edge — normalizing fan to ${FanController.labelFor(action.mode)}")
-                fanController.setMode(action.mode)
+                fanController.setMode(action.mode, ayaAidlClient)
             }
             FanAction.None -> {
                 // Held / AutoTDP-owns / latched / unreadable: make sure no stale Custom loop keeps driving the
@@ -1097,7 +1111,7 @@ class ForegroundAppMonitorService : Service() {
             fanTempController.reset() // clear the PI integral so a new session starts clean
             smoothedFanTempC = null // re-seed the temp EMA on the next Custom session
             if (restoreVendor) {
-                serviceScope.launch(Dispatchers.IO) { fanController.setMode(FanController.SMART) }
+                serviceScope.launch(Dispatchers.IO) { fanController.setMode(FanController.SMART, ayaAidlClient) }
             }
         }
     }
@@ -1516,7 +1530,7 @@ class ForegroundAppMonitorService : Service() {
         autoTdpTick = 0
         // Fan: force vendor Smart UNLESS the user runs the Custom fan — then reassertManagedFan keeps driving
         // their (quieter) closed-loop Custom fan during AutoTDP instead.
-        if (settings.managedFanMode != FanController.CUSTOM) fanController.setMode(FanController.SMART)
+        if (settings.managedFanMode != FanController.CUSTOM) fanController.setMode(FanController.SMART, ayaAidlClient)
         setAutoTdpGovernorBalanced(policies)
         overlayProfileLabel = "AutoTDP"
         // Only announce explicit per-app AutoTDP bindings — the global default would spam on every
@@ -1968,7 +1982,7 @@ class ForegroundAppMonitorService : Service() {
                 }
         }
         config.fanMode?.let { mode ->
-            fanController.setMode(mode)
+            fanController.setMode(mode, ayaAidlClient)
             parts += "Fan ${FanController.labelFor(mode)}"
         }
         config.refreshRateHz?.let { hz ->
@@ -1994,7 +2008,7 @@ class ForegroundAppMonitorService : Service() {
         clearBoundReassert() // Bug 9: release any held Custom/tier cap locks (incl. the prime scaling_min) to stock
         // Uncap the CPU/GPU clocks to the stock profile (full freq + stock writability handed back to the HAL).
         container.repository.applyDisplayProfileById(ProfileStateResolver.STOCK_PROFILE_ID)
-        fanController.setMode(FanController.SMART) // Smart = the confirmed factory-default fan mode
+        fanController.setMode(FanController.SMART, ayaAidlClient) // Smart = the confirmed factory-default fan mode
         container.settingsStorage.persistManagedFanMode(null) // PULSE releases the fan — the system Fan tile owns it again
         // Restore the durable settings that survive a reboot (fan handled above) to the user's pre-PULSE values.
         container.perAppConfigStorage.restoreState.first()?.let { restore ->
@@ -2016,7 +2030,7 @@ class ForegroundAppMonitorService : Service() {
             container.repository.applyRawValues(restore.values, restore.appliedDisplayProfileId)
         }
         restore.activeTierLabel?.let { container.settingsStorage.persistActiveTierLabel(it) }
-        restore.fanMode?.let { fanController.setMode(it) }
+        restore.fanMode?.let { fanController.setMode(it, ayaAidlClient) }
         restore.refreshRateHz?.let { refreshRateController.setRate(it) }
         // Restore the CPU governor AutoTDP replaced with Balanced (captured pre-game).
         restore.governor?.let { governorController.setGovernorRaw(ensurePolicies(), it) }

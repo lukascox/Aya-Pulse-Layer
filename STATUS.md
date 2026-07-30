@@ -6,6 +6,27 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## Discrete fan mode (Silent/Smart/Sport) IMPLEMENTED (2026-07-30) — the deferred follow-up from the curve work, same day
+
+No new research needed — re-checked `aidl-fan-spike/FINDINGS.md`,
+`pulse-glue-assessment/FINDINGS.md`, and recent commits first and
+confirmed everything required was already proven: `com_set_performance_fan`
+(AIDL) was already confirmed working, `AyaAidlClient.sendFanMode()`
+already existed (just unused outside a debug harness), and
+`FanArbiter`/`ForegroundAppMonitorService`/`TunerViewModel` already had
+~10 call sites dispatching to `FanController.setMode()` — the stubbed
+`false` return was the only real gap. `setMode()` now calls
+`sendFanMode(aidlModeFor(mode))` for real
+(`SILENT`→`FAN_MODE_MUTE`/`SMART`→`FAN_MODE_BALANCE`/`SPORT`→`FAN_MODE_TURBO`).
+Both the service and `TunerViewModel` (which runs its own independent
+`FanController`, no channel to the service) now bind their own
+`AyaAidlClient`. The earlier "(vendor default — direct switching not yet
+available)" toast wording is reverted to a plain pass/fail. `FAN_MODE_OFF`
+deliberately excluded (no slot in the 3-mode UI). Build/test/lint clean.
+**Not yet on-device tested** — full plan and diff summary:
+`research/pulse-for-aya/README.md`'s "Discrete fan mode implementation
+plan" section.
+
 ## Fan curve controller BUILT and CONFIRMED LIVE (2026-07-30) — the whole fan-control gap is now closed
 
 Same day as the reassert-cadence measurement below: found the existing

@@ -42,6 +42,28 @@ class FanControllerTest {
 }
 
 /**
+ * [FanController.aidlModeFor] maps Silent/Smart/Sport to the AIDL `FAN_MODE_*` strings
+ * `com_set_performance_fan` expects (`research/aidl-fan-spike/FINDINGS.md` Step 1). Custom and any
+ * unrecognized mode must return `null` -- Custom never goes through AIDL, [FanController.setMode]
+ * relies on that to skip the AIDL call entirely for it.
+ */
+class FanControllerAidlModeForTest {
+
+    @Test
+    fun mapsTheThreeStockModes() {
+        assertEquals("FAN_MODE_MUTE", FanController.aidlModeFor(FanController.SILENT))
+        assertEquals("FAN_MODE_BALANCE", FanController.aidlModeFor(FanController.SMART))
+        assertEquals("FAN_MODE_TURBO", FanController.aidlModeFor(FanController.SPORT))
+    }
+
+    @Test
+    fun customAndUnknownModesReturnNull() {
+        assertNull(FanController.aidlModeFor(FanController.CUSTOM))
+        assertNull(FanController.aidlModeFor(999))
+    }
+}
+
+/**
  * AYANEO's `fan_rpm_state` node reads back `"Current RPM 2666"`, not a bare number like the Odin's tach --
  * confirmed live 2026-07-30 (`research/aidl-fan-spike/results/run5/`). Locks down the parse.
  */

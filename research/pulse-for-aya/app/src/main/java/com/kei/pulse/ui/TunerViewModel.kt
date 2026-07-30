@@ -1,8 +1,10 @@
 package com.kei.pulse.ui
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.kei.pulse.aidl.AyaAidlClient
 import com.kei.pulse.data.DisplayController
 import com.kei.pulse.data.GovernorController
 import com.kei.pulse.data.GovernorOption
@@ -49,6 +51,7 @@ import kotlinx.coroutines.withContext
 import kotlin.math.abs
 
 class TunerViewModel(
+    context: Context,
     private val repository: PerformanceRepository,
     private val settingsStorage: SettingsStorage,
     private val perAppConfigStorage: PerAppConfigStorage? = null,
@@ -57,6 +60,22 @@ class TunerViewModel(
     private val edits = MutableStateFlow<Map<Int, Int>>(emptyMap())
     private val transientMessage = MutableStateFlow<String?>(null)
     private val transientError = MutableStateFlow<String?>(null)
+
+    // Discrete fan mode (2026-07-30): its own bind, independent of ForegroundAppMonitorService's --
+    // the ViewModel has no channel to the service and already runs its own FanController instance
+    // (below); two simultaneous AIDL clients to the same vendor service is normal multi-client
+    // Binder usage. Bound in init, unbound in onCleared(). application context avoids leaking the
+    // hosting Activity across the bind's async lifetime.
+    private val aidlClient = AyaAidlClient(context.applicationContext)
+
+    init {
+        aidlClient.bind { result -> android.util.Log.d("PulseFan", "Tuner fan AIDL client: $result") }
+    }
+
+    override fun onCleared() {
+        aidlClient.unbind()
+        super.onCleared()
+    }
 
     val state: StateFlow<TunerState> = combine(
         repository.observeState(),
@@ -702,9 +721,15 @@ class TunerViewModel(
 
     fun setFanMode(mode: Int, onSaved: () -> Unit = {}) {
         viewModelScope.launch {
-            val ok = withContext(Dispatchers.IO) { fanController.setMode(mode) }
-            // Custom drives the PWM curve and never writes a vendor fan_mode, so reflect the chosen mode
-            // directly — reading back the live value would still show Smart/etc. and the chip wouldn't stick.
+            // Custom drives the PWM curve directly (the service owns that loop) and never goes through AIDL --
+            // setMode() only has a real mapping for Silent/Smart/Sport (FanController.aidlModeFor).
+            val ok = if (mode == FanController.CUSTOM) {
+                true
+            } else {
+                withContext(Dispatchers.IO) { fanController.setMode(mode, aidlClient) }
+            }
+            // Custom never writes a vendor fan_mode, so reflect the chosen mode directly -- reading back the
+            // live value would still show Smart/etc. and the chip wouldn't stick.
             _fanMode.value = if (mode == FanController.CUSTOM) {
                 mode
             } else {
@@ -713,18 +738,12 @@ class TunerViewModel(
             // Remember it so the watcher re-asserts it against the system Fan tile; onSaved starts that watcher.
             settingsStorage.persistManagedFanMode(mode)
             onSaved()
-            // FanController.setMode() always returns false on AYANEO today (it targets a Settings key that
-            // only exists on the AYN Odin -- see FanController's class doc) -- that's expected, documented
-            // behavior, not a failure, so `ok` alone isn't a useful signal here. Custom mode doesn't go
-            // through setMode() at all (the service drives it directly), so it always genuinely succeeds.
-            // Any OTHER mode really does just hand the fan to whatever the vendor does by default (PULSE
-            // stops driving, nothing explicitly requests Smart/Silent/Sport) -- say so plainly instead of
-            // reporting a scary "failed" that isn't accurate to what actually happened (2026-07-30: this
-            // surfaced as a confusing error the first time a real user tried Custom -> Smart mid-session).
-            transientMessage.value = when {
-                mode == FanController.CUSTOM -> "Fan set to Custom"
-                ok -> "Fan set to ${FanController.labelFor(mode)}"
-                else -> "Fan set to ${FanController.labelFor(mode)} (vendor default — direct switching not yet available)"
+            transientMessage.value = if (mode == FanController.CUSTOM) {
+                "Fan set to Custom"
+            } else if (ok) {
+                "Fan set to ${FanController.labelFor(mode)}"
+            } else {
+                "Couldn't change fan mode"
             }
             transientError.value = null
         }
@@ -1298,6 +1317,7 @@ class TunerViewModel(
         private const val FAN_CALIBRATION_SETTLE_MS = 1_500L
 
         fun factory(
+            context: Context,
             repository: PerformanceRepository,
             settingsStorage: SettingsStorage,
             perAppConfigStorage: PerAppConfigStorage? = null,
@@ -1305,7 +1325,7 @@ class TunerViewModel(
             return object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return TunerViewModel(repository, settingsStorage, perAppConfigStorage) as T
+                    return TunerViewModel(context, repository, settingsStorage, perAppConfigStorage) as T
                 }
             }
         }

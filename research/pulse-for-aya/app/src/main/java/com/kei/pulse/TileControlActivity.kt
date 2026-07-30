@@ -36,6 +36,7 @@ class TileControlActivity : ComponentActivity() {
     private val container by lazy { AppContainer(this) }
     private val viewModel by viewModels<TunerViewModel> {
         TunerViewModel.factory(
+            context = applicationContext,
             repository = container.repository,
             settingsStorage = container.settingsStorage,
         )
