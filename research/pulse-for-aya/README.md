@@ -685,9 +685,107 @@ files are pure math/state models with no I/O of their own
 (`pulse-glue-assessment/FINDINGS.md`), so they're portable as-is; the
 remaining work is a device-specific I/O layer (chmod-unlock + ~10s
 reassert loop writing to `hwmon0/pwm1`/`fan_power_state`). **No open
-questions remain — ready to design and build.** Not yet started, deferred
-to a later session per the user's request. See
-`research/aidl-fan-spike/FINDINGS.md` for the complete trail.
+questions remain — ready to design and build.** Implemented 2026-07-30,
+see "Fan curve implementation plan" below.
+
+## Fan curve implementation plan (2026-07-30) — IMPLEMENTED
+
+Before writing code, the existing (currently Odin-only, unreachable on
+this fork since `customFanAvailable()` is hardcoded `false`) fan-curve
+stack was read in full:
+`data/FanController.kt`, `data/FanCurveController.kt`,
+`model/FanCurve.kt`, `model/FanTempController.kt`, `model/FanArbiter.kt`,
+`appwatch/ForegroundAppMonitorService.kt`'s `runCustomFan`/
+`reassertManagedFan`/`ensureFanReassertLoop`, `ui/TunerViewModel.kt`'s
+autocalibrate sweep. **Finding: this is already a complete, mature
+control system — slew-based smooth ramping, drift-reconcile against a
+vendor daemon that steals the duty node, a closed-loop PI temp-hold mode,
+a monotone-cubic curve spline, thermal-override safety, sleep hand-off,
+per-app fan binding, all with existing unit tests
+(`FanArbiterTest` and friends).** It was written generically (against the
+Odin's `gpio5_pwm2` PWM node) and is 100% reusable — nothing about the
+control logic is Odin-specific. The only Odin-specific things are: the
+sysfs paths, the duty scale (Odin's `period` register vs AYANEO's fixed
+0-255 PWM), and the fact Odin's node needs no chmod-unlock. **This is a
+device-I/O-layer swap, not new architecture** — same "glue, not rewrite"
+shape as the rest of this fork.
+
+**One important correction to earlier framing in this doc/`STATUS.md`**:
+the "build a new ~10s reassert loop" idea from the cadence-measurement
+session was based on not yet having read `ensureFanReassertLoop` — it
+already re-checks the live duty every **120ms** (`FAN_RECHECK_MS`, tuned
+for the Odin's faster/game-transition-triggered re-pinning), which is
+*more* than enough margin over AYANEO's measured 1-112s reassert window
+(`research/aidl-fan-spike/FINDINGS.md`). No new loop needed — the
+existing one already over-satisfies the requirement, once its I/O is
+safe to call that often.
+
+**That "safe to call that often" part is the real design point.** The
+existing loop's device I/O (`FanCurveController.writeDutyToDevice`/
+`readDutyFromDevice`/`readRpmFromDevice`) defaults to raw
+`RootSupport.runRootCommand` — a fresh `xsu` connection every single 120ms
+tick while Custom fan is active. That's exactly the "one `xsu` connection
+per operation, sustained at high frequency" pattern this whole project's
+`PulseDaemon` FIFO architecture was built to eliminate (`STATUS.md`'s
+self-kill/`xsud`-crash investigation). **Routing this through the FIFO
+daemon (already used for CPU/GPU caps and telemetry) is the one real
+change** — everything else is filling in AYANEO's actual paths.
+
+**Concrete changes made:**
+1. **`FanController.kt`** — `FAN_DUTY_PATH`/`FAN_SPEED_PATH` repointed to
+   AYANEO's confirmed sysfs paths (`hwmon0/pwm1`, `fan_rpm_state`); added
+   `FAN_POWER_PATH` (`fan_power_state`, no Odin equivalent — AYANEO needs
+   this written to `1` before duty responds, per `AR13.n1()`,
+   `aya-gamewindows-teardown/FINDINGS.md` section 6); dropped
+   `FAN_PERIOD_PATH` (no AYANEO period node — the duty scale is a fixed
+   0-255, not device-read). `customFanAvailable()` is now a real probe
+   (reads the duty node, available iff it parses) instead of hardcoded
+   `false`. Added `parseRpm()` for AYANEO's `"Current RPM 2666"` read
+   format (Odin's tach path returns a bare number). `ensureManualMode()`
+   now writes `fan_power_state=1` (idempotent, cheap even every tick)
+   instead of Odin's `Settings.System fan_mode=6` dance — AYANEO has no
+   equivalent "enter manual mode" handshake (confirmed: sending
+   `FAN_MODE_CUSTOM` via AIDL first made no measurable difference to the
+   reassert cadence, `aidl-fan-spike/FINDINGS.md`), so there's nothing to
+   negotiate, just the power-state prerequisite.
+2. **`FanCurveController.kt`** — `DEFAULT_PERIOD` changed from Odin's
+   `50000` to AYANEO's `255`; `readPeriodFromDevice()` now always returns
+   `null` (falls through to `DEFAULT_PERIOD`) since there's no period
+   node to read. Added daemon-aware overloads of `writeDutyToDevice`/
+   `readRpmFromDevice`/`readDutyFromDevice` (taking an optional
+   `PulseDaemon?`) that try `PulseDaemon.setCap`/`readBatch` first and
+   fall back to the original raw-`xsu` versions — **zero changes to
+   `pulse_daemon.sh`'s protocol**, since `setCap(path, mode, value)` and
+   `readBatch(paths)` are already fully generic (the same verbs CPU/GPU
+   caps and telemetry already use). The original no-daemon versions are
+   untouched (still the constructor defaults and still what
+   `TunerViewModel`'s one-shot autocalibrate sweep uses — a one-shot
+   manual action doesn't need the daemon).
+3. **`ForegroundAppMonitorService.kt`** — `fanCurveController` now
+   constructed with daemon-routed `writeDuty`/`readRpm` closures (closing
+   over the service's existing `pulseDaemon` field); the reassert loop's
+   `readDutyFromDevice()` call and `ensureManualMode()` call both now pass
+   `pulseDaemon` through. Every other line of the control loop —
+   `FanArbiter.decide`, the slew/reconcile logic, thermal override, sleep
+   hand-off, per-app binding — **unchanged**.
+4. **`TunerViewModel.kt` / UI** — no changes. It already calls
+   `FanController.customFanAvailable()` generically to decide whether to
+   show the Custom fan option; it starts working the moment that probe
+   returns `true`.
+5. **`pulse_daemon.sh`** — no changes. `setCap`'s existing
+   `<path> <mode> <value>` verb (unlock/write/relock, same as every
+   CPU/GPU write) and `READ`'s existing multi-path batch verb already
+   cover everything the fan needs.
+
+**Deliberately out of scope for this pass**: discrete vendor fan-mode
+control (Silent/Smart/Sport) via the proven-working AIDL
+`com_set_performance_fan` command. `setMode()`/`readMode()` still target
+the dead Odin `Settings.System fan_mode` key (unchanged, still
+effectively inert on this device) — wiring the discrete AIDL command is a
+separate, smaller, already-de-risked follow-up
+(`aidl-fan-spike/FINDINGS.md`'s Step 1), not bundled into this curve work
+to keep this change reviewable and scoped to what was actually
+investigated this session.
 
 ## Build / install
 

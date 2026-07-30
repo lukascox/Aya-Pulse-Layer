@@ -91,9 +91,18 @@ class ForegroundAppMonitorService : Service() {
     private val transitionMutex = Mutex()
     private val container by lazy { AppContainer(this) }
     private val fanController = FanController()
-    private val fanCurveController = FanCurveController()
+
+    // Daemon-routed device I/O (2026-07-30): the reassert loop below calls slew()/readDutyFromDevice() every
+    // ~120ms while Custom fan is active -- a raw `xsu` connection per tick at that cadence is exactly the
+    // pattern PulseDaemon's FIFO exists to eliminate (STATUS.md's xsud-crash investigation). `pulseDaemon` is
+    // declared further down (`by lazy`) but safe to reference here -- these closures only evaluate it when
+    // actually invoked, by which point the whole service is constructed.
+    private val fanCurveController = FanCurveController(
+        writeDuty = { duty -> FanCurveController.writeDutyToDevice(duty, pulseDaemon) },
+        readRpm = { FanCurveController.readRpmFromDevice(pulseDaemon) },
+    )
     private val fanTempController = FanTempController() // closed-loop temp-target PI (Smart Custom-fan mode)
-    private var customFanSupportedCache: Boolean? = null // null = not yet probed (Odin-only node check)
+    private var customFanSupportedCache: Boolean? = null // null = not yet probed (see FanController.customFanAvailable)
     @Volatile private var customFanRunning = false
     private var fanLoopJob: Job? = null // fast duty slew loop (drives the Custom curve smoothly)
     private var smoothedFanTempC: Float? = null // EMA of the SoC temp so curve targeting ignores ±1°C noise
@@ -945,7 +954,7 @@ class ForegroundAppMonitorService : Service() {
         // Active cooling: drive the Custom fan. Writing fan_mode=6 RESETS the Odin's duty to a ~50% mode-init
         // default, so pin our current intended duty in the SAME command (read-first → only on drift).
         val intendedDuty = FanCurve.percentToDuty(fanCurveController.appliedPercent, fanCurveController.period)
-        fanController.ensureManualMode(intendedDuty)
+        fanController.ensureManualMode(intendedDuty, pulseDaemon)
         if (settings.fanSmartEnabled) {
             fanCurveController.setTargetPercent(targetPercent)
         } else {
@@ -1109,10 +1118,12 @@ class ForegroundAppMonitorService : Service() {
                 try {
                     // Pause everything while autocalibrate drives the duty directly (avoids a write race).
                     if (!FanCurveController.externalControlActive) {
-                        // Re-check the live duty every FAN_RECHECK_MS. The Odin vendor slams the duty to ~50% on
-                        // game foreground-transitions even in manual passthrough (firmware game-detection we can't
-                        // disable); catch it and re-pin OUR value immediately so the rev is inaudible.
-                        val live = FanCurveController.readDutyFromDevice()
+                        // Re-check the live duty every FAN_RECHECK_MS. AYANEO's own vendor fan daemon re-pins the
+                        // duty to its idle value on an irregular 1-112s cycle (measured 2026-07-30,
+                        // research/aidl-fan-spike/FINDINGS.md); catch it and re-pin OUR value immediately so the
+                        // rev is inaudible -- this 120ms cadence (tuned against the Odin's faster re-pinning)
+                        // comfortably out-paces AYANEO's slower one.
+                        val live = FanCurveController.readDutyFromDevice(pulseDaemon)
                         if (fanCurveController.reconcileActualDuty(live)) {
                             fanCurveController.reassertCurrentDuty()
                             val now = android.os.SystemClock.elapsedRealtime()

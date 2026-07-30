@@ -2,6 +2,7 @@ package com.kei.pulse.data
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 
 /**
@@ -37,5 +38,29 @@ class FanControllerTest {
         for (target in listOf(FanController.SILENT, FanController.SMART, FanController.SPORT)) {
             assertNotEquals(target, FanController.bounceModeFor(target))
         }
+    }
+}
+
+/**
+ * AYANEO's `fan_rpm_state` node reads back `"Current RPM 2666"`, not a bare number like the Odin's tach --
+ * confirmed live 2026-07-30 (`research/aidl-fan-spike/results/run5/`). Locks down the parse.
+ */
+class FanControllerParseRpmTest {
+
+    @Test
+    fun parsesTheRealDeviceFormat() {
+        assertEquals(2666, FanController.parseRpm("Current RPM 2666"))
+    }
+
+    @Test
+    fun trimsSurroundingWhitespace() {
+        assertEquals(4780, FanController.parseRpm("  Current RPM 4780\n"))
+    }
+
+    @Test
+    fun nullEmptyAndUnparseableInputAllReturnNull() {
+        assertNull(FanController.parseRpm(null))
+        assertNull(FanController.parseRpm(""))
+        assertNull(FanController.parseRpm("Current RPM"))
     }
 }
