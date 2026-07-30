@@ -29,6 +29,12 @@
 # cross-check of "did the value actually land on the device" independent of AutoTuneController's
 # own internal state -- just no longer independent of this daemon script itself.
 #
+# research/pulse-for-aya/README.md, 2026-07-30: cap_poll now also logs cpu_temp_mc/gpu_temp_mc (raw
+# millidegree thermal-zone reads, zones resolved once at startup the same way SystemTuning.kt's
+# resolveZones() picks them) and fan_duty/fan_rpm -- added for a multi-day unattended soak test of the
+# newly-ported Custom fan curve, so a low-noise, always-present time series exists independent of
+# whether the app's own fanLog() happened to fire that tick (it only logs on a decision CHANGE).
+#
 # STATUS.md, 2026-07-28: both log files now open with a version line ($VERSION_LABEL, built from
 # BuildConfig.VERSION_NAME/VERSION_CODE/BUILD_TIMESTAMP in PulseDaemon.kt) -- passed straight in as
 # a launch argument, not sent over the FIFO afterwards, so there's no startup race with the reader
@@ -83,6 +89,26 @@ if [ -n "$CAP_POLL_LOG" ]; then
     CPU=/sys/devices/system/cpu/cpufreq
     GPU=/sys/class/kgsl/kgsl-3d0
     [ -d "$GPU" ] || GPU=/sys/devices/platform/soc@0/3d00000.gpu/kgsl/kgsl-3d0
+    FAN_PWM=/sys/devices/platform/soc/soc:pwm-fan/hwmon/hwmon0/pwm1
+    FAN_RPM=/sys/devices/platform/soc/soc:pwm-fan/fan_rpm_state
+    # CPU/GPU thermal zones (2026-07-30, for a multi-day Custom-fan-curve soak-test log): resolved ONCE
+    # here, same selection rule as the Kotlin side's SystemTuning.kt#resolveZones() -- first
+    # /sys/class/thermal/thermal_zoneN whose `type` contains "cpu" / "gpu"|"kgsl"|"gfx" -- so a human
+    # reviewing a pulled log doesn't have to cross-reference which zone number means what on this device.
+    CPU_TZ=""
+    GPU_TZ=""
+    zi=0
+    while [ $zi -le 90 ]; do
+      tz="/sys/class/thermal/thermal_zone$zi/type"
+      t=$(cat "$tz" 2>/dev/null)
+      case "$t" in
+        *cpu*|*CPU*) [ -z "$CPU_TZ" ] && CPU_TZ="/sys/class/thermal/thermal_zone$zi/temp" ;;
+      esac
+      case "$t" in
+        *gpu*|*GPU*|*kgsl*|*KGSL*|*gfx*|*GFX*) [ -z "$GPU_TZ" ] && GPU_TZ="/sys/class/thermal/thermal_zone$zi/temp" ;;
+      esac
+      zi=$((zi + 1))
+    done
     while true; do
       p0c=$(cat $CPU/policy0/scaling_cur_freq 2>/dev/null); p0m=$(cat $CPU/policy0/scaling_max_freq 2>/dev/null)
       p2c=$(cat $CPU/policy2/scaling_cur_freq 2>/dev/null); p2m=$(cat $CPU/policy2/scaling_max_freq 2>/dev/null)
@@ -94,7 +120,18 @@ if [ -n "$CAP_POLL_LOG" ]; then
       gpu_min=$(cat $GPU/min_pwrlevel 2>/dev/null)
       gpu_max=$(cat $GPU/max_pwrlevel 2>/dev/null)
       batt_online=$(cat /sys/class/power_supply/battery/online 2>/dev/null)
-      echo "$(date '+%Y-%m-%d %H:%M:%S') p0_cur=$p0c p0_max=$p0m p2_cur=$p2c p2_max=$p2m p5_cur=$p5c p5_max=$p5m p7_cur=$p7c p7_max=$p7m gov=$gov gpu_cur=$gpu gpu_min_pwrlevel=$gpu_min gpu_max_pwrlevel=$gpu_max batt_online=$batt_online" >> "$CAP_POLL_LOG"
+      # Raw sysfs millidegree values (same convention as every other raw field here) -- divide by 1000 for
+      # °C. Empty if the zone wasn't found above (device/kernel variance), not a script error.
+      cpu_temp=""
+      [ -n "$CPU_TZ" ] && cpu_temp=$(cat "$CPU_TZ" 2>/dev/null)
+      gpu_temp=""
+      [ -n "$GPU_TZ" ] && gpu_temp=$(cat "$GPU_TZ" 2>/dev/null)
+      fan_duty=$(cat "$FAN_PWM" 2>/dev/null)
+      # fan_rpm_state reads back "Current RPM 2666", not a bare number -- take the last field so this stays
+      # a plain space-delimited key=value line like every other field here (matches FanController.parseRpm's
+      # equivalent Kotlin-side parse of the same format).
+      fan_rpm=$(cat "$FAN_RPM" 2>/dev/null | awk '{print $NF}')
+      echo "$(date '+%Y-%m-%d %H:%M:%S') p0_cur=$p0c p0_max=$p0m p2_cur=$p2c p2_max=$p2m p5_cur=$p5c p5_max=$p5m p7_cur=$p7c p7_max=$p7m gov=$gov gpu_cur=$gpu gpu_min_pwrlevel=$gpu_min gpu_max_pwrlevel=$gpu_max batt_online=$batt_online cpu_temp_mc=$cpu_temp gpu_temp_mc=$gpu_temp fan_duty=$fan_duty fan_rpm=$fan_rpm" >> "$CAP_POLL_LOG"
       if [ -n "$DMESG_LOG" ]; then
         dmesg -c >> "$DMESG_LOG" 2>/dev/null
       fi

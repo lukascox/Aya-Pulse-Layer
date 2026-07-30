@@ -713,10 +713,18 @@ class TunerViewModel(
             // Remember it so the watcher re-asserts it against the system Fan tile; onSaved starts that watcher.
             settingsStorage.persistManagedFanMode(mode)
             onSaved()
-            transientMessage.value = if (ok) {
-                "Fan set to ${FanController.labelFor(mode)}"
-            } else {
-                "Couldn't change fan mode"
+            // FanController.setMode() always returns false on AYANEO today (it targets a Settings key that
+            // only exists on the AYN Odin -- see FanController's class doc) -- that's expected, documented
+            // behavior, not a failure, so `ok` alone isn't a useful signal here. Custom mode doesn't go
+            // through setMode() at all (the service drives it directly), so it always genuinely succeeds.
+            // Any OTHER mode really does just hand the fan to whatever the vendor does by default (PULSE
+            // stops driving, nothing explicitly requests Smart/Silent/Sport) -- say so plainly instead of
+            // reporting a scary "failed" that isn't accurate to what actually happened (2026-07-30: this
+            // surfaced as a confusing error the first time a real user tried Custom -> Smart mid-session).
+            transientMessage.value = when {
+                mode == FanController.CUSTOM -> "Fan set to Custom"
+                ok -> "Fan set to ${FanController.labelFor(mode)}"
+                else -> "Fan set to ${FanController.labelFor(mode)} (vendor default — direct switching not yet available)"
             }
             transientError.value = null
         }
