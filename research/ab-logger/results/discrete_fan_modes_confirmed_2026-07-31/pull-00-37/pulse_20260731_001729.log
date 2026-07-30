@@ -1,0 +1,37 @@
+# TRIMMED (analyze-pulse-logs.py) -- original was 160 lines / 27958B.
+# Kept: every distinct line; runs of 3+ consecutive identical lines (idle TICK-SKIP polling,
+# only the timestamp differs) collapsed to first + elision count + last.
+# ---
+2026-07-31 00:34:07 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+# ... 3 more identical lines elided (same content, only timestamp differs) ...
+2026-07-31 00:34:11 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-07-31 00:34:11 PulseFan: arbiter=None auto=false bound=null managed=5 latched=false
+2026-07-31 00:34:12 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+# ... 5 more identical lines elided (same content, only timestamp differs) ...
+2026-07-31 00:34:18 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-07-31 00:34:18 PulseFan: arbiter=None auto=false bound=null managed=4 latched=false
+2026-07-31 00:34:19 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+# ... 18 more identical lines elided (same content, only timestamp differs) ...
+2026-07-31 00:34:39 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-07-31 00:34:39 PulseFan: arbiter=SetVendorMode(mode=1) auto=false bound=null managed=1 latched=false
+2026-07-31 00:34:40 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-07-31 00:34:40 PulseFan: arbiter=None auto=false bound=null managed=1 latched=false
+2026-07-31 00:34:41 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+# ... 1 more identical lines elided (same content, only timestamp differs) ...
+2026-07-31 00:34:43 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-07-31 00:34:43 PulseFan: arbiter=SetVendorMode(mode=1) auto=false bound=null managed=1 latched=false
+2026-07-31 00:34:44 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-07-31 00:34:44 PulseFan: arbiter=None auto=false bound=null managed=1 latched=false
+2026-07-31 00:34:45 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-07-31 00:34:45 PulseFan: arbiter=SetVendorMode(mode=1) auto=false bound=null managed=1 latched=false
+2026-07-31 00:34:46 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-07-31 00:34:46 PulseFan: arbiter=None auto=false bound=null managed=1 latched=false
+2026-07-31 00:34:47 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+# ... 19 more identical lines elided (same content, only timestamp differs) ...
+2026-07-31 00:35:11 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-07-31 00:35:11 PulseFan: arbiter=SetVendorMode(mode=5) auto=false bound=null managed=5 latched=false
+2026-07-31 00:35:12 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-07-31 00:35:12 PulseFan: arbiter=None auto=false bound=null managed=5 latched=false
+2026-07-31 00:35:13 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+# ... 87 more identical lines elided (same content, only timestamp differs) ...
+2026-07-31 00:36:42 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
