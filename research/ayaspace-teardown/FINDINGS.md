@@ -87,14 +87,26 @@ a temporary single/flat-point strategy override via
 afterward — closed-loop fan control without ever touching sysfs or racing
 the vendor daemon's own re-pinning behavior.
 
-**Not yet confirmed live** — unlike `com_set_performance_mode` (proven
-end-to-end in `research/aidl-bind-spike/FINDINGS.md`),
-`com_set_fan_speed_strategy` and `com_set_fan_speed_is_linear` have never
-actually been sent from a probe app and observed to take effect. Same
-mechanism, same confidence level as the mode-switch spike, but still an
-assumption until tested — the natural next step is a small follow-up spike
-exactly like `aidl-bind-spike`'s original one, exercising these two
-commands specifically.
+**Update (2026-07-30) — now confirmed live, and the news is bad: this path
+is dead.** `research/aidl-fan-spike/` sent `com_set_fan_speed_strategy`
+live across 4 test rounds; it never changed real fan duty for any string
+format tried. Reading the actual message-dispatch bytecode
+(`research/aya-gamewindows-teardown/FINDINGS.md` section 9) explains why:
+`AYAAidlManager.dealMsg`'s handler for this command parses out the mode
+and then just **logs** the curve payload — no write, no persistence, no
+hardware effect, regardless of format. Since `FanViewModel.java:460`
+above sends the *exact same* command through the *exact same* channel,
+this strongly implies **AYA Settings' own native "Custom" fan-curve
+editor doesn't actually apply the curve either, on this firmware build**
+— not just our probe. (`com_set_fan_speed_is_linear`, sent from
+`FanViewModel.java:454`, is different — its handler genuinely persists a
+value, see the same FINDINGS.md section 9 — so the Linear/Step-Based
+toggle plausibly does work even if the curve *shape* itself doesn't
+stick.) This retracts this Addendum's original optimistic framing: the
+AIDL route to a real fan curve is closed, not "a path that wasn't visible
+before." The next real lever is the plain `pwm-fan` sysfs write
+(`research/aya-gamewindows-teardown/FINDINGS.md` section 6,
+`AR03.t1(int)`), untested live so far.
 
 ## Why this app doesn't need `xsu` at all
 
