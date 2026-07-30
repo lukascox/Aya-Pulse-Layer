@@ -580,25 +580,25 @@ gap to a real 1:1 port is visible at a glance.
   so "byte-identical" no longer holds literally, but nothing about the
   tile's own behavior was touched.)
 
-**Built this session (2026-07-30) — curve confirmed live, discrete modes
-built but NOT yet on-device tested:**
+**Fan control — both mechanisms confirmed live on real hardware
+(curve 2026-07-30, discrete modes 2026-07-31):**
 - **Fan control — both mechanisms now implemented and wired.** The Custom
   fan curve (PI/spline, `FanCurveController` routed through `PulseDaemon`'s
   FIFO) is **confirmed live on real hardware** under real thermal load —
   see "Fan curve implementation plan" below. Discrete vendor mode
   (Silent/Smart/Sport) now drives the real AIDL mechanism
   (`com_set_performance_fan`) instead of the dead Odin `Settings.System
-  fan_mode` key — see "Discrete fan mode implementation plan" below —
-  but is **written, not yet verified on-device**. What the earlier probe
-  work actually established, stated precisely: the *command* reaches the
-  vendor and is acted on (`FAN_MODE_OFF`→duty 0 and `FAN_MODE_MUTE`→duty 76
-  are exactly repeatable, and gamewindow echoes every mode back over its
-  callback). What it did NOT establish is that our
-  Silent→MUTE / Smart→BALANCE / Sport→TURBO *labelling* is right —
-  BALANCE/TURBO produced noisier duty readings, so the mapping wants a
-  listen-test per mode before it's trusted. `FAN_MODE_OFF` (a 4th vendor
-  mode with no slot in the current 3-mode UI) is deliberately excluded,
-  not a gap.
+  fan_mode` key — see "Discrete fan mode implementation plan" below.
+  **Verified end-to-end on-device 2026-07-31**: all three modes sent and
+  confirmed back by the vendor, drift from a change made in native
+  AyaSettings detected and re-applied. The one piece still resting on
+  inference rather than observation is the *labelling* —
+  Silent→MUTE / Smart→BALANCE / Sport→TURBO. Only `FAN_MODE_OFF` (duty 0)
+  and `FAN_MODE_MUTE` (duty 76) ever had exactly-repeatable duty readings;
+  BALANCE/TURBO were noisier, so whether the three labels line up with
+  what a user's ear expects is still a listen-test question. `FAN_MODE_OFF`
+  (a 4th vendor mode with no slot in the current 3-mode UI) is deliberately
+  excluded, not a gap.
 
 **Confirmed a real, currently unaddressed gap:**
 - **RGB — smaller, same shape of gap.** Upstream's own RGB mechanism
@@ -930,13 +930,49 @@ clear on the limits and they matter:
   returning `null` now means "unknown", never "off", and callers that need
   a value at startup fall back to PULSE's own persisted `managedFanMode`
   (the same "trust what PULSE chose" path Custom already used).
-- **UNCONFIRMED, deliberately left open**: whether gamewindow also pushes
-  this callback when *its own* UI changes the fan. If it does, this is a
-  true drift detector; if it doesn't, it only ever confirms our own
-  writes. No probe has tested it. Rather than guess, `handleCallback` now
-  logs every callback it receives (`PulseFan: AIDL callback: …`) — so the
-  next on-device session answers the question for free: a callback
-  arriving with no preceding send of ours settles it.
+- **CONFIRMED on-device 2026-07-31 — gamewindow DOES push unsolicited**,
+  so this is a true drift detector, not just an echo. Left open when the
+  code was written; settled by the very next session, exactly as the
+  logging was added to do. The log splits cleanly into two phases:
+
+  ```
+  00:18:32 AIDL callback …   00:18:33 arbiter=None … managed=1
+  00:18:37 AIDL callback …   00:18:38 arbiter=None … managed=5
+  00:18:41 AIDL callback …   00:18:41 arbiter=None … managed=4
+  ── user switches to native AyaSettings and changes the fan there ──
+  00:19:13 AIDL callback …   (managed stays 4 — not our send)
+  00:19:16 arbiter=SetVendorMode(mode=4)
+  00:19:16 fan_mode drifted, want=4 — re-applying
+  00:19:17 arbiter=None
+  ```
+
+  In the first phase every callback pairs with a `managed=` change (the
+  user tapping in PULSE's Tuner) — those are the echoes. In the second,
+  `managed` never changes but callbacks keep arriving, so they cannot be
+  ours; PULSE then correctly detected the drift and re-applied its managed
+  mode. That re-apply loop settled to `arbiter=None` after each
+  correction and did not run away — it is upstream's intended
+  "something else changed the fan, put it back" behavior working for the
+  first time on this device. **Confirmed with the user that they were
+  changing the mode in AyaSettings during that window** — worth stating,
+  because an identical-looking log with nobody touching the device would
+  instead mean the vendor was reverting us on a ~2-5s cycle, which would
+  need a brake before any long unattended run.
+
+Also settled by the same session: `modeConfigurations[currentMode].fanMode`
+really is the live value and tracks every send exactly (all 14 callbacks
+in `aidl-fan-spike/results/run1` re-parsed to check — each one shows the
+mode just sent, with the previous one moved into the sibling `lastFanMode`
+key). So the field this parses is the right one.
+
+**Operational note for any future fan debugging**: `pulse_daemon.sh`'s
+detached logcat is deliberately filtered to crash tags only
+(`AndroidRuntime:E libc:F DEBUG:F …`) to avoid ring-buffer overflow on a
+multi-hour session, so **`PulseFan` lines never appear in a pulled
+`_logcat.log`**. Fan behavior has to be captured live in a separate
+terminal (`adb logcat -s PulseFan:D`). Not worth widening the daemon's
+filter — `PulseFan:D` emits roughly a line per second per client, which is
+exactly the overflow the filter exists to prevent.
 
 Also fixed in passing: `setFanMode()` no longer reads back immediately
 after sending. The AIDL send is fire-and-forget with the confirming

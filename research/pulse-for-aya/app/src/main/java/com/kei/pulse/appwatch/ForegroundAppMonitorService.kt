@@ -1018,7 +1018,12 @@ class ForegroundAppMonitorService : Service() {
             is FanAction.SetVendorMode -> {
                 stopCustomFan()
                 if (action.mode != lastManagedFan) { lastManagedFan = action.mode; fanOverrideNotified = false } // re-arm on change
-                android.util.Log.d("PulseFan", "fan_mode drifted, want=${action.mode} — re-applying")
+                // `live` is the vendor's own last-reported state (a plain volatile read, no IPC) — logged
+                // alongside `want` so a drift line says WHAT it drifted to, not just that it drifted.
+                android.util.Log.d(
+                    "PulseFan",
+                    "fan_mode drifted: live=${ayaAidlClient.lastKnownFanMode()} want=${action.mode} — re-applying",
+                )
                 fanController.setMode(action.mode, ayaAidlClient)
                 if (!fanOverrideNotified && container.perAppConfigStorage.switchNotices.first()) {
                     fanOverrideNotified = true

@@ -195,8 +195,14 @@ class AyaAidlClient(private val context: Context) {
         // If a session log ever shows one of these arriving without a preceding send of ours, that
         // question is answered and [lastKnownFanMode] becomes a true drift detector rather than just a
         // confirmation of our own writes. See `research/pulse-for-aya/README.md`'s "Discrete fan mode".
-        android.util.Log.d("PulseFan", "AIDL callback: ${msg.take(160)}")
-        parseFanModeFromCallback(msg)?.let { lastFanMode = it }
+        val fanMode = parseFanModeFromCallback(msg)
+        if (fanMode != null) {
+            val changed = fanMode != lastFanMode
+            lastFanMode = fanMode
+            android.util.Log.d("PulseFan", "AIDL callback: fanMode=$fanMode${if (changed) " (CHANGED)" else ""}")
+        } else {
+            android.util.Log.d("PulseFan", "AIDL callback (no fan state): ${msg.take(80)}")
+        }
     }
 
     /**

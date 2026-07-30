@@ -6,6 +6,32 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## Discrete fan modes CONFIRMED LIVE + the callback readback question answered YES (2026-07-31)
+
+First on-device test of the discrete-mode work below. **All three modes
+(Silent/Smart/Sport) send and are confirmed back by the vendor**, and the
+open question from the readback fix is settled: **gamewindow DOES push its
+state callback unsolicited when its own UI changes the fan** — so the
+readback is a true drift detector, not just an echo of our own writes.
+Evidence and the exact log excerpt: `research/pulse-for-aya/README.md`,
+"Discrete fan mode implementation plan". PULSE correctly detected a change
+made in native AyaSettings and re-applied its managed mode, settling after
+each correction (upstream's intended behavior, working here for the first
+time; confirmed with the user that they were the one changing it, since an
+identical log with nobody touching the device would have meant the vendor
+was reverting us instead). Also re-verified from the archived probe data
+that `modeConfigurations[currentMode].fanMode` tracks every send exactly —
+the parser reads the right field.
+
+**Still open**: the listen-test. Silent→MUTE / Smart→BALANCE / Sport→TURBO
+is an inferred labelling; only OFF and MUTE ever had exactly-repeatable
+duty readings, so whether the labels match what the ear expects is unverified.
+
+**Operational gotcha worth remembering**: `pulse_daemon.sh`'s detached
+logcat is filtered to crash tags only (deliberately, to avoid ring-buffer
+overflow), so `PulseFan` lines never appear in a pulled `_logcat.log` —
+fan behavior must be captured live with `adb logcat -s PulseFan:D`.
+
 ## Fan mode readback fixed via the vendor's AIDL callback (2026-07-30) — a review pass caught the discrete-mode work being only half-live
 
 Found by reviewing the session's own output before any on-device test ran:
@@ -27,8 +53,8 @@ rather than papered over**: the callback is confirmed only as an echo of
 our own sends; there is no `com_get_*` query command and no state dump on
 connect (so `null` now means "unknown", with callers falling back to the
 persisted `managedFanMode`), and whether it also fires on vendor-UI-initiated
-changes is **unconfirmed** — every callback is now logged so the next
-on-device session answers that for free. Build/test/lint clean (398 tests).
+changes is **unconfirmed** (ANSWERED YES on 2026-07-31, see the section
+above) — every callback is now logged. Build/test/lint clean.
 Full writeup: `research/pulse-for-aya/README.md`, "Follow-up the same day:
 the readback was dead".
 
