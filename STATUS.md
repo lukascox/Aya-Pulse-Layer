@@ -6,6 +6,81 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## Current state and next step: two-device comparison (2026-07-31)
+
+**Feature parity is closed.** Six of seven upstream features confirmed on
+real hardware; full table in `research/pulse-for-aya/README.md`, "Feature
+parity vs upstream".
+
+**RGB is OUT OF SCOPE, not a to-do.** The user explicitly does not want it:
+these devices historically had a flickering-RGB problem on the sticks, so
+the stick LEDs are switched off entirely on their units. Do not propose
+wiring it up as remaining work — the mechanism is documented
+(`RgbManager`/`RgbUtil`, `Settings.System` under `ayaneo/share/*`,
+`aya-gamewindows-teardown/FINDINGS.md` section 5) purely so the record is
+complete.
+
+**Shipping build**: `app-debug.apk` built 2026-07-31 00:45:39 — verified no
+source file is newer, so it contains everything through commit `3558c2c`
+(the fan-OFF arbitration fix). Same file goes to both devices. Stays a
+DEBUG build deliberately: the user wants the session logging kept for now.
+
+**Next work — two-device comparison.** Two units, **same model, same SKU,
+different colour**: `B` (black) is the unit everything so far was tested on;
+`W` (white) is a clean install, so it doubles as a "does the port work on an
+untouched device" test. Pulled logs are filed by hand into `B/` and `W/`
+subdirectories (the user declined adding a device ID to the log header —
+manual foldering is enough, see [[minimal-app-changes-pareto]]).
+
+- **Gotcha, easy to hit**: `analyze-pulse-logs.py` globs *recursively* and
+  groups purely by the timestamp in the filename, and `groups[ts][key] = p`
+  **silently overwrites** on collision. Two devices started within the same
+  second would be merged into one bogus session with a file dropped. **Run
+  the script separately on `B/` and on `W/`, never on their parent.**
+- Test order on `W` is prerequisite-first, so a step-1 failure explains the
+  rest: (1) is `xsu` even present on this unit — the whole app depends on
+  it and it is not part of the app; (2) does the Custom fan option appear
+  (means the duty-node probe passed); (3) does `fan AIDL client: Ready`
+  appear in `logcat -s PulseFan:D`; (4) then normal feature tests.
+- **Keep `sleep` OFF for this comparison.** It is the one feature with zero
+  on-device evidence, and enabling it here would confound the clean-install
+  test with an untested feature. Enable it separately afterwards (needs
+  BOTH `sleepProfileEnabled` and a chosen `sleepProfileId` — the toggle
+  alone does nothing).
+- **Open observation**: `W` subjectively launches games more slowly than
+  `B`, on identical hardware and identical software versions. `cap_poll`
+  already logs everything needed to test the obvious causes (per-cluster
+  CPU max/cur, governor, temps, fan) — if those come back identical, that
+  is itself a result and points at storage, which these logs do not see.
+  A factory reset of `W` is planned later; capturing logs BEFORE it would
+  give a before/after on the same unit.
+
+**Deliberately deferred, with reasons (do not re-propose unprompted):**
+- **Gating the session logging behind `FLAG_DEBUGGABLE`** — worth doing,
+  but only when a release build is actually being prepared. Currently the
+  four log paths in `PulseDaemon.kt` are unconditional, so a release build
+  would also write ~80 MB/day and run a 1 Hz poll, a detached `logcat` and
+  `dmesg` polling forever. Cheap when the time comes: `pulse_daemon.sh`
+  already guards every stream with `[ -n "$VAR" ]`, so passing empty
+  strings disables all of it with no script change.
+- **Serializing the FIFO round-trip** (a latent reply-correlation race
+  between the 120 ms fan loop and the 1 s telemetry loop, both calling
+  `readBatch` from separate coroutines) — judged below the Pareto line:
+  never observed in any log, mostly masked by the existing size check, and
+  its worst realistic outcome self-corrects on the next tick.
+- **Listen-testing the discrete fan modes under load** — the modes are
+  indistinguishable at idle (see below); whether they diverge under
+  sustained load is interesting but unblocks nothing, since the Custom
+  curve is the better lever anyway.
+
+**Offered, not started**: a vendor-facing report for AYANEO covering the two
+reproducible bugs found in *their* software — `com_set_fan_speed_strategy`
+being a dead handler (which likely means AYA Settings' own fan-curve editor
+does not work either) and the unvalidated `FAN_MODE.valueOf()` in
+`AYAAidlManager.dealMsg` that crashes `gamewindow` (INCIDENT #4). Different
+audience and structure from anything in this repo: reproduction, evidence,
+suggested fix, impact.
+
 ## `sleep/` package checked — the module's last unread area, and it needs nothing (2026-07-31)
 
 The one part of `pulse-for-aya` never read during the whole port.
