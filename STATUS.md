@@ -109,6 +109,39 @@ does not work either) and the unvalidated `FAN_MODE.valueOf()` in
 audience and structure from anything in this repo: reproduction, evidence,
 suggested fix, impact.
 
+## Another project targets this device, and it gives us a Plan B for `xsu` (2026-07-31)
+
+`Ayaneo-PocketFit-tools` (https://github.com/The412Banner/Ayaneo-PocketFit-tools,
+active, v1.2.0 dated today) cloned read-only to
+`research/Ayaneo-PocketFit-tools/`, gitignored like the other reference
+clones. Assessed once; no separate assessment doc, because one fact carries
+the whole thing:
+
+**It has a working Magisk root path for the Pocket FIT** (patch `init_boot`,
+flash via `xsu`, deliberately no auto-reboot; OKEY method, credited to
+@sunflower2333). That matters because everything in `pulse-for-aya` currently
+rests on `xsu`, which is a hole AYANEO could close at any time. A proven
+route to Magisk means `xsu` is not a single point of failure, and
+plain `su` would also retire the whole `xsud` fragility class (~800 char
+limit, crash-on-close, chunked fallback). **Not proposed as work** — recorded
+so the fallback is known to exist if it is ever needed.
+
+**Cannot be reused as code: the repo has no LICENSE**, so default full
+copyright applies and nothing may be copied into this GPL-2.0 repo. Reading
+is fine; a real need would mean a clean-room rewrite or asking the author.
+
+No overlap and no contradictions otherwise: it does rooting, partition backup
+and display tuning — no fan, no CPU/GPU caps, no telemetry, no button remap,
+and it touches not one sysfs path we use. Only shared surface is
+`peak_refresh_rate`/`min_refresh_rate`, already noted from the PAM guide.
+
+One untested idea, flagged honestly rather than as a contradiction: they
+invoke `xsu` as `listOf(XSU_PATH) + argv` (direct argv, no `-c`). That is a
+**third** form, not the banned stdin one (`RootExec.kt:13`) — we use
+`ProcessBuilder("xsu","-c",cmd)`. Bypassing the shell might sidestep the
+command-length limit, but they only push trivial commands (`id -u`) through
+it, so it is evidence of nothing at our write volume.
+
 ## Fan↔clock cascade CONFIRMED END-TO-END + the run5 reassert cadence is SUPERSEDED (2026-07-31)
 
 First live `adb logcat -s PulseFan:D` capture with the Fan card actually on
