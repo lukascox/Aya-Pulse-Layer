@@ -109,6 +109,44 @@ does not work either) and the unvalidated `FAN_MODE.valueOf()` in
 audience and structure from anything in this repo: reproduction, evidence,
 suggested fix, impact.
 
+## Unsupervised session analyzed (2026-07-31, `B` only): clean, plus three findings and one non-finding
+
+First real unsupervised play on the shipping build (`1.19.6 (303)`).
+`W` was not installed yet, so this is single-device data, NOT the two-device
+comparison. Kept files + full writeup:
+`research/ab-logger/results/unsupervised_session_2026-07-31/` (`NOTES.md`).
+Only the long session's `.log` and `_cap_poll.log` were kept; both `_dmesg`
+and both `_logcat` files and the short 12:06:50 session were deleted after
+review — every flagged crash keyword was verified noise (boot-time
+`init`/`nvkeeper`/`qcrosvm` aborts replayed by the logcat filter, and driver
+names containing "panic"), and the dmesg files were the only carrier of
+partially-masked router BSSIDs in this pull.
+
+- **The daemon survived ~3h15m of suspend and resumed cleanly** — main log
+  is silent 18:16:09→21:31:10 while `cap_poll` keeps producing lines
+  throughout, and AutoTDP resumes on wake with `session start` appearing
+  exactly once in the whole log. Untested by design, strongest FIFO-daemon
+  stability evidence so far.
+- **`xsu` fallback at 4.9%** (296 vs. 5770 daemon cap writes), all inside
+  16:11–18:15, zero afterwards — and **not** a daemon outage: successful
+  daemon writes interleave in the same second, and the log has zero
+  `error|fail|timeout|denied` lines. Up from ~2% in the first clean FIFO
+  session. Unexplained, not chased; flagged because raw `xsu` is the
+  historical prime suspect for crashes.
+- **Zero Phantom Process Killer kills against 449 `diagservices` ANRs**
+  (~every 45s, chronic as ever) — versus 21 kills in 10 minutes on
+  2026-07-28. Verified not a filter artifact before the logcat files went.
+
+**Non-finding, worth stating so it isn't misread as a regression**: the fan
+did nothing all session (6 `PulseFan` lines, all `arbiter=None`) because the
+Fan card was on **Smart** (`managed=4`/`bound=4`; `SMART = 4`, `CUSTOM = 6`),
+and `FanArbiter.decide` correctly returns `None` both when AutoTDP owns a
+non-Custom mode and when the vendor mode has not drifted. Nothing about the
+fan curve can be concluded from this pull. Testing it needs the Fan card on
+Custom AND a live `adb logcat -s PulseFan:D` — `fast-loop drift`/
+`fan_mode drifted`/`AIDL callback` go to logcat only, never through
+`pulseDaemon.log`, so a pulled log will never show them.
+
 ## `sleep/` package checked — the module's last unread area, and it needs nothing (2026-07-31)
 
 The one part of `pulse-for-aya` never read during the whole port.
