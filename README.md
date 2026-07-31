@@ -79,12 +79,27 @@ Read it first.
 
 ## How this was built
 
-The author is not a professional programmer. This is built iteratively with
-AI assistance plus manual builds and tests on real hardware. That places a
-particular burden on evidence: a claim in this repo is expected to name
+The author is not a professional application developer, but does work
+professionally with systems architecture, security and Linux — and most of
+the judgement calls here come from exactly that background rather than from
+Android experience. Treating the closed-source root helper as an untrusted
+component to be worked around rather than fixed, refusing approaches that
+touch the boot partition while a fully reversible one existed, and insisting
+on a risk assessment before writing anything to fan control are all that
+instinct, not this project's.
+
+The code itself was written iteratively with AI assistance, deliberately:
+part of the point was to find out how far the right tooling can carry
+someone into an unfamiliar domain. That is a hobby question as much as a
+technical one, and the honest answer is "a long way, but only against a
+hard evidence discipline".
+
+Hence the rules the rest of this repo follows. A claim is expected to name
 what was measured, and to say plainly when something is inferred rather
-than observed. Several conclusions here reversed earlier ones — those
-reversals are left visible on purpose.
+than observed. Everything load-bearing was confirmed on real hardware, not
+concluded from reading code. Several findings here reversed earlier ones —
+those reversals are left visible on purpose, because a research log that
+only records the correct guesses is not a research log.
 
 ## Repo layout
 
