@@ -109,6 +109,46 @@ does not work either) and the unvalidated `FAN_MODE.valueOf()` in
 audience and structure from anything in this repo: reproduction, evidence,
 suggested fix, impact.
 
+## Fan↔clock cascade CONFIRMED END-TO-END + the run5 reassert cadence is SUPERSEDED (2026-07-31)
+
+First live `adb logcat -s PulseFan:D` capture with the Fan card actually on
+**Custom** (`managed=6`), taken right after the session below showed nothing
+because it had been on Smart. Two results, one of them a correction.
+
+**1. The fan↔clock cascade works, and this is the first log that shows the
+whole loop closing.** With AutoTDP on EFFICIENT (`ceilingC = 82`,
+`AUTOTDP_FAN_CASCADE_GAP_C = 2` ⇒ the fan PI targets ~80 °C), the SoC climbed
+44→56 °C while `applied` stayed pinned at the 20 % floor — then **peaked and
+came back down on its own** (56→55→54→53→52) with the fan never leaving the
+floor. AutoTDP trimmed clocks and shed the heat; the fan stayed silent. That
+is precisely the design intent stated in `runCustomFan`'s doc comment
+(`ForegroundAppMonitorService.kt`), observed working rather than asserted.
+The idle gate behaved correctly on either side of it too: at 34 °C it handed
+the fan to vendor Smart (`CUSTOM idle → vendor Smart`, `target=20 floor=20`)
+rather than sitting in manual passthrough, and engaged Custom the moment the
+game started.
+
+**Consequence worth stating plainly**: in this configuration PULSE
+deliberately keeps the fan at the floor until ~80 °C, paying in clocks
+instead of noise. That is a choice, not a fault — but `applied=20%` at
+75-80 °C would be the point to revisit whether a 2 °C cascade gap is right.
+Nothing seen so far comes close (56 °C peak, 24 °C of margin).
+
+**2. The `run5` reassert-cadence recommendation is SUPERSEDED — it was
+measured at idle and does not survive load.** Under real gameplay the vendor
+daemon reasserts on a **regular ~5 s** cadence, targeting duty **94-109**,
+not the 50 s mean / fixed duty 76 the 9-run measurement produced. The
+reassert is thermally/load driven, not a periodic timer (which also explains
+run5's 1-112 s spread on an idle device). **The derived "~10 s reassert loop
+is enough" design figure must not be reused.** No code changes: the shipping
+loop runs at 120 ms and caught every drift. Corrected in place with the log
+excerpt: `research/aidl-fan-spike/FINDINGS.md`, boxed SUPERSEDED note under
+"Vendor daemon reassert cadence measured".
+
+Incidental but useful: `fan_mode` read **4 (vendor Smart) throughout** while
+PULSE owned the duty node — discrete mode and duty are independent layers, so
+the AIDL mode readback can never tell you whether a Custom curve is live.
+
 ## Unsupervised session analyzed (2026-07-31, `B` only): clean, plus three findings and one non-finding
 
 First real unsupervised play on the shipping build (`1.19.6 (303)`).

@@ -407,6 +407,51 @@ reassert loop, analogous in shape to `pulse`'s existing one but far less
 demanding, is the concrete design for `FanController.kt`'s real curve
 write.**
 
+> ### SUPERSEDED (2026-07-31) — this cadence was measured at IDLE and does not hold under load
+>
+> A live `adb logcat -s PulseFan:D` capture during real gameplay
+> (`21:49:05` → `21:49:49`, Custom curve engaged, SoC 52-56 °C) shows the
+> vendor daemon reasserting on a **regular ~5 second** cadence:
+>
+> ```
+> 21:49:05.5  fast-loop drift: node=79   fan_mode=4  re-pinned=20%
+> 21:49:09.8  fast-loop drift: node=109  fan_mode=4  re-pinned=20%
+> 21:49:14.8  fast-loop drift: node=109  fan_mode=4  re-pinned=20%
+> 21:49:21.4  fast-loop drift: node=104  fan_mode=4  re-pinned=20%
+> 21:49:24.8  fast-loop drift: node=102  fan_mode=4  re-pinned=20%
+> 21:49:29.8  fast-loop drift: node=99   fan_mode=4  re-pinned=20%
+> 21:49:34.9  fast-loop drift: node=96   fan_mode=4  re-pinned=20%
+> 21:49:39.8  fast-loop drift: node=99   fan_mode=4  re-pinned=20%
+> 21:49:44.8  fast-loop drift: node=94   fan_mode=4  re-pinned=20%
+> 21:49:49.8  fast-loop drift: node=94   fan_mode=4  re-pinned=20%
+> ```
+>
+> Two things differ from the 9-run measurement above, and both point the
+> same way:
+>
+> - **Cadence ~5s, not a 50s mean.** Every interval above is under the 10s
+>   design threshold — the "16/17 cases preempted" figure would invert
+>   here.
+> - **The target duty is 94-109, not the fixed 76.** The measurement runs
+>   corrected to 76 every single time; 76 is this device's *idle* rest
+>   duty. Under load the daemon wants 37-43%.
+>
+> **Corrected conclusion: the reassert is thermally/load driven, not a
+> periodic timer.** The 1-112s spread in the sample above is consistent
+> with this — those runs were all on an idle device, where the daemon has
+> little reason to act. The "no fixed period" finding stands; the derived
+> **~10s design recommendation does not, and must not be reused.**
+>
+> This changes nothing in the shipping code, which never adopted the 10s
+> figure — `ForegroundAppMonitorService`'s reassert loop runs at 120 ms and
+> caught every one of the drifts above. Recorded so the 10s number is not
+> mistaken for a still-valid licence to slow that loop down.
+>
+> Incidental, from the same capture: **`fan_mode` reads `4` (vendor Smart)
+> throughout, while PULSE owns the duty node.** Discrete mode and duty are
+> independent layers in AYANEO's stack — the AIDL mode readback can never
+> confirm whether a Custom curve is actually driving the fan.
+
 **One more practical note, not yet directly re-tested but logically
 likely**: the `chmod 666` unlock could not be reverted back to the
 original mode earlier (`Operation not permitted`, see above) — meaning

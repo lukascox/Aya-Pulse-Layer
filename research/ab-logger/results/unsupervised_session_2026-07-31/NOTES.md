@@ -92,3 +92,9 @@ interesting lines (`fast-loop drift`, `fan_mode drifted`, `AIDL callback`) go
 to `android.util.Log` only, never through `pulseDaemon.log` — `pulse_daemon.sh`
 filters logcat to crash tags, so they will never appear in a pulled log.
 Capture them live with `adb logcat -s PulseFan:D`.
+
+**Done immediately afterwards, same evening**, with the Fan card set to
+Custom — that capture confirmed the fan↔clock cascade end-to-end AND
+superseded the run5 reassert-cadence figure. See `STATUS.md`, "Fan↔clock
+cascade CONFIRMED END-TO-END", and the boxed SUPERSEDED note in
+`research/aidl-fan-spike/FINDINGS.md`.
