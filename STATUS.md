@@ -495,12 +495,11 @@ untouched, no device dependency).
 3. **Unknown, never checked**: `sleep/SleepProfileMonitorService` — not
    read during the original glue assessment.
 
-**User's stated end goal, worth keeping in view**: once fan (and ideally
-RGB) close, prepare a summary for upstream `pulse`'s own author (Kei) —
-and potentially a version supporting both AYN/Retroid (native
-`PServerBinder`) and AYANEO (`xsu` glue) in one codebase, as a capstone to
-this whole research project. Not started — a real next milestone once the
-remaining gaps above close, not a task for this session.
+**Parked idea, not a milestone**: a single codebase supporting both
+AYN/Retroid (native `PServerBinder`) and AYANEO (`xsu` glue). Technically
+the natural endpoint of this research, but the user does not need it — the
+working goal (pulse running on their own devices, with per-app profiles)
+is met. Recorded so the idea is not lost; do not propose it as next work.
 
 **Repo housekeeping this session**: checked for stray files/build debris
 (none found), confirmed `.gitignore` covers all three community-repo
