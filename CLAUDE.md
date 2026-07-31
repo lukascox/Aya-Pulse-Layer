@@ -69,6 +69,20 @@ Each `research/<project>/` is an independent Android app — `cd` in first.
 ## Hard rules
 - Update `STATUS.md` in place; never create dated/versioned handoff docs
   (`git log` is the history).
+- **Never `git push github` without an explicit go-ahead in this session.**
+  `git push` (Forgejo, private) is free and expected after each chunk of
+  work. The GitHub mirror is public and effectively irreversible — a force
+  push hides, it does not unpublish. Once GitHub is ~10 commits behind, ask
+  whether to keep batching locally or do the review-and-mirror pass now;
+  don't decide it unilaterally, and don't let the gap grow silently.
+  Before any mirror push, review `git diff github/main..main` against ALL of:
+  hardware addresses and network names; account identifiers and tokens; local
+  filesystem paths; the author e-mail (must be the private one — the repo has
+  no global default it can rely on, see the local `user.email`); and **prose
+  stating intent toward AYANEO or describing how their protections are
+  worked around**. That last item is not greppable and is the one that has
+  actually been caught in review (2026-07-31) — every earlier check only
+  looked for technical data inside device logs.
 - Never re-enable the `xsu` stdin invocation method.
 - Never write fan-control sysfs/Settings paths in pulse-for-aya
   (`FanController.kt` is deliberately stubbed) without first reading
