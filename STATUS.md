@@ -6,6 +6,30 @@ of this file; `git log` is the history.
 
 Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
 
+## `sleep/` package checked — the module's last unread area, and it needs nothing (2026-07-31)
+
+The one part of `pulse-for-aya` never read during the whole port.
+Verdict: **byte-identical to upstream and fully generic** — stock Android
+screen-off/on broadcasts, pre-sleep CPU max frequencies stashed in the
+app's own DataStore, applied/restored via the same
+`PerformanceCommandBuilder` path everything else uses. No
+`Settings.System` keys, no vendor packages, no hardcoded sysfs, no
+`DeviceProfiles` gating — the opposite of the fan, which looked healthy in
+code while writing to a dead key. Also **off by default**
+(`AppSettings.sleepProfileEnabled = false`, self-terminates if started
+while disabled), so an untouched install never runs it. No wakelocks,
+receiver unregistered on destroy, mutex-guarded transitions. Nothing to
+patch, nothing to watch.
+
+**This closes the feature-parity assessment**: six of seven upstream
+features confirmed working on this hardware, RGB the only real remaining
+gap (mechanism already located — `RgbManager`/`RgbUtil`, `Settings.System`
+under `ayaneo/share/*` — just not wired in). Full table:
+`research/pulse-for-aya/README.md`, "Feature parity vs upstream".
+
+Incidental, for the separate overnight-battery-drain question: this
+feature being off by default rules it out as a contributor.
+
 ## Discrete fan modes CONFIRMED LIVE + the callback readback question answered YES (2026-07-31)
 
 First on-device test of the discrete-mode work below. **All three modes

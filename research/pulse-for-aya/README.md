@@ -611,10 +611,27 @@ gap to a real 1:1 port is visible at a glance.
   wired into `pulse-for-aya` — smaller scope than fan (RGB is cosmetic,
   not safety-relevant), deferred behind fan.
 
+**Closed 2026-07-31 — `sleep/` checked, needs nothing:**
+- The `sleep/SleepProfileMonitorService` package (the module's last unread
+  area) turns out to be **byte-identical to upstream and fully generic**:
+  it triggers on stock Android `ACTION_SCREEN_OFF`/`_ON`/`USER_PRESENT`,
+  stores the pre-sleep CPU max frequencies in the app's own DataStore, and
+  applies/restores them through the same `PerformanceCommandBuilder` path
+  the rest of the app already uses. **Zero `Settings.System` keys, zero
+  vendor package references, zero hardcoded sysfs paths, no
+  `DeviceProfiles` gating** — the exact opposite of the fan, which looked
+  fine in code while writing to a key nothing on this device reads. It is
+  also **off by default** (`AppSettings.sleepProfileEnabled = false`) and
+  self-terminates if started while disabled, so an untouched install isn't
+  running it at all. No wakelocks, receiver unregistered on destroy,
+  mutex-guarded sleep/wake transitions. Nothing to patch.
+  - Worth noting for accuracy: its writes go through `buildApplyScript`
+    (the script/`xsu` path), not `PulseDaemon`'s FIFO. Harmless — it's a
+    one-shot on a screen transition, not the sustained high-frequency
+    pattern that caused the `xsud` trouble — and it's the shared path for
+    manual tier application generally, not something specific to `sleep/`.
+
 **Genuinely unknown, never checked:**
-- The `sleep/SleepProfileMonitorService` package — not read during the
-  glue assessment, unknown whether it needs any patching to work
-  correctly on this device.
 - No formal A/B comparison against native AyaSettings run yet (informal
   comparisons exist scattered through `STATUS.md`'s per-app testing
   entries, but nothing structured).
