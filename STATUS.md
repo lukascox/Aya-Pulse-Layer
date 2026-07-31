@@ -4,8 +4,35 @@ Living document — update this in place at the end of a working session,
 commit with a descriptive message. Do not create a new dated/versioned copy
 of this file; `git log` is the history.
 
-Remotes: a self-hosted Forgejo instance (private, primary) and GitHub
-(`Aya-Pulse-Layer`, public mirror). Both carry the same history.
+Remotes: a self-hosted Forgejo instance (private, primary, `origin`) and
+GitHub (`github`, https://github.com/lukascox/Aya-Pulse-Layer, public).
+Both carry the same history. `git push` goes to Forgejo only; the public
+mirror is updated deliberately with `git push github main`.
+
+## The repo is public — implications for future sessions
+
+**History was rewritten once, on purpose.** Before publishing, every commit
+was rebuilt to (a) redact device logs and (b) change the author address off
+a work e-mail. Redactions applied across all history, not just at HEAD:
+the home network name became `HOMENET`, and two unmasked hardware addresses
+became `xx:…`/`yy:…` placeholders. Nothing else in the logs was altered,
+so their technical value is intact. A pre-rewrite backup of `.git` was
+session-local and is now gone; the rewritten history is the only one.
+
+**Anything committed from here on is published the moment it is mirrored.**
+Before adding new device logs, run the same check that was used then:
+search for the real network name and hardware addresses, plus account
+identifiers and tokens. `research/ab-logger/results/` is the folder where
+this actually matters — logcat does not mask Bluetooth addresses the way
+dmesg does.
+
+**Licence is now explicit.** GPL-2.0 at the repo root, inherited from
+`pulse`, covering the repository as a whole. README states plainly that
+published logs are redacted.
+
+Repo-name note: the GitHub name is `Aya-Pulse-Layer`, which abbreviates to
+`apl` — the local directory name and the `apl-*` research prefixes stay
+consistent with it.
 
 ## Current state and next step: two-device comparison (2026-07-31)
 
