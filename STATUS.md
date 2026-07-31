@@ -109,6 +109,47 @@ does not work either) and the unvalidated `FAN_MODE.valueOf()` in
 audience and structure from anything in this repo: reproduction, evidence,
 suggested fix, impact.
 
+## `W` PASSES the clean-install test — the port is not `B`-specific (2026-08-01)
+
+First run on the white unit, untouched until this install. Six minutes, files
+and full writeup in
+`research/ab-logger/results/unsupervised_session_2026-07-31/` (`W/`, `NOTES.md`).
+The prerequisite-first test order cleared in order:
+
+1. **`xsu` is present and works on a stock unit** — the daemon started and
+   carried the session (83 cap writes / 183 telemetry reads via FIFO, 1
+   fallback). This was the real unknown and it is closed.
+2. **The fan duty node exists and reads** (`fan_duty`/`fan_rpm` in `cap_poll`).
+3. **AIDL bound, confirmed twice over** — `AIDL callback:
+   fanMode=FAN_MODE_BALANCE` in the ring buffer, and objectively via PWM:
+   SPORT drove duty 12→**255** (322→6718 rpm), SMART brought it back to 76,
+   ~5 s vendor latency each way. Duty 255 is unreachable without the command
+   landing.
+
+AutoTDP ran; `dmesg` crash hits **0**; every logcat hit pre-dated the session
+and was Eden crashing on its own.
+
+**Open, and testable after the reboot**: `W` idled at `fan_duty=12` / 322 rpm
+(fan effectively off) where `B` idles at 76 / ~2750, moving to 76 only once
+PULSE sent SMART. That fits the user's report that **AYA Settings' UI did not
+work on this unit** — an uninitialised vendor stack would not be regulating,
+which is what duty=12 looks like. If `W` idles at 76 after the reboot, that
+confirms it. On that reading PULSE restored cooling on a device whose vendor
+software had silently stopped doing it.
+
+The AYA Settings failure itself **left no trace**: a ~2-week `logcat -b all`
+has no launch attempt, no exception, no `avc: denied`, no process death; the
+package is `installed=true`/`stopped=false`/`enabled=0` and alive at 0 % CPU.
+UI/init-level, and nothing implicates PULSE.
+
+Vendor versions on `W` (recorded — a version difference would confound the
+comparison): settings **1.1.112** over 1.1.100, gamewindow **1.5.84** over
+1.5.78. `B` not checked yet; expected identical.
+
+**Never commit the pre-reboot `logcat -b all` dump** (kept in the user's home
+dir, out of the repo): home network name, a BSSID, four unmasked hardware
+addresses, a personal e-mail. `dmesg` masks these, `logcat` does not.
+
 ## Another project targets this device, and it gives us a Plan B for `xsu` (2026-07-31)
 
 `Ayaneo-PocketFit-tools` (https://github.com/The412Banner/Ayaneo-PocketFit-tools,

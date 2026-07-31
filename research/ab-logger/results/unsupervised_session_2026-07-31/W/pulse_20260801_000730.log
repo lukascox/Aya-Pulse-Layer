@@ -1,0 +1,441 @@
+# TRIMMED (analyze-pulse-logs.py) -- original was 456 lines / 61160B.
+# Kept: every distinct line; runs of 3+ consecutive identical lines (idle TICK-SKIP polling,
+# only the timestamp differs) collapsed to first + elision count + last.
+# ---
+2026-08-01 00:07:31 === pulse_daemon session start === version=1.19.6 (303) built 2026-07-31 00:45:36 script_crc32=ebbd831f
+2026-08-01 00:07:32 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-08-01 00:07:32 PulseFan: arbiter=None auto=false bound=null managed=null latched=true
+2026-08-01 00:07:33 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-08-01 00:07:34 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-08-01 00:07:34 PulseFan: arbiter=None auto=false bound=null managed=5 latched=false
+2026-08-01 00:07:35 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+# ... 5 more identical lines elided (same content, only timestamp differs) ...
+2026-08-01 00:07:41 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-08-01 00:07:41 PulseFan: arbiter=None auto=false bound=null managed=4 latched=false
+2026-08-01 00:07:43 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+# ... 13 more identical lines elided (same content, only timestamp differs) ...
+2026-08-01 00:07:57 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-08-01 00:08:00 PulseDaemon: cap write via daemon (3 node(s))
+2026-08-01 00:08:01 PulseDaemon: cap write via daemon (10 node(s))
+2026-08-01 00:08:01 PulseDaemon: engage governor via daemon (schedutil)
+2026-08-01 00:08:05 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:06 PulseAutoTdp: AUTOTDP-SESSION tgt=60 bias=EFFICIENT wattCap=0 policies=0:2265600:0,1;2:3148800:2,3,4;5:2956800:5,6;7:3052800:7;-100:1050000:
+2026-08-01 00:08:06 PulseAutoTdp: tgt=60 fps=- jank=0 tail=-ms act=HOLD bn=- cpuB=-1 cpuPk=-1 primePk=-1 io=-1 gpuB=8 gpuL=1 capped=0 prk=0 stl=0 draw=3.26W cT=38 gT=37 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] mn/mx[0:364/2265,2:499/3148,5:499/2956,7:480/3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:06 PulseFan: arbiter=None auto=true bound=null managed=4 latched=false
+2026-08-01 00:08:08 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:09 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:09 PulseAutoTdp: tgt=60 fps=37.5 jank=27 tail=33ms act=HOLD bn=- cpuB=12 cpuPk=33 primePk=6 io=0 gpuB=10 gpuL=2 capped=0 prk=0 stl=0 draw=3.41W cT=38 gT=37 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:10 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:11 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:12 PulseAutoTdp: tgt=60 fps=29.9 jank=37 tail=50ms act=HOLD bn=- cpuB=9 cpuPk=29 primePk=3 io=0 gpuB=8 gpuL=1 capped=0 prk=0 stl=0 draw=3.53W cT=37 gT=36 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:13 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:14 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:14 PulseAutoTdp: tgt=60 fps=29.9 jank=35 tail=50ms act=HOLD bn=- cpuB=9 cpuPk=30 primePk=5 io=0 gpuB=8 gpuL=1 capped=0 prk=0 stl=0 draw=3.52W cT=37 gT=36 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:15 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:16 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:17 PulseAutoTdp: tgt=60 fps=39.9 jank=22 tail=50ms act=HOLD bn=- cpuB=11 cpuPk=26 primePk=14 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=3.87W cT=38 gT=37 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:18 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:19 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:19 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=HOLD bn=- cpuB=14 cpuPk=30 primePk=13 io=0 gpuB=15 gpuL=3 capped=0 prk=0 stl=0 draw=3.68W cT=38 gT=37 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:20 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:22 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:22 PulseAutoTdp: tgt=60 fps=58.8 jank=4 tail=33ms act=HOLD bn=- cpuB=16 cpuPk=35 primePk=21 io=0 gpuB=11 gpuL=2 capped=0 prk=0 stl=0 draw=5.06W cT=40 gT=37 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:23 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:24 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:24 PulseAutoTdp: tgt=60 fps=53.4 jank=10 tail=33ms act=HOLD bn=- cpuB=12 cpuPk=29 primePk=20 io=0 gpuB=14 gpuL=3 capped=0 prk=0 stl=0 draw=3.95W cT=39 gT=37 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:25 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:27 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:27 PulseAutoTdp: tgt=60 fps=44.0 jank=21 tail=33ms act=HOLD bn=- cpuB=11 cpuPk=31 primePk=7 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=2.91W cT=37 gT=37 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2150,2:3014,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:28 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:29 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:29 PulseAutoTdp: tgt=60 fps=29.5 jank=36 tail=50ms act=HOLD bn=- cpuB=9 cpuPk=28 primePk=3 io=0 gpuB=8 gpuL=1 capped=0 prk=0 stl=0 draw=2.43W cT=37 gT=37 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:31 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:32 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:33 PulseAutoTdp: tgt=60 fps=55.3 jank=8 tail=33ms act=HOLD bn=- cpuB=12 cpuPk=35 primePk=8 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=2.52W cT=37 gT=37 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] mn/mx[0:364/2265,2:499/3148,5:499/2956,7:480/3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:34 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:35 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:35 PulseAutoTdp: tgt=60 fps=60.0 jank=1 tail=33ms act=HOLD bn=- cpuB=13 cpuPk=29 primePk=13 io=0 gpuB=14 gpuL=3 capped=0 prk=0 stl=0 draw=2.44W cT=38 gT=37 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:36 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:38 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:38 PulseAutoTdp: tgt=60 fps=29.5 jank=36 tail=50ms act=HOLD bn=- cpuB=8 cpuPk=24 primePk=6 io=0 gpuB=8 gpuL=1 capped=0 prk=0 stl=0 draw=2.44W cT=37 gT=37 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:39 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:40 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:40 PulseAutoTdp: tgt=60 fps=44.6 jank=19 tail=50ms act=HOLD bn=- cpuB=13 cpuPk=29 primePk=12 io=0 gpuB=9 gpuL=1 capped=0 prk=0 stl=0 draw=3.69W cT=39 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:42 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:43 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:43 PulseAutoTdp: tgt=60 fps=48.7 jank=15 tail=50ms act=HOLD bn=- cpuB=12 cpuPk=35 primePk=10 io=0 gpuB=11 gpuL=2 capped=0 prk=0 stl=0 draw=3.14W cT=37 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:1574,2:2841,5:2841,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:44 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:46 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:46 PulseAutoTdp: AUTOTDP-SESSION tgt=60 bias=EFFICIENT wattCap=0 policies=0:2265600:0,1;2:3148800:2,3,4;5:2956800:5,6;7:3052800:7;-100:1050000:
+2026-08-01 00:08:46 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=HOLD bn=- cpuB=11 cpuPk=36 primePk=15 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=2.79W cT=36 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:1248,2:2438,5:2438,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:47 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:48 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:48 PulseAutoTdp: tgt=60 fps=37.6 jank=26 tail=50ms act=HOLD bn=- cpuB=10 cpuPk=32 primePk=11 io=0 gpuB=10 gpuL=2 capped=0 prk=0 stl=0 draw=2.60W cT=36 gT=37 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:1459,2:2380,5:2380,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:49 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:51 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:51 PulseAutoTdp: tgt=60 fps=32.9 jank=31 tail=50ms act=HOLD bn=- cpuB=11 cpuPk=32 primePk=5 io=0 gpuB=8 gpuL=1 capped=0 prk=0 stl=0 draw=4.16W cT=39 gT=37 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:1920,2:2515,5:2707,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:52 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:53 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:53 PulseAutoTdp: tgt=60 fps=29.9 jank=35 tail=50ms act=HOLD bn=- cpuB=9 cpuPk=30 primePk=3 io=0 gpuB=8 gpuL=1 capped=0 prk=0 stl=0 draw=3.52W cT=37 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3014,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:55 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:56 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:56 PulseAutoTdp: tgt=60 fps=38.8 jank=24 tail=50ms act=HOLD bn=- cpuB=10 cpuPk=25 primePk=5 io=0 gpuB=8 gpuL=1 capped=0 prk=0 stl=0 draw=2.86W cT=37 gT=37 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:08:57 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:58 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:08:59 PulseAutoTdp: tgt=60 fps=29.4 jank=34 tail=50ms act=HOLD bn=- cpuB=10 cpuPk=35 primePk=4 io=0 gpuB=8 gpuL=1 capped=0 prk=0 stl=0 draw=3.26W cT=37 gT=37 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:1689,2:3014,5:2956,7:2995] mn/mx[0:1574/1689,2:2956/3014,5:499/2956,7:480/2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:01 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:02 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:02 PulseAutoTdp: tgt=60 fps=45.9 jank=18 tail=50ms act=HOLD bn=- cpuB=13 cpuPk=30 primePk=14 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=3.12W cT=38 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:03 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:04 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:05 PulseAutoTdp: tgt=60 fps=36.0 jank=28 tail=50ms act=HOLD bn=- cpuB=10 cpuPk=29 primePk=5 io=0 gpuB=8 gpuL=1 capped=0 prk=0 stl=0 draw=2.80W cT=38 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:06 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:07 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:07 PulseAutoTdp: tgt=60 fps=54.3 jank=9 tail=33ms act=HOLD bn=- cpuB=13 cpuPk=31 primePk=14 io=0 gpuB=9 gpuL=1 capped=0 prk=0 stl=0 draw=2.71W cT=39 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:08 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:10 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:10 PulseAutoTdp: tgt=60 fps=45.7 jank=18 tail=50ms act=HOLD bn=- cpuB=11 cpuPk=30 primePk=12 io=0 gpuB=10 gpuL=2 capped=0 prk=0 stl=0 draw=3.07W cT=38 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:1920,2:3014,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:11 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:12 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:12 PulseAutoTdp: tgt=60 fps=43.5 jank=20 tail=50ms act=HOLD bn=- cpuB=12 cpuPk=29 primePk=10 io=0 gpuB=10 gpuL=2 capped=0 prk=0 stl=0 draw=3.41W cT=37 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:13 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:15 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:15 PulseAutoTdp: tgt=60 fps=30.3 jank=35 tail=50ms act=HOLD bn=- cpuB=9 cpuPk=30 primePk=3 io=0 gpuB=10 gpuL=2 capped=0 prk=0 stl=0 draw=4.19W cT=38 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2150,2:3072,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:16 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:17 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:17 PulseAutoTdp: tgt=60 fps=47.0 jank=16 tail=50ms act=HOLD bn=- cpuB=11 cpuPk=27 primePk=5 io=0 gpuB=11 gpuL=2 capped=0 prk=0 stl=0 draw=3.12W cT=39 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2035,2:3148,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:18 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:20 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:20 PulseAutoTdp: tgt=60 fps=42.5 jank=22 tail=50ms act=HOLD bn=- cpuB=11 cpuPk=28 primePk=14 io=0 gpuB=11 gpuL=2 capped=0 prk=0 stl=0 draw=3.39W cT=37 gT=37 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:1689,2:2956,5:2956,7:3052] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:21 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:22 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:22 PulseAutoTdp: tgt=60 fps=42.3 jank=22 tail=50ms act=HOLD bn=- cpuB=11 cpuPk=31 primePk=11 io=0 gpuB=9 gpuL=1 capped=0 prk=0 stl=0 draw=3.47W cT=37 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:1459,2:2899,5:2899,7:3052] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:24 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:25 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:25 PulseAutoTdp: AUTOTDP-SESSION tgt=60 bias=EFFICIENT wattCap=0 policies=0:2265600:0,1;2:3148800:2,3,4;5:2956800:5,6;7:3052800:7;-100:1050000:
+2026-08-01 00:09:26 PulseAutoTdp: tgt=60 fps=39.1 jank=25 tail=50ms act=HOLD bn=- cpuB=11 cpuPk=31 primePk=14 io=0 gpuB=10 gpuL=2 capped=0 prk=0 stl=0 draw=3.11W cT=37 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:1574,2:3014,5:2956,7:3052] mn/mx[0:1459/1574,2:2956/3014,5:499/2956,7:480/3052] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:27 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:28 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:29 PulseAutoTdp: tgt=60 fps=51.1 jank=12 tail=50ms act=HOLD bn=- cpuB=12 cpuPk=37 primePk=13 io=0 gpuB=14 gpuL=3 capped=0 prk=0 stl=0 draw=3.94W cT=37 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:1344,2:2764,5:2764,7:3052] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:30 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:31 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:31 PulseAutoTdp: tgt=60 fps=48.0 jank=15 tail=50ms act=HOLD bn=- cpuB=11 cpuPk=30 primePk=10 io=0 gpuB=12 gpuL=2 capped=0 prk=0 stl=0 draw=3.14W cT=37 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:1804,2:2956,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:32 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:34 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:34 PulseAutoTdp: tgt=60 fps=48.8 jank=15 tail=33ms act=HOLD bn=- cpuB=10 cpuPk=27 primePk=9 io=0 gpuB=15 gpuL=3 capped=0 prk=0 stl=0 draw=2.48W cT=39 gT=39 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:35 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:36 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:36 PulseAutoTdp: tgt=60 fps=50.1 jank=14 tail=33ms act=HOLD bn=- cpuB=10 cpuPk=33 primePk=10 io=0 gpuB=14 gpuL=3 capped=0 prk=0 stl=0 draw=3.52W cT=38 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2035,2:3148,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:37 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:39 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:39 PulseAutoTdp: tgt=60 fps=35.2 jank=29 tail=50ms act=HOLD bn=- cpuB=9 cpuPk=26 primePk=5 io=0 gpuB=8 gpuL=1 capped=0 prk=0 stl=0 draw=4.38W cT=39 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:1804,2:3148,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:40 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:41 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:41 PulseAutoTdp: tgt=60 fps=44.4 jank=19 tail=50ms act=HOLD bn=- cpuB=9 cpuPk=32 primePk=11 io=0 gpuB=10 gpuL=2 capped=0 prk=0 stl=0 draw=3.43W cT=37 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:1248,2:2764,5:2764,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:43 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:44 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:44 PulseAutoTdp: tgt=60 fps=37.8 jank=25 tail=50ms act=HOLD bn=- cpuB=9 cpuPk=27 primePk=8 io=0 gpuB=8 gpuL=1 capped=0 prk=0 stl=0 draw=5.23W cT=38 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:1804,2:3014,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:45 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:46 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:47 PulseAutoTdp: tgt=60 fps=54.4 jank=8 tail=50ms act=HOLD bn=- cpuB=14 cpuPk=30 primePk=23 io=0 gpuB=14 gpuL=3 capped=0 prk=0 stl=0 draw=3.88W cT=39 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:48 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:49 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:49 PulseAutoTdp: tgt=60 fps=52.6 jank=10 tail=50ms act=HOLD bn=- cpuB=11 cpuPk=26 primePk=9 io=0 gpuB=8 gpuL=1 capped=0 prk=0 stl=0 draw=3.23W cT=39 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:50 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:52 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:52 PulseAutoTdp: tgt=60 fps=58.9 jank=4 tail=33ms act=HOLD bn=- cpuB=17 cpuPk=35 primePk=20 io=0 gpuB=14 gpuL=3 capped=0 prk=0 stl=0 draw=3.31W cT=38 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] mn/mx[0:1248/2265,2:499/3148,5:499/2956,7:480/2937] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:54 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:55 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:55 PulseAutoTdp: tgt=60 fps=29.4 jank=35 tail=50ms act=HOLD bn=- cpuB=9 cpuPk=26 primePk=4 io=0 gpuB=8 gpuL=1 capped=0 prk=0 stl=0 draw=3.85W cT=38 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:56 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:57 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:09:58 PulseAutoTdp: tgt=60 fps=38.7 jank=25 tail=50ms act=HOLD bn=- cpuB=11 cpuPk=27 primePk=13 io=0 gpuB=10 gpuL=2 capped=0 prk=0 stl=0 draw=3.60W cT=39 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:09:59 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:10:00 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:10:00 PulseAutoTdp: tgt=60 fps=37.1 jank=28 tail=50ms act=HOLD bn=- cpuB=10 cpuPk=33 primePk=6 io=0 gpuB=11 gpuL=2 capped=0 prk=0 stl=0 draw=3.57W cT=38 gT=38 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:1920,2:3072,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:10:01 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:10:03 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:10:03 PulseAutoTdp: tgt=60 fps=36.2 jank=38 tail=86ms act=HOLD bn=- cpuB=11 cpuPk=31 primePk=8 io=0 gpuB=8 gpuL=1 capped=0 prk=0 stl=0 draw=3.31W cT=38 gT=37 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:1920,2:3014,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:10:04 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:10:06 PulseDaemon: cap write via daemon (3 node(s))
+2026-08-01 00:10:06 PulseDaemon: cap write via daemon (10 node(s))
+2026-08-01 00:10:06 PulseDaemon: cap write via daemon (10 node(s))
+2026-08-01 00:10:07 PulseDaemon: engage governor via daemon (schedutil)
+2026-08-01 00:10:07 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:10:07 PulseAutoTdp: AUTOTDP-SESSION tgt=90 bias=BALANCED wattCap=0 policies=0:2265600:0,1;2:3148800:2,3,4;5:2956800:5,6;7:3052800:7;-100:1050000:
+2026-08-01 00:10:09 PulseAutoTdp: tgt=90 fps=78.5 jank=0 tail=22ms act=HOLD bn=- cpuB=17 cpuPk=50 primePk=5 io=0 gpuB=23 gpuL=5 capped=0 prk=0 stl=0 draw=7.13W cT=42 gT=39 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:1401,5:2323,7:480] mn/mx[0:364/2265,2:499/3148,5:499/2956,7:480/3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:10:11 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:10:12 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:10:12 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:10:12 PulseAutoTdp: tgt=90 fps=30.3 jank=29 tail=44ms act=TRIM bn=- cpuB=13 cpuPk=48 primePk=2 io=0 gpuB=13 gpuL=2 capped=5 prk=0 stl=0 draw=3.04W cT=38 gT=39 caps%[0:100,2:95,5:100,7:100,-100:100] curMHz[0:1689,2:1401,5:2035,7:480] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:10:12 PulseDaemon: cap write via daemon (2 node(s))
+2026-08-01 00:10:14 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:10:15 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:10:15 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:10:15 PulseAutoTdp: tgt=90 fps=68.9 jank=10 tail=66ms act=RAISE bn=- cpuB=18 cpuPk=50 primePk=29 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=7.42W cT=42 gT=40 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:844,5:1075,7:1593] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:10:16 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:10:18 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:10:18 PulseAutoTdp: tgt=90 fps=85.1 jank=2 tail=58ms act=HOLD bn=- cpuB=13 cpuPk=54 primePk=23 io=0 gpuB=17 gpuL=3 capped=0 prk=0 stl=0 draw=3.36W cT=39 gT=39 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:672,2:960,5:2323,7:480] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:10:19 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:10:20 PulseDaemon: cap write via daemon (3 node(s))
+2026-08-01 00:10:21 PulseDaemon: cap write via daemon (10 node(s))
+2026-08-01 00:10:23 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:23 PulseFan: arbiter=None auto=false bound=4 managed=4 latched=false
+2026-08-01 00:10:24 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:10:25 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:26 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:26 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:10:27 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+# ... 2 more identical lines elided (same content, only timestamp differs) ...
+2026-08-01 00:10:32 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:32 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:10:33 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:34 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:35 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:10:36 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:37 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:37 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:10:38 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:40 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:40 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:10:41 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:43 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:43 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:10:44 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:45 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:46 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:10:47 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:48 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:48 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:10:49 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:51 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:51 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:10:52 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:54 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:54 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:10:55 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:57 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:57 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:10:58 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:10:59 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:11:00 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:11:01 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:11:02 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:11:03 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:11:04 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:11:05 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:11:05 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:11:06 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:11:08 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:11:08 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:11:09 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:11:11 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:11:11 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:11:12 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:11:13 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:11:14 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:11:15 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+# ... 2 more identical lines elided (same content, only timestamp differs) ...
+2026-08-01 00:11:19 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:11:19 PulseDaemon: cap write via daemon (5 node(s))
+2026-08-01 00:11:20 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-01 00:11:22 PulseDaemon: cap write via daemon (10 node(s))
+2026-08-01 00:11:22 PulseDaemon: cap write via daemon (3 node(s))
+2026-08-01 00:11:22 PulseDaemon: cap write via daemon (10 node(s))
+2026-08-01 00:11:23 PulseDaemon: engage governor via daemon (schedutil)
+2026-08-01 00:11:23 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:23 PulseAutoTdp: AUTOTDP-SESSION tgt=90 bias=BALANCED wattCap=0 policies=0:2265600:0,1;2:3148800:2,3,4;5:2956800:5,6;7:3052800:7;-100:1050000:
+2026-08-01 00:11:24 PulseAutoTdp: tgt=90 fps=- jank=0 tail=-ms act=HOLD bn=- cpuB=31 cpuPk=52 primePk=32 io=0 gpuB=14 gpuL=3 capped=0 prk=0 stl=0 draw=5.31W cT=52 gT=48 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3052] mn/mx[0:364/2265,2:499/3148,5:499/2956,7:480/3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:11:24 PulseFan: arbiter=None auto=true bound=null managed=4 latched=false
+2026-08-01 00:11:25 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:26 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:26 PulseAutoTdp: tgt=90 fps=86.5 jank=1 tail=58ms act=HOLD bn=- cpuB=16 cpuPk=30 primePk=14 io=0 gpuB=33 gpuL=7 capped=0 prk=0 stl=0 draw=4.37W cT=50 gT=46 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:11:27 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:29 PulseDaemon: cap write via daemon (3 node(s))
+2026-08-01 00:11:29 PulseDaemon: cap write via daemon (10 node(s))
+2026-08-01 00:11:29 PulseDaemon: cap write via daemon (3 node(s))
+2026-08-01 00:11:29 PulseDaemon: cap write via daemon (10 node(s))
+2026-08-01 00:11:29 PulseDaemon: engage governor via daemon (schedutil)
+2026-08-01 00:11:30 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:30 PulseAutoTdp: AUTOTDP-SESSION tgt=60 bias=EFFICIENT wattCap=0 policies=0:2265600:0,1;2:3148800:2,3,4;5:2956800:5,6;7:3052800:7;-100:1050000:
+2026-08-01 00:11:30 PulseAutoTdp: tgt=60 fps=77.1 jank=1 tail=33ms act=HOLD bn=- cpuB=21 cpuPk=47 primePk=13 io=0 gpuB=17 gpuL=3 capped=0 prk=0 stl=0 draw=5.22W cT=50 gT=46 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3052] mn/mx[0:364/2265,2:499/3148,5:499/2956,7:480/3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:11:32 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:33 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:33 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:11:33 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=TRIM bn=- cpuB=10 cpuPk=31 primePk=0 io=0 gpuB=9 gpuL=1 capped=0 prk=0 stl=0 draw=2.68W cT=46 gT=45 caps%[0:100,2:95,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:11:33 PulseDaemon: cap write via daemon (2 node(s))
+2026-08-01 00:11:34 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:36 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:36 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:11:36 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=RAISE bn=- cpuB=9 cpuPk=27 primePk=0 io=0 gpuB=8 gpuL=1 capped=0 prk=0 stl=0 draw=2.79W cT=44 gT=44 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3014,5:2956,7:3052] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:11:37 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:38 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:38 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=TRIM bn=- cpuB=9 cpuPk=24 primePk=0 io=0 gpuB=6 gpuL=1 capped=0 prk=0 stl=0 draw=3.11W cT=44 gT=44 caps%[0:100,2:100,5:100,7:95,-100:100] curMHz[0:2265,2:3148,5:2956,7:3052] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:11:38 PulseDaemon: cap write via daemon (1 node(s))
+2026-08-01 00:11:40 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:41 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:41 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:11:41 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=TRIM bn=- cpuB=8 cpuPk=21 primePk=0 io=0 gpuB=6 gpuL=1 capped=0 prk=0 stl=0 draw=3.95W cT=44 gT=43 caps%[0:100,2:100,5:100,7:90,-100:100] curMHz[0:2265,2:3148,5:2956,7:2880] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:11:41 PulseDaemon: cap write via daemon (1 node(s))
+2026-08-01 00:11:42 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:44 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:44 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:11:44 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=TRIM bn=- cpuB=10 cpuPk=26 primePk=1 io=0 gpuB=6 gpuL=1 capped=0 prk=0 stl=0 draw=4.17W cT=44 gT=43 caps%[0:100,2:100,5:100,7:85,-100:100] curMHz[0:2265,2:3148,5:2956,7:2745] gpu=231 gcap=1050[0/13] lrn=0
+2026-08-01 00:11:44 PulseDaemon: cap write via daemon (1 node(s))
+2026-08-01 00:11:45 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:46 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:46 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:11:46 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=TRIM bn=- cpuB=9 cpuPk=23 primePk=0 io=0 gpuB=6 gpuL=1 capped=0 prk=0 stl=0 draw=2.80W cT=43 gT=43 caps%[0:100,2:100,5:100,7:80,-100:100] curMHz[0:2265,2:3148,5:2956,7:2630] gpu=231 gcap=1050[0/13] lrn=8
+2026-08-01 00:11:46 PulseDaemon: cap write via daemon (1 node(s))
+2026-08-01 00:11:48 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:49 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:49 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:11:49 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=TRIM bn=- cpuB=10 cpuPk=26 primePk=0 io=0 gpuB=6 gpuL=1 capped=0 prk=0 stl=0 draw=2.95W cT=43 gT=43 caps%[0:100,2:100,5:100,7:75,-100:100] curMHz[0:2265,2:3072,5:2956,7:2438] gpu=231 gcap=1050[0/13] lrn=8
+2026-08-01 00:11:49 PulseDaemon: cap write via daemon (1 node(s))
+2026-08-01 00:11:50 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:51 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:52 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:11:52 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=TRIM bn=- cpuB=9 cpuPk=25 primePk=0 io=0 gpuB=6 gpuL=1 capped=0 prk=0 stl=0 draw=3.92W cT=44 gT=43 caps%[0:100,2:100,5:100,7:70,-100:100] curMHz[0:2265,2:3072,5:2956,7:2304] gpu=231 gcap=1050[0/13] lrn=8
+2026-08-01 00:11:52 PulseDaemon: cap write via daemon (1 node(s))
+2026-08-01 00:11:53 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:54 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:54 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:11:54 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=TRIM bn=- cpuB=9 cpuPk=24 primePk=3 io=0 gpuB=6 gpuL=1 capped=0 prk=0 stl=0 draw=2.82W cT=42 gT=43 caps%[0:100,2:100,5:100,7:65,-100:100] curMHz[0:2265,2:3072,5:2956,7:2112] gpu=231 gcap=1050[0/13] lrn=16
+2026-08-01 00:11:54 PulseDaemon: cap write via daemon (1 node(s))
+2026-08-01 00:11:56 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:57 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:11:57 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:11:58 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=TRIM bn=- cpuB=10 cpuPk=25 primePk=0 io=0 gpuB=6 gpuL=1 capped=0 prk=0 stl=0 draw=3.18W cT=42 gT=43 caps%[0:100,2:100,5:100,7:60,-100:100] curMHz[0:2265,2:3072,5:2956,7:1939] mn/mx[0:2150/2265,2:3014/3072,5:499/2956,7:480/1824] gpu=231 gcap=1050[0/13] lrn=16
+2026-08-01 00:11:58 PulseDaemon: cap write via daemon (1 node(s))
+2026-08-01 00:11:59 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:00 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:01 PulseDaemon: cap write via daemon (1 node(s))
+2026-08-01 00:12:02 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:03 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:03 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:12:03 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=TRIM bn=- cpuB=11 cpuPk=25 primePk=3 io=0 gpuB=6 gpuL=1 capped=0 prk=0 stl=0 draw=3.20W cT=44 gT=41 caps%[0:100,2:100,5:100,7:50,-100:100] curMHz[0:2265,2:3072,5:2956,7:1708] gpu=231 gcap=1050[0/13] lrn=25
+2026-08-01 00:12:03 PulseDaemon: cap write via daemon (1 node(s))
+2026-08-01 00:12:04 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:06 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:06 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:12:06 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=TRIM bn=- cpuB=9 cpuPk=26 primePk=0 io=0 gpuB=6 gpuL=1 capped=0 prk=0 stl=0 draw=4.06W cT=43 gT=41 caps%[0:100,2:100,5:100,7:45,-100:100] curMHz[0:2265,2:3072,5:2956,7:1478] gpu=231 gcap=1050[0/13] lrn=25
+2026-08-01 00:12:06 PulseDaemon: cap write via daemon (1 node(s))
+2026-08-01 00:12:07 PulseDaemon: telemetry read via daemon (16 path(s))
+# ... 2 more identical lines elided (same content, only timestamp differs) ...
+2026-08-01 00:12:11 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:11 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:12:11 PulseAutoTdp: AUTOTDP-SESSION tgt=60 bias=EFFICIENT wattCap=0 policies=0:2265600:0,1;2:3148800:2,3,4;5:2956800:5,6;7:3052800:7;-100:1050000:
+2026-08-01 00:12:11 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=TRIM bn=- cpuB=9 cpuPk=25 primePk=0 io=0 gpuB=6 gpuL=1 capped=0 prk=0 stl=0 draw=3.38W cT=43 gT=42 caps%[0:100,2:100,5:100,7:35,-100:100] curMHz[0:2265,2:3072,5:2956,7:1248] gpu=231 gcap=1050[0/13] lrn=33
+2026-08-01 00:12:11 PulseDaemon: cap write via daemon (1 node(s))
+2026-08-01 00:12:12 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:14 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:14 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:12:14 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=TRIM bn=- cpuB=10 cpuPk=26 primePk=0 io=0 gpuB=6 gpuL=1 capped=0 prk=0 stl=0 draw=3.84W cT=43 gT=42 caps%[0:100,2:100,5:95,7:35,-100:100] curMHz[0:2265,2:3072,5:2956,7:1017] gpu=231 gcap=1050[0/13] lrn=33
+2026-08-01 00:12:14 PulseDaemon: cap write via daemon (2 node(s))
+2026-08-01 00:12:15 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:16 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:16 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:12:16 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=TRIM bn=- cpuB=9 cpuPk=23 primePk=0 io=0 gpuB=6 gpuL=1 capped=0 prk=0 stl=0 draw=2.81W cT=42 gT=42 caps%[0:100,2:100,5:90,7:35,-100:100] curMHz[0:2265,2:3072,5:2841,7:1017] gpu=231 gcap=1050[0/13] lrn=41
+2026-08-01 00:12:16 PulseDaemon: cap write via daemon (2 node(s))
+2026-08-01 00:12:18 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:19 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:19 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:12:19 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=TRIM bn=- cpuB=9 cpuPk=24 primePk=0 io=0 gpuB=6 gpuL=1 capped=0 prk=0 stl=0 draw=3.00W cT=41 gT=41 caps%[0:100,2:100,5:85,7:35,-100:100] curMHz[0:2265,2:3072,5:2630,7:1017] gpu=231 gcap=1050[0/13] lrn=41
+2026-08-01 00:12:20 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:22 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:22 PulseDaemon: cap write via daemon (2 node(s))
+2026-08-01 00:12:23 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:24 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:25 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:12:25 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=TRIM bn=- cpuB=9 cpuPk=24 primePk=0 io=0 gpuB=6 gpuL=1 capped=0 prk=0 stl=0 draw=3.32W cT=41 gT=41 caps%[0:100,2:100,5:75,7:35,-100:100] curMHz[0:2265,2:3072,5:2380,7:1017] mn/mx[0:2150/2265,2:3014/3072,5:499/2188,7:480/1017] gpu=231 gcap=1050[0/13] lrn=50
+2026-08-01 00:12:25 PulseDaemon: cap write via daemon (2 node(s))
+2026-08-01 00:12:27 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:28 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:28 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:12:28 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=TRIM bn=- cpuB=8 cpuPk=21 primePk=0 io=0 gpuB=6 gpuL=1 capped=0 prk=0 stl=0 draw=3.27W cT=41 gT=41 caps%[0:100,2:100,5:70,7:35,-100:100] curMHz[0:2265,2:3072,5:2188,7:1017] gpu=231 gcap=1050[0/13] lrn=58
+2026-08-01 00:12:28 PulseDaemon: cap write via daemon (2 node(s))
+2026-08-01 00:12:29 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:31 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:31 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:12:31 PulseAutoTdp: tgt=60 fps=60.0 jank=0 tail=16ms act=TRIM bn=- cpuB=9 cpuPk=27 primePk=0 io=0 gpuB=6 gpuL=1 capped=0 prk=0 stl=0 draw=2.89W cT=41 gT=41 caps%[0:100,2:100,5:65,7:35,-100:100] curMHz[0:2265,2:3072,5:2035,7:1017] gpu=231 gcap=1050[0/13] lrn=66
+2026-08-01 00:12:31 PulseDaemon: cap write via daemon (2 node(s))
+2026-08-01 00:12:32 PulseDaemon: telemetry read via daemon (16 path(s))
+# ... 1 more identical lines elided (same content, only timestamp differs) ...
+2026-08-01 00:12:35 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:36 PulseDaemon: cap write via daemon (3 node(s))
+2026-08-01 00:12:36 PulseDaemon: cap write via daemon (10 node(s))
+2026-08-01 00:12:36 PulseDaemon: cap write via daemon (3 node(s))
+2026-08-01 00:12:37 PulseDaemon: cap write via daemon (10 node(s))
+2026-08-01 00:12:37 PulseDaemon: engage governor via daemon (schedutil)
+2026-08-01 00:12:37 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:37 PulseAutoTdp: AUTOTDP-SESSION tgt=90 bias=BALANCED wattCap=0 policies=0:2265600:0,1;2:3148800:2,3,4;5:2956800:5,6;7:3052800:7;-100:1050000:
+2026-08-01 00:12:38 PulseAutoTdp: tgt=90 fps=60.0 jank=0 tail=22ms act=HOLD bn=- cpuB=22 cpuPk=41 primePk=18 io=0 gpuB=26 gpuL=5 capped=0 prk=0 stl=0 draw=5.72W cT=46 gT=41 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:2995] mn/mx[0:2035/2150,2:3072/3148,5:499/2956,7:480/2995] gpu=231 gcap=1050[0/13] lrn=75
+2026-08-01 00:12:39 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:41 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:41 PulseDaemon: cap write via xsu fallback (7 node(s), ~1323 chars, chunked)
+2026-08-01 00:12:41 PulseAutoTdp: tgt=90 fps=70.2 jank=0 tail=22ms act=TRIM bn=- cpuB=12 cpuPk=26 primePk=14 io=0 gpuB=40 gpuL=8 capped=5 prk=0 stl=0 draw=3.37W cT=44 gT=43 caps%[0:100,2:95,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=75
+2026-08-01 00:12:41 PulseDaemon: cap write via daemon (2 node(s))
+2026-08-01 00:12:42 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:44 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:44 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-01 00:12:44 PulseAutoTdp: tgt=90 fps=47.9 jank=25 tail=44ms act=RAISE bn=- cpuB=11 cpuPk=33 primePk=13 io=0 gpuB=26 gpuL=5 capped=5 prk=0 stl=0 draw=3.41W cT=43 gT=42 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3014,5:2956,7:3052] gpu=231 gcap=1050[0/13] lrn=75
+2026-08-01 00:12:45 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:46 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:46 PulseAutoTdp: tgt=90 fps=80.2 jank=2 tail=78ms act=HOLD bn=- cpuB=28 cpuPk=46 primePk=27 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=5.40W cT=46 gT=43 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3052] gpu=231 gcap=1050[0/13] lrn=75
+2026-08-01 00:12:48 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:12:49 PulseDaemon: cap write via daemon (3 node(s))
+2026-08-01 00:12:49 PulseDaemon: cap write via daemon (10 node(s))
+2026-08-01 00:12:51 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.launcher3
+2026-08-01 00:12:51 PulseFan: arbiter=None auto=false bound=null managed=4 latched=false
+2026-08-01 00:12:52 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.launcher3
+2026-08-01 00:12:53 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.launcher3
+2026-08-01 00:12:54 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.ayaneo.home
+# ... 1 more identical lines elided (same content, only timestamp differs) ...
+2026-08-01 00:12:56 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.ayaneo.home
+2026-08-01 00:12:59 PulseDaemon: cap write via daemon (3 node(s))
+2026-08-01 00:13:00 PulseDaemon: cap write via daemon (10 node(s))
+2026-08-01 00:13:00 PulseDaemon: engage governor via daemon (schedutil)
+2026-08-01 00:13:00 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:00 PulseAutoTdp: AUTOTDP-SESSION tgt=90 bias=BALANCED wattCap=0 policies=0:2265600:0,1;2:3148800:2,3,4;5:2956800:5,6;7:3052800:7;-100:1050000:
+2026-08-01 00:13:01 PulseAutoTdp: tgt=90 fps=- jank=0 tail=-ms act=HOLD bn=- cpuB=18 cpuPk=38 primePk=12 io=0 gpuB=12 gpuL=2 capped=0 prk=0 stl=0 draw=5.21W cT=46 gT=42 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3052] mn/mx[0:364/2265,2:499/3148,5:499/2956,7:480/3302] gpu=231 gcap=1050[0/13] lrn=75
+2026-08-01 00:13:01 PulseFan: arbiter=None auto=true bound=null managed=4 latched=false
+2026-08-01 00:13:02 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:04 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:04 PulseAutoTdp: tgt=90 fps=45.5 jank=25 tail=44ms act=HOLD bn=- cpuB=11 cpuPk=27 primePk=10 io=0 gpuB=14 gpuL=3 capped=0 prk=0 stl=0 draw=3.39W cT=43 gT=42 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:3302] gpu=231 gcap=1050[0/13] lrn=75
+2026-08-01 00:13:05 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:06 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:06 PulseAutoTdp: tgt=90 fps=31.1 jank=35 tail=33ms act=HOLD bn=- cpuB=10 cpuPk=33 primePk=0 io=0 gpuB=12 gpuL=2 capped=0 prk=0 stl=0 draw=3.07W cT=42 gT=41 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=75
+2026-08-01 00:13:07 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:09 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:09 PulseAutoTdp: tgt=90 fps=29.8 jank=36 tail=44ms act=HOLD bn=- cpuB=8 cpuPk=24 primePk=10 io=0 gpuB=12 gpuL=2 capped=0 prk=0 stl=0 draw=4.35W cT=42 gT=42 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2035,2:3148,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=75
+2026-08-01 00:13:10 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:11 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:11 PulseAutoTdp: tgt=90 fps=30.0 jank=32 tail=44ms act=HOLD bn=- cpuB=9 cpuPk=28 primePk=3 io=0 gpuB=12 gpuL=2 capped=0 prk=0 stl=0 draw=3.20W cT=42 gT=41 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=75
+2026-08-01 00:13:13 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:14 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:14 PulseAutoTdp: tgt=90 fps=31.1 jank=26 tail=44ms act=HOLD bn=- cpuB=10 cpuPk=30 primePk=0 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=3.55W cT=41 gT=41 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=75
+2026-08-01 00:13:15 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:16 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:17 PulseAutoTdp: tgt=90 fps=30.0 jank=26 tail=44ms act=HOLD bn=- cpuB=9 cpuPk=33 primePk=0 io=0 gpuB=12 gpuL=2 capped=0 prk=0 stl=0 draw=2.88W cT=41 gT=42 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=75
+2026-08-01 00:13:18 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:19 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:19 PulseAutoTdp: tgt=90 fps=30.3 jank=35 tail=33ms act=HOLD bn=- cpuB=10 cpuPk=25 primePk=0 io=0 gpuB=12 gpuL=2 capped=0 prk=0 stl=0 draw=3.67W cT=42 gT=41 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=75
+2026-08-01 00:13:20 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:21 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:22 PulseAutoTdp: tgt=90 fps=30.3 jank=36 tail=33ms act=HOLD bn=- cpuB=10 cpuPk=34 primePk=0 io=0 gpuB=12 gpuL=2 capped=0 prk=0 stl=0 draw=3.56W cT=41 gT=41 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=75
+2026-08-01 00:13:23 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:24 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:24 PulseAutoTdp: tgt=90 fps=30.3 jank=37 tail=33ms act=HOLD bn=- cpuB=10 cpuPk=32 primePk=0 io=0 gpuB=12 gpuL=2 capped=0 prk=0 stl=0 draw=2.93W cT=41 gT=42 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=75
+2026-08-01 00:13:25 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:27 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:27 PulseAutoTdp: tgt=90 fps=30.3 jank=36 tail=33ms act=HOLD bn=- cpuB=10 cpuPk=34 primePk=1 io=0 gpuB=12 gpuL=2 capped=0 prk=0 stl=0 draw=2.81W cT=41 gT=41 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:2995] mn/mx[0:2150/2265,2:3072/3148,5:499/2956,7:480/2995] gpu=231 gcap=1050[0/13] lrn=75
+2026-08-01 00:13:29 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:30 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:30 PulseAutoTdp: tgt=90 fps=30.3 jank=36 tail=33ms act=HOLD bn=- cpuB=10 cpuPk=33 primePk=0 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=3.76W cT=41 gT=41 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=75
+2026-08-01 00:13:31 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:33 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:33 PulseAutoTdp: tgt=90 fps=30.3 jank=33 tail=44ms act=HOLD bn=- cpuB=10 cpuPk=30 primePk=2 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=3.31W cT=41 gT=40 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=75
+2026-08-01 00:13:34 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:35 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-01 00:13:35 PulseAutoTdp: tgt=90 fps=30.3 jank=33 tail=44ms act=HOLD bn=- cpuB=10 cpuPk=28 primePk=0 io=0 gpuB=13 gpuL=2 capped=0 prk=0 stl=0 draw=2.77W cT=41 gT=41 caps%[0:100,2:100,5:100,7:100,-100:100] curMHz[0:2265,2:3148,5:2956,7:2995] gpu=231 gcap=1050[0/13] lrn=75
+2026-08-01 00:13:36 PulseDaemon: telemetry read via daemon (16 path(s))

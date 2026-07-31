@@ -1,4 +1,79 @@
-# Unsupervised session, 2026-07-31 — `B` unit only
+# Sessions, 2026-07-31 (`B`) and 2026-08-01 (`W`)
+
+Folder name keeps the `B` session's date. `W`'s first session ran just past
+midnight, so its files carry `20260801`.
+
+## `W` first run: the clean-install test PASSES
+
+`W` is the white unit, untouched until this install, so this doubles as
+"does the port work on a device nobody prepared". Six-minute session,
+`pulse_20260801_000730*`. Every prerequisite in `STATUS.md`'s test order
+cleared, in order:
+
+1. **`xsu` is present and works on a stock unit.** The daemon started and
+   carried the session: 83 cap writes and 183 telemetry reads through the
+   FIFO, 1 `xsu` fallback, 0 fallback reads. This was the whole unknown, and
+   it is closed.
+2. **The fan duty node exists and reads.** `cap_poll` logs `fan_duty` and
+   `fan_rpm` exactly as on `B`.
+3. **The AIDL client bound, confirmed two independent ways.** Directly, in
+   the ring buffer: `PulseFan: AIDL callback: fanMode=FAN_MODE_BALANCE` (the
+   vendor's own state, not an echo of ours). And objectively, via PWM
+   readback of a discrete mode change:
+
+```
+00:07:34  PulseFan: managed=5  (SPORT)
+00:07:39  fan_duty 12 -> 255,  fan_rpm 322 -> 6718
+00:07:41  PulseFan: managed=4  (SMART)
+00:07:44  fan_duty 255 -> 76,  fan_rpm settles ~2750
+```
+
+   ~5 s vendor latency, both directions. Duty 255 is unreachable unless the
+   AIDL command landed.
+
+AutoTDP also ran (governor toggling `performance`/`schedutil`, caps moving).
+`dmesg` crash-keyword hits: **0**. Every logcat hit pre-dated the session and
+was Eden (`org.yuzu.yuzu_emu`, running as `com.miHoYo.Yuanshen`) crashing on
+its own, not vendor or PULSE code.
+
+### `W` idles with the fan nearly stopped, and that is probably a vendor fault
+
+Before PULSE touched anything, `W` sat at `fan_duty=12` / 322 rpm — the fan
+effectively off. `B` idles at 76 / ~2750. After PULSE sent SMART, `W` moved to
+76 and stayed.
+
+This lines up with the user's report that **AYA Settings' UI did not work on
+this unit**. If the vendor stack had not initialised, its fan daemon would not
+have been regulating, which is exactly what duty=12 looks like. On that
+reading PULSE restored cooling on a device whose vendor software had quietly
+stopped doing it. Unconfirmed, but testable: if `W` idles at 76 after the
+reboot, the vendor stack was simply not initialised.
+
+**The AYA Settings failure left no trace at all.** A full `logcat -b all`
+covering ~2 weeks has no launch attempt, no exception, no `avc: denied`, no
+process death for `com.ayaneo.settings`. The package reads `installed=true`,
+`stopped=false`, `enabled=0` (default, not disabled) and the process is alive
+at 0 % CPU. So it is a UI/init-level failure, not a process failure, and
+nothing implicates PULSE.
+
+Vendor versions on `W`, recorded because differing versions would confound
+the two-device comparison: `com.ayaneo.settings` **1.1.112** over system
+1.1.100, `com.ayaneo.gamewindow` **1.5.84** over 1.5.78. `B` not checked (not
+to hand); the user expects them identical.
+
+### Not kept, and one file that must never be committed
+
+Same trim as `B`: `_dmesg.log` and `_logcat.log` deleted (0 and 0 relevant
+crash hits respectively), plus the auto-generated `SUMMARY.md`, whose
+crash-hit list would dangle after those deletions.
+
+The pre-reboot `logcat -b all` dump was pulled to the user's home directory
+and **deliberately kept out of this repo**. It contains the home network name,
+a BSSID, four unmasked hardware addresses and a personal e-mail address.
+`dmesg` masks these; `logcat` does not. If anything from it is ever needed,
+extract the specific verified lines — never the file.
+
+## `B`, 2026-07-31 — the earlier session
 
 Real, unsupervised play on the black (`B`) unit. `W` had not been installed
 yet, so this is single-device data, not the two-device comparison.
