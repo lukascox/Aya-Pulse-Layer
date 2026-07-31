@@ -1,4 +1,4 @@
-# apl — research notes for gluing `pulse` onto an AYANEO Pocket FIT
+# Aya-Pulse-Layer — research notes for gluing `pulse` onto an AYANEO Pocket FIT
 
 **This repo is not an app. It is the research that makes one small patch
 possible.**
@@ -89,7 +89,7 @@ reversals are left visible on purpose.
 ## Repo layout
 
 ```
-apl/
+Aya-Pulse-Layer/
 ├── research/
 │   ├── pulse-for-aya/            -- THE DELIVERABLE: the glue patch itself
 │   ├── pulse-glue-assessment/    -- why glue and not a rewrite; risk assessment
@@ -150,3 +150,13 @@ reading. Each has a full write-up in its `*-assessment/FINDINGS.md`.
   when this repo moved into git (its remains are in `docs/archive/`).
 - **Verify on hardware.** Reading code is how a change gets proposed;
   running it on the device is how it gets believed.
+
+## Licence
+
+GPL-2.0, inherited from [`pulse`](https://github.com/keiretrogaming/pulse),
+of which the deliverable in `research/pulse-for-aya/` is a derivative work.
+The same licence covers this repository as a whole, so that the research and
+the patch it produced cannot be separated from those terms.
+
+Device logs published here are redacted: network names and hardware
+addresses are replaced with placeholders. Nothing else about them is altered.

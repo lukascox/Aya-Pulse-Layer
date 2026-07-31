@@ -4,7 +4,8 @@ Living document — update this in place at the end of a working session,
 commit with a descriptive message. Do not create a new dated/versioned copy
 of this file; `git log` is the history.
 
-Remote: `git.internal.example/cox/AyaPulseLite` (Forgejo, self-hosted).
+Remotes: a self-hosted Forgejo instance (private, primary) and GitHub
+(`Aya-Pulse-Layer`, public mirror). Both carry the same history.
 
 ## Current state and next step: two-device comparison (2026-07-31)
 
