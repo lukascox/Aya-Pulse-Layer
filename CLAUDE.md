@@ -34,7 +34,11 @@ beyond the pointer left in `STATUS.md`.
   producing a `SUMMARY.md` alongside the raw files. Read that `SUMMARY.md`
   first; only open a raw log file when the summary flags something (a
   crash-keyword hit, a missing clean-stop marker, an interesting session)
-  worth a closer look.
+  worth a closer look. The full end-to-end routine for a two-device session
+  (serials, per-unit summarising, triage table for the known-false-positive
+  flags, redaction check, what to delete) is
+  `research/ab-logger/results/PULL_AND_TRIM.md` — follow it rather than
+  improvising, and update it in place when a step turns out wrong.
 
 ## Commands
 No root-level build (`app/` is an unconfigured stub; no root `gradlew`).
