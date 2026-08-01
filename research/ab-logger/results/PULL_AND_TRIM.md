@@ -1,162 +1,101 @@
-# Pull and trim procedure — two-device sessions
+# Pull and trim procedure
 
-The end-to-end routine for a `B`/`W` session: pull the logs, triage them,
-delete what proves nothing, commit what does. Written after three sessions
-where something in this chain went wrong (empty capture, private data in a
-manual dump, a directory name that promised fan data it did not hold).
+One device on the cable at a time. Run this from the directory the logs
+should end up in.
 
-Everything here is read-only on the device except the two clearly marked
-steps that delete logs from `/sdcard`.
-
----
-
-## 0. Before the session
-
-On **both** units:
-
-- Fan card set to **Custom** if the session is meant to say anything about
-  the fan curve. On SMART, every `PulseFan` line is `arbiter=None` and the
-  pull carries zero curve data. Three sessions in a row have gone this way.
-- `sleep` **off** — the one feature with no on-device evidence; enabling it
-  confounds everything else.
-- Clear the previous session's logs so the pull is unambiguous:
-
-```bash
-adb -s "$B" shell rm -rf /sdcard/apl_pulse_logs/
-```
-
-```bash
-adb -s "$W" shell rm -rf /sdcard/apl_pulse_logs/
-```
-
-> **Deletes files on the device.** Only ever this path. Do it *before* a
-> session, never after — after is how a pull gets thrown away.
+Written after three sessions where something in this chain went wrong: a
+0-byte fan capture nobody noticed, a manual logcat dump carrying the home
+network name and a personal e-mail, and a directory name promising fan data
+it did not hold.
 
 ---
 
-## 1. Identify both devices
+## Before the session
 
-With two units attached, every bare `adb` command fails with
-`more than one device/emulator`. Set the serials once and use `-s` for the
-rest of the session:
+- Fan card on **Custom** if the session should say anything about the fan
+  curve. On SMART every `PulseFan` line is `arbiter=None` and the pull holds
+  zero curve data. Three sessions in a row have gone that way.
+- `sleep` **off** — no on-device evidence for it yet; it would confound
+  everything else.
+- Clear the previous logs, so the pull is unambiguous:
 
 ```bash
-adb devices -l
+adb shell rm -rf /sdcard/apl_pulse_logs/
 ```
 
-```bash
-B=<serial-of-black-unit>; W=<serial-of-white-unit>; echo "B=$B W=$W"
-```
+> Deletes files on the device. Only this path, and only **before** a session
+> — doing it afterwards is how a pull gets thrown away.
 
-Sanity-check that you did not swap them — the units are the same model and
-the same SKU, only the colour differs:
+Optional, and the only way to see fan behaviour at all (`pulse_daemon.sh`
+filters its detached logcat to crash tags, so `PulseFan` lines never reach a
+pulled `_logcat.log`). Start it before playing and **check afterwards that the
+file is not empty** — a 0-byte capture has already happened once:
 
 ```bash
-for d in "$B" "$W"; do echo -n "$d: "; adb -s "$d" shell getprop ro.serialno; done
+adb logcat -s PulseFan:D | tee fan_live.log
 ```
 
 ---
 
-## 2. Create the session directories
+## Pull
 
 ```bash
-cd research/ab-logger/results && mkdir -p "unsupervised_session_$(date +%F)"/{B,W} && cd "unsupervised_session_$(date +%F)"
+adb pull /sdcard/apl_pulse_logs/ ./ && mv apl_pulse_logs/* . && rmdir apl_pulse_logs
 ```
+
+```bash
+../../pulse-for-aya/scripts/analyze-pulse-logs.py .
+```
+
+(Adjust the relative path to `analyze-pulse-logs.py` for wherever you are.)
+
+> If two units' logs ever end up under one tree, run the analyzer on each
+> unit's directory separately. It recurses and groups by the timestamp in the
+> filename, silently overwriting on collision — two sessions started in the
+> same second merge into one bogus session with a file dropped, no error.
 
 ---
 
-## 3. Pull
+## Triage — read `SUMMARY.md` first
 
 ```bash
-adb -s "$B" pull /sdcard/apl_pulse_logs/ ./B/
+cat SUMMARY.md
 ```
 
-```bash
-adb -s "$W" pull /sdcard/apl_pulse_logs/ ./W/
-```
-
-This lands an `apl_pulse_logs/` subfolder inside each. Flatten it so the
-directories match the rest of the repo:
-
-```bash
-for u in B W; do [ -d "$u/apl_pulse_logs" ] && mv "$u"/apl_pulse_logs/* "$u"/ && rmdir "$u/apl_pulse_logs"; done
-```
-
----
-
-## 4. Summarise — separately per unit, never on the parent
-
-```bash
-../../../pulse-for-aya/scripts/analyze-pulse-logs.py ./B/
-```
-
-```bash
-../../../pulse-for-aya/scripts/analyze-pulse-logs.py ./W/
-```
-
-> **Never run it on the parent directory.** It uses `rglob` and groups purely
-> by the timestamp in the filename, and `groups[ts][key] = p` silently
-> overwrites on collision. Two units started within the same second merge
-> into one bogus session with a file dropped, with no error.
-
----
-
-## 5. Optional live captures
-
-These are the only way to see fan behaviour: `pulse_daemon.sh` filters its
-detached logcat down to crash tags, so `PulseFan` lines never reach a pulled
-`_logcat.log`. Start **before** playing, leave running, and check afterwards
-that the file is not empty — a 0-byte `fan_test.log` has already happened
-once.
-
-```bash
-adb -s "$B" logcat -s PulseFan:D | tee B_fan_live.log
-```
-
-Anything captured with `logcat -b all` is a different matter: see step 8.
-
----
-
-## 6. Triage — read the summary first
-
-```bash
-cat B/SUMMARY.md; cat W/SUMMARY.md
-```
-
-Then work down the flags. Almost all of them are known false positives:
+Nearly every flag it raises is a known false positive:
 
 | Flag | How to resolve it |
 |---|---|
 | `dmesg` crash hits: 2 | Boot-time lines at `[1.2s]` whose *driver names* contain "panic" (`gh_panic_notifier`, `sde_dbg_init … panic:1`). Noise, every session. |
-| `logcat` crash hits: 14-16 | Compare each timestamp against the session start. `init`/`nvkeeper`/`qcrosvm` aborts that pre-date it are the ring buffer being replayed when the filter attaches. Noise. |
-| `clean session end: NO` | Almost always the pull cutting a live session, or the user exiting a game. Check whether the log's last lines look normal. |
-| A gap in the app log | Check `cap_poll` across the same window. Still ticking at ~1 Hz with caps released and `batt_online=1` means charger/screen-off idle, not a failure. |
+| `logcat` crash hits: ~15 | Compare each timestamp against the session start. `init`/`nvkeeper`/`qcrosvm` aborts that pre-date it are the ring buffer replayed when the filter attaches. Noise. |
+| `clean session end: NO` | Usually the pull cutting a live session, or the user exiting a game. Check the log's last lines look normal. |
+| A gap in the app log | Check `cap_poll` over the same window. Still ticking at ~1 Hz with caps released and `batt_online=1` means charger / screen-off idle, not a failure. |
 
-Only a hit that falls **inside** the session window and names a process other
-than a known-noisy one deserves a closer look.
+Only a hit **inside** the session window, naming a process that is not one of
+the known-noisy ones, deserves a closer look.
 
-Worth checking every time, because none of it is flagged automatically:
+Then three things the summary does not flag:
 
 ```bash
-for u in B W; do echo "== $u"; grep -c "session start" $u/pulse_*[0-9].log; grep -c "via xsu" $u/pulse_*[0-9].log; grep "PulseFan" $u/pulse_*[0-9].log | head -5; done
+grep -c "session start" pulse_*[0-9].log; grep -c "via xsu" pulse_*[0-9].log; grep "PulseFan" pulse_*[0-9].log | head
 ```
 
-More than one `session start` means the daemon restarted. A high `via xsu`
-share (over ~5 %) is worth noting — raw `xsu` is the historical prime suspect
-for crashes.
+More than one `session start` means the daemon restarted. A `via xsu` share
+above ~5 % is worth noting — raw `xsu` is the historical prime suspect for
+crashes. The `PulseFan` lines tell you whether the fan did anything at all.
 
 ---
 
-## 7. Extract evidence before deleting anything
+## Keep the evidence, drop the file
 
-If a raw file holds something real, pull the specific lines into
-`<unit>/evidence/<name>.txt` with a header saying what it is and when. Never
-keep a whole `_dmesg.log` for the sake of a three-line warning. Example:
+If a raw file holds something real, copy the specific lines into
+`evidence/<name>.txt` with a header saying what it is and when. Never keep a
+whole `_dmesg.log` for the sake of a three-line warning. Example:
 `unsupervised_session_2026-08-01/W/evidence/kernel_walt_warning.txt`.
 
 ---
 
-## 8. Redaction check — before `git add`, always
+## Redaction check — before `git add`, always
 
 `dmesg` masks hardware addresses. **`logcat` does not.** A manual
 `logcat -b all` dump has carried the home network name, a BSSID, four
@@ -166,42 +105,42 @@ unmasked hardware addresses and a personal e-mail.
 for f in $(find . -type f); do n=$(grep -acoiE "([0-9a-f]{2}:){5}[0-9a-f]{2}|ssid|@gmail|@outlook|token=|Bearer |accountName|/Users/|/home/[a-z]" "$f"); [ "$n" != "0" ] && echo "!! $f -> $n"; done; echo "(no !! = clean)"
 ```
 
-`SSID` matching inside the word `BSSID` in prose is the one expected false
-positive. Anything else: do not commit that file.
+The one expected false positive is `SSID` matching inside the word `BSSID` in
+prose. Anything else: that file does not get committed.
 
-**Manual full-logcat dumps are never committed.** Keep them outside the repo,
-extract verified lines only.
+**Manual full-logcat dumps are never committed.** Keep them outside the repo
+and extract verified lines only.
 
 ---
 
-## 9. Delete what proves nothing
+## Delete what proves nothing
 
-Keep per unit: `pulse_<ts>.log` and `pulse_<ts>_cap_poll.log`. That is the
-app's own record plus the sysfs ground truth, and it is what every past
-finding has actually rested on.
+Keep `pulse_<ts>.log` and `pulse_<ts>_cap_poll.log` — the app's own record
+plus the sysfs ground truth. Every finding so far has rested on those two.
 
 ```bash
-rm -f */pulse_*_dmesg.log */pulse_*_logcat.log */SUMMARY.md */*_pkg.txt
+rm -f pulse_*_dmesg.log pulse_*_logcat.log SUMMARY.md *_pkg.txt
 ```
 
-`SUMMARY.md` goes too: it is auto-generated, and its crash-hit list dangles
-once the files it cites are gone. Its content belongs in `NOTES.md`, written
-by hand.
+`SUMMARY.md` goes too: it is auto-generated and its crash-hit list dangles
+once the files it cites are gone. Its content belongs in a hand-written
+`NOTES.md`.
 
 Typical result: ~23 MB in, ~3 MB out.
 
 ---
 
-## 10. Write `NOTES.md`, then commit
+## `NOTES.md`, then commit
 
-One `NOTES.md` per session directory, covering both units. It must state:
+One per session directory. It must state:
 
-- what each unit actually did, and **whether the workloads were comparable**
-  (they usually are not — say so at the top, or the numbers get misread later)
+- what was actually played, and **whether two units' workloads were
+  comparable** — they usually are not, so say it at the top or the numbers
+  get misread later
 - which flags were false positives, and how that was established
 - findings worth keeping, with the log excerpt inline
 - what was deleted and why, including the redaction note
 - capture problems, so the next session fixes them
 
-Then the normal gate: `git push` to Forgejo freely; the GitHub mirror needs an
-explicit go-ahead and the review pass in `CLAUDE.md`.
+Then the usual gate: `git push` to Forgejo freely; the GitHub mirror needs an
+explicit go-ahead plus the review pass in `CLAUDE.md`.
