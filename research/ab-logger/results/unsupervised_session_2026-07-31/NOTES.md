@@ -36,6 +36,37 @@ AutoTDP also ran (governor toggling `performance`/`schedutil`, caps moving).
 was Eden (`org.yuzu.yuzu_emu`, running as `com.miHoYo.Yuanshen`) crashing on
 its own, not vendor or PULSE code.
 
+### Second `W` session the same night: Stardew, and AutoTDP starving a vsync-locked game
+
+`pulse_20260801_002757*`, 00:27:57→00:36:23, after the reboot. Also here:
+the `000730` files were re-pulled longer and replace the earlier copy.
+
+**PULSE did not crash** — the log runs to the moment of the pull, and caps
+were released cleanly when the game exited (`00:31:00`: `p0_max=2265600`,
+`gpu_max_pwrlevel=0`, everything back to 100 %).
+
+**The frozen CPU readout in AYA Settings was PULSE doing as told.** A per-app
+profile bound to `com.retrohrai.launcher` (applied at `00:31:39`) caps all
+four clusters near 55 %, and with `gov=performance` the frequency is pinned
+*at* the cap — `p2_cur` has exactly one value across 100 consecutive samples.
+Nothing is broken; the number cannot move. Changing or dropping that profile,
+or not pairing it with the performance governor, is the fix.
+
+**The real finding: AutoTDP starves vsync-locked 2D games.** Over 45 s it
+trimmed the GPU 1050→903→834→770→720→680→629→578→500→422 MHz (level 0→10 of
+13), `act=TRIM` every 3 s, and never stopped — because its stop condition is
+an fps drop and Stardew is pinned at exactly `fps=60.0 jank=0 tail=16ms` in
+every single line. A vsync-capped game reports the cap until it falls off a
+cliff, so the signal AutoTDP regulates on is uninformative. Meanwhile
+`bn=CPU` and `cpuPk=100` throughout: the real bottleneck was one pegged core
+(SMAPI/Mono is single-threaded), CPU caps stayed at 100 %, and AutoTDP trimmed
+the GPU, which was never the limiter. SMAPI's pid changed (14151→22288), so
+the game did restart — strong correlation, not proof.
+
+Same family as the open Eden thread, from the other side: there fps never
+reaches target, here fps is artificially perfect. **Workaround: do not use
+AutoTDP for vsync-locked 2D titles; use a fixed tier.**
+
 ### `W` idles with the fan nearly stopped, and that is probably a vendor fault
 
 Before PULSE touched anything, `W` sat at `fan_duty=12` / 322 rpm — the fan

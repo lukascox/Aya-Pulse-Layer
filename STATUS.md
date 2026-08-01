@@ -109,6 +109,59 @@ does not work either) and the unvalidated `FAN_MODE.valueOf()` in
 audience and structure from anything in this repo: reproduction, evidence,
 suggested fix, impact.
 
+## First two-device unsupervised session — both clean, plus AutoTDP's vsync blind spot (2026-08-01)
+
+Both units, ~2h10m, started two minutes apart, PULSE fully in the background.
+Files + full writeup: `research/ab-logger/results/unsupervised_session_2026-08-01/`
+(`NOTES.md`).
+
+**Not a controlled A/B, and the numbers must not be read as one**: `B` spent
+~50 min mid-session on the charger, idle, screen off (low battery); `W` played
+throughout. Both ran Minecraft, `W` also touched Dolphin/RetroArch/Eden/Chrome.
+
+**Confounder eliminated**: vendor versions are **identical** on both units —
+settings 1.1.112 over 1.1.100, gamewindow 1.5.84 over 1.5.78.
+
+**Nothing broke on either unit.** No daemon restarts, `dmesg` clean apart from
+the usual two boot-time false positives, every logcat hit pre-dating its
+session. `B`'s 51-minute log silence (15:01→15:52) is the charger + screen-off
+case, not a failure: `cap_poll` kept running at ~1 Hz with caps fully released
+and the fan idling. Minecraft's `SIGSEGV` on `B` (15:15:17) falls inside that
+window, i.e. **PULSE was demonstrably not regulating when the game died**.
+
+**Regulation behaved as designed on both**: `B` oscillated (296 TRIM / 312
+RAISE / 73 HOLD) because it was pinned against its thermal and power ceiling
+chasing 90 fps at 75 °C / 10 W; `W` settled (112 / 69 / **982 HOLD**) holding a
+flat 90.0 fps at 47 °C / 4.6 W. `xsu` fallback 7.7 % on `B` vs 2.1 % on `W`.
+
+**Open, unexplained, benign**: one kernel `WARN_ON` on `W` — a WALT scheduler
+assertion (`android_rvh_try_to_wake_up`). Not an oops; the device ran two more
+hours. Checked against PULSE's core parking and it does **not** line up
+(parking ended ~50 s earlier). `W` parked 22× to `B`'s 4× and only `W` warned,
+but that is association, not a link. Excerpt:
+`unsupervised_session_2026-08-01/W/evidence/kernel_walt_warning.txt`.
+
+**New AutoTDP finding, from the Stardew session the previous night** (filed in
+`unsupervised_session_2026-07-31/NOTES.md`): **AutoTDP starves vsync-locked 2D
+games.** It trimmed the GPU 1050→422 MHz over 45 s and never stopped, because
+its stop condition is an fps drop and Stardew reports exactly `fps=60.0
+jank=0` until it collapses. The real bottleneck was one pegged core
+(`bn=CPU`, `cpuPk=100`, SMAPI/Mono single-threaded) while CPU caps sat at
+100 %. Same family as the open Eden thread, inverted. **Workaround: fixed tier,
+not AutoTDP, for vsync-capped 2D titles.** Also confirmed there: a per-app
+profile plus `gov=performance` pins frequency *at* the cap, which is why AYA
+Settings' CPU readout looked frozen — PULSE doing as told, nothing broken.
+
+**Fan: third session in a row with no curve data.** Both units stay on SMART
+deliberately — this fan has bad coil whine at its working point. All
+`PulseFan` lines are `arbiter=None`, which is correct. Nothing about the
+Custom curve can be concluded from any of these pulls.
+
+**Capture problems to fix next time**: `fan_test.log` came back 0 bytes (the
+`logcat -s PulseFan:D` capture caught nothing), and neither `ayasettings_run.log`
+recorded a UI launch — so the AYA Settings question below is still open with no
+evidence either way.
+
 ## `W` PASSES the clean-install test — the port is not `B`-specific (2026-08-01)
 
 First run on the white unit, untouched until this install. Six minutes, files

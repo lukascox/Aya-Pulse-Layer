@@ -1,0 +1,7 @@
+# Kernel WARNING seen once on W, 2026-08-01 ~14:18:31 local (kernel 985.408s).
+# Scheduler assertion in Qualcomm's WALT. WARN_ON, not an oops: the device ran
+# another 2h afterwards. Module list omitted (noise). Not seen on B.
+
+[  985.408301] ------------[ cut here ]------------
+[  985.408307] rq->balance_callback && rq->balance_callback != &balance_push_callback
+[  985.408459] WARNING: CPU: 2 PID: 50 at kernel/sched/walt/../../../kernel/sched/sched.h:1615 android_rvh_try_to_wake_up+0x1a4/0x1d4 [sched_walt]
