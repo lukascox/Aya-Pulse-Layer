@@ -66,9 +66,11 @@ Each `research/<project>/` is an independent Android app — `cd` in first.
   a summary + pointer.
 - Everything written to files in this repo is English-only, regardless of
   what language the conversation is in, unless the user explicitly asks
-  for a different language for that specific file (e.g.
-  `pulse-for-aya/TESTING.md` is deliberately Polish — a non-technical
-  on-device tester procedure — by prior explicit request, not the default).
+  for a different language for that specific file. **There is currently no
+  such exception.** `pulse-for-aya/TESTING.md` used to be one — a Polish
+  procedure for a non-technical tester — and was rewritten in English on
+  2026-08-02 once the author became the only tester and the project drew
+  an outside one.
 
 ## Hard rules
 - Update `STATUS.md` in place; never create dated/versioned handoff docs

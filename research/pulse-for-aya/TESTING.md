@@ -1,104 +1,93 @@
-# Procedura testowa — porównanie PULSE vs natywny AyaSettings
+# Testing procedure
 
-Napisane po polsku celowo (w odróżnieniu od reszty dokumentacji w tym
-repo) — to instrukcja operacyjna do fizycznego wykonania na urządzeniu,
-możliwa do oddania osobie bez wiedzy technicznej, nie zapis badawczy.
+Rewritten in English 2026-08-02. This file was previously in Polish, written
+for a non-technical tester who was handed a prepared device. That is no longer
+the situation: testing is done by the author, and the first outside tester
+found the project through a public thread. The old A/B procedure it described
+(paired 10-minute runs driven by `AutoTdpAbHarness`) is retired -- that harness
+is superseded by `research/ab-logger/`, and PULSE now records everything by
+itself with no second app and no stopwatch.
 
-> **Ważne, przeczytaj przed testem**: pierwsza prawdziwa sesja z ab-loggerem
-> spowodowała crash i restart `system_server` (urządzenie na ~25-30s
-> wyglądało jakby się zawiesiło, potem wróciło samo). Poprawka już
-> wprowadzona (rzadsze i mniej wywołań `xsu`), ale jeszcze nie potwierdzona
-> na żywym sprzęcie — pierwszą kolejną sesję rób pod obserwacją, szczegóły
-> w głównym `STATUS.md` (sekcja "INCIDENT") i `research/ab-logger/README.md`.
+## What testing means now
 
-## Cel, w jednym zdaniu
+Play normally, for as long as you would anyway. PULSE logs itself in the
+background. There is nothing to start, stop, or time.
 
-Sprawdzamy, czy nakładka PULSE (eksperymentalna, nasza) daje podobne albo
-lepsze FPS/temperatury/zużycie baterii niż zwykły, natywny tryb wydajności
-AYANEO — grając w tę samą grę dwa razy, raz z każdą opcją.
+Everything that follows is about making the resulting logs answer a question,
+rather than just existing.
 
-## Czego potrzeba
+## Before you play
 
-- Urządzenie AYANEO Pocket FIT / Konkr Pocket, naładowane (najlepiej >50%).
-- Obie aplikacje testowe już zainstalowane: **PULSE** i **AutoTdpAbHarness**
-  (jeśli `AutoTdpAbHarness` nie jest jeszcze zainstalowana, to jest to
-  jeden dodatkowy krok do zrobienia przed testem — zapytaj osobę, która
-  przygotowała telefon).
-- Jedna gra, w którą można pograć bez przerwy ok. 10 minut, dwa razy pod
-  rząd tego samego dnia (albo w dwóch bliskich sesjach).
-- Kartka/notatnik (albo apka Notatki w telefonie) do zapisania kilku liczb
-  i uwag — bez tego test nie będzie się dało porównać.
+**Decide what this session is supposed to prove, and change one thing.** Four
+sessions in a row produced no fan-curve data because the setting that would
+have generated it was never on. A session that changes nothing tells you only
+that the app did not crash.
 
-## Jednorazowe przygotowanie (raz na urządzenie, nie przed każdym testem)
+- **Fan card**: `Custom` if the session should say anything about fan control.
+  Note that Custom has two sub-modes -- a **curve**, and **hold target temp**
+  (a PI loop, default target 78 °C). They are different controllers and they
+  produce different logs. Know which one is selected; this has already been
+  misread once.
+- **AutoTDP**: on for most titles. Off, with a fixed tier, for emulators and
+  framerate-capped 2D games -- AutoTDP trims those into the floor because their
+  reported framerate stays flat until they collapse.
+- **Sleep**: off. There is no on-device evidence for it yet and it would
+  confound everything else.
 
-1. Otwórz **PULSE**.
-2. Włącz przełącznik **AUTOTDP** na górnym ekranie.
-3. System pokaże ekran **"Usage access"** (dostęp do użycia aplikacji) —
-   to normalne, PULSE musi wiedzieć w co aktualnie grasz. Znajdź na liście
-   **Pulse**, wejdź w nią, zaznacz **Allowed / Zezwól**.
-4. Wróć do PULSE (przycisk wstecz). Jeśli przełącznik AUTOTDP nie jest już
-   włączony, włącz go ponownie.
-5. Ten krok robi się **raz** — przy kolejnych testach nie trzeba tego
-   powtarzać, chyba że apka zostanie odinstalowana i zainstalowana od nowa.
+**Clear the previous logs**, so the pull is unambiguous:
 
-## Jedna sesja testowa — dokładne kroki
+```bash
+adb shell rm -rf /sdcard/apl_pulse_logs/
+```
 
-Test składa się z dwóch "przebiegów" (**A** i **B**), tej samej gry, w tym
-samym dniu. Kolejność ma znaczenie — patrz niżej.
+## While you play
 
-### Przebieg "natywny" (AyaSettings)
+Nothing. That is the point.
 
-1. Zamknij PULSE całkowicie (przesuń z listy ostatnich aplikacji) albo
-   wyłącz w nim przełącznik AUTOTDP.
-2. Otwórz natywne ustawienia wydajności AYANEO (AYA Space / AyaSettings) i
-   ustaw taki tryb, jakiego normalnie używasz do grania (np. Gaming albo
-   Balanced) — zapamiętaj który.
-3. Otwórz **AutoTdpAbHarness**, naciśnij **"Start Baseline"**.
-4. Odpal grę, graj spokojnie **dokładnie 10 minut** (ustaw stoper w
-   telefonie/zegarku).
-5. Wróć do AutoTdpAbHarness, naciśnij **"Stop"**.
-6. Zapisz w notatniku: godzina startu, nazwa gry, tryb AYANEO użyty w
-   punkcie 2, i słowem: czy coś dziwnego się działo (przycięcia,
-   gorący telefon, dziwne dźwięki wentylatora, zawieszenie).
+**Stop and report immediately** if any of these happen, rather than finishing
+the session:
 
-### Przebieg "PULSE"
+- the device gets noticeably hotter than it normally does in that same game
+- the fan behaves oddly -- very loud, or silent where it normally spins
+- the device reboots, or freezes for more than a few seconds
+- a game crashes repeatedly in a spot where it normally does not
 
-1. W natywnych ustawieniach AYANEO przełącz na tryb **odkorkowany/Max**
-   (żeby PULSE, a nie AYANEO, decydował o zegarach — inaczej będą się o
-   to "kłócić").
-2. Otwórz PULSE, włącz przełącznik **AUTOTDP** (jeśli nie jest już
-   włączony).
-3. Otwórz AutoTdpAbHarness, naciśnij **"Start AutoTDP"**.
-4. Odpal **tę samą grę**, w tym samym miejscu/scenie co poprzednio, graj
-   spokojnie **dokładnie 10 minut**.
-5. Wróć do AutoTdpAbHarness, naciśnij **"Stop"**.
-6. Zapisz to samo co wyżej (godzina, gra, uwagi) + dopisz "PULSE" jako
-   użyty tryb.
+The last two have real precedent in this project's history. The device matters
+more than the session.
 
-### Ważne: zamień kolejność przy drugiej sesji
+**Write down what you actually played**, roughly, with times. Without it two
+units' logs get compared as if they were the same workload, which has already
+produced one wrong conclusion.
 
-Jeśli robisz to więcej niż raz (a warto, dla pewności wyniku) — **drugiego
-dnia zacznij od przebiegu PULSE, a dopiero potem natywny**, czyli
-odwrotnie niż za pierwszym razem. Granie zawsze w tej samej kolejności
-(najpierw natywny, potem PULSE) zafałszowałoby wynik — telefon może się
-np. bardziej nagrzać za drugim razem niezależnie od tego, który tryb jest
-lepszy.
+## After you play
 
-## Kiedy przerwać test i zgłoić problem
+Pull and trim the logs following
+[`research/ab-logger/results/PULL_AND_TRIM.md`](../ab-logger/results/PULL_AND_TRIM.md).
+That file is the authoritative procedure and is kept up to date; do not
+improvise around it.
 
-Przerwij natychmiast (naciśnij "Stop", zamknij grę) i zgłoś, jeśli:
-- telefon robi się wyraźnie gorętszy niż zwykle przy tej samej grze,
-- wentylator zachowuje się nienaturalnie (bardzo głośno, albo w ogóle
-  cicho tam gdzie zwykle chodzi),
-- gra się zawiesza/wyłącza, telefon się restartuje,
-- cokolwiek wygląda/brzmi niepokojąco.
+The three checks worth running before anything else:
 
-To normalne narzędzie testowe na sprzęcie, na którym nam zależy —
-ostrożność ważniejsza niż dokończenie sesji.
+```bash
+grep -c "session start" pulse_*[0-9].log
+grep -aho "applied=[0-9]*% target=[0-9]*" pulse_*[0-9].log | sort | uniq -c | sort -rn | head
+for f in pulse_*[0-9].log; do echo "$f caps $(grep -ac 'cap write via xsu' $f)/$(grep -ac 'cap write via' $f) reads $(grep -ac 'read via xsu' $f)/$(grep -ac 'read via' $f)"; done
+```
 
-## Co się dzieje potem
+More than one `session start` per unit means the daemon restarted, and that is
+the single most important thing to notice. The second command tells you whether
+fan control did anything other than sit at its floor. The third tracks how much
+traffic bypassed the daemon FIFO and went through raw `xsu`, which is the
+historical suspect for instability.
 
-Dane (pliki CSV) zostają na telefonie — osoba techniczna (Lukasz) ściągnie
-je później przez kabel/komputer. Tester nie musi nic wysyłać ani
-eksportować — wystarczy notatka z godzinami i obserwacjami, żeby dało się
-dopasować, który plik do którego przebiegu należy.
+## If you are testing this on your own device
+
+Two things you should know, because nothing in the app tells you:
+
+**It writes logs and never deletes them.** Roughly 3-4 MB per hour of play into
+`/sdcard/apl_pulse_logs/`, unconditionally, in every build that currently
+exists. Clear that directory yourself.
+
+**It is tested on two devices, both the author's.** Known-open problems are
+listed in `STATUS.md`, which is kept honest, including about the conclusions
+that later turned out to be wrong. Reading it before installing is reasonable.

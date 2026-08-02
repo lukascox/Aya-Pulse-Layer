@@ -1,0 +1,51 @@
+name: Build PULSE APK
+
+# Builds a debug APK in the cloud and attaches it to the run as a download.
+# Runs on every push, and can be triggered manually from the Actions tab.
+#
+# NOTE ON LOCATION: this file must live in .github/workflows/ at the REPOSITORY
+# ROOT. It sat in research/pulse-for-aya/.github/workflows/ from 2026-07-24 to
+# 2026-08-02, where GitHub Actions never looks, so it had never run once.
+# The Gradle project is that subdirectory, not the repo root, hence
+# working-directory below.
+#
+# The artifact this uploads expires after 90 days and needs a GitHub login to
+# download. For something a stranger can download, cut a tag -- see release.yml.
+
+on:
+  push:
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: research/pulse-for-aya
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          build-root-directory: research/pulse-for-aya
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Build, test and lint
+        run: ./gradlew assembleDebug testDebugUnitTest lintDebug --no-daemon --stacktrace
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: pulse-debug-apk
+          path: research/pulse-for-aya/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
