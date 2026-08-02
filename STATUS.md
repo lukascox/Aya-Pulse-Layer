@@ -40,22 +40,22 @@ Full write-up: `research/ab-logger/results/unsupervised_session_2026-08-02/NOTES
 Both units, AutoTDP **and** Custom fan enabled for the first time, heaviest
 load yet (Genshin + Eden, 83.7 C peak on `B`).
 
-**1. The Custom curve is configured to do nothing, and it is worse than off.**
-The loop finally ran — three prior sessions sat on SMART and produced no
-curve data at all — and it works: `arbiter=RunCustomLoop`, `managed=6`, idle
-handoff to vendor Smart all correct. But 527 of 528 decisions on `B` (and
-530/530 on `W`), spanning 38-76 C, returned `target=20`, the
-`FanCurve.MIN_PERCENT` floor. One sample returned 24, which proves the curve
-is being evaluated rather than falling back to a constant — so this is a
-*configuration*, not a bug.
+**1. The fan ran on "hold target temp", not the curve — CORRECTED.** The
+first version of this entry concluded the *curve* was configured almost flat
+and was "worse than off". Wrong: the Fan card was on CUSTOM with **"hold
+target temp"** selected, so the controller was `FanTempController` (PI loop,
+`DEFAULT_TARGET_C = 78`), not `FanCurve`. **The curve has still never run on
+device** — that gap is now four sessions old.
 
-The consequence is the actionable part: 20 % is duty **51**, while the
-vendor's own idle point is duty **76**. With Custom engaged, PULSE holds the
-fan slower than the vendor would at idle, at every temperature up to 76 C.
-The configured curve makes the device quieter and hotter than switching
-PULSE's fan control off entirely. Coherent given the coil whine that
-motivated it, but it should be a deliberate trade, and it means **this
-session still says nothing about whether a real curve tracks temperature**.
+What the logs show is a PI loop working. 528 decisions on `B` and 530 on `W`,
+38-76 C, all at the 20 % floor: asked to hold 78 C with the chip at 55-67 C, a
+PI controller commands its minimum. The one escape, `temp=76 → target=24`,
+confirms it — two degrees under target, output lifting off the floor.
+
+What survives: holding 78 C means PULSE runs the fan at duty 51 while the
+vendor idles at duty 76, so the device is quieter and warmer than with PULSE's
+fan control off. That is what a 78 C target *means*, not a defect. Lowering
+the target or using the curve changes it.
 
 **2. `com.kei.pulse` was killed six times in twelve minutes on `B`** (hence
 five session files in that pull, against one for `W`). One clean 44-minute
@@ -93,18 +93,24 @@ suspect and this is a bigger exposure than assumed.
 **5. Evening follow-up (revised curve, Eden on Balanced, AutoTDP off, 18 min):
 stable, and it produced the mechanism behind (1).** No kills at all, one
 session, despite 41 Phantom Process reaps in the window — which weakens the
-phantom-killer hypothesis for the afternoon collapse. The curve still never
-left the floor, this time because **the sensor the fan loop reads never
-exceeded 67 C while `cap_poll` peaked at 78.7 C**. The two disagree by ~15 C
-on transients; the fan controller's input is smoothed or a different zone.
+phantom-killer hypothesis for the afternoon collapse. Still on "hold target
+temp", so still no curve data.
 
-And at that peak the vendor ramped the fan to duty 163, **which PULSE undid
-three seconds later**, reasserting duty 51 on the strength of its own 63 C
-reading. Harmless for a five-second transient (8 of 852 samples above 70 C).
-Under sustained load PULSE would hold the fan down while the chip is hot and
-its own telemetry would not show it. **Check which sensor `FanTempController`
-reads before tuning the curve any further** — that is now the blocking
-question for the whole fan feature, ahead of the curve shape.
+**A claimed sensor discrepancy here was wrong and is withdrawn.** This entry
+first reported `cap_poll` peaking at 78.7 C while the fan loop read 58-63 C,
+and called "which sensor does `FanTempController` read" the blocking question
+for the fan feature. It reads the right one. Both sides resolve the same
+thermal zone by the same rule, deliberately matched between
+`pulse_daemon.sh` and `SystemTuning.kt#resolveZones()`; the app side adds an
+EMA (0.6/0.4) and `cap_poll` does not. Matched on identical timestamps across
+the session, 140 pairs: **median difference -0.6 C, and one pair out of 140
+above 5 C**. The gap existed only during a five-second ramp.
+
+PULSE did reassert duty 51 three seconds after the vendor ramped to 163, and
+that stands — arbitration working as designed (`FAN_RECHECK_MS = 120`). At
+1 Hz with alpha 0.4 the smoothed value converges on a sustained change in
+about ten seconds, so the controller ignores spikes and answers real heat.
+Wanted behaviour, not a defect.
 
 **Procedure change:** the `adb logcat -s PulseFan:D` live-capture step in
 `PULL_AND_TRIM.md` is now redundant — the app writes `PulseFan` lines into

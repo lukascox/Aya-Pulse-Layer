@@ -11,34 +11,34 @@ units ran Genshin (`com.miHoYo.Yuanshen`) and Eden. Peak CPU temperature
 Two things came out of this pull, one good and one bad, and they are
 independent of each other.
 
-## 1. The Custom fan curve is configured to do nothing
+## 1. The fan ran on "hold target temp", not the curve — and did so correctly
 
-**This is the finding of the session.** Evidence:
-`B/evidence/fan_curve_pinned_at_floor.txt`.
+**CORRECTED after the user checked the app.** The first version of this
+section concluded the *curve* was configured almost flat. It was not: the Fan
+card was on CUSTOM with **"hold target temp"** selected, so the controller in
+play was `FanTempController` (a PI loop, `DEFAULT_TARGET_C = 78`), not
+`FanCurve`. Evidence: `B/evidence/fan_hold_target_temp_at_floor.txt`.
 
-The loop itself works, and this is the first time it has ever been exercised
-— three prior sessions sat on SMART and produced zero curve data. `arbiter=
-RunCustomLoop` fires, `managed=6` (CUSTOM), the idle handoff to vendor Smart
-works, and the curve is genuinely being evaluated.
+**The curve has still never been exercised on device**, across every session
+in this directory. That remains the open gap.
 
-But across **528 decisions on `B` spanning 38-76 C, the curve returned
-target=20 in 527 of them.** `W` is identical: 530 of 530 at target=20. Twenty
-is `FanCurve.MIN_PERCENT`, the vendor-safe floor.
+What the logs show is a PI loop behaving properly. Across 528 decisions on
+`B` and 530 on `W`, spanning 38-76 C, output was 20 % — `FanCurve.MIN_PERCENT`,
+the floor. Asked to hold 78 C with the chip at 55-67 C, a PI controller
+commands its minimum. The one sample that escaped the floor confirms it rather
+than contradicting it: `temp=76 applied=20% target=24`, two degrees under
+target, output just lifting off the floor. Nothing else in the pull got close
+enough to move it.
 
-One sample escaped the floor — `temp=76 applied=20% target=24` — and that is
-what makes this a *configuration* finding rather than a bug report. A curve
-stuck at a constant would never produce 24. The curve is real; it is just set
-almost flat, near the bottom of its range.
+The plumbing around it is also correct: `arbiter=RunCustomLoop` fires,
+`managed=6`, and the idle handoff to vendor Smart works.
 
-The consequence is the part worth acting on. 20 % of 255 is duty **51**. The
-vendor's own idle point is duty **76** (30 %), and both values appear in
-`cap_poll`. So while Custom is engaged, PULSE holds the fan *slower than the
-vendor would at idle*, at every temperature up to 76 C. Compared with leaving
-PULSE's fan control off, this configuration makes the device quieter and
-hotter. Given the coil whine that motivated the low curve, that is a coherent
-trade, but it should be a deliberate one.
-
-`FanCurve.DEFAULT` would have returned roughly 76 % at 76 C.
+**What survives, at its proper weight.** Holding 78 C means that while the
+chip is below target, PULSE runs the fan at 20 % (duty 51) while the vendor's
+own idle point is duty 76 (30 %). So on this setting the device is quieter and
+warmer than with PULSE's fan control off. That is what asking for 78 C means —
+a legitimate choice, worth knowing it is being made. Lowering the target or
+switching to the curve both change it.
 
 ## 2. `com.kei.pulse` was killed six times in twelve minutes on `B`
 
@@ -85,25 +85,33 @@ the afternoon collapse, since 41 reaps here produced zero deaths. The
 `clean session end: NO` flag is just the pull cutting a live session. Caveat:
 18 minutes is short, and the afternoon's collapse only began after 44.
 
-**The curve is still untested, for a new reason.** All 180 decisions returned
-`target=20`. Not because the curve is flat this time, but because **the
-sensor the fan loop reads never exceeded 67 C**, so it never reached the knee.
+**Still on "hold target temp", so still no curve data.** All 180 decisions
+returned 20 %, for the same correct reason as above: the target is 78 C and
+the chip never got there.
 
-**And that sensor is not the one that matters.** `cap_poll` recorded a 78.7 C
-peak while the fan loop, at the same second, read 58-63 C. The fan
-controller's input is smoothed, or a different zone; it does not see short
-spikes. The event was a genuine five-second transient (only 8 of 852 samples
-above 70 C), so nothing was at risk here.
+**The sensors agree — an earlier claim here was wrong.** This section first
+reported that `cap_poll` peaked at 78.7 C while the fan loop read 58-63 C, and
+concluded the fan controller reads a different, useless sensor. That is not
+what happened. Both sides resolve the same thermal zone by the same rule
+(first `thermal_zoneN` whose `type` contains "cpu"; `pulse_daemon.sh` says so
+in a comment deliberately matched to `SystemTuning.kt#resolveZones()`). The
+app side applies an EMA (0.6 old + 0.4 new); `cap_poll` does not.
 
-**The part that matters: PULSE undid the vendor's thermal response.** At
-20:15:55 the vendor ramped the fan to duty 163 (~64 %) in reaction to the real
-78.7 C. Three seconds later PULSE reasserted duty 51 (20 %), on the strength
-of its own 63 C reading. Harmless for a transient. Under sustained load,
-PULSE would hold the fan down while the chip is genuinely hot, **and its own
-telemetry would not show it**. This upgrades the "quieter and hotter" finding
-above from a configuration remark to a mechanism, and it means the sensor the
-fan curve regulates on should be checked before the curve is tuned any
-further.
+Matching the two logs on identical timestamps across the session, 140 pairs:
+**median difference -0.6 C**, p10/p90 -1.5/+0.4 C, and exactly **one pair out
+of 140** differs by more than 5 C. At steady state the fan controller's
+temperature *is* the raw sysfs temperature. The 15 C gap existed only during a
+five-second ramp — which is what an EMA is for.
+
+**PULSE did undo the vendor's ramp, and that part stands.** At 20:15:55 the
+vendor went to duty 163 (~64 %); three seconds later PULSE reasserted duty 51.
+That is PULSE winning arbitration as designed (`FAN_RECHECK_MS = 120`). But it
+is not a blind controller: at 1 Hz with alpha 0.4 the smoothed value converges
+on a sustained change in roughly ten seconds. It ignores five-second spikes
+and responds to real heat, which for a fan is the wanted behaviour.
+
+**The earlier conclusion — "check which sensor `FanTempController` reads
+before tuning the curve" — is withdrawn.** It reads the right one.
 
 **Fallback: cap writes 15/98 (15.3 %)**, the highest rate recorded, though on
 a small sample. Reads 180/1338 (13.5 %).

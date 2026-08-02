@@ -1,0 +1,42 @@
+CORRECTED 2026-08-02, after the user checked the app. An earlier version of
+this file (fan_curve_pinned_at_floor.txt) concluded the Custom *curve* was
+configured almost flat. That was wrong, and the correction matters because it
+turns a suspected misconfiguration into correct behaviour.
+
+WHAT WAS ACTUALLY SET: the Fan card was on CUSTOM with **"hold target temp"**
+selected, not the curve editor. Every session in this directory ran that way;
+the curve has still never been exercised on device.
+
+So the controller in play is FanTempController (a PI loop), not FanCurve.
+Its default target is 78 C (DEFAULT_TARGET_C, with KP=4.0 / KI=0.15).
+
+THIS EXPLAINS THE FLAT 20% COMPLETELY, AND CORRECTLY.
+
+Across 528 decisions on B and 530 on W, spanning 38-76 C, output was 20% --
+FanCurve.MIN_PERCENT, the floor. With a 78 C target and a chip sitting at
+55-67 C, the error term is large and negative, so the controller commands its
+minimum. That is a PI loop doing exactly its job.
+
+The single non-floor sample is the confirmation, not an anomaly:
+
+2026-08-02 15:42:24 PulseFan: CUSTOM fan running (autoTdp=false smart=true temp=76 applied=20% target=24)
+
+76 C is two degrees under the 78 C target. The error term goes small, the
+output lifts just off the floor. Nothing else in the whole pull got close
+enough to the target to move it.
+
+WHAT STANDS, AND WHAT DOES NOT.
+
+Does NOT stand: "the curve is configured to do nothing". There was no curve.
+Does NOT stand: any implication that the fan feature is misconfigured or buggy.
+
+Still stands, as a plain consequence of asking to hold 78 C: while the chip is
+below target, PULSE holds the fan at 20% (duty 51) while the vendor's own idle
+point is duty 76 (30%). So on this setting the device does run quieter and
+warmer than with PULSE's fan control off. That is what a 78 C target means,
+and it is a legitimate choice -- it is just worth knowing it is the choice
+being made. Lowering the target, or using the curve instead, both change it.
+
+NEXT: the user has now switched to the curve editor and run auto-calibrate,
+producing roughly 20% @45 C, 30% @65 C, 40% @70 C, 50% @80 C, 70% @90 C,
+100% @95 C. No on-device data for that yet.

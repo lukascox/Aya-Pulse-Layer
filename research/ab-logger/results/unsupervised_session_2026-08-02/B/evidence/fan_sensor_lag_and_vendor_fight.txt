@@ -1,14 +1,14 @@
+CORRECTED 2026-08-02. An earlier version of this file claimed "two sensors,
+and they disagree by ~15 C". That was wrong. There is ONE sensor, both sides
+read it correctly, and the apparent gap was smoothing lag on a five-second
+transient. The measurement that settles it is at the bottom.
+
 Session pulse_20260802_201343 (20:13:44 -> 20:32:01, ~18 min, Eden on a fixed
-Balanced tier, AutoTDP off, Custom fan with the revised curve).
+Balanced tier, AutoTDP off). Note: the Fan card was on CUSTOM with "hold
+target temp" (78 C), not the curve -- see fan_hold_target_temp_at_floor.txt.
 
-TWO SENSORS, AND THEY DISAGREE BY ~15 C ON TRANSIENTS.
-
-cap_poll (raw sysfs cpu_temp_mc) recorded a 78.7 C peak. The fan controller,
-regulating at the same moment, read 58-63 C. It is a smoothed or different
-zone and does not follow short spikes.
-
-The whole event lasted five seconds -- only 8 of 852 cap_poll samples in the
-session exceeded 70 C:
+THE EVENT. cap_poll (raw sysfs cpu_temp_mc) recorded a 78.7 C peak while the
+fan controller, at the same second, was working from 58-63 C:
 
   20:15:50  cpu_temp_mc=55400  fan_duty=63
   20:15:51  cpu_temp_mc=74400  fan_duty=63
@@ -19,25 +19,38 @@ session exceeded 70 C:
   20:15:58  cpu_temp_mc=63200  fan_duty=51    <-- PULSE reasserts 20%
   20:15:59  cpu_temp_mc=64300  fan_duty=99
 
-What PULSE's fan loop believed at the same time:
-
   20:15:56 PulseFan: CUSTOM fan running (autoTdp=true smart=true temp=58 applied=20% target=20)
   20:15:58 PulseFan: CUSTOM fan running (autoTdp=true smart=true temp=63 applied=20% target=20)
 
-TWO CONSEQUENCES.
+The whole spike lasted five seconds; only 8 of 852 samples cleared 70 C.
 
-1. The revised curve was never tested. Its knee is above 60 C on the sensor
-   the curve reads, and that sensor never exceeded 67 C all session. Every one
-   of the 180 decisions returned target=20, the floor -- exactly as configured,
-   with no evidence either way about the sloped part of the curve.
+WHY THERE IS NO SENSOR DISCREPANCY. Both sides resolve the same thermal zone
+by the same rule -- first /sys/class/thermal/thermal_zoneN whose `type`
+contains "cpu" -- and pulse_daemon.sh says so in a comment, deliberately
+matched to SystemTuning.kt#resolveZones(). The difference is that the app side
+applies an EMA (0.6 x old + 0.4 x new, ForegroundAppMonitorService.kt ~line
+931) and cap_poll does not.
 
-2. PULSE undoes the vendor's thermal response. The vendor ramped to duty 163
-   in reaction to a real 78.7 C reading; PULSE reasserted duty 51 three
-   seconds later, on the strength of its own 63 C reading. Harmless for a
-   five-second transient. Under a sustained load, PULSE would be holding the
-   fan down while the chip is genuinely hot, and its own sensor would not
-   report it.
+THE MEASUREMENT. Matching the two logs on identical timestamps across the
+whole session, 140 pairs:
 
-This is the mechanism behind "Custom is quieter and hotter than off", recorded
-in the same directory's NOTES.md -- and it is a stronger statement than the
-earlier one, because it is no longer only about how the curve is configured.
+  median difference  -0.6 C
+  p10 / p90          -1.5 C / +0.4 C
+  range              -3.4 C to +6.1 C
+  |difference| > 5 C  1 pair out of 140
+
+So at steady state the fan controller's temperature IS the raw sysfs
+temperature. The 15 C gap existed only during the five-second ramp, which is
+what an EMA is supposed to do.
+
+WHAT REMAINS TRUE, AT ITS CORRECTED WEIGHT. PULSE reasserted duty 51 three
+seconds after the vendor ramped to 163. That is real, and it is PULSE winning
+the arbitration as designed (reassert cadence FAN_RECHECK_MS = 120 ms). But it
+is not evidence of a blind controller: with a 1 Hz EMA at alpha 0.4 the
+smoothed value converges on a sustained change within roughly ten seconds. The
+controller ignores five-second spikes and responds to real heat. For a fan,
+that is the desired behaviour, not a defect.
+
+The earlier conclusion drawn from this file -- "check which sensor
+FanTempController reads before tuning the curve any further" -- is withdrawn.
+It reads the right one.
