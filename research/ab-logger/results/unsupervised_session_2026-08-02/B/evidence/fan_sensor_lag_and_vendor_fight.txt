@@ -1,0 +1,43 @@
+Session pulse_20260802_201343 (20:13:44 -> 20:32:01, ~18 min, Eden on a fixed
+Balanced tier, AutoTDP off, Custom fan with the revised curve).
+
+TWO SENSORS, AND THEY DISAGREE BY ~15 C ON TRANSIENTS.
+
+cap_poll (raw sysfs cpu_temp_mc) recorded a 78.7 C peak. The fan controller,
+regulating at the same moment, read 58-63 C. It is a smoothed or different
+zone and does not follow short spikes.
+
+The whole event lasted five seconds -- only 8 of 852 cap_poll samples in the
+session exceeded 70 C:
+
+  20:15:50  cpu_temp_mc=55400  fan_duty=63
+  20:15:51  cpu_temp_mc=74400  fan_duty=63
+  20:15:53  cpu_temp_mc=76400  fan_duty=63
+  20:15:54  cpu_temp_mc=78300  fan_duty=63
+  20:15:55  cpu_temp_mc=78700  fan_duty=163   <-- vendor ramps to ~64%
+  20:15:57  cpu_temp_mc=72100  fan_duty=163
+  20:15:58  cpu_temp_mc=63200  fan_duty=51    <-- PULSE reasserts 20%
+  20:15:59  cpu_temp_mc=64300  fan_duty=99
+
+What PULSE's fan loop believed at the same time:
+
+  20:15:56 PulseFan: CUSTOM fan running (autoTdp=true smart=true temp=58 applied=20% target=20)
+  20:15:58 PulseFan: CUSTOM fan running (autoTdp=true smart=true temp=63 applied=20% target=20)
+
+TWO CONSEQUENCES.
+
+1. The revised curve was never tested. Its knee is above 60 C on the sensor
+   the curve reads, and that sensor never exceeded 67 C all session. Every one
+   of the 180 decisions returned target=20, the floor -- exactly as configured,
+   with no evidence either way about the sloped part of the curve.
+
+2. PULSE undoes the vendor's thermal response. The vendor ramped to duty 163
+   in reaction to a real 78.7 C reading; PULSE reasserted duty 51 three
+   seconds later, on the strength of its own 63 C reading. Harmless for a
+   five-second transient. Under a sustained load, PULSE would be holding the
+   fan down while the chip is genuinely hot, and its own sensor would not
+   report it.
+
+This is the mechanism behind "Custom is quieter and hotter than off", recorded
+in the same directory's NOTES.md -- and it is a stronger statement than the
+earlier one, because it is no longer only about how the curve is configured.

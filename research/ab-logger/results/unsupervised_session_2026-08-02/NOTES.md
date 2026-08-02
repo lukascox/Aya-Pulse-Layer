@@ -70,6 +70,44 @@ boot throughout. That distinguishes it from the earlier INCIDENT entries.
 `W` did not do this once in 1 h 35 m under the same build and a comparable
 load.
 
+## Evening follow-up on `B`: revised curve, and why it still proves nothing
+
+Added after the main pull. `B/pulse_20260802_201343*`, 20:13:44 -> 20:32:01
+(~18 min), Eden on a fixed **Balanced** tier with **AutoTDP off** (Eden
+regulates badly, see the open thread), Custom fan with the curve revised to
+ramp above ~60 C. Reported subjectively as near-silent at a near-steady
+60 fps. Evidence: `B/evidence/fan_sensor_lag_and_vendor_fight.txt`.
+
+**Stability: clean.** One `session start`, no `com.kei.pulse` kills at all in
+the manual dump, against 41 Phantom Process reaps in the same window. That
+last number is worth noting — it *weakens* the phantom-killer hypothesis for
+the afternoon collapse, since 41 reaps here produced zero deaths. The
+`clean session end: NO` flag is just the pull cutting a live session. Caveat:
+18 minutes is short, and the afternoon's collapse only began after 44.
+
+**The curve is still untested, for a new reason.** All 180 decisions returned
+`target=20`. Not because the curve is flat this time, but because **the
+sensor the fan loop reads never exceeded 67 C**, so it never reached the knee.
+
+**And that sensor is not the one that matters.** `cap_poll` recorded a 78.7 C
+peak while the fan loop, at the same second, read 58-63 C. The fan
+controller's input is smoothed, or a different zone; it does not see short
+spikes. The event was a genuine five-second transient (only 8 of 852 samples
+above 70 C), so nothing was at risk here.
+
+**The part that matters: PULSE undid the vendor's thermal response.** At
+20:15:55 the vendor ramped the fan to duty 163 (~64 %) in reaction to the real
+78.7 C. Three seconds later PULSE reasserted duty 51 (20 %), on the strength
+of its own 63 C reading. Harmless for a transient. Under sustained load,
+PULSE would hold the fan down while the chip is genuinely hot, **and its own
+telemetry would not show it**. This upgrades the "quieter and hotter" finding
+above from a configuration remark to a mechanism, and it means the sensor the
+fan curve regulates on should be checked before the curve is tuned any
+further.
+
+**Fallback: cap writes 15/98 (15.3 %)**, the highest rate recorded, though on
+a small sample. Reads 180/1338 (13.5 %).
+
 ## Regulation and fallback
 
 | | `B` (5 sessions) | `W` (1 long session) |

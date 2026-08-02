@@ -90,6 +90,22 @@ writes. `B` had the *lower* read-fallback rate and is the unit that died, so
 this does not explain (2) — but raw `xsu` is the historical instability
 suspect and this is a bigger exposure than assumed.
 
+**5. Evening follow-up (revised curve, Eden on Balanced, AutoTDP off, 18 min):
+stable, and it produced the mechanism behind (1).** No kills at all, one
+session, despite 41 Phantom Process reaps in the window — which weakens the
+phantom-killer hypothesis for the afternoon collapse. The curve still never
+left the floor, this time because **the sensor the fan loop reads never
+exceeded 67 C while `cap_poll` peaked at 78.7 C**. The two disagree by ~15 C
+on transients; the fan controller's input is smoothed or a different zone.
+
+And at that peak the vendor ramped the fan to duty 163, **which PULSE undid
+three seconds later**, reasserting duty 51 on the strength of its own 63 C
+reading. Harmless for a five-second transient (8 of 852 samples above 70 C).
+Under sustained load PULSE would hold the fan down while the chip is hot and
+its own telemetry would not show it. **Check which sensor `FanTempController`
+reads before tuning the curve any further** — that is now the blocking
+question for the whole fan feature, ahead of the curve shape.
+
 **Procedure change:** the `adb logcat -s PulseFan:D` live-capture step in
 `PULL_AND_TRIM.md` is now redundant — the app writes `PulseFan` lines into
 `pulse_<ts>.log` itself, which is where all the fan analysis above came from.
