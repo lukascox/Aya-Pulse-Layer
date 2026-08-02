@@ -1,0 +1,6 @@
+2026-08-02 15:42:14 === pulse_daemon session start === version=1.19.6 (303) built 2026-07-31 00:45:36 script_crc32=ebbd831f
+2026-08-02 15:42:19 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-08-02 15:42:19 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-02 15:42:24 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-02 15:42:24 PulseFan: CUSTOM fan running (autoTdp=false smart=true temp=76 applied=20% target=24)
+2026-08-02 15:42:24 PulseDaemon: telemetry read via xsu fallback (1 path(s))

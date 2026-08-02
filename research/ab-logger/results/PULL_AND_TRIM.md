@@ -26,14 +26,12 @@ adb shell rm -rf /sdcard/apl_pulse_logs/
 > Deletes files on the device. Only this path, and only **before** a session
 > — doing it afterwards is how a pull gets thrown away.
 
-Optional, and the only way to see fan behaviour at all (`pulse_daemon.sh`
-filters its detached logcat to crash tags, so `PulseFan` lines never reach a
-pulled `_logcat.log`). Start it before playing and **check afterwards that the
-file is not empty** — a 0-byte capture has already happened once:
-
-```bash
-adb logcat -s PulseFan:D | tee fan_live.log
-```
+> **No live fan capture needed.** An earlier version of this file told you to
+> run `adb logcat -s PulseFan:D | tee fan_live.log` before playing. Drop it:
+> it produced a 0-byte file twice running, and it is redundant — the app
+> writes its `PulseFan` lines into `pulse_<ts>.log` directly, which is where
+> the whole 2026-08-02 fan analysis came from. Grep the pulled app log
+> instead (see triage below).
 
 ---
 
@@ -77,12 +75,25 @@ the known-noisy ones, deserves a closer look.
 Then three things the summary does not flag:
 
 ```bash
-grep -c "session start" pulse_*[0-9].log; grep -c "via xsu" pulse_*[0-9].log; grep "PulseFan" pulse_*[0-9].log | head
+grep -c "session start" pulse_*[0-9].log
+grep -aho "applied=[0-9]*% target=[0-9]*" pulse_*[0-9].log | sort | uniq -c | sort -rn | head
+for f in pulse_*[0-9].log; do echo "$f caps $(grep -ac 'cap write via xsu' $f)/$(grep -ac 'cap write via' $f) reads $(grep -ac 'read via xsu' $f)/$(grep -ac 'read via' $f)"; done
 ```
 
-More than one `session start` means the daemon restarted. A `via xsu` share
-above ~5 % is worth noting — raw `xsu` is the historical prime suspect for
-crashes. The `PulseFan` lines tell you whether the fan did anything at all.
+**More than one session file per unit means the daemon restarted**, and that
+is the single most important thing to check. On 2026-08-02 `B` came back with
+five, from six `com.kei.pulse` kills — which is only visible in a manual
+`logcat -b all` (`grep "Process com.kei.pulse .* has died"`). Pull one if the
+session count is wrong, extract the lines, then delete the dump.
+
+**The `applied=/target=` histogram is how you tell whether the fan curve did
+anything.** If every sample is `target=20` the curve is pinned at
+`FanCurve.MIN_PERCENT` and the session says nothing about curve behaviour —
+this has now happened once with Custom actually enabled.
+
+**Track read fallback separately from write fallback.** They differ by a lot
+(2026-08-02: 17.4 % of reads vs 5.0 % of writes on `W`), and only writes were
+being counted before. Raw `xsu` is the historical prime suspect for crashes.
 
 ---
 

@@ -34,6 +34,67 @@ Repo-name note: the GitHub name is `Aya-Pulse-Layer`, which abbreviates to
 `apl` — the local directory name and the `apl-*` research prefixes stay
 consistent with it.
 
+## First Custom-fan session, and `B` gets killed six times (2026-08-02)
+
+Full write-up: `research/ab-logger/results/unsupervised_session_2026-08-02/NOTES.md`.
+Both units, AutoTDP **and** Custom fan enabled for the first time, heaviest
+load yet (Genshin + Eden, 83.7 C peak on `B`).
+
+**1. The Custom curve is configured to do nothing, and it is worse than off.**
+The loop finally ran — three prior sessions sat on SMART and produced no
+curve data at all — and it works: `arbiter=RunCustomLoop`, `managed=6`, idle
+handoff to vendor Smart all correct. But 527 of 528 decisions on `B` (and
+530/530 on `W`), spanning 38-76 C, returned `target=20`, the
+`FanCurve.MIN_PERCENT` floor. One sample returned 24, which proves the curve
+is being evaluated rather than falling back to a constant — so this is a
+*configuration*, not a bug.
+
+The consequence is the actionable part: 20 % is duty **51**, while the
+vendor's own idle point is duty **76**. With Custom engaged, PULSE holds the
+fan slower than the vendor would at idle, at every temperature up to 76 C.
+The configured curve makes the device quieter and hotter than switching
+PULSE's fan control off entirely. Coherent given the coil whine that
+motivated it, but it should be a deliberate trade, and it means **this
+session still says nothing about whether a real curve tracks temperature**.
+
+**2. `com.kei.pulse` was killed six times in twelve minutes on `B`** (hence
+five session files in that pull, against one for `W`). One clean 44-minute
+session, then collapse: four more sessions between 15:42 and 15:54, two of
+them lasting 10 and 68 seconds. Every death is `has died: prcp FGS`, with
+ActivityManager restarting the foreground services each time.
+
+**No cause is attributable.** No `FATAL EXCEPTION`, no native crash for
+`com.kei.pulse`, no `lowmemorykiller`, no kernel OOM. The Phantom Process
+Killer is active and demonstrably reaches PULSE (30 reaps, several of `xsu`
+children, one parented to `com.kei.pulse` itself) — leading hypothesis, but
+**not established**: most reaps have a different parent and several deaths
+have no nearby reap. Evidence excerpt kept; the dump it came from was
+deleted. The device did **not** reboot — one boot throughout — so this is not
+the INCIDENT class. `W` did not do it once under the same build.
+
+This is the first PULSE-attributable instability in four unsupervised
+sessions, and it is unexplained. **It should be understood before the
+week-long unattended run**, since a week of this would produce hundreds of
+fragmented sessions.
+
+**3. `W` logged 0 RAISE against 46 TRIM** across 95 minutes. Same one-way
+AutoTDP behaviour as the Stardew case, but under a heavy 3D load rather than
+a vsync-locked 2D one — which **weakens the "vsync blind spot" reading** of
+the 2026-08-01 finding below. That finding is not superseded, but it is no
+longer sufficient.
+
+**4. Telemetry-read fallback is much higher than cap-write fallback** and had
+never been measured separately: 17.4 % of reads on `W` and 7.3 % on `B` went
+through raw `xsu` instead of the daemon FIFO, against 5.0 % / 2.0 % for
+writes. `B` had the *lower* read-fallback rate and is the unit that died, so
+this does not explain (2) — but raw `xsu` is the historical instability
+suspect and this is a bigger exposure than assumed.
+
+**Procedure change:** the `adb logcat -s PulseFan:D` live-capture step in
+`PULL_AND_TRIM.md` is now redundant — the app writes `PulseFan` lines into
+`pulse_<ts>.log` itself, which is where all the fan analysis above came from.
+The step has produced a 0-byte file twice running. Dropped rather than fixed.
+
 ## Current state and next step: two-device comparison (2026-07-31)
 
 **Feature parity is closed.** Six of seven upstream features confirmed on

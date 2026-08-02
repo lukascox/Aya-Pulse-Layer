@@ -1,0 +1,43 @@
+Extracted from B's manual `logcat -b all` dump before it was deleted
+(the dump itself carried 151 matches for network names / hardware addresses
+/ account e-mails and must never be committed).
+
+WHAT THIS SHOWS: com.kei.pulse was killed six times in 12 minutes on B,
+2026-08-02. Each kill ends one pulse_daemon session and the next one starts
+when ActivityManager restarts the foreground services -- which is why B's
+pull contains five session files instead of one.
+
+Death reason is "prcp FGS": the process state at death (perceptible, holding
+a foreground service). It is NOT a crash -- there is no FATAL EXCEPTION and
+no `F libc` native crash for com.kei.pulse anywhere in the dump. There is
+also no lowmemorykiller line and no kernel OOM in dmesg. So the kill has no
+attributed cause in any log.
+
+--- the six deaths ---
+08-02 15:42:05.533  2247  4656 I ActivityManager: Process com.kei.pulse (pid 4357) has died: prcp FGS
+08-02 15:42:08.568  2247  4655 I ActivityManager: Process com.kei.pulse (pid 25055) has died: prcp FGS
+08-02 15:42:09.733  2247  4642 I ActivityManager: Process com.kei.pulse (pid 25556) has died: prcp FGS
+08-02 15:42:24.908  2247  2667 I ActivityManager: Process com.kei.pulse (pid 26308) has died: prcp FGS
+08-02 15:43:54.862  2247  2280 I ActivityManager: Process com.kei.pulse (pid 28157) has died: prcp FGS
+08-02 15:53:48.586  2247  2280 I ActivityManager: Process com.kei.pulse (pid 3161) has died: prcp FGS
+
+--- the restart mechanism ---
+08-02 15:42:05.537  2247  4656 W ActivityManager: Scheduling restart of crashed service com.kei.pulse/.sleep.SleepProfileMonitorService in 12760ms for start-requested
+08-02 15:42:05.537  2247  4656 W ActivityManager: Scheduling restart of crashed service com.kei.pulse/.appwatch.ForegroundAppMonitorService in 22759ms for start-requested
+
+--- Phantom Process Killer reaping xsu children (30 hits total) ---
+Note the parent pids: 4181 is a uid-1000 (system) process, but the second
+line is parented to 4357 = com.kei.pulse itself (u0a183). So the phantom
+killer does reach PULSE's own root helper children.
+08-02 15:27:59.776  2247  2308 I ActivityManager: Process PhantomProcessRecord {5dffe9 20886:4181:xsu/1000} died
+08-02 15:27:59.803  2247  2308 I ActivityManager: Process PhantomProcessRecord {9ce370f 20883:4357:xsu/u0a183} died
+08-02 15:34:47.619  2247  2308 I ActivityManager: Process PhantomProcessRecord {830de42 5918:4181:xsu/1000} died
+08-02 15:41:58.110  2247  2308 I ActivityManager: Process PhantomProcessRecord {3cb8d14 24225:4181:xsu/1000} died
+08-02 15:44:36.758  2247  2308 I ActivityManager: Process PhantomProcessRecord {3fa9e03 5119:4181:xsu/1000} died
+08-02 15:47:38.012  2247  2308 I ActivityManager: Process PhantomProcessRecord {7939ede 18117:4181:xsu/1000} died
+08-02 15:50:16.615  2247  2308 I ActivityManager: Process PhantomProcessRecord {beea872 29001:4181:xsu/1000} died
+
+Timing note: the xsu reap at 15:41:58 is 7 s before the first app death at
+15:42:05, and the one at 15:47:38 falls inside session 154420. The
+association is suggestive but NOT established -- most reaps are parented to
+4181, not to PULSE, and several app deaths have no nearby xsu reap.

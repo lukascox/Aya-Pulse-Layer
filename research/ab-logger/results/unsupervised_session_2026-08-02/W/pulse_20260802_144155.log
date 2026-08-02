@@ -1,0 +1,4 @@
+2026-08-02 14:41:55 === pulse_daemon session start === version=1.19.6 (303) built 2026-07-31 00:45:36 script_crc32=ebbd831f
+2026-08-02 14:42:13 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-08-02 14:42:14 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-02 14:42:16 === pulse_daemon session end (clean stop) ===

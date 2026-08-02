@@ -1,0 +1,12 @@
+Extracted from W's filtered logcat before deletion.
+
+The one FATAL EXCEPTION in W's session. It is Eden (a yuzu fork) failing its
+own initialisation -- note the package name is com.miHoYo.Yuanshen but the
+stack is org.yuzu.yuzu_emu. Nothing to do with PULSE; same self-inflicted
+Eden crash class already recorded on 2026-07-31.
+
+08-02 15:29:15.825  7071  7071 E AndroidRuntime: FATAL EXCEPTION: main
+08-02 15:29:15.825  7071  7071 E AndroidRuntime: Process: com.miHoYo.Yuanshen, PID: 7071
+08-02 15:29:15.825  7071  7071 E AndroidRuntime: coil.network.HttpException: lateinit property emulationState has not been initialized
+08-02 15:29:15.825  7071  7071 E AndroidRuntime: 	at org.yuzu.yuzu_emu.fragments.EmulationFragment$completeViewSetup$$inlined$collect$default$1$1$1.emit(SourceFile:803)
+08-02 15:29:15.825  7071  7071 E AndroidRuntime: 	at kotlinx.coroutines.flow.StateFlowImpl.collect(SourceFile:176)
