@@ -41,6 +41,32 @@ class PulseDaemon(context: Context) {
         java.text.SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.US).format(java.util.Date())
 
     /**
+     * Master switch for the four `/sdcard/apl_pulse_logs/` session files below. **Debug builds only.**
+     *
+     * These exist for this project's own soak testing and are deliberately verbose: measured at roughly
+     * 3-4 MB per hour of play across the four files (2026-08-02 sessions), written for as long as the daemon
+     * runs, with nothing anywhere that ever deletes them. That is the right trade while the only devices
+     * running this are the two being investigated, and completely wrong on a stranger's device -- a release
+     * user would silently accumulate hundreds of MB in a directory they have no reason to know about, plus a
+     * detached `logcat` and a 1 Hz `dmesg -c` drain running for the life of the session.
+     *
+     * The mechanism is just an empty path: `pulse_daemon.sh` already guards **every** use of all four
+     * arguments behind `[ -n "$VAR" ]` (it was written that way for device/kernel variance, where a thermal
+     * zone or the fan node might legitimately be missing), so passing "" turns each stream off at the source
+     * -- no cap-poll loop, no dmesg drain, no detached logcat, no session file created. No script change was
+     * needed for this and none should be added: keeping the shell side unconditional-but-guarded is what
+     * makes this a one-line policy decision on the Kotlin side.
+     *
+     * NOT gated, deliberately: [logPath], the daemon's own log in the app's private `filesDir`. It is
+     * truncated (`>`, not `>>`) at every launch, never grows, is unreachable to other apps, and is the only
+     * thing that can explain a failed launch after the fact.
+     *
+     * If a release build ever needs diagnostics from a real user, this should become a user-visible opt-in
+     * toggle that also offers to delete the directory -- not a silent default.
+     */
+    private val sessionDiagnosticsEnabled = BuildConfig.DEBUG
+
+    /**
      * One human-readable session log per daemon launch, under `/sdcard` (not this app's own `filesDir`) so it
      * can be pulled directly (`adb pull`, no root/`run-as` needed) even if the device crashes before a host
      * `logcat` capture can be taken -- logcat itself has proven unreliable under real gameplay load (its
@@ -49,7 +75,8 @@ class PulseDaemon(context: Context) {
      * connections -- unlike the app's own sandboxed process, which per this repo's own established finding
      * (`MainActivity.kt`'s AIDL probes) can't reliably reach `/sdcard` directly under scoped storage.
      */
-    private val sdcardLogPath = "/sdcard/apl_pulse_logs/pulse_$sessionTimestamp.log"
+    private val sdcardLogPath =
+        if (sessionDiagnosticsEnabled) "/sdcard/apl_pulse_logs/pulse_$sessionTimestamp.log" else ""
 
     /**
      * Ground-truth sysfs cap/cur poll (same fields `scripts/poll-cpufreq.sh` reads by hand from a host), now
@@ -59,7 +86,8 @@ class PulseDaemon(context: Context) {
      * `AutoTuneController`'s internal state, so it still answers "did the value actually land on the device"
      * independent of the app's own decision-making code.
      */
-    private val capPollLogPath = "/sdcard/apl_pulse_logs/pulse_${sessionTimestamp}_cap_poll.log"
+    private val capPollLogPath =
+        if (sessionDiagnosticsEnabled) "/sdcard/apl_pulse_logs/pulse_${sessionTimestamp}_cap_poll.log" else ""
 
     /**
      * Kernel ring-buffer dump, polled (`dmesg -c`, clears after each read) in the same background loop as
@@ -69,7 +97,8 @@ class PulseDaemon(context: Context) {
      * process surviving (STATUS.md, 2026-07-28 -- added because nothing before this ever captured *why* a
      * crash happened, only that the log went silent).
      */
-    private val dmesgLogPath = "/sdcard/apl_pulse_logs/pulse_${sessionTimestamp}_dmesg.log"
+    private val dmesgLogPath =
+        if (sessionDiagnosticsEnabled) "/sdcard/apl_pulse_logs/pulse_${sessionTimestamp}_dmesg.log" else ""
 
     /**
      * Filtered `logcat` (only the tags this crash's known signature needs: `AndroidRuntime`'s FATAL
@@ -79,7 +108,8 @@ class PulseDaemon(context: Context) {
      * logging (STATUS.md, 2026-07-27), and survives independently even if this daemon or the app dies
      * (same backgrounding pattern already validated for the daemon itself).
      */
-    private val logcatLogPath = "/sdcard/apl_pulse_logs/pulse_${sessionTimestamp}_logcat.log"
+    private val logcatLogPath =
+        if (sessionDiagnosticsEnabled) "/sdcard/apl_pulse_logs/pulse_${sessionTimestamp}_logcat.log" else ""
 
     /**
      * Written as the very first line of [sdcardLogPath] (passed straight to the launch command, not sent
@@ -156,7 +186,7 @@ class PulseDaemon(context: Context) {
             // margin (`research/xsu-capability-probe/FINDINGS.md`'s bisection).
             "mypid=\$\$; for p in \$(pgrep -f 'pulse_daemon.sh' 2>/dev/null); do " +
                 "[ \"\$p\" = \"\$mypid\" ] || kill \"\$p\" 2>/dev/null; done; " +
-                "mkdir -p /sdcard/apl_pulse_logs; " +
+                (if (sessionDiagnosticsEnabled) "mkdir -p /sdcard/apl_pulse_logs; " else "") +
                 "sh '${scriptFile.absolutePath}' '$fifoInPath' '$logPath' '$sdcardLogPath' '$capPollLogPath' " +
                 "'$label' '$fifoOutPath' '$dmesgLogPath' '$logcatLogPath' > /dev/null 2>&1 < /dev/null & " +
                 "echo PULSE_DAEMON_LAUNCHED",
@@ -235,6 +265,9 @@ class PulseDaemon(context: Context) {
      */
     fun log(message: String): Boolean {
         if (!running) return false
+        // Nothing consumes this in a release build (SDCARD_LOG is ""), so skip the FIFO write entirely
+        // rather than send a line the daemon will discard on every tick.
+        if (!sessionDiagnosticsEnabled) return false
         return sendLine("LOG " + message.replace('\n', ' '))
     }
 

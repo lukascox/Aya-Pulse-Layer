@@ -34,6 +34,45 @@ Repo-name note: the GitHub name is `Aya-Pulse-Layer`, which abbreviates to
 `apl` — the local directory name and the `apl-*` research prefixes stay
 consistent with it.
 
+## Release builds no longer log to `/sdcard`; CI moved to where it can run (2026-08-02)
+
+**The logging gate is done.** `PulseDaemon.sessionDiagnosticsEnabled =
+BuildConfig.DEBUG`. In a release build the four `/sdcard/apl_pulse_logs/`
+paths become empty strings, `mkdir` is skipped, and `log()` stops writing to
+the FIFO. `pulse_daemon.sh` needed **no change** — every use of all four
+arguments was already guarded by `[ -n "$VAR" ]` for device variance, so an
+empty path turns each stream off at the source: no cap-poll loop, no `dmesg`
+drain, no detached `logcat`, no files. Keep the shell side that way.
+
+Not gated, deliberately: the daemon's own `filesDir/pulse_daemon.log`. It is
+truncated at every launch, never grows, is private to the app, and is the only
+thing that can explain a failed launch.
+
+Debug builds are unchanged, so every session pull in this repo keeps working
+exactly as before. Verified: `compileDebugKotlin testDebugUnitTest lintDebug`
+pass, and `assembleRelease` builds clean (unsigned, no keystore yet).
+
+If a release build ever needs diagnostics from a real user, it should be a
+visible opt-in that also offers to delete the directory — not a silent default.
+
+**CI had never run.** The workflow sat in
+`research/pulse-for-aya/.github/workflows/`, and GitHub Actions only reads
+`.github/workflows/` at the repository root. Moved there (with
+`working-directory` pointing back at the Gradle project) and extended to run
+tests and lint, not just `assembleDebug`.
+
+**Added `.github/workflows/release.yml`.** On a `v*` tag it builds a signed
+release APK and publishes a GitHub Release with it attached — downloadable
+without an account, unlike the build artifact, which expires in 90 days and
+needs a login. Signing material comes from Actions secrets via the
+`signingProperty()` hook `app/build.gradle.kts` already had, so no Gradle
+change was needed. It fails fast if the secrets are missing rather than
+publishing an unsigned APK nobody can install.
+
+**Blocked on one thing: no keystore exists yet.** Neither workflow can cut a
+release until one is generated and four secrets are set. Whatever key signs
+the first release must sign every release after it, forever.
+
 ## First Custom-fan session, and `B` gets killed six times (2026-08-02)
 
 Full write-up: `research/ab-logger/results/unsupervised_session_2026-08-02/NOTES.md`.
