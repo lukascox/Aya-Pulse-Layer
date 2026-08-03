@@ -85,6 +85,22 @@ nobody has to take an APK by hand from a stranger. The build is reproducible
 from this repository and the workflow that produced it is in
 `.github/workflows/release.yml`.
 
+Every release is signed with the same key. If you want to check that a build
+you are holding really came from here — and that a later update has not been
+swapped for something else — compare its signing certificate against this:
+
+```
+Signer: CN=Lukas Cox, OU=S2K, O=S2K, C=PL
+SHA-256: 78:0A:EE:69:AF:4A:A6:30:28:A7:52:82:BD:01:27:F1:0C:41:DE:BB:B5:CF:8B:5A:DA:50:D8:2D:58:60:C2:E7
+```
+
+```bash
+apksigner verify --print-certs pulse-for-aya-*.apk
+```
+
+A different fingerprint means a different key, and Android will refuse to
+install it over an existing copy anyway.
+
 **Installing one is entirely at your own risk.** This is a hobby research
 project, tested on two devices, both mine. It writes to privileged system
 settings and to fan control on hardware whose vendor software is closed and,

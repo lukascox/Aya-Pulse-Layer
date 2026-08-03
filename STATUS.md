@@ -69,9 +69,40 @@ needs a login. Signing material comes from Actions secrets via the
 change was needed. It fails fast if the secrets are missing rather than
 publishing an unsigned APK nobody can install.
 
-**Blocked on one thing: no keystore exists yet.** Neither workflow can cut a
-release until one is generated and four secrets are set. Whatever key signs
-the first release must sign every release after it, forever.
+**UNBLOCKED and shipped 2026-08-03** — see the release entry above.
+
+## First public release: `v1.19.6-aya.1` (2026-08-03)
+
+https://github.com/lukascox/Aya-Pulse-Layer/releases/tag/v1.19.6-aya.1 —
+signed APK, 48.9 MB, marked pre-release. All three workflow runs passed on
+their first ever execution.
+
+**Versioning is now `<upstream>-aya.<n>`.** `versionName = "1.19.6-aya.1"`,
+`versionCode = 30301` = upstream code × 100 + n. The name follows Debian's
+upstream-revision convention. The code matters more than it looks: Android
+requires `versionCode` to increase, so carrying upstream's `303` unchanged
+would have made two of our builds on the same upstream uninstallable over
+each other. Bump `<n>` per published release; reset to 1 when upstream moves.
+The rule is in a comment in `app/build.gradle.kts` — keep it there.
+
+**Signing key.** `~/keys/pulse-release.jks`, alias `pulse`, RSA 4096. Four
+Actions secrets set (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`,
+`ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`). Certificate
+`CN=Lukas Cox, OU=S2K, O=S2K, C=PL`, SHA-256
+`780aee69af4aa63028a75282bd0127f10c41debbb5cf8b5ada50d82d5860c2e7`, published
+in `README.md` so a tester can verify a build. **This key must sign every
+future release** — a different one means every user uninstalls and loses
+their settings.
+
+**`gh` runs as the wrong account by default.** `gh auth switch -u lukascox`
+before anything that writes through the API; the work account has only `pull`
+here and fails with a 403 whose wording misleadingly blames token scopes.
+`git push` is unaffected — the SSH key is the personal one.
+
+Two harmless warnings in the run logs: Node 20 deprecation, and
+`build-root-directory` is not a valid input to `gradle/actions/setup-gradle@v4`
+(the `defaults.run.working-directory` is what actually does the work, so the
+line is dead weight and can be dropped).
 
 ## The fan curve runs, and the `B` kills get a named suspect (2026-08-03)
 
