@@ -101,6 +101,24 @@ apksigner verify --print-certs pulse-for-aya-*.apk
 A different fingerprint means a different key, and Android will refuse to
 install it over an existing copy anyway.
 
+### This was built and tested for the AYANEO Pocket FIT, and nothing else
+
+Not "mainly", not "primarily" — **only**. Two devices, both Pocket FITs, both mine. No other handheld
+has ever run this, from any vendor, including AYANEO's own other models.
+
+**The app does not check what it is running on.** There is no device gate in the code today. Install
+it on something else and it will try. Some of what it touches is Qualcomm-specific and will simply
+fail; some of it — CPU frequency caps and core parking — goes through generic kernel interfaces that
+exist on every SoC, so it will succeed, against a hardware topology nobody validated. It also sends
+commands to AYANEO's own system service that were reconstructed by taking one firmware image apart;
+a different model may route them somewhere else entirely.
+
+Nothing there should permanently damage a device, and a reboot undoes it. That is a reasoned
+expectation, not a promise, and I have no way to test it. **YMMV, and I take no responsibility for
+what happens on hardware I have never held.** If you try it on something else anyway, I would
+genuinely like to hear how it went — but go in knowing that is an experiment you are running, not a
+supported configuration.
+
 **Installing one is entirely at your own risk.** This is a hobby research
 project, tested on two devices, both mine. It writes to privileged system
 settings and to fan control on hardware whose vendor software is closed and,
