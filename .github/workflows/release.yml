@@ -101,6 +101,13 @@ jobs:
       - name: Publish the Release
         env:
           GH_TOKEN: ${{ github.token }}
+        # DO NOT hard-wrap the release notes in the heredoc below, however long the lines get.
+        # Release bodies render in GitHub's comment flavour, where every newline inside a paragraph
+        # becomes a literal <br> -- so 80-column text comes out as a narrow ragged column instead of
+        # filling the page (v1.19.6-aya.1 shipped that way). Repo .md files are NOT affected: they
+        # render with breaks off, which is why README.md stays wrapped and still looks right. This
+        # is specific to releases, issues and comments.
+        # Verified with: gh api /markdown -f mode=gfm -f text=... versus -f mode=markdown
         run: |
           gh release create "$GITHUB_REF_NAME" \
             "pulse-for-aya-${GITHUB_REF_NAME}.apk" \
@@ -110,37 +117,19 @@ jobs:
             --notes-file - <<'EOF'
           **Experimental. Installing this is at your own risk.**
 
-          A glue patch on [`pulse`](https://github.com/keiretrogaming/pulse)
-          (GPL-2.0) for the AYANEO Pocket FIT. `pulse` is upstream's app and
-          this is not a fork of it -- the work here is the glue that lets it
-          talk to this hardware. Tested on exactly two devices, both mine.
-          Not a finished product.
+          A glue patch on [`pulse`](https://github.com/keiretrogaming/pulse) (GPL-2.0) for the AYANEO Pocket FIT. `pulse` is upstream's app and this is not a fork of it -- the work here is the glue that lets it talk to this hardware. Tested on exactly two devices, both mine. Not a finished product.
 
-          It writes to privileged system settings and to fan control. This
-          project's history includes crashes and reboots needing a hard power
-          cycle. A signed build only means the file came from the code in the
-          repo; it does not make any of that safer.
+          It writes to privileged system settings and to fan control. This project's history includes crashes and reboots needing a hard power cycle. A signed build only means the file came from the code in the repo; it does not make any of that safer.
 
-          **Version scheme:** `<upstream pulse version>-aya.<n>`. So this
-          build is upstream `pulse` at the stated version, plus this repo's
-          n-th published set of patches.
+          **Version scheme:** `<upstream pulse version>-aya.<n>`. So this build is upstream `pulse` at the stated version, plus this repo's n-th published set of patches.
 
-          **Release builds do not write session logs.** Nothing is written to
-          `/sdcard/apl_pulse_logs/`. Debug builds do, at roughly 3-4 MB per
-          hour, and do not clean up after themselves.
+          **Release builds do not write session logs.** Nothing is written to `/sdcard/apl_pulse_logs/`. Debug builds do, at roughly 3-4 MB per hour, and do not clean up after themselves.
 
           **Known open issues at the time of this build:**
-          - On one of the two test units the app process is killed several
-            times in a row shortly after start, then runs for hours. Every
-            occurrence points at the Sleep feature's monitor service; leaving
-            Sleep off avoids it. Not yet proven, see `STATUS.md`.
-          - AutoTDP trims clocks and does not always give them back, most
-            visibly in framerate-capped titles. Use a fixed tier for those.
-          - A per-app fan mode silently overrides the global Custom fan card,
-            with nothing in the UI saying so.
+          - On one of the two test units the app process is killed several times in a row shortly after start, then runs for hours. Every occurrence points at the Sleep feature's monitor service; leaving Sleep off avoids it. Not yet proven, see `STATUS.md`.
+          - AutoTDP trims clocks and does not always give them back, most visibly in framerate-capped titles. Use a fixed tier for those.
+          - A per-app fan mode silently overrides the global Custom fan card, with nothing in the UI saying so.
           - Joystick RGB is out of scope and does nothing.
 
-          `STATUS.md` in the repo is the honest current state, including the
-          findings that turned out to be wrong. Bug reports are more useful
-          than stars.
+          `STATUS.md` in the repo is the honest current state, including the findings that turned out to be wrong. Bug reports are more useful than stars.
           EOF
