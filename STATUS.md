@@ -73,6 +73,53 @@ publishing an unsigned APK nobody can install.
 release until one is generated and four secrets are set. Whatever key signs
 the first release must sign every release after it, forever.
 
+## The fan curve runs, and the `B` kills get a named suspect (2026-08-03)
+
+Full write-up: `research/ab-logger/results/unsupervised_session_2026-08-03/NOTES.md`.
+Both units unsupervised on Custom/**curve**, both in Genshin almost the whole
+time — the first session where the two workloads are directly comparable.
+
+**1. The curve finally ran, and it tracks.** Five sessions after it was built.
+`W` got hot enough to exercise it: duty follows temperature from the 20 %
+floor up to 45 % and back down, settling into a stable equilibrium at 76-78 C
+with the fan at 35-38 %. No oscillation, no runaway, no throttling in the
+logs. `applied` tracks `target` within one step, so the slew limiter is not a
+bottleneck. `B` sat at 26-28 % all session because it never exceeded 55 C —
+which is what its curve says at 55 C, not a pin at the floor.
+
+The one open judgement is comfort, not correctness: two and a half hours at
+76-78 C is stable but warm, and the curve's 50 % step at 80 C never had to
+commit.
+
+**2. The `B` kills are almost certainly the Sleep service.** Seven kills, all
+inside 78 seconds at startup, then 2h39m clean. Every one of the eight
+`Start proc` lines for `com.kei.pulse` names
+`SleepProfileMonitorService` as the trigger; Android complains three times
+that it is a foreground service started from the background, which is exactly
+what `prcp FGS` describes. `W`, same build, same game, Sleep **off**: zero
+kills, zero reschedules, the service string absent entirely. The 2026-08-02
+evidence file for `B` carries the same two service names, so this is two
+sessions on the unit with Sleep on against two clean ones without it.
+
+Not proven — the test is one setting away: turn Sleep off on `B` and repeat.
+This demotes the Phantom Process Killer hypothesis below, which never
+explained why only one unit was ever hit.
+
+**3. A per-app fan mode silently overrides the global Custom card.**
+`FanArbiter.decide()` resolves `boundFanMode ?: managedFanMode`, so a
+foreground app's per-app fan wins. `W` lost its first 49 minutes to this: the
+Fan card read Custom, `bound` was SILENT/SMART, the arbiter correctly returned
+`None`, and nothing anywhere said so. Recorded as a procedure trap in
+`PULL_AND_TRIM.md` rather than a bug.
+
+**4. AutoTDP says nothing this session** — 1 TRIM / 0 RAISE / 2 HOLD on `B`,
+nothing at all on `W`, `autoTdp=false` on every fan line. The 0-RAISE
+asymmetry from 2026-08-01 is untouched by this data.
+
+`B`'s fallback rates are up (11.4 % of reads, 13.7 % of writes, against 5.7 %
+and 5.5 % on `W`) — plausibly the restart loop, since a fresh daemon has no
+FIFO yet. Worth rechecking once Sleep is off.
+
 ## First Custom-fan session, and `B` gets killed six times (2026-08-02)
 
 Full write-up: `research/ab-logger/results/unsupervised_session_2026-08-02/NOTES.md`.
@@ -83,8 +130,8 @@ load yet (Genshin + Eden, 83.7 C peak on `B`).
 first version of this entry concluded the *curve* was configured almost flat
 and was "worse than off". Wrong: the Fan card was on CUSTOM with **"hold
 target temp"** selected, so the controller was `FanTempController` (PI loop,
-`DEFAULT_TARGET_C = 78`), not `FanCurve`. **The curve has still never run on
-device** — that gap is now four sessions old.
+`DEFAULT_TARGET_C = 78`), not `FanCurve`. The curve had still never run on
+device at this point — closed the next day, see the 2026-08-03 entry above.
 
 What the logs show is a PI loop working. 528 decisions on `B` and 530 on `W`,
 38-76 C, all at the 20 % floor: asked to hold 78 C with the chip at 55-67 C, a
@@ -112,9 +159,10 @@ deleted. The device did **not** reboot — one boot throughout — so this is no
 the INCIDENT class. `W` did not do it once under the same build.
 
 This is the first PULSE-attributable instability in four unsupervised
-sessions, and it is unexplained. **It should be understood before the
-week-long unattended run**, since a week of this would produce hundreds of
-fragmented sessions.
+sessions. **UPDATE 2026-08-03:** no longer unexplained — the same two service
+names in this entry's evidence file turn out to be the whole story, and the
+Sleep service is the suspect. See the 2026-08-03 entry above; the Phantom
+Process Killer reading here is now the weaker one.
 
 **3. `W` logged 0 RAISE against 46 TRIM** across 95 minutes. Same one-way
 AutoTDP behaviour as the Stardew case, but under a heavy 3D load rather than

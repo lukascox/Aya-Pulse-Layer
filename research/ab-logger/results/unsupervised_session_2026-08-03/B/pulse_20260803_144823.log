@@ -1,0 +1,123 @@
+# TRIMMED (analyze-pulse-logs.py) -- original was 369 lines / 28316B.
+# Kept: every distinct line; runs of 3+ consecutive identical lines (idle TICK-SKIP polling,
+# only the timestamp differs) collapsed to first + elision count + last.
+# ---
+2026-08-03 14:48:24 === pulse_daemon session start === version=1.19.6 (303) built 2026-07-31 00:45:36 script_crc32=ebbd831f
+2026-08-03 14:48:40 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-08-03 14:48:40 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-03 14:48:44 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-03 14:48:44 PulseFan: CUSTOM fan running (autoTdp=false smart=false temp=44 applied=20% target=23)
+2026-08-03 14:48:45 PulseDaemon: telemetry read via xsu fallback (1 path(s))
+2026-08-03 14:48:45 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:48:45 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-08-03 14:48:45 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-03 14:48:45 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-03 14:48:45 PulseFan: CUSTOM fan running (autoTdp=false smart=false temp=44 applied=20% target=23)
+2026-08-03 14:48:46 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 5 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:48:46 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:48:46 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-08-03 14:48:46 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-03 14:48:47 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-03 14:48:47 PulseFan: CUSTOM fan running (autoTdp=false smart=false temp=48 applied=23% target=24)
+2026-08-03 14:48:47 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 5 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:48:47 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:48:48 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-03 14:48:48 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:48:48 PulseDaemon: telemetry read via xsu fallback (16 path(s))
+2026-08-03 14:48:48 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 35 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:48:53 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:48:53 PulseFan: CUSTOM fan running (autoTdp=false smart=false temp=49 applied=24% target=24)
+2026-08-03 14:48:53 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 6 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:48:54 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:48:54 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.kei.pulse
+2026-08-03 14:48:54 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-03 14:48:54 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-03 14:48:54 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:48:54 PulseFan: CUSTOM fan running (autoTdp=false smart=false temp=48 applied=24% target=24)
+2026-08-03 14:48:54 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 38 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:48:59 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:48:59 PulseDaemon: cap write via daemon (3 node(s))
+2026-08-03 14:48:59 PulseDaemon: cap write via daemon (10 node(s))
+2026-08-03 14:49:00 PulseDaemon: cap write via daemon (7 node(s))
+2026-08-03 14:49:00 PulseDaemon: telemetry read via xsu fallback (1 path(s))
+2026-08-03 14:49:00 PulseDaemon: engage governor via daemon (schedutil)
+2026-08-03 14:49:00 PulseDaemon: telemetry read via xsu fallback (16 path(s))
+2026-08-03 14:49:01 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 38 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:49:06 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:49:06 PulseAutoTdp: AUTOTDP-SESSION tgt=90 bias=EFFICIENT wattCap=0 policies=0:2265600:0,1;2:3148800:2,3,4;5:2956800:5,6;7:3052800:7;-100:1050000:
+2026-08-03 14:49:06 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 19 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:49:09 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:49:09 PulseAutoTdp: tgt=90 fps=- jank=0 tail=-ms act=HOLD bn=- cpuB=21 cpuPk=52 primePk=25 io=0 gpuB=27 gpuL=5 capped=0 prk=0 stl=0 draw=3.88W cT=44 gT=40 caps%[0:100,2:95,5:100,7:100,-100:100] curMHz[0:2265,2:1075,5:2035,7:480] mn/mx[0:364/2265,2:499/3014,5:499/2956,7:480/3052] gpu=231 gcap=1050[0/13] lrn=100
+2026-08-03 14:49:09 PulseFan: arbiter=RunCustomLoop auto=true bound=null managed=6 latched=false
+2026-08-03 14:49:09 PulseFan: CUSTOM fan running (autoTdp=true smart=false temp=46 applied=24% target=23)
+2026-08-03 14:49:09 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 5 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:49:10 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:49:11 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-03 14:49:11 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 2 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:49:11 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:49:11 PulseFan: arbiter=RunCustomLoop auto=true bound=null managed=6 latched=false
+2026-08-03 14:49:11 PulseFan: CUSTOM fan running (autoTdp=true smart=false temp=45 applied=23% target=23)
+2026-08-03 14:49:11 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 5 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:49:12 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:49:12 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-03 14:49:12 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 1 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:49:12 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:49:12 PulseAutoTdp: tgt=90 fps=90.0 jank=0 tail=11ms act=HOLD bn=- cpuB=26 cpuPk=62 primePk=23 io=0 gpuB=26 gpuL=5 capped=0 prk=0 stl=0 draw=3.31W cT=43 gT=40 caps%[0:100,2:95,5:100,7:100,-100:100] curMHz[0:2265,2:1612,5:2131,7:480] gpu=231 gcap=1050[0/13] lrn=100
+2026-08-03 14:49:13 PulseFan: CUSTOM fan running (autoTdp=true smart=false temp=44 applied=23% target=23)
+2026-08-03 14:49:13 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 6 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:49:14 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:49:14 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-03 14:49:14 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 1 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:49:14 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:49:14 PulseFan: arbiter=RunCustomLoop auto=true bound=null managed=6 latched=false
+2026-08-03 14:49:14 PulseFan: CUSTOM fan running (autoTdp=true smart=false temp=53 applied=23% target=26)
+2026-08-03 14:49:14 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 6 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:49:15 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:49:16 PulseDaemon: telemetry read via xsu fallback (1 path(s))
+2026-08-03 14:49:16 PulseDaemon: cap write via daemon (3 node(s))
+2026-08-03 14:49:16 PulseDaemon: cap write via xsu fallback (10 node(s), ~1941 chars, chunked)
+2026-08-03 14:49:16 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 50 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:49:23 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:49:23 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-03 14:49:23 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 3 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:49:24 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:49:24 PulseFan: arbiter=RunCustomLoop auto=false bound=6 managed=6 latched=false
+2026-08-03 14:49:24 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-03 14:49:24 PulseFan: CUSTOM fan running (autoTdp=false smart=false temp=60 applied=26% target=28)
+2026-08-03 14:49:25 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 5 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:49:25 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:49:25 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-03 14:49:26 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 7 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:49:27 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:49:27 PulseFan: arbiter=RunCustomLoop auto=false bound=6 managed=6 latched=false
+2026-08-03 14:49:27 PulseDaemon: telemetry read via xsu fallback (16 path(s))
+2026-08-03 14:49:27 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 31 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:49:31 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:49:32 PulseFan: CUSTOM fan running (autoTdp=false smart=false temp=61 applied=28% target=29)
+2026-08-03 14:49:32 PulseDaemon: telemetry read via xsu fallback (1 path(s))
+2026-08-03 14:49:32 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 2 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:49:32 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-03 14:49:33 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen lastForeground=com.miHoYo.Yuanshen
+2026-08-03 14:49:33 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 1 more identical lines elided (same content, only timestamp differs) ...
+2026-08-03 14:49:33 PulseDaemon: telemetry read via daemon (1 path(s))

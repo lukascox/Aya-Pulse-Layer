@@ -1,0 +1,2 @@
+2026-08-03 14:50:51 === cap_poll session start === version=1.19.6 (303) built 2026-07-31 00:45:36 script_crc32=ebbd831f
+2026-08-03 14:50:52 p0_cur=787200 p0_max=787200 p2_cur=3148800 p2_max=3148800 p5_cur=2956800 p5_max=2956800 p7_cur=3052800 p7_max=3052800 gov=schedutil gpu_cur=578000000 gpu_min_pwrlevel=13 gpu_max_pwrlevel=0 batt_online=1 cpu_temp_mc=80600 gpu_temp_mc=59800 fan_duty=145 fan_rpm=5278

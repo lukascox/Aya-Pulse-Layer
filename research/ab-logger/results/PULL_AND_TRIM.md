@@ -15,8 +15,16 @@ it did not hold.
 - Fan card on **Custom** if the session should say anything about the fan
   curve. On SMART every `PulseFan` line is `arbiter=None` and the pull holds
   zero curve data. Three sessions in a row have gone that way.
-- `sleep` **off** — no on-device evidence for it yet; it would confound
-  everything else.
+- Check the **per-app** fan setting for the game you are about to play, not
+  just the global Fan card. A per-app mode wins over the global one
+  (`FanArbiter.decide()` resolves `boundFanMode ?: managedFanMode`), silently
+  — the card still reads Custom and the arbiter still returns `None`. This
+  cost `W` its first 49 minutes on 2026-08-03.
+- `sleep` **off**. This started as caution and now has evidence behind it: on
+  `B`, every one of the seven process kills on 2026-08-03 was triggered by
+  `SleepProfileMonitorService`, and `W` with Sleep off had none
+  (`unsupervised_session_2026-08-03/NOTES.md` §2). Leave it off until that is
+  settled deliberately.
 - Clear the previous logs, so the pull is unambiguous:
 
 ```bash
@@ -89,7 +97,19 @@ session count is wrong, extract the lines, then delete the dump.
 **The `applied=/target=` histogram is how you tell whether the fan curve did
 anything.** If every sample is `target=20` the curve is pinned at
 `FanCurve.MIN_PERCENT` and the session says nothing about curve behaviour —
-this has now happened once with Custom actually enabled.
+this has now happened once with Custom actually enabled. A narrow band well
+above the floor is not a failure: on 2026-08-03 `B` sat at 26-28 % because it
+never got hotter than 55 °C, which is what its curve says. Read it against the
+temperature, not on its own:
+
+```bash
+grep -aho "arbiter=[A-Za-z]*" pulse_*[0-9].log | sort | uniq -c
+grep -ah "CUSTOM fan running" pulse_*[0-9].log | sed -E 's/^([0-9-]+ [0-9]{2}:[0-9]).*temp=([0-9]+).*applied=([0-9]+)%.*/\1 \2 \3/' | awk '{s[$1" "$2]+=$3; a[$1" "$2]+=$4; n[$1" "$2]++} END{for(k in s) printf "%s temp_avg=%.0f applied_avg=%.0f n=%d\n", k, s[k]/n[k], a[k]/n[k], n[k]}' | sort
+```
+
+The first line is the cheaper check of the two: any meaningful count of
+`arbiter=None` means something took the fan away from the curve, and the
+per-app override above is the usual reason.
 
 **Track read fallback separately from write fallback.** They differ by a lot
 (2026-08-02: 17.4 % of reads vs 5.0 % of writes on `W`), and only writes were

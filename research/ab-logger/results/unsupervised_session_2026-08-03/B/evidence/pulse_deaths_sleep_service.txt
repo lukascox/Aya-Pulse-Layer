@@ -1,0 +1,40 @@
+Pulse process deaths on B, 2026-08-03 -- every one triggered by SleepProfileMonitorService
+
+Extracted from a manual 'adb logcat -b all' dump (not committed).
+All seven deaths fall inside 78 seconds, 14:49:34 - 14:50:52. The eighth
+process start survived the following 2h40m with zero further deaths.
+
+Every 'Start proc' for com.kei.pulse in the whole dump (8 of them) names the
+same trigger:
+
+08-03 14:49:34.454  2262  2323 I ActivityManager: Start proc 17428:com.kei.pulse/u0a183 for service {com.kei.pulse/com.kei.pulse.sleep.SleepProfileMonitorService}
+08-03 14:49:36.727  2262  2323 I ActivityManager: Start proc 17980:com.kei.pulse/u0a183 for service {com.kei.pulse/com.kei.pulse.sleep.SleepProfileMonitorService}
+08-03 14:50:45.602  2262  2323 I ActivityManager: Start proc 23688:com.kei.pulse/u0a183 for service {com.kei.pulse/com.kei.pulse.sleep.SleepProfileMonitorService}
+08-03 14:50:46.688  2262  2323 I ActivityManager: Start proc 24217:com.kei.pulse/u0a183 for service {com.kei.pulse/com.kei.pulse.sleep.SleepProfileMonitorService}
+08-03 14:50:47.822  2262  2323 I ActivityManager: Start proc 24467:com.kei.pulse/u0a183 for service {com.kei.pulse/com.kei.pulse.sleep.SleepProfileMonitorService}
+08-03 14:50:48.897  2262  2323 I ActivityManager: Start proc 24760:com.kei.pulse/u0a183 for service {com.kei.pulse/com.kei.pulse.sleep.SleepProfileMonitorService}
+08-03 14:50:51.052  2262  2323 I ActivityManager: Start proc 25070:com.kei.pulse/u0a183 for service {com.kei.pulse/com.kei.pulse.sleep.SleepProfileMonitorService}
+08-03 14:50:53.239  2262  2323 I ActivityManager: Start proc 25433:com.kei.pulse/u0a183 for service {com.kei.pulse/com.kei.pulse.sleep.SleepProfileMonitorService}
+
+The restart loop, by service (whole dump):
+  38 x .appwatch.ForegroundAppMonitorService
+  36 x .sleep.SleepProfileMonitorService
+Last reschedule: 08-03 14:50:52.772 -- nothing after it.
+
+Android's own complaint about the sleep service specifically (3 occurrences):
+08-03 14:49:37.644  2262  2300 W ActivityManager: Foreground service started from background can not have location/camera/microphone access: service com.kei.pulse/.sleep.SleepProfileMonitorService
+08-03 14:50:51.320  2262  2711 W ActivityManager: Foreground service started from background can not have location/camera/microphone access: service com.kei.pulse/.sleep.SleepProfileMonitorService
+08-03 14:50:53.500  2262  3233 W ActivityManager: Foreground service started from background can not have location/camera/microphone access: service com.kei.pulse/.sleep.SleepProfileMonitorService
+
+The deaths themselves:
+08-03 14:49:34.533  2262  2360 I ActivityManager: Process com.kei.pulse (pid 17428) has died: prcp FGS 
+08-03 14:50:35.098  2262  6566 I ActivityManager: Process com.kei.pulse (pid 17980) has died: prcp FGS 
+08-03 14:50:45.667  2262  2683 I ActivityManager: Process com.kei.pulse (pid 23688) has died: prcp FGS 
+08-03 14:50:46.811  2262  2355 I ActivityManager: Process com.kei.pulse (pid 24217) has died: prcp FGS 
+08-03 14:50:47.880  2262  6567 I ActivityManager: Process com.kei.pulse (pid 24467) has died: prcp FGS 
+08-03 14:50:49.265  2262  6288 I ActivityManager: Process com.kei.pulse (pid 24760) has died: prcp FGS 
+08-03 14:50:52.220  2262  4224 I ActivityManager: Process com.kei.pulse (pid 25070) has died: prcp FGS 
+
+W, same day, same app version, same games: zero deaths, zero reschedules,
+zero mentions of SleepProfileMonitorService in its dump. The difference
+between the units is that Sleep is enabled on B and not on W.

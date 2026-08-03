@@ -1,0 +1,22 @@
+Per-app fan mode silently overrides the global Custom card -- W, 2026-08-03
+
+W session 1 (14:50 - 15:39, Genshin) produced only 45 PulseFan lines and no
+curve data at all, while session 2 over the same game produced 1852.
+
+The reason is in the arbiter lines. FanArbiter.decide() takes
+'boundFanMode ?: managedFanMode' -- a foreground app's per-app fan wins over
+the global Fan card. bound=1 is SILENT, bound=4 is SMART, bound=6 is CUSTOM
+(FanController.kt:94-104).
+
+2026-08-03 15:00:08 PulseFan: arbiter=None auto=false bound=1 managed=6 latched=false
+2026-08-03 15:04:23 PulseFan: arbiter=None auto=false bound=4 managed=6 latched=false
+2026-08-03 15:07:59 PulseFan: arbiter=None auto=false bound=1 managed=6 latched=false
+2026-08-03 15:08:14 PulseFan: arbiter=None auto=false bound=4 managed=6 latched=false
+
+With bound set to a vendor mode and the live mode already matching it, decide()
+returns None: correct behaviour, no write, and no curve. The global card said
+Custom the whole time.
+
+Whole-session bound histogram, W: 1917 x null, 4 x 1, 4 x 4 -- so the override
+only bit during the sampled ticks of session 1.
+B, for contrast: 3051 x 6, 383 x null.
