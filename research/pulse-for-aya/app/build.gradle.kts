@@ -37,11 +37,18 @@ android {
         applicationId = "com.kei.pulse"
         minSdk = 31
         targetSdk = 34
-        versionCode = 303
-        versionName = "1.19.6"
+        // Upstream version, then this patch's own iteration on top of it:
+        //   versionName = "<upstream>-aya.<n>"
+        //   versionCode = <upstream code> * 100 + <n>
+        // The name reads as Debian's upstream-revision convention. The code has to be an integer
+        // and has to increase, or Android refuses the update -- so carrying upstream's 303 unchanged
+        // would make two of our builds on the same upstream uninstallable over each other.
+        // Bump <n> for every published release; reset it to 1 when upstream moves.
+        versionCode = 30301
+        versionName = "1.19.6-aya.1"
 
-        // Stamped fresh on every build (unlike versionName/versionCode, which follow upstream's own
-        // scheme and aren't bumped for this fork's own patches) -- lets a pulled /sdcard session log
+        // Stamped fresh on every build (unlike versionName/versionCode, which only move on a
+        // published release) -- lets a pulled /sdcard session log
         // or an on-launch toast answer "is this actually the build with patch X" without guessing,
         // instead of relying on remembering to bump a version number by hand (STATUS.md, 2026-07-28,
         // after a suspected regression turned out to need this check first).

@@ -77,22 +77,45 @@ input-validation gap that can crash a system app outright.
 `STATUS.md` is the single living record of where everything actually is.
 Read it first.
 
+## Builds
+
+Tagged releases are built and signed by GitHub Actions and attached to the
+[Releases](https://github.com/lukascox/Aya-Pulse-Layer/releases) page, so
+nobody has to take an APK by hand from a stranger. The build is reproducible
+from this repository and the workflow that produced it is in
+`.github/workflows/release.yml`.
+
+**Installing one is entirely at your own risk.** This is a hobby research
+project, tested on two devices, both mine. It writes to privileged system
+settings and to fan control on hardware whose vendor software is closed and,
+in at least two places documented here, buggy. This project's own history
+includes crashes and reboots that needed a hard power cycle. Nothing about a
+signed release changes that; it only means the file came from the code you
+can read here.
+
+**This is not a fork of `pulse`, and it is not trying to become one.**
+`pulse` is somebody else's app and it is a good one. Its code is upstream's,
+carried here as unchanged as I could manage; the work in this repo is the
+glue that lets it talk to an AYANEO Pocket FIT. Bugs you hit are far more
+likely to be in that glue than in `pulse` — please report them here rather
+than upstream, unless you can reproduce them on an AYN or Retroid device.
+
 ## How this was built
 
-The author is not a professional application developer, but does work
-professionally with systems architecture, security and Linux — and most of
-the judgement calls here come from exactly that background rather than from
-Android experience. Treating the closed-source root helper as an untrusted
-component to be worked around rather than fixed, refusing approaches that
-touch the boot partition while a fully reversible one existed, and insisting
-on a risk assessment before writing anything to fan control are all that
-instinct, not this project's.
+I am not a professional application developer, but I do work professionally
+with systems architecture, security and Linux — and most of the judgement
+calls here come from that background rather than from Android experience.
+Treating the closed-source root helper as an untrusted component to be worked
+around rather than fixed, refusing approaches that touch the boot partition
+while a fully reversible one existed, and insisting on a risk assessment
+before writing anything to fan control are all that instinct, not this
+project's.
 
 The code itself was written iteratively with AI assistance, deliberately:
-part of the point was to find out how far the right tooling can carry
-someone into an unfamiliar domain. That is a hobby question as much as a
-technical one, and the honest answer is "a long way, but only against a
-hard evidence discipline".
+part of the point was to find out how far the right tooling can carry someone
+into an unfamiliar domain. That is a hobby question as much as a technical
+one, and the honest answer is "a long way, but only against a hard evidence
+discipline".
 
 Hence the rules the rest of this repo follows. A claim is expected to name
 what was measured, and to say plainly when something is inferred rather
@@ -106,27 +129,27 @@ only records the correct guesses is not a research log.
 ```
 Aya-Pulse-Layer/
 ├── research/
-│   ├── pulse-for-aya/            -- THE DELIVERABLE: the glue patch itself
-│   ├── pulse-glue-assessment/    -- why glue and not a rewrite; risk assessment
-│   ├── pulse-upstream/           -- read-only reference copy, for diffing only
+│   ├── pulse-for-aya/            # THE DELIVERABLE: the glue patch itself
+│   ├── pulse-glue-assessment/    # why glue and not a rewrite; risk assessment
+│   ├── pulse-upstream/           # read-only reference copy, for diffing only
 │   │
-│   ├── aidl-fan-spike/           -- how fan control actually works here
-│   ├── aidl-bind-spike/          -- driving vendor profiles without root
-│   ├── ayaspace-teardown/        -- taking the vendor apps apart; this is where
+│   ├── aidl-fan-spike/           # how fan control actually works here
+│   ├── aidl-bind-spike/          # driving vendor profiles without root
+│   ├── ayaspace-teardown/        # taking the vendor apps apart; this is where
 │   ├── aya-gamewindows-teardown/    the undocumented commands came from
 │   │
-│   ├── xsu-capability-probe/     -- what the root shell can and cannot do
-│   ├── autotdp-ab-harness/       -- early probes, superseded
-│   ├── ab-logger/                -- telemetry recorder + pulled session logs
+│   ├── xsu-capability-probe/     # what the root shell can and cannot do
+│   ├── autotdp-ab-harness/       # early probes, superseded
+│   ├── ab-logger/                # telemetry recorder + pulled session logs
 │   │
-│   └── *-assessment/             -- scoped read-only passes over community
+│   └── *-assessment/             # scoped read-only passes over community
 │                                    projects (see below); each has its own
 │                                    *-upstream/ read-only clone
-├── diagnostics/                  -- raw hardware facts + a validated FPS script
-├── app/                          -- abandoned from-scratch skeleton, kept as
+├── diagnostics/                  # raw hardware facts + a validated FPS script
+├── app/                          # abandoned from-scratch skeleton, kept as
 │                                    history; superseded by the glue approach
-├── docs/archive/                 -- frozen pre-git history, do not extend
-└── STATUS.md                     -- current state, living document
+├── docs/archive/                 # frozen pre-git history, do not extend
+└── STATUS.md                     # current state, living document
 ```
 
 **Detail lives close to the work.** This file stays deliberately shallow.

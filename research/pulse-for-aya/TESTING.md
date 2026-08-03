@@ -84,9 +84,12 @@ historical suspect for instability.
 
 Two things you should know, because nothing in the app tells you:
 
-**It writes logs and never deletes them.** Roughly 3-4 MB per hour of play into
-`/sdcard/apl_pulse_logs/`, unconditionally, in every build that currently
-exists. Clear that directory yourself.
+**Debug builds write logs and never delete them.** Roughly 3-4 MB per hour of
+play into `/sdcard/apl_pulse_logs/`, for as long as the app runs. Clear that
+directory yourself. Release builds (the ones attached to a GitHub Release) do
+not write there at all -- `PulseDaemon.sessionDiagnosticsEnabled` is tied to
+`BuildConfig.DEBUG`. If you are testing to produce logs, you need a debug
+build.
 
 **It is tested on two devices, both the author's.** Known-open problems are
 listed in `STATUS.md`, which is kept honest, including about the conclusions
