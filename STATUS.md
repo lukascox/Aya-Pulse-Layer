@@ -71,6 +71,59 @@ publishing an unsigned APK nobody can install.
 
 **UNBLOCKED and shipped 2026-08-03** — see the release entry above.
 
+## Sleep is the suspect no longer at large, and the SoC gate ships (2026-08-04)
+
+Full write-up: `research/ab-logger/results/unsupervised_session_2026-08-04/NOTES.md`.
+Both units on the gated debug build, both with Sleep deliberately off — the one-variable
+test the previous entry asked for.
+
+**1. Sleep off, zero kills.** `B` ran 1h53m without a single `com.kei.pulse` death, and
+`SleepProfileMonitorService` appears nowhere in either unit's logcat. The tally on the
+only unit that has ever misbehaved: Sleep on → 6 kills (08-02), Sleep on → 7 kills
+(08-03), **Sleep off → 0 (08-04)**. Still correlation rather than mechanism — nobody has
+shown why that service's foreground-start draws the reaper, and one clean session does
+not rule out intermittency. But it is the first time the variable was moved on purpose.
+Two more clean sessions would settle it.
+
+**2. A SoC gate is now in the code**, and confirmed transparent on real hardware.
+`DeviceSupport.isSupportedSoc()` reads the chip vendor and refuses everything privileged
+on anything that is not Qualcomm. It sits at the two chokepoints — `RootExec` (the only
+`ProcessBuilder("xsu", ...)` in the tree) and `AyaAidlClient` — so no cap write, no
+`chmod 666`, no core parking and no vendor AIDL can reach unvalidated silicon.
+
+The criterion is the **SoC family, not the model name**, deliberately: a model allowlist
+would reject AYANEO's other Snapdragon handhelds, which are the natural next thing anyone
+tries, and a false negative leaves someone holding a dead app. Blocking an architecture
+never run at all is the claim actually worth making. The gate is honest about what it does
+NOT cover: the AIDL opcodes are specific to one firmware rather than to the silicon, so
+other AYANEO Snapdragon models are admitted on a deliberate bet.
+
+Confirmed on-device: the version stamp shows the gated build ran, the refusal-only warning
+fired zero times, and 1036 cap writes plus 13157 telemetry reads went through normally.
+**Untested in the direction that matters** — no MediaTek device was available to be
+rejected, so the negative cases rest on `DeviceSupportTest` alone.
+
+No upstream file was touched. `RootExec.kt` shares 3 substantive lines with upstream's
+48; the `aidl/` package does not exist upstream; `TunerScreen.kt` is byte-identical to
+upstream and was deliberately left that way, with the "no root" versus "wrong SoC"
+distinction going to `Log.w` instead of the UI.
+
+**3. AutoTDP raised clocks for the first time** — 3 RAISE at 28.4, 29.8 and 62.8 fps
+against a 90 fps target, after every earlier session logged 0 RAISE against dozens of
+TRIM. This weakens nothing and settles nothing: only 6 of 44 decisions carried a
+framerate at all (Eden reports one intermittently), and one of those six TRIMmed at
+`fps=30` against `tgt=90` while cool and under power, inside a three-second
+TRIM→RAISE→TRIM oscillation. The regulator moves in both directions; whether it moves
+*correctly* needs a workload whose framerate can actually be read.
+
+**4. The per-app fan override is effectively gone** — 6 ticks out of 822 on `W`, none on
+`B`, against a whole lost session on 08-03. Fixed by the procedure change, not by code.
+
+Also this session: Artemis (PC streaming) made the pull a new redaction case — host names,
+local IPs, GPU models — none of which the standard sweep looks for. A second sweep over the
+kept files found zero matches; the streaming client's networking never reaches PULSE's own
+logs. Added to `PULL_AND_TRIM.md` regardless.
+
 ## First public release: `v1.19.6-aya.1` (2026-08-03)
 
 https://github.com/lukascox/Aya-Pulse-Layer/releases/tag/v1.19.6-aya.1 —

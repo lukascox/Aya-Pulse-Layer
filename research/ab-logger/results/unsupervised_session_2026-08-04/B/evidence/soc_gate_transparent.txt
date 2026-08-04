@@ -1,0 +1,19 @@
+The SoC gate ran on real hardware and changed nothing (both units, 2026-08-04)
+
+First session on the gated build. What we needed to know: does DeviceSupport's
+Qualcomm check pass on the actual Pocket FIT, and is it invisible when it does.
+
+1. The gated build is what ran. Version stamp from both units' daemon logs:
+   === pulse_daemon session start === version=1.19.6-aya.1 (30301) built 2026-08-03 23:43:04
+
+2. The gate never refused anything. RootExec logs a PulseRoot warning ONLY on refusal;
+   the count of that tag across both manual logcat dumps was ZERO.
+
+3. Privileged work went through normally, which is the positive proof -- a false
+   negative would have blocked every one of these:
+     B  cap writes 205, telemetry reads 10287
+     W  cap writes 831, telemetry reads 2870
+
+Conclusion: the gate is transparent on supported hardware. It remains untested
+against a device it should REJECT -- no MediaTek handheld was available, and the
+negative cases are covered only by DeviceSupportTest.

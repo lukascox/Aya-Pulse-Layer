@@ -1,7 +1,10 @@
-# Aya-Pulse-Layer — research notes for gluing `pulse` onto an AYANEO Pocket FIT
+# Aya-Pulse-Layer — research notes for gluing `pulse` onto a KONKR Pocket FIT
 
 **This repo is not an app. It is the research that makes one small patch
 possible.**
+
+The device is sold as the **KONKR Pocket FIT**; its own firmware calls itself
+`AYANEO Pocket FIT`, which is why both names appear throughout. Same handheld.
 
 There is already an excellent performance tuner for handheld gaming
 devices — [`pulse`](https://github.com/keiretrogaming/pulse) (GPL-2.0). It
@@ -101,23 +104,28 @@ apksigner verify --print-certs pulse-for-aya-*.apk
 A different fingerprint means a different key, and Android will refuse to
 install it over an existing copy anyway.
 
-### This was built and tested for the AYANEO Pocket FIT, and nothing else
+### This was built and tested on a KONKR Pocket FIT, and nothing else
 
 Not "mainly", not "primarily" — **only**. Two devices, both Pocket FITs, both mine. No other handheld
 has ever run this, from any vendor, including AYANEO's own other models.
 
-**The app does not check what it is running on.** There is no device gate in the code today. Install
-it on something else and it will try. Some of what it touches is Qualcomm-specific and will simply
-fail; some of it — CPU frequency caps and core parking — goes through generic kernel interfaces that
-exist on every SoC, so it will succeed, against a hardware topology nobody validated. It also sends
-commands to AYANEO's own system service that were reconstructed by taking one firmware image apart;
-a different model may route them somewhere else entirely.
+**Since v1.19.6-aya.2 the app refuses to run on a non-Qualcomm SoC.** It reads the chip vendor at
+startup and, on anything that is not Qualcomm, performs no privileged write and binds no vendor
+service — it shows "device not compatible" instead. That gate exists because the risk is not evenly
+spread: the Qualcomm-specific nodes simply do not exist elsewhere and fail harmlessly, but CPU
+frequency caps and core parking go through generic kernel interfaces present on *every* SoC, so
+without a gate they would succeed against a topology nobody validated.
 
-Nothing there should permanently damage a device, and a reboot undoes it. That is a reasoned
-expectation, not a promise, and I have no way to test it. **YMMV, and I take no responsibility for
-what happens on hardware I have never held.** If you try it on something else anyway, I would
-genuinely like to hear how it went — but go in knowing that is an experiment you are running, not a
-supported configuration.
+**A Qualcomm chip is not a promise that this works.** The gate blocks an architecture that was never
+run at all; it says nothing about other Snapdragon handhelds, which are simply untested. It also
+cannot help with the vendor AIDL commands, which were reconstructed from a single firmware image and
+are specific to that firmware rather than to the silicon.
+
+Nothing here should permanently damage a device, and a reboot undoes what it changes. That is a
+reasoned expectation, not a promise, and there is no way to test it against hardware I do not have.
+**YMMV, and I take no responsibility for what happens on a device I have never held.** If you try it
+on another Snapdragon handheld anyway, I would genuinely like to hear how it went — but go in knowing
+that is an experiment you are running, not a supported configuration.
 
 **Installing one is entirely at your own risk.** This is a hobby research
 project, tested on two devices, both mine. It writes to privileged system

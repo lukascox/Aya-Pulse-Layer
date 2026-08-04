@@ -44,8 +44,8 @@ android {
         // and has to increase, or Android refuses the update -- so carrying upstream's 303 unchanged
         // would make two of our builds on the same upstream uninstallable over each other.
         // Bump <n> for every published release; reset it to 1 when upstream moves.
-        versionCode = 30301
-        versionName = "1.19.6-aya.1"
+        versionCode = 30302
+        versionName = "1.19.6-aya.2"
 
         // Stamped fresh on every build (unlike versionName/versionCode, which only move on a
         // published release) -- lets a pulled /sdcard session log

@@ -1,0 +1,97 @@
+2026-08-04 15:37:04 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:04 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:04 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:04 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=26)
+2026-08-04 15:37:05 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:05 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:05 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:05 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=27)
+2026-08-04 15:37:06 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:06 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:06 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:06 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=28)
+2026-08-04 15:37:07 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:07 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:07 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:07 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=29)
+2026-08-04 15:37:09 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:09 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:09 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:09 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=30)
+2026-08-04 15:37:10 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:10 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:10 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:10 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=31)
+2026-08-04 15:37:11 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:11 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:11 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:11 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=32)
+2026-08-04 15:37:12 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:12 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:12 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:12 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=33)
+2026-08-04 15:37:13 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:13 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:14 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:14 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=34)
+2026-08-04 15:37:15 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:15 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:15 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:15 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=35)
+2026-08-04 15:37:16 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:16 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:16 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:16 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=36)
+2026-08-04 15:37:17 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:17 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:17 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:17 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=37)
+2026-08-04 15:37:18 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:18 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:18 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:18 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=38)
+2026-08-04 15:37:19 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:20 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:20 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=39)
+2026-08-04 15:37:21 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:21 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:21 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:21 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=40)
+2026-08-04 15:37:22 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:22 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:22 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=41)
+2026-08-04 15:37:23 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:23 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:23 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:23 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=42)
+2026-08-04 15:37:24 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:24 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:24 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:24 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=43)
+2026-08-04 15:37:25 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:25 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:25 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:25 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=44)
+2026-08-04 15:37:26 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:26 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:27 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:27 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=45)
+2026-08-04 15:37:28 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:28 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:28 PulseDaemon: telemetry read via xsu fallback (16 path(s))
+2026-08-04 15:37:30 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=46)
+2026-08-04 15:37:31 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:31 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:31 PulseDaemon: telemetry read via xsu fallback (16 path(s))
+2026-08-04 15:37:32 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=47)
+2026-08-04 15:37:33 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:33 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:34 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:34 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=48)
+2026-08-04 15:37:35 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:35 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:37:35 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:35 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=49)
+2026-08-04 15:37:36 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=com.android.settings
+2026-08-04 15:37:36 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:37:36 PulseFan: CUSTOM idle → vendor Smart (target=20 floor=20 temp=37 idle=50)

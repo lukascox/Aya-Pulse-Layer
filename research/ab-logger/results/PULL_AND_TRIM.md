@@ -139,6 +139,18 @@ for f in $(find . -type f); do n=$(grep -acoiE "([0-9a-f]{2}:){5}[0-9a-f]{2}|ssi
 The one expected false positive is `SSID` matching inside the word `BSSID` in
 prose. Anything else: that file does not get committed.
 
+**If the session involved PC streaming (Artemis / Moonlight), run a second
+sweep.** The one above looks for none of what streaming can leak — a host
+name, a local IP, a GPU model:
+
+```bash
+for f in $(find . -type f); do n=$(grep -acoE "([0-9]{1,3}\.){3}[0-9]{1,3}|\.local\b|moonlight|sunshine|GeForce|nvidia" "$f"); [ "$n" != "0" ] && echo "!! $f -> $n"; done; echo "(no !! = clean)"
+```
+
+On 2026-08-04 this came back clean — the streaming client's networking never
+reaches PULSE's own logs — but that was the first session to test it, and a
+clean result once is not a guarantee.
+
 **Manual full-logcat dumps are never committed.** Keep them outside the repo
 and extract verified lines only.
 

@@ -108,28 +108,35 @@ jobs:
         # render with breaks off, which is why README.md stays wrapped and still looks right. This
         # is specific to releases, issues and comments.
         # Verified with: gh api /markdown -f mode=gfm -f text=... versus -f mode=markdown
+        #
+        # NOT --prerelease, deliberately (dropped for aya.2). GitHub does not treat a pre-release as
+        # a release: /releases/latest 404s while every release is one, and the repo sidebar shows no
+        # "Latest" link. Verified against this repo while aya.1 was the only tag. The honesty work is
+        # done properly in the notes and README, which say far more than a badge does; keeping the
+        # badge only cost the one link people actually share.
         run: |
           gh release create "$GITHUB_REF_NAME" \
             "pulse-for-aya-${GITHUB_REF_NAME}.apk" \
-            --title "PULSE for AYANEO Pocket FIT $GITHUB_REF_NAME" \
+            --title "PULSE for KONKR Pocket FIT $GITHUB_REF_NAME" \
             --generate-notes \
-            --prerelease \
             --notes-file - <<'EOF'
           **Experimental. Installing this is at your own risk.**
 
-          A glue patch on [`pulse`](https://github.com/keiretrogaming/pulse) (GPL-2.0) for the AYANEO Pocket FIT. `pulse` is upstream's app and this is not a fork of it -- the work here is the glue that lets it talk to this hardware. Tested on exactly two devices, both mine. Not a finished product.
+          A glue patch on [`pulse`](https://github.com/keiretrogaming/pulse) (GPL-2.0) for the **KONKR Pocket FIT** — the handheld whose own firmware calls itself `AYANEO Pocket FIT`. `pulse` is upstream's app and this is not a fork of it; the work here is the glue that lets it talk to this hardware. Tested on exactly two devices, both mine. Not a finished product.
 
           It writes to privileged system settings and to fan control. This project's history includes crashes and reboots needing a hard power cycle. A signed build only means the file came from the code in the repo; it does not make any of that safer.
+
+          **Hardware:** from this version the app reads the SoC vendor at startup and refuses to run on anything that is not Qualcomm — no privileged write, no vendor service binding. That blocks an architecture this was never run on at all. It does NOT mean other Snapdragon handhelds are supported; they are simply untested.
 
           **Version scheme:** `<upstream pulse version>-aya.<n>`. So this build is upstream `pulse` at the stated version, plus this repo's n-th published set of patches.
 
           **Release builds do not write session logs.** Nothing is written to `/sdcard/apl_pulse_logs/`. Debug builds do, at roughly 3-4 MB per hour, and do not clean up after themselves.
 
           **Known open issues at the time of this build:**
-          - On one of the two test units the app process is killed several times in a row shortly after start, then runs for hours. Every occurrence points at the Sleep feature's monitor service; leaving Sleep off avoids it. Not yet proven, see `STATUS.md`.
-          - AutoTDP trims clocks and does not always give them back, most visibly in framerate-capped titles. Use a fixed tier for those.
+          - Turning the Sleep feature on has been followed, in two sessions out of two, by the app process being killed repeatedly shortly after start. With Sleep off, a third session ran nearly two hours clean. The cause is not established. **Leave Sleep off.**
+          - AutoTDP now demonstrably raises clocks as well as trimming them, but on only six usable decisions — emulators report a framerate too intermittently for it to regulate against. Use a fixed tier for those.
           - A per-app fan mode silently overrides the global Custom fan card, with nothing in the UI saying so.
           - Joystick RGB is out of scope and does nothing.
 
-          `STATUS.md` in the repo is the honest current state, including the findings that turned out to be wrong. Bug reports are more useful than stars.
+          **This is a research project, published because the findings might be useful — not a supported product.** There is no issue triage and no support. `STATUS.md` in the repo is the honest current state, including the conclusions that later turned out to be wrong.
           EOF

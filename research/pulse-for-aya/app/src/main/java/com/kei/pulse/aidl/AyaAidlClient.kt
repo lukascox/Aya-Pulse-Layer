@@ -5,8 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
 import android.os.Parcel
+import com.kei.pulse.model.DeviceSupport
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.int
@@ -137,6 +139,16 @@ class AyaAidlClient(private val context: Context) {
      * outcome. Safe to call once per instance; call [unbind] when done, don't reuse after that.
      */
     fun bind(onReady: (BindResult) -> Unit) {
+        // apl glue gate (2026-08-03): second chokepoint alongside RootExec. Non-AYANEO hardware was
+        // never reachable here anyway -- the Intent names com.ayaneo.gamewindow explicitly and simply
+        // fails to bind where that package is absent -- so what this actually stops is AYANEO's own
+        // MediaTek handhelds. These opcodes were reconstructed from ONE firmware image, and this
+        // project has already documented an input-validation gap in this very service that crashes a
+        // system app outright. See DeviceSupport for why the SoC family is the test being applied.
+        if (!socSupported) {
+            onReady(BindResult.Failed(UNSUPPORTED_SOC_MESSAGE))
+            return
+        }
         val stub = AyaAidlCallbackStub { msg -> handleCallback(msg, onReady) }
         callbackStub = stub
         val conn = object : ServiceConnection {
@@ -258,6 +270,9 @@ class AyaAidlClient(private val context: Context) {
     fun sendReset(mode: Int): Result<Unit> = sendRaw("com_set_performance_reset:$mode")
 
     private fun sendRaw(command: String): Result<Unit> {
+        // Belt and braces: bind() already refuses, so serviceBinder is null here anyway. Kept because
+        // this is the function that actually puts a reverse-engineered opcode on the wire.
+        if (!socSupported) return Result.failure(IllegalStateException(UNSUPPORTED_SOC_MESSAGE))
         val binder = serviceBinder ?: return Result.failure(IllegalStateException("not bound"))
         val id = clientId ?: return Result.failure(IllegalStateException("no clientId yet -- bind()'s onReady hasn't fired"))
         return try {
@@ -268,7 +283,15 @@ class AyaAidlClient(private val context: Context) {
         }
     }
 
+    private val socSupported: Boolean by lazy {
+        DeviceSupport.isSupportedSoc(Build.SOC_MANUFACTURER, Build.HARDWARE)
+    }
+
     companion object {
+
+        private const val UNSUPPORTED_SOC_MESSAGE =
+            "PULSE for AYANEO was only ever run on Qualcomm hardware; refusing to bind the vendor AIDL service here."
+
         /** The one callback prefix that carries a whole-profile config dump (the only one that has ever
          *  been observed carrying fan state -- `research/aidl-fan-spike/results/run1/`). */
         private const val PERFORMANCE_CALLBACK_PREFIX = "msg_type_performance:com_set_performance_mode:"

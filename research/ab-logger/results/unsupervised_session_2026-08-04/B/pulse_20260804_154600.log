@@ -1,0 +1,62 @@
+# TRIMMED (analyze-pulse-logs.py) -- original was 93 lines / 7878B.
+# Kept: every distinct line; runs of 3+ consecutive identical lines (idle TICK-SKIP polling,
+# only the timestamp differs) collapsed to first + elision count + last.
+# ---
+2026-08-04 15:46:26 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:46:26 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 6 more identical lines elided (same content, only timestamp differs) ...
+2026-08-04 15:46:27 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-04 15:46:27 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-08-04 15:46:27 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:46:27 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-04 15:46:27 PulseFan: CUSTOM fan running (autoTdp=false smart=false temp=39 applied=22% target=22)
+2026-08-04 15:46:27 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 5 more identical lines elided (same content, only timestamp differs) ...
+2026-08-04 15:46:28 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-04 15:46:28 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-08-04 15:46:28 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:46:28 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:46:28 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 5 more identical lines elided (same content, only timestamp differs) ...
+2026-08-04 15:46:29 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-04 15:46:29 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-08-04 15:46:29 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:46:29 PulseFan: CUSTOM fan running (autoTdp=false smart=false temp=41 applied=22% target=22)
+2026-08-04 15:46:30 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 6 more identical lines elided (same content, only timestamp differs) ...
+2026-08-04 15:46:30 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-04 15:46:30 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-08-04 15:46:30 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:46:31 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:46:31 PulseFan: CUSTOM fan running (autoTdp=false smart=false temp=42 applied=22% target=22)
+2026-08-04 15:46:31 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 5 more identical lines elided (same content, only timestamp differs) ...
+2026-08-04 15:46:32 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-04 15:46:32 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-08-04 15:46:32 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:46:32 PulseFan: CUSTOM fan running (autoTdp=false smart=false temp=43 applied=22% target=22)
+2026-08-04 15:46:32 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 5 more identical lines elided (same content, only timestamp differs) ...
+2026-08-04 15:46:33 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-04 15:46:33 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-08-04 15:46:33 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:46:33 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:46:33 PulseFan: CUSTOM fan running (autoTdp=false smart=false temp=43 applied=22% target=22)
+2026-08-04 15:46:33 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 3 more identical lines elided (same content, only timestamp differs) ...
+2026-08-04 15:46:34 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-04 15:46:34 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-08-04 15:46:34 PulseFan: arbiter=RunCustomLoop auto=false bound=null managed=6 latched=false
+2026-08-04 15:46:34 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:46:34 PulseFan: CUSTOM fan running (autoTdp=false smart=false temp=43 applied=22% target=22)
+2026-08-04 15:46:34 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 4 more identical lines elided (same content, only timestamp differs) ...
+2026-08-04 15:46:35 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-04 15:46:35 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-08-04 15:46:35 PulseDaemon: telemetry read via daemon (16 path(s))
+2026-08-04 15:46:35 PulseFan: CUSTOM fan running (autoTdp=false smart=false temp=43 applied=22% target=22)
+2026-08-04 15:46:35 PulseDaemon: telemetry read via daemon (1 path(s))
+# ... 5 more identical lines elided (same content, only timestamp differs) ...
+2026-08-04 15:46:36 PulseDaemon: telemetry read via daemon (1 path(s))
+2026-08-04 15:46:36 PulseAutoTdp: TICK-SKIP overlayShouldShow=false autoActive=false quickAccessShouldShow=false autoTdpPackage=null boundPackage=null lastForeground=null
+2026-08-04 15:46:36 PulseDaemon: telemetry read via xsu fallback (1 path(s))

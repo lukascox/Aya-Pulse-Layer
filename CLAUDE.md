@@ -64,6 +64,17 @@ Each `research/<project>/` is an independent Android app — `cd` in first.
   `com.kei.pulse` for diffability.
 - Findings go in the project's own `FINDINGS.md`; `STATUS.md` gets only
   a summary + pointer.
+- **Commits, `STATUS.md` and `NOTES.md` record facts, not who did what.**
+  Write "Sleep was switched off and the kills stopped", not "the user
+  turned Sleep off" or "the user reported that…". No "user", no "I", no
+  "we" attributing an action to a person — the repo is a research log, not
+  a support ticket queue, and third-person narration about its own author
+  reads as though it has customers. State what was tested, what held, what
+  was disproved. From 2026-08-04 onward; two July commits (`44f0c05`,
+  `500fb09`) predate this and are deliberately NOT being rewritten —
+  they are already on the public mirror, a rewrite would touch 118
+  commits and orphan the release tag, and a force push hides rather than
+  unpublishes.
 - Everything written to files in this repo is English-only, regardless of
   what language the conversation is in, unless the user explicitly asks
   for a different language for that specific file. **There is currently no
