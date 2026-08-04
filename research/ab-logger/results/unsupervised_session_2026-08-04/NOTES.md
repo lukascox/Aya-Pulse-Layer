@@ -56,22 +56,43 @@ on `DeviceSupportTest`.
 
 Evidence: [`B/evidence/soc_gate_transparent.txt`](B/evidence/soc_gate_transparent.txt).
 
-## 3. AutoTDP gave clocks back — first RAISE ever recorded
+## 3. AutoTDP gave clocks back — first RAISE ever recorded, on an unidentified workload
 
 Every previous session logged 0 RAISE against dozens of TRIM, which is what made the 2026-08-01
 "vsync blind spot" reading look incomplete. `B` logged **3 RAISE**, and they fire where they should:
 at 28.4, 29.8 and 62.8 fps against a 90 fps target.
 
-Two things stop this being a clean win, and both matter more than the headline:
+**CORRECTION (same day).** The first version of this section said AutoTDP ran for an hour and
+regulated Eden. Both halves are wrong.
 
-**The sample is six decisions, not a run.** AutoTDP made 44 decisions over an hour and **38 of them
-had no framerate reading at all** — Eden reports fps only intermittently. HOLD with no data is
-correct behaviour, but it means the loop was idle for 86 % of its engaged time.
+Eden was on a **fixed tier (balanced)**, not AutoTDP — the logs say so directly:
+`autoTdpPackage=null boundPackage=com.miHoYo.Yuanshen`. And AutoTDP did not run for an hour; it
+started **five separate times** (16:38:19, 16:53:50, 17:38:26, 17:39:12, 17:39:56), each lasting
+seconds to a couple of minutes. The error came from taking the first and last `PulseAutoTdp`
+timestamp as one span, and from assuming the workload was Eden because Eden dominated the
+foreground tally.
+
+**What was AutoTDP actually regulating? Unresolved.** The `AUTOTDP-SESSION` line does not name a
+package, and the `TICK-SKIP` line that would is not emitted while AutoTDP is active — so the logs
+as they stand cannot answer it. That gap is worth closing in the log format itself.
+
+What survives, and it is still the first of its kind: **the regulator demonstrably moves in both
+directions.** What does not survive is any claim about how it behaves in Eden, or on emulators
+generally. This session tested neither.
+
+Two caveats on the surviving finding:
+
+**The sample is six decisions.** Across all five bursts AutoTDP made 44 decisions and **38 had no
+framerate reading at all**. HOLD with no data is correct behaviour, but the loop had something to
+act on only six times.
 
 **One decision does not follow.** At 17:38:41 it TRIMmed with `fps=30.0` against `tgt=90`, while cool
 (`cT=35`) and well under power (`draw=2.39W`), so no thermal or power ceiling explains it. In context
 it is part of a three-second oscillation — TRIM → RAISE → TRIM — with the controller chasing a very
 noisy signal. Worth one look before anyone calls AutoTDP fixed.
+
+**Five starts in an hour is itself a finding.** Whatever engaged AutoTDP kept engaging and
+disengaging. Nobody has looked at why.
 
 Evidence: [`B/evidence/autotdp_first_raise.txt`](B/evidence/autotdp_first_raise.txt).
 
@@ -116,7 +137,14 @@ procedure anyway, since the next session may not be so tidy.
 
 1. **Leave Sleep off on `B` and run it again.** Two clean sessions would move this from "consistent
    with" to "established"; one more kill would kill the hypothesis outright. Either is progress.
-2. **Get AutoTDP a workload it can actually read.** Six usable decisions in an hour is not a test of
-   the regulator, it is a test of the fps reader. A title that reports framerate reliably would say
-   more in ten minutes than Eden does in two hours.
-3. The `fps=30 → TRIM` decision deserves a read of `AutoTuneController`'s trim condition.
+2. **Give AutoTDP a workload deliberately, and know which one.** Six usable decisions is not a test
+   of the regulator. Assign AutoTDP to one specific title that reports framerate reliably and let it
+   run — that would say more in ten minutes than this session did in two hours.
+3. **Log the package on the `AUTOTDP-SESSION` line.** Not knowing what the regulator was regulating
+   is what made this section wrong the first time, and it is a one-field fix.
+4. The `fps=30 → TRIM` decision deserves a read of `AutoTuneController`'s trim condition.
+5. **Wanted comparison, no date: the same `pulse` version on a Retroid Pocket 6 (8 Gen 2), same
+   emulator, same game.** AutoTDP has never been good with Eden here, which leaves two very
+   different possibilities open — that this is a Pocket FIT / G3x Gen 3 problem, or that AutoTDP is
+   simply poor against emulator framerate reporting on any hardware. One afternoon with an RP6 would
+   separate them; nothing else in the repo can.

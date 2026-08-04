@@ -110,11 +110,28 @@ distinction going to `Log.w` instead of the UI.
 
 **3. AutoTDP raised clocks for the first time** — 3 RAISE at 28.4, 29.8 and 62.8 fps
 against a 90 fps target, after every earlier session logged 0 RAISE against dozens of
-TRIM. This weakens nothing and settles nothing: only 6 of 44 decisions carried a
-framerate at all (Eden reports one intermittently), and one of those six TRIMmed at
-`fps=30` against `tgt=90` while cool and under power, inside a three-second
-TRIM→RAISE→TRIM oscillation. The regulator moves in both directions; whether it moves
-*correctly* needs a workload whose framerate can actually be read.
+TRIM. The regulator demonstrably moves in both directions, which is new.
+
+**CORRECTED the same day:** the first version of this entry said AutoTDP ran for an hour
+regulating Eden. Neither holds. Eden was on a fixed tier — `autoTdpPackage=null
+boundPackage=com.miHoYo.Yuanshen` — and AutoTDP started five separate times in short
+bursts rather than running once. The error was treating the first and last timestamp as
+one span and assuming the workload from the foreground tally. **What AutoTDP was actually
+regulating is unresolved**: `AUTOTDP-SESSION` does not name a package and `TICK-SKIP`,
+which would, is suppressed while AutoTDP is active. Logging the package there is a
+one-field fix worth making.
+
+So this settles nothing about emulators, and nothing about Eden — that combination was
+not tested. Only 6 of 44 decisions carried a framerate at all, and one of those six
+TRIMmed at `fps=30` against `tgt=90` while cool and under power, inside a three-second
+TRIM→RAISE→TRIM oscillation. Five engage/disengage cycles in an hour is a separate
+unexamined finding.
+
+**Wanted, undated:** the same `pulse` version on a Retroid Pocket 6 (8 Gen 2), same
+emulator, same game. AutoTDP has never coped well with Eden on this hardware, and that
+leaves two live possibilities — a Pocket FIT / G3x Gen 3 problem, or AutoTDP simply being
+poor against emulator framerate reporting anywhere. One afternoon with an RP6 separates
+them; nothing else in this repo can.
 
 **4. The per-app fan override is effectively gone** — 6 ticks out of 822 on `W`, none on
 `B`, against a whole lost session on 08-03. Fixed by the procedure change, not by code.
