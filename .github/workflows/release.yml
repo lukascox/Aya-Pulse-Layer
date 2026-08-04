@@ -134,7 +134,7 @@ jobs:
 
           **Known open issues at the time of this build:**
           - Turning the Sleep feature on has been followed, in two sessions out of two, by the app process being killed repeatedly shortly after start. With Sleep off, a third session ran nearly two hours clean. The cause is not established. **Leave Sleep off.**
-          - AutoTDP now demonstrably raises clocks as well as trimming them, but on only six usable decisions — emulators report a framerate too intermittently for it to regulate against. Use a fixed tier for those.
+          - AutoTDP has been seen to raise clocks as well as trim them, but on too few decisions to say how it behaves in any given game. If a title misbehaves under it, a fixed tier is the dependable option — that is what the test devices use for emulators. Whether its weak spots are specific to this hardware is an open question; comparing against upstream `pulse` on another Snapdragon handheld would answer it. Not a priority.
           - A per-app fan mode silently overrides the global Custom fan card, with nothing in the UI saying so.
           - Joystick RGB is out of scope and does nothing.
 
